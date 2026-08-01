@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
+import { Route as ReparationsBrandRouteImport } from './routes/reparations.$brand'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReparationsIndexRoute = ReparationsIndexRouteImport.update({
+  id: '/reparations/',
+  path: '/reparations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
+  id: '/reparations/$brand',
+  path: '/reparations/$brand',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations': typeof ReparationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/reparations/$brand' | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/reparations/$brand' | '/reparations'
+  id: '__root__' | '/' | '/reparations/$brand' | '/reparations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ReparationsBrandRoute: typeof ReparationsBrandRoute
+  ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +68,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reparations/': {
+      id: '/reparations/'
+      path: '/reparations'
+      fullPath: '/reparations/'
+      preLoaderRoute: typeof ReparationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reparations/$brand': {
+      id: '/reparations/$brand'
+      path: '/reparations/$brand'
+      fullPath: '/reparations/$brand'
+      preLoaderRoute: typeof ReparationsBrandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ReparationsBrandRoute: ReparationsBrandRoute,
+  ReparationsIndexRoute: ReparationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
