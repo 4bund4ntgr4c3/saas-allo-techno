@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/reservation")({
   validateSearch: (search: Record<string, unknown>) => ({
-    device: typeof search.device === "string" ? search.device : undefined,
+    device: typeof search["device"] === "string" ? (search["device"] as string) : undefined,
   }),
   head: () => ({
     meta: [
