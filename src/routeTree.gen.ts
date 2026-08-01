@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
 import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
 import { Route as ReparationsBrandRouteImport } from './routes/reparations.$brand'
@@ -17,6 +18,11 @@ import { Route as ReparationsBrandRouteImport } from './routes/reparations.$bran
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppareilSlugRoute = AppareilSlugRouteImport.update({
@@ -37,12 +43,14 @@ const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
   '/reparations': typeof ReparationsIndexRoute
@@ -50,18 +58,26 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/appareil/$slug' | '/reparations/$brand' | '/reparations/'
+  fullPaths:
+    | '/'
+    | '/tarifs'
+    | '/appareil/$slug'
+    | '/reparations/$brand'
+    | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/appareil/$slug' | '/reparations/$brand' | '/reparations'
+  to:
+    '/' | '/tarifs' | '/appareil/$slug' | '/reparations/$brand' | '/reparations'
   id:
     | '__root__'
     | '/'
+    | '/tarifs'
     | '/appareil/$slug'
     | '/reparations/$brand'
     | '/reparations/'
@@ -69,6 +85,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
   ReparationsBrandRoute: typeof ReparationsBrandRoute
   ReparationsIndexRoute: typeof ReparationsIndexRoute
@@ -81,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/appareil/$slug': {
@@ -109,6 +133,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
   ReparationsBrandRoute: ReparationsBrandRoute,
   ReparationsIndexRoute: ReparationsIndexRoute,
