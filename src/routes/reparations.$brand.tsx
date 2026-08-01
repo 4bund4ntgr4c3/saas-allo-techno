@@ -1,14 +1,22 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, brandBySlug, devicesOfBrand, formatFcfa } from "@/data/catalog";
+import {
+  BRANDS,
+  brandBySlug,
+  devicesOfBrand,
+  formatFcfa,
+  type Brand,
+  type Device,
+} from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/reparations/$brand")({
-  loader: ({ params }) => {
+  loader: ({ params }): { brand: Brand; devices: Device[] } => {
     const brand = brandBySlug(params.brand);
     if (!brand) throw notFound();
     return { brand, devices: devicesOfBrand(brand.slug) };
   },
+
   head: ({ params, loaderData }) => {
     const name = loaderData?.brand.name ?? "Marque";
     if (!loaderData) {
