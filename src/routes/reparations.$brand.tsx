@@ -43,7 +43,7 @@ export const Route = createFileRoute("/reparations/$brand")({
 });
 
 function BrandPage() {
-  const { brand, devices } = Route.useLoaderData();
+  const { brand, devices } = Route.useLoaderData() as { brand: Brand; devices: Device[] };
 
   return (
     <>
