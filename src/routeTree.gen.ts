@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReservationRouteImport } from './routes/reservation'
+import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
+import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
+import { Route as ReparationsBrandRouteImport } from './routes/reparations.$brand'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReservationRoute = ReservationRouteImport.update({
+  id: '/reservation',
+  path: '/reservation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppareilSlugRoute = AppareilSlugRouteImport.update({
+  id: '/appareil/$slug',
+  path: '/appareil/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReparationsIndexRoute = ReparationsIndexRouteImport.update({
+  id: '/reparations/',
+  path: '/reparations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
+  id: '/reparations/$brand',
+  path: '/reparations/$brand',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/reservation': typeof ReservationRoute
+  '/tarifs': typeof TarifsRoute
+  '/appareil/$slug': typeof AppareilSlugRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/reservation': typeof ReservationRoute
+  '/tarifs': typeof TarifsRoute
+  '/appareil/$slug': typeof AppareilSlugRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations': typeof ReparationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/reservation': typeof ReservationRoute
+  '/tarifs': typeof TarifsRoute
+  '/appareil/$slug': typeof AppareilSlugRoute
+  '/reparations/$brand': typeof ReparationsBrandRoute
+  '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/reservation'
+    | '/tarifs'
+    | '/appareil/$slug'
+    | '/reparations/$brand'
+    | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/reservation'
+    | '/tarifs'
+    | '/appareil/$slug'
+    | '/reparations/$brand'
+    | '/reparations'
+  id:
+    | '__root__'
+    | '/'
+    | '/reservation'
+    | '/tarifs'
+    | '/appareil/$slug'
+    | '/reparations/$brand'
+    | '/reparations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ReservationRoute: typeof ReservationRoute
+  TarifsRoute: typeof TarifsRoute
+  AppareilSlugRoute: typeof AppareilSlugRoute
+  ReparationsBrandRoute: typeof ReparationsBrandRoute
+  ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +117,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reservation': {
+      id: '/reservation'
+      path: '/reservation'
+      fullPath: '/reservation'
+      preLoaderRoute: typeof ReservationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/appareil/$slug': {
+      id: '/appareil/$slug'
+      path: '/appareil/$slug'
+      fullPath: '/appareil/$slug'
+      preLoaderRoute: typeof AppareilSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reparations/': {
+      id: '/reparations/'
+      path: '/reparations'
+      fullPath: '/reparations/'
+      preLoaderRoute: typeof ReparationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reparations/$brand': {
+      id: '/reparations/$brand'
+      path: '/reparations/$brand'
+      fullPath: '/reparations/$brand'
+      preLoaderRoute: typeof ReparationsBrandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ReservationRoute: ReservationRoute,
+  TarifsRoute: TarifsRoute,
+  AppareilSlugRoute: AppareilSlugRoute,
+  ReparationsBrandRoute: ReparationsBrandRoute,
+  ReparationsIndexRoute: ReparationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

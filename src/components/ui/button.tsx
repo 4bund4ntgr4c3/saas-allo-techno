@@ -16,13 +16,22 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Signature Allô Techno: bloc technique inversé qui bascule sur l'orange.
+        technical:
+          "rounded-sm bg-foreground text-background font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground",
+        primaryBlock:
+          "rounded-sm bg-primary text-primary-foreground font-extrabold uppercase tracking-widest hover:bg-primary/90",
+        technicalOutline:
+          "rounded-sm border border-border bg-transparent font-bold uppercase tracking-wide hover:bg-secondary",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        default: "h-11 px-5 py-2",
+        sm: "h-9 rounded-sm px-4 text-xs",
+        lg: "h-13 rounded-sm px-8",
+        xl: "h-14 rounded-sm px-10 text-base",
+        icon: "h-11 w-11",
       },
+
     },
     defaultVariants: {
       variant: "default",
