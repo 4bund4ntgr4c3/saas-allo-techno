@@ -57,6 +57,7 @@ function Reservation() {
   const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
   const [review, setReview] = useState<ReservationInput | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const range = useMemo(() => {
     const from = new Date();
