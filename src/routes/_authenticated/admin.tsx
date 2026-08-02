@@ -85,10 +85,11 @@ function AdminPage() {
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status, note }: { id: string; status: Status; note?: string }) => {
+      const trimmed = note?.trim();
       const { error } = await supabase.rpc("staff_set_reservation_status", {
         _reservation_id: id,
         _status: status,
-        _note: note?.trim() ? note.trim() : undefined,
+        ...(trimmed ? { _note: trimmed } : {}),
       });
       if (error) throw error;
     },
