@@ -242,30 +242,13 @@ function AdminPage() {
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <select
-                  className={`${field} max-w-xs`}
-                  value={r.status}
-                  disabled={updateStatus.isPending}
-                  onChange={(e) =>
-                    updateStatus.mutate({ id: r.id, status: e.target.value as Status })
-                  }
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {STATUS_LABEL[s]}
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setOpenId(openId === r.id ? null : r.id)}
-                >
-                  <History className="mr-2 size-4" />
-                  {openId === r.id ? "Masquer l'historique" : "Historique"}
-                </Button>
-              </div>
+              <StageControls
+                current={r.status}
+                pending={updateStatus.isPending}
+                onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
+                historyOpen={openId === r.id}
+                onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
+              />
 
               {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
             </li>
@@ -277,6 +260,85 @@ function AdminPage() {
 }
 
 function StatusHistory({ reservationId }: { reservationId: string }) {
+  return <StatusHistoryList reservationId={reservationId} />;
+}
+
+function StageControls({
+  current,
+  pending,
+  onApply,
+  historyOpen,
+  onToggleHistory,
+}: {
+  current: Status;
+  pending: boolean;
+  onApply: (status: Status, note: string) => void;
+  historyOpen: boolean;
+  onToggleHistory: () => void;
+}) {
+  const [status, setStatus] = useState<Status>(current);
+  const [note, setNote] = useState("");
+  const next = NEXT_STATUS[current];
+  const dirty = status !== current;
+
+  useEffect(() => {
+    setStatus(current);
+  }, [current]);
+
+  return (
+    <div className="mt-4 space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <select
+          className={`${field} max-w-xs`}
+          value={status}
+          disabled={pending}
+          onChange={(e) => setStatus(e.target.value as Status)}
+        >
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {STATUS_LABEL[s]}
+            </option>
+          ))}
+        </select>
+        <Button
+          size="sm"
+          disabled={pending || !dirty}
+          onClick={() => {
+            onApply(status, note);
+            setNote("");
+          }}
+        >
+          Appliquer
+        </Button>
+        {next ? (
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={pending}
+            onClick={() => {
+              onApply(next, note);
+              setNote("");
+            }}
+          >
+            Passer à « {STATUS_LABEL[next]} »
+          </Button>
+        ) : null}
+        <Button variant="outline" size="sm" onClick={onToggleHistory}>
+          <History className="mr-2 size-4" />
+          {historyOpen ? "Masquer l'historique" : "Historique"}
+        </Button>
+      </div>
+      <textarea
+        className="min-h-16 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        placeholder="Note visible par le client (ex. : pièce commandée, écran remplacé…)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
+    </div>
+  );
+}
+
+function StatusHistoryList({ reservationId }: { reservationId: string }) {
   const history = useQuery({
     queryKey: ["status-history", reservationId],
     queryFn: async () => {
