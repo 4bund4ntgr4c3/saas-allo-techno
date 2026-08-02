@@ -124,6 +124,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_reservation_status: {
+        Args: { _reference: string }
+        Returns: {
+          created_at: string
+          device: string
+          issue: string
+          mode: string
+          payment: string
+          reference: string
+          slot_date: string
+          slot_period: Database["public"]["Enums"]["slot_period"]
+          status: Database["public"]["Enums"]["reservation_status"]
+        }[]
+      }
       next_reservation_reference: { Args: never; Returns: string }
       slot_availability: {
         Args: { _from: string; _to: string }
