@@ -13,6 +13,7 @@ import { useSession } from "@/hooks/useSession";
 import { createReservation } from "@/lib/reservations.functions";
 import { ReservationSummary } from "@/components/site/ReservationSummary";
 import {
+  HOURS_BY_PERIOD,
   PERIOD_LABEL,
   reservationInputSchema,
   toIsoDate,
@@ -22,9 +23,14 @@ import {
 } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/reservation")({
-  validateSearch: (search: Record<string, unknown>): { device?: string; panne?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { device?: string; panne?: string; date?: string; creneau?: string; heure?: string } => ({
     ...(typeof search["device"] === "string" ? { device: search["device"] as string } : {}),
     ...(typeof search["panne"] === "string" ? { panne: search["panne"] as string } : {}),
+    ...(typeof search["date"] === "string" ? { date: search["date"] as string } : {}),
+    ...(typeof search["creneau"] === "string" ? { creneau: search["creneau"] as string } : {}),
+    ...(typeof search["heure"] === "string" ? { heure: search["heure"] as string } : {}),
   }),
 
   head: () => ({
@@ -52,7 +58,13 @@ export const Route = createFileRoute("/reservation")({
 const DAYS_AHEAD = 21;
 
 function Reservation() {
-  const { device, panne } = Route.useSearch();
+  const {
+    device,
+    panne,
+    date: dateParam,
+    creneau: creneauParam,
+    heure: heureParam,
+  } = Route.useSearch();
   const { user } = useSession();
   const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
@@ -101,13 +113,16 @@ function Reservation() {
       appareil: device ?? "",
       panne: panne ?? "",
       mode: "boutique",
-      creneau: "matin",
+      creneau: (creneauParam === "apres-midi" ? "apres-midi" : "matin") as SlotPeriod,
+      heure: heureParam ?? "",
       paiement: "mtn",
-      date: "",
+      date: dateParam ?? "",
     },
   });
 
   const selectedDate = watch("date");
+  const selectedPeriod = watch("creneau");
+  const selectedHour = watch("heure");
   const daySlots = openDates.get(selectedDate) ?? [];
 
   useEffect(() => {
@@ -132,6 +147,12 @@ function Reservation() {
       setValue("creneau", daySlots[0]!.period);
     }
   }, [selectedDate, daySlots, setValue, watch]);
+
+  // L'heure doit toujours appartenir à la demi-journée choisie.
+  useEffect(() => {
+    const hours = HOURS_BY_PERIOD[selectedPeriod];
+    if (selectedHour && !hours.includes(selectedHour)) setValue("heure", "");
+  }, [selectedPeriod, selectedHour, setValue]);
 
   const onSubmit = (values: ReservationInput) => {
     setReview(values);
@@ -320,6 +341,37 @@ function Reservation() {
                   })}
                 </div>
                 {err("creneau")}
+              </div>
+
+              <div className="md:col-span-2">
+                <span className="at-eyebrow mb-2 block">Heure du rendez-vous</span>
+                <div className="flex flex-wrap gap-2">
+                  {HOURS_BY_PERIOD[selectedPeriod].map((h) => {
+                    const on = selectedHour === h;
+                    return (
+                      <button
+                        key={h}
+                        type="button"
+                        aria-pressed={on}
+                        disabled={!selectedDate}
+                        onClick={() => setValue("heure", h, { shouldValidate: true })}
+                        className={`border px-4 py-2 font-mono text-xs transition-colors disabled:opacity-40 ${
+                          on
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border hover:border-foreground"
+                        }`}
+                      >
+                        {h}
+                      </button>
+                    );
+                  })}
+                </div>
+                {!selectedDate && (
+                  <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">
+                    Choisissez d'abord une date
+                  </p>
+                )}
+                {err("heure")}
               </div>
 
               <div className="md:col-span-2">
