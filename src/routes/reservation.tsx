@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, ProcessSteps, SectionHeader } from "@/components/site/Blocks";
 import { BRANDS, CATEGORIES, DEVICES, formatFcfa } from "@/data/catalog";
@@ -12,12 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { createReservation } from "@/lib/reservations.functions";
 import { ReservationSummary } from "@/components/site/ReservationSummary";
+import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   HOURS_BY_PERIOD,
   PERIOD_LABEL,
   reservationInputSchema,
-  toIsoDate,
-  type AvailabilityRow,
   type ReservationInput,
   type SlotPeriod,
 } from "@/lib/reservation-schema";
@@ -71,34 +69,8 @@ function Reservation() {
   const [review, setReview] = useState<ReservationInput | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const range = useMemo(() => {
-    const from = new Date();
-    const to = new Date();
-    to.setDate(to.getDate() + DAYS_AHEAD);
-    return { from: toIsoDate(from), to: toIsoDate(to) };
-  }, []);
-
-  const availability = useQuery({
-    queryKey: ["availability", range.from, range.to],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("slot_availability", {
-        _from: range.from,
-        _to: range.to,
-      });
-      if (error) throw error;
-      return (data ?? []) as AvailabilityRow[];
-    },
-    staleTime: 30_000,
-  });
-
-  const openDates = useMemo(() => {
-    const map = new Map<string, AvailabilityRow[]>();
-    for (const row of availability.data ?? []) {
-      if (row.remaining <= 0) continue;
-      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
-    }
-    return map;
-  }, [availability.data]);
+  const availability = useSlotAvailability(DAYS_AHEAD);
+  const { openDates } = availability;
 
   const {
     register,
