@@ -44,20 +44,25 @@ export type Brand = {
 };
 
 export const BRANDS: Brand[] = [
-  { slug: "apple", name: "Apple", tag: "iPhone · iPad · MacBook · iMac", devices: ["iPhone", "iPad", "MacBook", "iMac", "Apple Watch"] },
-  { slug: "samsung", name: "Samsung", tag: "Galaxy S · A · Tab · Watch", devices: ["Galaxy S", "Galaxy A", "Galaxy Tab"] },
-  { slug: "xiaomi", name: "Xiaomi", tag: "Redmi · Note · Mi", devices: ["Redmi Note", "Redmi", "Mi"] },
-  { slug: "huawei", name: "Huawei", tag: "P · Mate · Nova", devices: ["P Series", "Mate", "Nova"] },
-  { slug: "oppo", name: "Oppo", tag: "Reno · A Series", devices: ["Reno", "A Series"] },
-  { slug: "google", name: "Google Pixel", tag: "Pixel 6 à 9", devices: ["Pixel"] },
-  { slug: "oneplus", name: "OnePlus", tag: "Nord · Série 1x", devices: ["Nord", "Série 1x"] },
-  { slug: "tecno", name: "Tecno", tag: "Camon · Spark · Phantom", devices: ["Camon", "Spark", "Phantom"] },
-  { slug: "infinix", name: "Infinix", tag: "Note · Hot · Zero", devices: ["Note", "Hot", "Zero"] },
-  { slug: "itel", name: "Itel", tag: "A · S · P Series", devices: ["A Series", "S Series"] },
+  { slug: "apple", name: "Apple", tag: "iPhone 17 · iPad · MacBook · Watch", devices: ["iPhone", "iPad", "MacBook", "iMac", "Apple Watch"] },
+  { slug: "samsung", name: "Samsung", tag: "Galaxy S25/S26 · A · Z Fold · Tab", devices: ["Galaxy S", "Galaxy A", "Galaxy Z", "Galaxy Tab", "Galaxy Watch"] },
+  { slug: "xiaomi", name: "Xiaomi", tag: "Xiaomi 15 · Redmi Note 14", devices: ["Xiaomi Série", "Redmi Note", "Redmi", "Poco"] },
+  { slug: "huawei", name: "Huawei", tag: "Pura · Mate · Nova", devices: ["Pura", "Mate", "Nova"] },
+  { slug: "oppo", name: "Oppo", tag: "Reno 13 · A Series", devices: ["Reno", "A Series", "Find"] },
+  { slug: "google", name: "Google Pixel", tag: "Pixel 6 à 10", devices: ["Pixel"] },
+  { slug: "oneplus", name: "OnePlus", tag: "Nord · Série 13", devices: ["Nord", "Série 13"] },
+  { slug: "tecno", name: "Tecno", tag: "Camon 40 · Spark 30 · Phantom", devices: ["Camon", "Spark", "Phantom", "Pova"] },
+  { slug: "infinix", name: "Infinix", tag: "Note 50 · Hot 60 · Zero", devices: ["Note", "Hot", "Zero", "Smart"] },
+  { slug: "itel", name: "Itel", tag: "A · S · P Series", devices: ["A Series", "S Series", "P Series"] },
   { slug: "nokia", name: "Nokia", tag: "G · X · C Series", devices: ["G Series", "C Series"] },
-  { slug: "motorola", name: "Motorola", tag: "Moto G · Edge", devices: ["Moto G", "Edge"] },
-  { slug: "honor", name: "Honor", tag: "Magic · X Series", devices: ["Magic", "X Series"] },
+  { slug: "motorola", name: "Motorola", tag: "Moto G · Edge 50", devices: ["Moto G", "Edge"] },
+  { slug: "honor", name: "Honor", tag: "Magic 7 · X Series", devices: ["Magic", "X Series"] },
   { slug: "sony", name: "Sony", tag: "PlayStation 4 · 5 · Xperia", devices: ["PlayStation", "Xperia"] },
+  { slug: "nintendo", name: "Nintendo", tag: "Switch · Switch 2", devices: ["Switch"] },
+  { slug: "microsoft", name: "Microsoft", tag: "Xbox Series X|S · Surface", devices: ["Xbox", "Surface"] },
+  { slug: "hp", name: "HP", tag: "Pavilion · EliteBook · Envy", devices: ["Pavilion", "EliteBook"] },
+  { slug: "lenovo", name: "Lenovo", tag: "IdeaPad · ThinkPad · Tab", devices: ["IdeaPad", "ThinkPad"] },
+  { slug: "dell", name: "Dell", tag: "XPS · Latitude · Inspiron", devices: ["XPS", "Latitude"] },
 ];
 
 const f = (
