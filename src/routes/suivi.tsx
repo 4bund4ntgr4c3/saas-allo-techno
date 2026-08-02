@@ -56,7 +56,10 @@ function Suivi() {
     setResult(null);
     setLoading(true);
     fetchStatus({ data: { reference: ref } })
-      .then(setResult)
+      .then((res) => {
+        if (res.found) setResult(res.reservation);
+        else setError("Dossier introuvable. Vérifiez la référence.");
+      })
       .catch((err) => setError(err instanceof Error ? err.message : "Erreur inattendue"))
       .finally(() => setLoading(false));
   }, [ref, fetchStatus]);
