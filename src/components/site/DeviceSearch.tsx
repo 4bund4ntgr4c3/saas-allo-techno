@@ -166,20 +166,10 @@ export function DeviceSearch() {
                     }}
                     className="group flex flex-col items-start gap-3 bg-card p-5 text-left transition-colors hover:bg-surface"
                   >
-                    {media && (
-                      <img
-                        src={media.image}
-                        alt={c}
-                        loading="lazy"
-                        width={768}
-                        height={768}
-                        className="h-24 w-full rounded-sm object-cover"
-                      />
-                    )}
-                    <span className="flex items-center gap-2 text-sm font-bold tracking-tight">
-                      {Icon && <Icon className="size-4 text-primary" />}
-                      {c}
+                    <span className="flex size-14 items-center justify-center rounded-sm border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                      {Icon && <Icon className="size-7" strokeWidth={1.5} />}
                     </span>
+                    <span className="text-sm font-bold tracking-tight">{c}</span>
                     <span className="font-mono text-[10px] uppercase text-muted-foreground">
                       {media?.hint}
                     </span>
@@ -227,7 +217,9 @@ export function DeviceSearch() {
               03. Modèle · {brand ? brandName(brand) : ""}
             </span>
             <div className="grid gap-2 sm:grid-cols-2">
-              {models.map((d) => (
+              {models.map((d) => {
+                const ModelIcon = categoryMedia(d.category)?.icon;
+                return (
                 <button
                   key={d.slug}
                   type="button"
@@ -238,14 +230,9 @@ export function DeviceSearch() {
                   }}
                   className="flex items-center gap-3 border border-border p-3 text-left transition-colors hover:border-foreground hover:bg-surface"
                 >
-                  <img
-                    src={categoryMedia(d.category)?.image}
-                    alt={d.name}
-                    loading="lazy"
-                    width={768}
-                    height={768}
-                    className="size-12 rounded-sm object-cover"
-                  />
+                  <span className="flex size-12 shrink-0 items-center justify-center border border-border text-primary">
+                    {ModelIcon && <ModelIcon className="size-6" strokeWidth={1.5} />}
+                  </span>
                   <span>
                     <span className="block text-sm font-bold tracking-tight">{d.name}</span>
                     <span className="font-mono text-[10px] uppercase text-muted-foreground">
@@ -253,7 +240,8 @@ export function DeviceSearch() {
                     </span>
                   </span>
                 </button>
-              ))}
+                );
+              })}
               {models.length === 0 && (
                 <p className="text-xs text-muted-foreground">
                   Modèles sur demande —{" "}

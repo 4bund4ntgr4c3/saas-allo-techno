@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BadgeCheck, Clock, Home, ShieldCheck, Store, Wallet } from "lucide-react";
 import { SectionHeader, CtaBand } from "@/components/site/Blocks";
+import { DeviceSearch } from "@/components/site/DeviceSearch";
 import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
+import { categoryMedia } from "@/data/device-media";
 
 export const Route = createFileRoute("/reparations/")({
   head: () => ({
@@ -26,16 +29,48 @@ export const Route = createFileRoute("/reparations/")({
 function Reparations() {
   return (
     <>
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">Catalogue de réparation</span>
-          <h1 className="at-display max-w-3xl text-4xl md:text-6xl">
-            Choisissez votre marque, nous connaissons la panne.
-          </h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
-            {DEVICES.length} modèles référencés, {BRANDS.length} marques prises en charge et des
-            centaines de références de pièces disponibles en stock à Abomey-Calavi.
-          </p>
+      <section className="border-b border-border py-14">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div>
+            <span className="at-eyebrow mb-4 block">Prendre rendez-vous</span>
+            <h1 className="at-display text-4xl md:text-5xl">
+              Réparation en 4 étapes. Devis avant intervention.
+            </h1>
+            <p className="mt-6 max-w-xl text-muted-foreground">
+              Dites-nous quel appareil est en panne : nous affichons immédiatement les tarifs, le
+              délai et les créneaux disponibles à Abomey-Calavi. {DEVICES.length} modèles référencés,{" "}
+              {BRANDS.length} marques prises en charge.
+            </p>
+            <ul className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
+              {[
+                { icon: Clock, t: "Réparation express", d: "La plupart des pannes en moins de 2 h" },
+                { icon: ShieldCheck, t: "Garantie 6 mois", d: "Pièces et main-d'œuvre incluses" },
+                { icon: Wallet, t: "Prix affiché", d: "Aucun frais surprise, diagnostic gratuit" },
+                { icon: BadgeCheck, t: "Techniciens certifiés", d: "Pièces d'origine ou premium" },
+              ].map((f) => (
+                <li key={f.t} className="flex gap-3 bg-card p-4">
+                  <f.icon className="mt-0.5 size-5 shrink-0 text-primary" strokeWidth={1.5} />
+                  <span>
+                    <span className="block text-sm font-bold tracking-tight">{f.t}</span>
+                    <span className="text-xs text-muted-foreground">{f.d}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
+              {[
+                { icon: Store, t: "En boutique", d: "Zogbadjè, Abomey-Calavi — sans rendez-vous possible" },
+                { icon: Home, t: "À domicile", d: "Un technicien se déplace sur Cotonou & Calavi" },
+              ].map((m) => (
+                <div key={m.t} className="bg-card p-5">
+                  <m.icon className="size-6 text-primary" strokeWidth={1.5} />
+                  <p className="mt-3 text-sm font-bold uppercase tracking-tight">{m.t}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{m.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <DeviceSearch />
         </div>
       </section>
 
@@ -71,9 +106,13 @@ function Reparations() {
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {CATEGORIES.map((c) => {
               const list = DEVICES.filter((d) => d.category === c);
+              const Icon = categoryMedia(c)?.icon;
               return (
                 <div key={c} className="bg-card p-8">
-                  <h3 className="text-sm font-extrabold uppercase tracking-wide">{c}</h3>
+                  <h3 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide">
+                    {Icon && <Icon className="size-5 text-primary" strokeWidth={1.5} />}
+                    {c}
+                  </h3>
                   <ul className="mt-4 space-y-2">
                     {list.map((d) => (
                       <li key={d.slug}>
