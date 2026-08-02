@@ -170,7 +170,7 @@ function Reservation() {
       toast.success(`Réservation enregistrée — dossier ${row.reference}`, {
         description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
       });
-      reset({ ...values, panne: "", message: "", date: "" });
+      reset({ ...values, panne: "", message: "", date: "", heure: "" });
       setReview(null);
       availability.refetch();
     } catch (error) {
