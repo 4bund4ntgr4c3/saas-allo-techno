@@ -248,6 +248,11 @@ function StatusResult({
         </div>
       </div>
 
+      <div className="mt-8 border-t border-border pt-8">
+        <span className="at-eyebrow">Journal de l'atelier</span>
+        <TimelineFeed entries={timeline} />
+      </div>
+
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild variant="technicalOutline">
           <Link to="/reservation">Nouvelle réservation</Link>
