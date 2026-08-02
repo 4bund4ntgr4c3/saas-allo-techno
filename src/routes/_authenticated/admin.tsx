@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: AdminPage;
+  component: AdminPage,
 });
 
 type Status = Enums<"reservation_status">;
