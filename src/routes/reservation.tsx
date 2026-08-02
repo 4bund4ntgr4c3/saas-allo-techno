@@ -191,6 +191,14 @@ function Reservation() {
 
       <section className="py-16">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.4fr_1fr]">
+          {review ? (
+            <ReservationSummary
+              values={review}
+              submitting={submitting}
+              onEdit={() => setReview(null)}
+              onConfirm={confirmReservation}
+            />
+          ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="border border-border bg-card p-8">
             <h2 className="at-display mb-8 text-2xl">Votre dossier</h2>
 
@@ -326,7 +334,7 @@ function Reservation() {
             </div>
 
             <Button type="submit" variant="primaryBlock" size="lg" className="mt-8 w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Enregistrement…" : "Confirmer la réservation"}
+              Vérifier le récapitulatif
             </Button>
 
             {ref && (
@@ -340,6 +348,7 @@ function Reservation() {
               </div>
             )}
           </form>
+          )}
 
           <aside className="space-y-8">
             <div className="border border-border bg-surface p-8">
