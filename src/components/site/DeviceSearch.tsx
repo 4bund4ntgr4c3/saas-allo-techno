@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Check, ChevronLeft, Search } from "lucide-react";
+import { ArrowRight, CalendarClock, Check, ChevronLeft, Clock, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   BRANDS,
   CATEGORIES,
@@ -12,12 +14,19 @@ import {
 import { categoryMedia } from "@/data/device-media";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
+import {
+  HOURS_BY_PERIOD,
+  periodOfHour,
+  toIsoDate,
+  type AvailabilityRow,
+} from "@/lib/reservation-schema";
 
-const STEPS = ["Type", "Marque", "Modèle", "Panne"] as const;
+const STEPS = ["Type", "Marque", "Modèle", "Panne", "Créneau"] as const;
+const DAYS_AHEAD = 21;
 
 /**
- * Assistant de diagnostic en 4 étapes :
- * type d'appareil (icône) → marque → modèle → pannes (multi-sélection) + description.
+ * Assistant de diagnostic en 5 étapes :
+ * type d'appareil (icône) → marque → modèle → pannes (multi-sélection) → date & heure.
  */
 export function DeviceSearch() {
   const navigate = useNavigate();
@@ -28,6 +37,45 @@ export function DeviceSearch() {
   const [faults, setFaults] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [query, setQuery] = useState("");
+  const [date, setDate] = useState<string | null>(null);
+  const [hour, setHour] = useState<string | null>(null);
+
+  const range = useMemo(() => {
+    const from = new Date();
+    const to = new Date();
+    to.setDate(to.getDate() + DAYS_AHEAD);
+    return { from: toIsoDate(from), to: toIsoDate(to) };
+  }, []);
+
+  const availability = useQuery({
+    queryKey: ["availability", range.from, range.to],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("slot_availability", {
+        _from: range.from,
+        _to: range.to,
+      });
+      if (error) throw error;
+      return (data ?? []) as AvailabilityRow[];
+    },
+    staleTime: 30_000,
+  });
+
+  /** Dates ouvertes → périodes encore disponibles. */
+  const openDates = useMemo(() => {
+    const map = new Map<string, AvailabilityRow[]>();
+    for (const row of availability.data ?? []) {
+      if (row.remaining <= 0) continue;
+      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
+    }
+    return map;
+  }, [availability.data]);
+
+  const dateKeys = useMemo(() => [...openDates.keys()].sort(), [openDates]);
+  const daySlots = date ? (openDates.get(date) ?? []) : [];
+  const availableHours = useMemo(
+    () => daySlots.flatMap((s) => HOURS_BY_PERIOD[s.period]),
+    [daySlots],
+  );
 
   const brandsOfCategory = useMemo(() => {
     if (!category) return [];
@@ -63,7 +111,16 @@ export function DeviceSearch() {
     if (!device) return;
     const labels = device.faults.filter((f) => faults.includes(f.slug)).map((f) => f.label);
     const panne = [labels.join(", "), description.trim()].filter(Boolean).join(" — ");
-    navigate({ to: "/reservation", search: { device: device.slug, panne: panne || undefined } });
+    navigate({
+      to: "/reservation",
+      search: {
+        device: device.slug,
+        panne: panne || undefined,
+        date: date ?? undefined,
+        creneau: hour ? periodOfHour(hour) : undefined,
+        heure: hour ?? undefined,
+      },
+    });
   };
 
   return (
