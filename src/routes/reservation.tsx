@@ -65,8 +65,8 @@ function Reservation() {
     queryKey: ["availability", range.from, range.to],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("slot_availability", {
-        from_date: range.from,
-        to_date: range.to,
+        _from: range.from,
+        _to: range.to,
       });
       if (error) throw error;
       return (data ?? []) as AvailabilityRow[];
