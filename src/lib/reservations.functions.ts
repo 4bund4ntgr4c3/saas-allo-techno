@@ -17,6 +17,13 @@ export const createReservation = createServerFn({ method: "POST" })
       userId = typeof sub === "string" ? sub : null;
     }
 
+    const message = [
+      data.heure ? `Heure souhaitée : ${data.heure}` : "",
+      data.message ?? "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
     const { data: row, error } = await supabaseAdmin
       .from("reservations")
       .insert({
@@ -30,7 +37,7 @@ export const createReservation = createServerFn({ method: "POST" })
         payment: data.paiement,
         slot_date: data.date,
         slot_period: data.creneau,
-        message: data.message ? data.message : null,
+        message: message ? message : null,
       })
       .select("id, reference, slot_date, slot_period, status")
       .single();
