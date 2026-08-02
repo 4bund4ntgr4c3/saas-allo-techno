@@ -11,6 +11,7 @@ import {
 } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
 import { Button } from "@/components/ui/button";
+import { computeEstimate } from "@/lib/estimate";
 
 const STEPS = ["Type", "Marque", "Modèle", "Panne"] as const;
 
@@ -47,13 +48,13 @@ export function DeviceSearch() {
     ).slice(0, 5);
   }, [query]);
 
-  const total = useMemo(
-    () =>
-      (device?.faults ?? [])
-        .filter((f) => faults.includes(f.slug))
-        .reduce((sum, f) => sum + f.price, 0),
+  const selectedFaults = useMemo(
+    () => (device?.faults ?? []).filter((f) => faults.includes(f.slug)),
     [device, faults],
   );
+
+  const estimate = useMemo(() => computeEstimate(selectedFaults), [selectedFaults]);
+  const total = estimate.total;
 
   const toggleFault = (slug: string) =>
     setFaults((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
@@ -288,6 +289,40 @@ export function DeviceSearch() {
                   </button>
                 );
               })}
+            </div>
+
+            {/* Estimation en direct */}
+            <div className="mt-6 border border-border bg-surface p-4">
+              <div className="flex items-center justify-between">
+                <span className="at-eyebrow">Estimation en direct</span>
+                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                  Mise à jour instantanée
+                </span>
+              </div>
+              <ul className="mt-3 divide-y divide-border">
+                {estimate.lines.map((line) => (
+                  <li key={line.key} className="flex items-start justify-between gap-4 py-2">
+                    <span>
+                      <span className="block text-sm font-semibold">{line.label}</span>
+                      <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                        {line.detail}
+                      </span>
+                    </span>
+                    <span className="font-mono text-xs">
+                      {line.amount > 0 ? formatFcfa(line.amount) : "—"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+                <span className="text-sm font-bold uppercase tracking-tight">Total estimé</span>
+                <span className="font-mono text-base font-bold text-primary">
+                  {total > 0 ? formatFcfa(total) : "Diagnostic gratuit"}
+                </span>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                Estimation indicative — le devis définitif est confirmé après diagnostic en atelier.
+              </p>
             </div>
 
             <label htmlFor="at-desc" className="at-eyebrow mt-6 mb-2 block">
