@@ -5,9 +5,12 @@ import {
   brandBySlug,
   devicesOfBrand,
   formatFcfa,
+  COMPANY,
+  POSTS,
   type Brand,
   type Device,
 } from "@/data/catalog";
+import { brandLocal, QUARTIERS } from "@/data/local-seo";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/reparations/$brand")({
@@ -24,19 +27,64 @@ export const Route = createFileRoute("/reparations/$brand")({
     }
     return {
       meta: [
-        { title: `Réparation ${name} à Abomey-Calavi — Allô Techno` },
+        { title: `Réparation ${name} Abomey-Calavi — Écran & batterie` },
         {
           name: "description",
-          content: `Réparation ${name} : écran, batterie, connecteur de charge, caméra, désoxydation. Tarifs, délais et garanties à Abomey-Calavi.`,
+          content: `Réparation ${name} à Abomey-Calavi : écran, batterie, connecteur de charge, désoxydation. Diagnostic gratuit, prix fermes, garantie jusqu'à 12 mois.`,
         },
-        { property: "og:title", content: `Réparation ${name} — Allô Techno` },
+        { property: "og:title", content: `Réparation ${name} à Abomey-Calavi — Allô Techno` },
         {
           property: "og:description",
-          content: `Modèles ${name} pris en charge, pièces certifiées et garantie jusqu'à 12 mois.`,
+          content: `Modèles ${name} pris en charge à Abomey-Calavi, pièces certifiées et garantie jusqu'à 12 mois.`,
         },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
         { property: "og:url", content: `/reparations/${params.brand}` },
       ],
       links: [{ rel: "canonical", href: `/reparations/${params.brand}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Service",
+                serviceType: `Réparation ${name}`,
+                areaServed: ["Abomey-Calavi", "Godomey", "Cotonou", ...QUARTIERS],
+                provider: {
+                  "@type": "LocalBusiness",
+                  name: COMPANY.name,
+                  telephone: COMPANY.phone,
+                  email: COMPANY.email,
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: COMPANY.address,
+                    addressLocality: COMPANY.city,
+                    addressCountry: "BJ",
+                  },
+                  geo: { "@type": "GeoCoordinates", latitude: COMPANY.lat, longitude: COMPANY.lng },
+                },
+              },
+              {
+                "@type": "FAQPage",
+                mainEntity: brandLocal(loaderData.brand).faq.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              },
+              {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Réparations", item: "/reparations" },
+                  { "@type": "ListItem", position: 2, name, item: `/reparations/${params.brand}` },
+                ],
+              },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: BrandPage,
@@ -44,6 +92,8 @@ export const Route = createFileRoute("/reparations/$brand")({
 
 function BrandPage() {
   const { brand, devices } = Route.useLoaderData() as { brand: Brand; devices: Device[] };
+  const local = brandLocal(brand);
+  const localPosts = POSTS.filter((p) => p.category === "Local").slice(0, 3);
 
   return (
     <>
@@ -55,11 +105,43 @@ function BrandPage() {
             </Link>{" "}
             / {brand.name}
           </nav>
-          <h1 className="at-display text-4xl md:text-6xl">Réparation {brand.name}</h1>
+          <h1 className="at-display text-4xl md:text-6xl">
+            Réparation {brand.name} à Abomey-Calavi
+          </h1>
           <p className="mt-6 max-w-xl text-muted-foreground">
-            {brand.tag}. Diagnostic gratuit, pièces sélectionnées selon le modèle et garantie
-            détaillée sur chaque intervention.
+            {brand.tag}. Diagnostic gratuit à Zogbadjè, pièces sélectionnées selon le modèle et
+            garantie détaillée sur chaque intervention.
           </p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            {local.intro}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {QUARTIERS.map((q) => (
+              <span
+                key={q}
+                className="border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+              >
+                {q}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-surface py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHeader
+            eyebrow="Pannes les plus fréquentes"
+            title={`Ce que nous réparons sur ${brand.name} à Calavi`}
+          />
+          <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+            {local.pannes.map((p) => (
+              <div key={p.title} className="bg-card p-8">
+                <h3 className="text-lg font-bold tracking-tight">{p.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground">{p.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
