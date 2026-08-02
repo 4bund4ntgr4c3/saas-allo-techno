@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Check, ChevronLeft, Search } from "lucide-react";
+import { ArrowRight, CalendarClock, Check, ChevronLeft, Clock, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   BRANDS,
   CATEGORIES,
@@ -12,12 +14,19 @@ import {
 import { categoryMedia } from "@/data/device-media";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
+import {
+  HOURS_BY_PERIOD,
+  periodOfHour,
+  toIsoDate,
+  type AvailabilityRow,
+} from "@/lib/reservation-schema";
 
-const STEPS = ["Type", "Marque", "Modèle", "Panne"] as const;
+const STEPS = ["Type", "Marque", "Modèle", "Panne", "Créneau"] as const;
+const DAYS_AHEAD = 21;
 
 /**
- * Assistant de diagnostic en 4 étapes :
- * type d'appareil (icône) → marque → modèle → pannes (multi-sélection) + description.
+ * Assistant de diagnostic en 5 étapes :
+ * type d'appareil (icône) → marque → modèle → pannes (multi-sélection) → date & heure.
  */
 export function DeviceSearch() {
   const navigate = useNavigate();
@@ -28,6 +37,45 @@ export function DeviceSearch() {
   const [faults, setFaults] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [query, setQuery] = useState("");
+  const [date, setDate] = useState<string | null>(null);
+  const [hour, setHour] = useState<string | null>(null);
+
+  const range = useMemo(() => {
+    const from = new Date();
+    const to = new Date();
+    to.setDate(to.getDate() + DAYS_AHEAD);
+    return { from: toIsoDate(from), to: toIsoDate(to) };
+  }, []);
+
+  const availability = useQuery({
+    queryKey: ["availability", range.from, range.to],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("slot_availability", {
+        _from: range.from,
+        _to: range.to,
+      });
+      if (error) throw error;
+      return (data ?? []) as AvailabilityRow[];
+    },
+    staleTime: 30_000,
+  });
+
+  /** Dates ouvertes → périodes encore disponibles. */
+  const openDates = useMemo(() => {
+    const map = new Map<string, AvailabilityRow[]>();
+    for (const row of availability.data ?? []) {
+      if (row.remaining <= 0) continue;
+      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
+    }
+    return map;
+  }, [availability.data]);
+
+  const dateKeys = useMemo(() => [...openDates.keys()].sort(), [openDates]);
+  const daySlots = date ? (openDates.get(date) ?? []) : [];
+  const availableHours = useMemo(
+    () => daySlots.flatMap((s) => HOURS_BY_PERIOD[s.period]),
+    [daySlots],
+  );
 
   const brandsOfCategory = useMemo(() => {
     if (!category) return [];
@@ -63,7 +111,16 @@ export function DeviceSearch() {
     if (!device) return;
     const labels = device.faults.filter((f) => faults.includes(f.slug)).map((f) => f.label);
     const panne = [labels.join(", "), description.trim()].filter(Boolean).join(" — ");
-    navigate({ to: "/reservation", search: { device: device.slug, panne: panne || undefined } });
+    navigate({
+      to: "/reservation",
+      search: {
+        device: device.slug,
+        panne: panne || undefined,
+        date: date ?? undefined,
+        creneau: hour ? periodOfHour(hour) : undefined,
+        heure: hour ?? undefined,
+      },
+    });
   };
 
   return (
@@ -354,11 +411,118 @@ export function DeviceSearch() {
                   variant="primaryBlock"
                   size="sm"
                   disabled={faults.length === 0 && description.trim().length === 0}
-                  onClick={reserve}
+                  onClick={() => setStep(4)}
                 >
-                  Réserver <ArrowRight className="size-3.5" />
+                  Choisir un créneau <ArrowRight className="size-3.5" />
                 </Button>
               </div>
+            </div>
+          </>
+        )}
+
+        {/* 05 — Date & heure du rendez-vous */}
+        {step === 4 && device && (
+          <>
+            <span className="at-eyebrow mb-3 block">05. Date & heure du rendez-vous</span>
+            <p className="mb-4 text-xs text-muted-foreground">
+              Choisissez un jour puis une heure. Seuls les créneaux réellement disponibles sont
+              affichés.
+            </p>
+
+            <div className="mb-2 flex items-center gap-2">
+              <CalendarClock className="size-4 text-primary" strokeWidth={1.5} />
+              <span className="font-mono text-[10px] uppercase tracking-wider">Jour</span>
+            </div>
+            {availability.isLoading ? (
+              <p className="text-xs text-muted-foreground">Chargement des disponibilités…</p>
+            ) : dateKeys.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Aucun créneau libre sur les 3 prochaines semaines — appelez-nous directement.
+              </p>
+            ) : (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {dateKeys.map((d) => {
+                  const on = date === d;
+                  const dt = new Date(`${d}T12:00:00`);
+                  return (
+                    <button
+                      key={d}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => {
+                        setDate(d);
+                        setHour(null);
+                      }}
+                      className={`min-w-[86px] shrink-0 border p-3 text-center transition-colors ${
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      <span className="block font-mono text-[10px] uppercase">
+                        {dt.toLocaleDateString("fr-FR", { weekday: "short" })}
+                      </span>
+                      <span className="block text-lg font-bold leading-tight">{dt.getDate()}</span>
+                      <span className="block font-mono text-[10px] uppercase">
+                        {dt.toLocaleDateString("fr-FR", { month: "short" })}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-6 mb-2 flex items-center gap-2">
+              <Clock className="size-4 text-primary" strokeWidth={1.5} />
+              <span className="font-mono text-[10px] uppercase tracking-wider">Heure</span>
+            </div>
+            {!date ? (
+              <p className="text-xs text-muted-foreground">Sélectionnez d'abord un jour.</p>
+            ) : (
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {availableHours.map((h) => {
+                  const on = hour === h;
+                  return (
+                    <button
+                      key={h}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setHour(h)}
+                      className={`border px-3 py-2 font-mono text-xs transition-colors ${
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      {h}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+              <p className="font-mono text-xs uppercase text-muted-foreground">
+                {date && hour
+                  ? `${new Date(`${date}T12:00:00`).toLocaleDateString("fr-FR", {
+                      weekday: "long",
+                      day: "2-digit",
+                      month: "long",
+                    })} · ${hour}`
+                  : "Aucun créneau sélectionné"}{" "}
+                ·{" "}
+                <span className="text-primary">
+                  {total > 0 ? `Estimation ${formatFcfa(total)}` : "Diagnostic gratuit"}
+                </span>
+              </p>
+              <Button
+                variant="primaryBlock"
+                size="sm"
+                disabled={!date || !hour}
+                onClick={reserve}
+              >
+                Réserver ce créneau <ArrowRight className="size-3.5" />
+              </Button>
             </div>
           </>
         )}

@@ -34,7 +34,7 @@ function Reparations() {
           <div>
             <span className="at-eyebrow mb-4 block">Prendre rendez-vous</span>
             <h1 className="at-display text-4xl md:text-5xl">
-              Réparation en 4 étapes. Devis avant intervention.
+              Réparation en 5 étapes. Créneau et devis avant intervention.
             </h1>
             <p className="mt-6 max-w-xl text-muted-foreground">
               Dites-nous quel appareil est en panne : nous affichons immédiatement les tarifs, le
