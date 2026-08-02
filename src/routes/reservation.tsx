@@ -1,12 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, ProcessSteps, SectionHeader } from "@/components/site/Blocks";
 import { BRANDS, CATEGORIES, DEVICES, formatFcfa } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/hooks/useSession";
+import { createReservation } from "@/lib/reservations.functions";
+import {
+  PERIOD_LABEL,
+  reservationInputSchema,
+  toIsoDate,
+  type AvailabilityRow,
+  type ReservationInput,
+  type SlotPeriod,
+} from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/reservation")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -18,13 +30,15 @@ export const Route = createFileRoute("/reservation")({
       {
         name: "description",
         content:
-          "Réservez votre créneau de réparation à Abomey-Calavi : dépôt en boutique ou enlèvement à domicile, confirmation par WhatsApp.",
+          "Réservez votre créneau de réparation à Abomey-Calavi : disponibilités en temps réel, dépôt en boutique ou enlèvement à domicile.",
       },
       { property: "og:title", content: "Réserver une réparation — Allô Techno" },
       {
         property: "og:description",
-        content: "Choisissez votre appareil, votre panne et votre créneau en moins de 2 minutes.",
+        content: "Choisissez votre appareil, votre panne et un créneau réellement disponible.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/reservation" },
     ],
     links: [{ rel: "canonical", href: "/reservation" }],
@@ -32,55 +46,103 @@ export const Route = createFileRoute("/reservation")({
   component: Reservation,
 });
 
-const schema = z.object({
-  nom: z.string().trim().min(2, "Nom trop court").max(80),
-  telephone: z
-    .string()
-    .trim()
-    .min(8, "Numéro invalide")
-    .max(20)
-    .regex(/^[0-9+\s]+$/, "Chiffres uniquement"),
-  email: z.string().trim().email("E-mail invalide").max(180).optional().or(z.literal("")),
-  appareil: z.string().min(1, "Sélectionnez un appareil"),
-  panne: z.string().trim().min(3, "Décrivez la panne").max(500),
-  mode: z.enum(["boutique", "domicile"]),
-  date: z.string().min(1, "Choisissez une date"),
-  creneau: z.enum(["matin", "apres-midi"]),
-  paiement: z.enum(["mtn", "moov", "especes"]),
-  message: z.string().trim().max(800).optional().or(z.literal("")),
-});
-
-type FormValues = z.infer<typeof schema>;
+const DAYS_AHEAD = 21;
 
 function Reservation() {
   const { device } = Route.useSearch();
+  const { user } = useSession();
+  const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
+
+  const range = useMemo(() => {
+    const from = new Date();
+    const to = new Date();
+    to.setDate(to.getDate() + DAYS_AHEAD);
+    return { from: toIsoDate(from), to: toIsoDate(to) };
+  }, []);
+
+  const availability = useQuery({
+    queryKey: ["availability", range.from, range.to],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("slot_availability", {
+        _from: range.from,
+        _to: range.to,
+      });
+      if (error) throw error;
+      return (data ?? []) as AvailabilityRow[];
+    },
+    staleTime: 30_000,
+  });
+
+  const openDates = useMemo(() => {
+    const map = new Map<string, AvailabilityRow[]>();
+    for (const row of availability.data ?? []) {
+      if (row.remaining <= 0) continue;
+      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
+    }
+    return map;
+  }, [availability.data]);
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  } = useForm<ReservationInput>({
+    resolver: zodResolver(reservationInputSchema),
     defaultValues: {
       appareil: device ?? "",
       mode: "boutique",
       creneau: "matin",
       paiement: "mtn",
+      date: "",
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    const numero = `AT-2026-${Math.floor(100 + Math.random() * 899)}`;
-    setRef(numero);
-    toast.success(`Réservation enregistrée — dossier ${numero}`, {
-      description: `Nous confirmons par WhatsApp au ${values.telephone}.`,
-    });
-    reset({ ...values, panne: "", message: "" });
+  const selectedDate = watch("date");
+  const daySlots = openDates.get(selectedDate) ?? [];
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("full_name, phone, email")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!data) return;
+        if (data.full_name) setValue("nom", data.full_name);
+        if (data.phone) setValue("telephone", data.phone);
+        setValue("email", data.email ?? user.email ?? "");
+      });
+  }, [user, setValue]);
+
+  useEffect(() => {
+    if (!selectedDate || daySlots.length === 0) return;
+    const current = watch("creneau");
+    if (!daySlots.some((s) => s.period === current)) {
+      setValue("creneau", daySlots[0]!.period);
+    }
+  }, [selectedDate, daySlots, setValue, watch]);
+
+  const onSubmit = async (values: ReservationInput) => {
+    try {
+      const row = await submit({ data: values });
+      setRef(row.reference);
+      toast.success(`Réservation enregistrée — dossier ${row.reference}`, {
+        description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
+      });
+      reset({ ...values, panne: "", message: "", date: "" });
+      availability.refetch();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Réservation impossible");
+      availability.refetch();
+    }
   };
 
-  const err = (k: keyof FormValues) =>
+  const err = (k: keyof ReservationInput) =>
     errors[k] ? (
       <p className="mt-1 font-mono text-[10px] uppercase text-destructive">{errors[k]?.message}</p>
     ) : null;
@@ -95,9 +157,17 @@ function Reservation() {
           <span className="at-eyebrow mb-4 block">Réservation en ligne</span>
           <h1 className="at-display text-4xl md:text-6xl">Réserver une réparation</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">
-            Deux minutes suffisent. Nous confirmons votre créneau par WhatsApp et vous recevez un
-            numéro de dossier pour suivre l'intervention.
+            Deux minutes suffisent. Les créneaux affichés sont réellement disponibles : votre place
+            est bloquée dès validation et un numéro de dossier vous est attribué.
           </p>
+          {!user && (
+            <p className="mt-4 text-sm text-muted-foreground">
+              <Link to="/auth" className="text-primary underline">
+                Connectez-vous
+              </Link>{" "}
+              pour retrouver toutes vos réservations dans votre espace client.
+            </p>
+          )}
         </div>
       </section>
 
@@ -118,7 +188,7 @@ function Reservation() {
                 {err("telephone")}
               </div>
               <div className="md:col-span-2">
-                <label htmlFor="email" className="at-eyebrow mb-2 block">E-mail (optionnel)</label>
+                <label htmlFor="email" className="at-eyebrow mb-2 block">E-mail (recommandé — confirmation écrite)</label>
                 <input id="email" type="email" className={field} {...register("email")} />
                 {err("email")}
               </div>
@@ -162,18 +232,70 @@ function Reservation() {
                   <option value="especes">Espèces</option>
                 </select>
               </div>
-              <div>
-                <label htmlFor="date" className="at-eyebrow mb-2 block">Date souhaitée *</label>
-                <input id="date" type="date" className={field} {...register("date")} />
-                {err("date")}
-              </div>
-              <div>
-                <label htmlFor="creneau" className="at-eyebrow mb-2 block">Créneau *</label>
-                <select id="creneau" className={field} {...register("creneau")}>
-                  <option value="matin">Matin (08:00 — 12:00)</option>
-                  <option value="apres-midi">Après-midi (13:00 — 19:00)</option>
+
+              <div className="md:col-span-2">
+                <label htmlFor="date" className="at-eyebrow mb-2 block">Date disponible *</label>
+                <select id="date" className={field} {...register("date")}>
+                  <option value="">
+                    {availability.isLoading ? "Chargement des disponibilités…" : "Sélectionner une date"}
+                  </option>
+                  {[...openDates.keys()].sort().map((d) => (
+                    <option key={d} value={d}>
+                      {new Date(`${d}T12:00:00`).toLocaleDateString("fr-FR", {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "long",
+                      })}
+                    </option>
+                  ))}
                 </select>
+                {err("date")}
+                {!availability.isLoading && openDates.size === 0 && (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Aucun créneau libre sur les 3 prochaines semaines — appelez-nous directement.
+                  </p>
+                )}
               </div>
+
+              <div className="md:col-span-2">
+                <span className="at-eyebrow mb-2 block">Créneau *</span>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {(["matin", "apres-midi"] as SlotPeriod[]).map((period) => {
+                    const slot = daySlots.find((s) => s.period === period);
+                    const disabled = !selectedDate || !slot;
+                    return (
+                      <label
+                        key={period}
+                        className={`flex cursor-pointer items-start gap-3 border p-4 text-sm ${
+                          disabled
+                            ? "cursor-not-allowed border-border/50 opacity-50"
+                            : "border-border hover:border-primary"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value={period}
+                          disabled={disabled}
+                          className="mt-1"
+                          {...register("creneau")}
+                        />
+                        <span>
+                          <span className="block font-bold">{PERIOD_LABEL[period]}</span>
+                          <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                            {!selectedDate
+                              ? "Choisissez une date"
+                              : slot
+                                ? `${slot.remaining} place${slot.remaining > 1 ? "s" : ""} restante${slot.remaining > 1 ? "s" : ""}`
+                                : "Complet"}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {err("creneau")}
+              </div>
+
               <div className="md:col-span-2">
                 <label htmlFor="message" className="at-eyebrow mb-2 block">Précisions (optionnel)</label>
                 <textarea
@@ -186,14 +308,15 @@ function Reservation() {
             </div>
 
             <Button type="submit" variant="primaryBlock" size="lg" className="mt-8 w-full" disabled={isSubmitting}>
-              Confirmer la réservation
+              {isSubmitting ? "Enregistrement…" : "Confirmer la réservation"}
             </Button>
 
             {ref && (
               <div className="mt-6 border border-success/40 bg-success/10 p-4">
                 <p className="text-sm font-bold">Dossier {ref} créé.</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Conservez ce numéro et suivez l'avancement sur la page{" "}
+                  Conservez ce numéro. Suivez l'avancement dans votre{" "}
+                  <Link to="/mon-compte" className="text-primary underline">espace client</Link> ou sur la page{" "}
                   <Link to="/suivi" className="text-primary underline">Suivi</Link>.
                 </p>
               </div>

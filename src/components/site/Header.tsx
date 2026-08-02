@@ -5,6 +5,7 @@ import { COMPANY } from "@/data/catalog";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/shop/cart";
+import { useSession } from "@/hooks/useSession";
 
 const NAV = [
   { to: "/reparations", label: "Réparations" },
@@ -62,6 +63,7 @@ function CartButton() {
 }
 
 export function Header() {
+  const { user } = useSession();
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -92,6 +94,9 @@ export function Header() {
           </div>
           <CartButton />
           <ThemeToggle />
+          <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
+            <Link to={user ? "/mon-compte" : "/auth"}>{user ? "Mon compte" : "Connexion"}</Link>
+          </Button>
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
             <Link to="/reservation">Réserver</Link>
           </Button>
@@ -107,7 +112,7 @@ export function Header() {
             <SheetContent side="right" className="w-72">
               <SheetTitle className="at-display text-lg">Menu</SheetTitle>
               <nav className="mt-6 flex flex-col gap-1">
-                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
+                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: user ? "/mon-compte" : "/auth", label: user ? "Mon compte" : "Connexion" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
                   <Link
                     key={i.to}
                     to={i.to}
