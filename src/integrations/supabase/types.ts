@@ -183,6 +183,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_first_admin: { Args: never; Returns: boolean }
       get_reservation_status: {
         Args: { _reference: string }
         Returns: {
