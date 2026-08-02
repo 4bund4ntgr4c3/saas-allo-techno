@@ -14,16 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reservations: {
+        Row: {
+          created_at: string
+          customer_name: string
+          device: string
+          email: string | null
+          id: string
+          issue: string
+          message: string | null
+          mode: string
+          payment: string
+          phone: string
+          reference: string
+          slot_date: string
+          slot_period: Database["public"]["Enums"]["slot_period"]
+          staff_notes: string | null
+          status: Database["public"]["Enums"]["reservation_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_name: string
+          device: string
+          email?: string | null
+          id?: string
+          issue: string
+          message?: string | null
+          mode?: string
+          payment?: string
+          phone: string
+          reference?: string
+          slot_date: string
+          slot_period: Database["public"]["Enums"]["slot_period"]
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["reservation_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string
+          device?: string
+          email?: string | null
+          id?: string
+          issue?: string
+          message?: string | null
+          mode?: string
+          payment?: string
+          phone?: string
+          reference?: string
+          slot_date?: string
+          slot_period?: Database["public"]["Enums"]["slot_period"]
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["reservation_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      slot_capacity: {
+        Row: {
+          capacity: number
+          period: Database["public"]["Enums"]["slot_period"]
+          weekday: number
+        }
+        Insert: {
+          capacity?: number
+          period: Database["public"]["Enums"]["slot_period"]
+          weekday: number
+        }
+        Update: {
+          capacity?: number
+          period?: Database["public"]["Enums"]["slot_period"]
+          weekday?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      next_reservation_reference: { Args: never; Returns: string }
+      slot_availability: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          capacity: number
+          period: Database["public"]["Enums"]["slot_period"]
+          remaining: number
+          slot_date: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      reservation_status:
+        | "en_attente"
+        | "confirmee"
+        | "en_cours"
+        | "terminee"
+        | "annulee"
+      slot_period: "matin" | "apres-midi"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +269,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      reservation_status: [
+        "en_attente",
+        "confirmee",
+        "en_cours",
+        "terminee",
+        "annulee",
+      ],
+      slot_period: ["matin", "apres-midi"],
+    },
   },
 } as const
