@@ -16,6 +16,7 @@ import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { COMPANY } from "@/data/catalog";
 import { CartProvider } from "@/components/shop/cart";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
