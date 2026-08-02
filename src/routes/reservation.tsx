@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { createReservation } from "@/lib/reservations.functions";
+import { ReservationSummary } from "@/components/site/ReservationSummary";
 import {
   PERIOD_LABEL,
   reservationInputSchema,
@@ -55,6 +56,8 @@ function Reservation() {
   const { user } = useSession();
   const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
+  const [review, setReview] = useState<ReservationInput | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const range = useMemo(() => {
     const from = new Date();
@@ -130,7 +133,16 @@ function Reservation() {
     }
   }, [selectedDate, daySlots, setValue, watch]);
 
-  const onSubmit = async (values: ReservationInput) => {
+  const onSubmit = (values: ReservationInput) => {
+    setReview(values);
+    setRef(null);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const confirmReservation = async () => {
+    const values = review;
+    if (!values) return;
+    setSubmitting(true);
     try {
       const row = await submit({ data: values });
       setRef(row.reference);
@@ -138,10 +150,13 @@ function Reservation() {
         description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
       });
       reset({ ...values, panne: "", message: "", date: "" });
+      setReview(null);
       availability.refetch();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Réservation impossible");
       availability.refetch();
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -176,6 +191,14 @@ function Reservation() {
 
       <section className="py-16">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.4fr_1fr]">
+          {review ? (
+            <ReservationSummary
+              values={review}
+              submitting={submitting}
+              onEdit={() => setReview(null)}
+              onConfirm={confirmReservation}
+            />
+          ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="border border-border bg-card p-8">
             <h2 className="at-display mb-8 text-2xl">Votre dossier</h2>
 
@@ -311,7 +334,7 @@ function Reservation() {
             </div>
 
             <Button type="submit" variant="primaryBlock" size="lg" className="mt-8 w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Enregistrement…" : "Confirmer la réservation"}
+              Vérifier le récapitulatif
             </Button>
 
             {ref && (
@@ -325,6 +348,7 @@ function Reservation() {
               </div>
             )}
           </form>
+          )}
 
           <aside className="space-y-8">
             <div className="border border-border bg-surface p-8">
