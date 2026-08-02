@@ -12,13 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AvisRouteImport } from './routes/avis'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DevisRouteImport } from './routes/devis'
+import { Route as EntreprisesRouteImport } from './routes/entreprises'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GarantieRouteImport } from './routes/garantie'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PanierRouteImport } from './routes/panier'
+import { Route as RepriseRouteImport } from './routes/reprise'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
 import { Route as BoutiqueSlugRouteImport } from './routes/boutique.$slug'
 import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
@@ -38,9 +48,49 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AvisRoute = AvisRouteImport.update({
+  id: '/avis',
+  path: '/avis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevisRoute = DevisRouteImport.update({
+  id: '/devis',
+  path: '/devis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntreprisesRoute = EntreprisesRouteImport.update({
+  id: '/entreprises',
+  path: '/entreprises',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GarantieRoute = GarantieRouteImport.update({
+  id: '/garantie',
+  path: '/garantie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PanierRoute = PanierRouteImport.update({
   id: '/panier',
   path: '/panier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RepriseRoute = RepriseRouteImport.update({
+  id: '/reprise',
+  path: '/reprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationRoute = ReservationRouteImport.update({
@@ -73,6 +123,16 @@ const AppareilSlugRoute = AppareilSlugRouteImport.update({
   path: '/appareil/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BoutiqueIndexRoute = BoutiqueIndexRouteImport.update({
   id: '/boutique/',
   path: '/boutique/',
@@ -97,30 +157,50 @@ const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
+  '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
+  '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog/': typeof BlogIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
+  '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
+  '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog': typeof BlogIndexRoute
   '/boutique': typeof BoutiqueIndexRoute
   '/reparations': typeof ReparationsIndexRoute
 }
@@ -129,15 +209,25 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
+  '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
+  '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog/': typeof BlogIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
@@ -146,30 +236,50 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/avis'
+    | '/contact'
+    | '/devis'
+    | '/entreprises'
+    | '/faq'
+    | '/garantie'
+    | '/mentions-legales'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
     | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog/'
     | '/boutique/'
     | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/avis'
+    | '/contact'
+    | '/devis'
+    | '/entreprises'
+    | '/faq'
+    | '/garantie'
+    | '/mentions-legales'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
     | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog'
     | '/boutique'
     | '/reparations'
   id:
@@ -177,15 +287,25 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/avis'
+    | '/contact'
+    | '/devis'
+    | '/entreprises'
+    | '/faq'
+    | '/garantie'
+    | '/mentions-legales'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog/'
     | '/boutique/'
     | '/reparations/'
   fileRoutesById: FileRoutesById
@@ -194,13 +314,23 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  AvisRoute: typeof AvisRoute
+  ContactRoute: typeof ContactRoute
+  DevisRoute: typeof DevisRoute
+  EntreprisesRoute: typeof EntreprisesRoute
+  FaqRoute: typeof FaqRoute
+  GarantieRoute: typeof GarantieRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   PanierRoute: typeof PanierRoute
+  RepriseRoute: typeof RepriseRoute
   ReservationRoute: typeof ReservationRoute
   SuiviRoute: typeof SuiviRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   BoutiqueSlugRoute: typeof BoutiqueSlugRoute
   ReparationsBrandRoute: typeof ReparationsBrandRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   BoutiqueIndexRoute: typeof BoutiqueIndexRoute
   ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
@@ -228,11 +358,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/avis': {
+      id: '/avis'
+      path: '/avis'
+      fullPath: '/avis'
+      preLoaderRoute: typeof AvisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devis': {
+      id: '/devis'
+      path: '/devis'
+      fullPath: '/devis'
+      preLoaderRoute: typeof DevisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entreprises': {
+      id: '/entreprises'
+      path: '/entreprises'
+      fullPath: '/entreprises'
+      preLoaderRoute: typeof EntreprisesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/garantie': {
+      id: '/garantie'
+      path: '/garantie'
+      fullPath: '/garantie'
+      preLoaderRoute: typeof GarantieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/panier': {
       id: '/panier'
       path: '/panier'
       fullPath: '/panier'
       preLoaderRoute: typeof PanierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reprise': {
+      id: '/reprise'
+      path: '/reprise'
+      fullPath: '/reprise'
+      preLoaderRoute: typeof RepriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservation': {
@@ -275,6 +461,20 @@ declare module '@tanstack/react-router' {
       path: '/appareil/$slug'
       fullPath: '/appareil/$slug'
       preLoaderRoute: typeof AppareilSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/boutique/': {
@@ -325,13 +525,23 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  AvisRoute: AvisRoute,
+  ContactRoute: ContactRoute,
+  DevisRoute: DevisRoute,
+  EntreprisesRoute: EntreprisesRoute,
+  FaqRoute: FaqRoute,
+  GarantieRoute: GarantieRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   PanierRoute: PanierRoute,
+  RepriseRoute: RepriseRoute,
   ReservationRoute: ReservationRoute,
   SuiviRoute: SuiviRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
+  BlogSlugRoute: BlogSlugRoute,
   BoutiqueSlugRoute: BoutiqueSlugRoute,
   ReparationsBrandRoute: ReparationsBrandRoute,
+  BlogIndexRoute: BlogIndexRoute,
   BoutiqueIndexRoute: BoutiqueIndexRoute,
   ReparationsIndexRoute: ReparationsIndexRoute,
 }

@@ -20,7 +20,7 @@ export type ReservationStatus = {
 
 export const getReservationStatus = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => lookupSchema.parse(data))
-  .handler(async ({ data }): Promise<ReservationStatus> => {
+  .handler(async ({ data }): Promise<{ found: true; reservation: ReservationStatus } | { found: false }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: row, error } = await supabaseAdmin
@@ -34,9 +34,7 @@ export const getReservationStatus = createServerFn({ method: "POST" })
       throw new Error("Impossible de vérifier ce dossier. Réessayez plus tard.");
     }
 
-    if (!row) {
-      throw new Error("Dossier introuvable. Vérifiez la référence.");
-    }
+    if (!row) return { found: false };
 
-    return row as ReservationStatus;
+    return { found: true, reservation: row as ReservationStatus };
   });

@@ -21,9 +21,9 @@ import {
 } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/reservation")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    device: typeof search["device"] === "string" ? (search["device"] as string) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { device?: string } =>
+    typeof search["device"] === "string" ? { device: search["device"] as string } : {},
+
   head: () => ({
     meta: [
       { title: "Réserver une réparation — Allô Techno Abomey-Calavi" },
