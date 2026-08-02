@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AvisRouteImport } from './routes/avis'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevisRouteImport } from './routes/devis'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PanierRouteImport } from './routes/panier'
@@ -44,6 +45,11 @@ const AuthRoute = AuthRouteImport.update({
 const AvisRoute = AvisRouteImport.update({
   id: '/avis',
   path: '/avis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevisRoute = DevisRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/avis'
+    | '/contact'
     | '/devis'
     | '/faq'
     | '/panier'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/avis'
+    | '/contact'
     | '/devis'
     | '/faq'
     | '/panier'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/avis'
+    | '/contact'
     | '/devis'
     | '/faq'
     | '/panier'
@@ -231,6 +243,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   AvisRoute: typeof AvisRoute
+  ContactRoute: typeof ContactRoute
   DevisRoute: typeof DevisRoute
   FaqRoute: typeof FaqRoute
   PanierRoute: typeof PanierRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/avis'
       fullPath: '/avis'
       preLoaderRoute: typeof AvisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/devis': {
@@ -386,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   AvisRoute: AvisRoute,
+  ContactRoute: ContactRoute,
   DevisRoute: DevisRoute,
   FaqRoute: FaqRoute,
   PanierRoute: PanierRoute,
