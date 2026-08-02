@@ -18,6 +18,7 @@ import { Route as DevisRouteImport } from './routes/devis'
 import { Route as EntreprisesRouteImport } from './routes/entreprises'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GarantieRouteImport } from './routes/garantie'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as RepriseRouteImport } from './routes/reprise'
 import { Route as ReservationRouteImport } from './routes/reservation'
@@ -75,6 +76,11 @@ const FaqRoute = FaqRouteImport.update({
 const GarantieRoute = GarantieRouteImport.update({
   id: '/garantie',
   path: '/garantie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanierRoute = PanierRouteImport.update({
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByTo {
   '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/faq'
     | '/garantie'
+    | '/mentions-legales'
     | '/panier'
     | '/reprise'
     | '/reservation'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/faq'
     | '/garantie'
+    | '/mentions-legales'
     | '/panier'
     | '/reprise'
     | '/reservation'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/faq'
     | '/garantie'
+    | '/mentions-legales'
     | '/panier'
     | '/reprise'
     | '/reservation'
@@ -308,6 +320,7 @@ export interface RootRouteChildren {
   EntreprisesRoute: typeof EntreprisesRoute
   FaqRoute: typeof FaqRoute
   GarantieRoute: typeof GarantieRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   PanierRoute: typeof PanierRoute
   RepriseRoute: typeof RepriseRoute
   ReservationRoute: typeof ReservationRoute
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       path: '/garantie'
       fullPath: '/garantie'
       preLoaderRoute: typeof GarantieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panier': {
@@ -511,6 +531,7 @@ const rootRouteChildren: RootRouteChildren = {
   EntreprisesRoute: EntreprisesRoute,
   FaqRoute: FaqRoute,
   GarantieRoute: GarantieRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   PanierRoute: PanierRoute,
   RepriseRoute: RepriseRoute,
   ReservationRoute: ReservationRoute,
