@@ -1,10 +1,15 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertCircle, Check, Package, Search, Wrench } from "lucide-react";
+import { AlertCircle, Check, Package, RadioTower, Search, Wrench } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
-import { getReservationStatus, type ReservationStatus } from "@/lib/suivi.functions";
+import {
+  getReservationTracking,
+  type ReservationStatus,
+  type TimelineEntry,
+} from "@/lib/suivi.functions";
 import { formatDateFr, PERIOD_LABEL, STATUS_LABEL } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
@@ -44,25 +49,32 @@ function Suivi() {
   const { ref } = Route.useSearch();
   const router = useRouter();
   const [reference, setReference] = useState(ref ?? "");
-  const [result, setResult] = useState<ReservationStatus | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const fetchStatus = useServerFn(getReservationStatus);
+  const fetchTracking = useServerFn(getReservationTracking);
 
   useEffect(() => {
-    if (!ref) return;
-    setReference(ref);
-    setError(null);
-    setResult(null);
-    setLoading(true);
-    fetchStatus({ data: { reference: ref } })
-      .then((res) => {
-        if (res.found) setResult(res.reservation);
-        else setError("Dossier introuvable. Vérifiez la référence.");
-      })
-      .catch((err) => setError(err instanceof Error ? err.message : "Erreur inattendue"))
-      .finally(() => setLoading(false));
-  }, [ref, fetchStatus]);
+    if (ref) setReference(ref);
+  }, [ref]);
+
+  const tracking = useQuery({
+    queryKey: ["suivi", ref],
+    enabled: Boolean(ref),
+    // Le dossier est public : on rafraîchit en continu pour refléter le travail de l'atelier.
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
+    queryFn: () => fetchTracking({ data: { reference: ref as string } }),
+  });
+
+  const loading = tracking.isFetching && !tracking.data;
+  const data = tracking.data;
+  const result = data?.found ? data.reservation : null;
+  const timeline = data?.found ? data.timeline : [];
+  const error = tracking.error
+    ? tracking.error instanceof Error
+      ? tracking.error.message
+      : "Erreur inattendue"
+    : data && !data.found
+      ? "Dossier introuvable. Vérifiez la référence."
+      : null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +121,14 @@ function Suivi() {
             )}
           </form>
 
-          {result && <StatusResult result={result} />}
+          {result && (
+            <StatusResult
+              result={result}
+              timeline={timeline}
+              live={tracking.isFetching}
+              updatedAt={tracking.dataUpdatedAt}
+            />
+          )}
         </div>
       </section>
 
@@ -118,7 +137,17 @@ function Suivi() {
   );
 }
 
-function StatusResult({ result }: { result: ReservationStatus }) {
+function StatusResult({
+  result,
+  timeline,
+  live,
+  updatedAt,
+}: {
+  result: ReservationStatus;
+  timeline: TimelineEntry[];
+  live: boolean;
+  updatedAt: number;
+}) {
   const statusIndex = STEPS.findIndex((s) => s.key === result.status);
   const isCancelled = result.status === "annulee";
   const activeIndex = isCancelled ? -1 : statusIndex >= 0 ? statusIndex : 0;
@@ -136,6 +165,14 @@ function StatusResult({ result }: { result: ReservationStatus }) {
           <p className="text-sm text-muted-foreground">Rendez-vous</p>
           <p className="font-medium">
             {formatDateFr(result.slot_date)} · {PERIOD_LABEL[result.slot_period]}
+          </p>
+          <p className="mt-2 flex items-center justify-start gap-2 font-mono text-[10px] uppercase text-muted-foreground sm:justify-end">
+            <RadioTower className={`size-3 ${live ? "animate-pulse text-primary" : ""}`} />
+            Actualisé à{" "}
+            {new Date(updatedAt).toLocaleTimeString("fr-FR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
       </div>
@@ -211,11 +248,54 @@ function StatusResult({ result }: { result: ReservationStatus }) {
         </div>
       </div>
 
+      <div className="mt-8 border-t border-border pt-8">
+        <span className="at-eyebrow">Journal de l'atelier</span>
+        <TimelineFeed entries={timeline} />
+      </div>
+
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild variant="technicalOutline">
           <Link to="/reservation">Nouvelle réservation</Link>
         </Button>
       </div>
     </div>
+  );
+}
+
+function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
+  if (entries.length === 0) {
+    return (
+      <p className="mt-3 text-sm text-muted-foreground">
+        Aucun événement enregistré pour l'instant.
+      </p>
+    );
+  }
+
+  return (
+    <ol className="mt-4 space-y-4 border-l border-border pl-5">
+      {[...entries].reverse().map((e, i) => (
+        <li key={`${e.created_at}-${i}`} className="relative">
+          <span
+            className={`absolute -left-[27px] top-1 grid size-3 place-items-center rounded-full ${
+              i === 0 ? "bg-primary ring-4 ring-primary/20" : "bg-border"
+            }`}
+          />
+          <p className="text-sm font-semibold">
+            {e.old_status
+              ? `${STATUS_LABEL[e.old_status]} → ${STATUS_LABEL[e.new_status]}`
+              : `Dossier créé — ${STATUS_LABEL[e.new_status]}`}
+          </p>
+          <p className="font-mono text-[10px] uppercase text-muted-foreground">
+            {new Date(e.created_at).toLocaleString("fr-FR", {
+              day: "2-digit",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          {e.note ? <p className="mt-1 text-sm text-muted-foreground">{e.note}</p> : null}
+        </li>
+      ))}
+    </ol>
   );
 }

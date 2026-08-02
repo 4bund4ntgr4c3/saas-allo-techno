@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { History, Loader2, ShieldAlert } from "lucide-react";
+import { History, Loader2, RadioTower, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
@@ -33,6 +33,12 @@ export const Route = createFileRoute("/_authenticated/admin")({
 type Status = Enums<"reservation_status">;
 
 const STATUSES: Status[] = ["en_attente", "confirmee", "en_cours", "terminee", "annulee"];
+
+const NEXT_STATUS: Partial<Record<Status, Status>> = {
+  en_attente: "confirmee",
+  confirmee: "en_cours",
+  en_cours: "terminee",
+};
 
 const STATUS_TONE: Record<string, string> = {
   en_attente: "border-border text-muted-foreground",
@@ -78,8 +84,13 @@ function AdminPage() {
   });
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: Status }) => {
-      const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+    mutationFn: async ({ id, status, note }: { id: string; status: Status; note?: string }) => {
+      const trimmed = note?.trim();
+      const { error } = await supabase.rpc("staff_set_reservation_status", {
+        _reservation_id: id,
+        _status: status,
+        ...(trimmed ? { _note: trimmed } : {}),
+      });
       if (error) throw error;
     },
     onSuccess: (_d, vars) => {
@@ -87,8 +98,30 @@ function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
     },
-    onError: () => toast.error("Mise à jour impossible"),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
   });
+
+  // Flux temps réel : toute modification faite par un autre technicien remonte immédiatement.
+  useEffect(() => {
+    if (access.data !== true) return;
+    const channel = supabase
+      .channel("admin-reservations-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reservations" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
+      })
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reservation_status_history" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["status-history"] });
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [access.data, queryClient]);
 
   const claimAdmin = useMutation({
     mutationFn: async () => {
@@ -155,7 +188,13 @@ function AdminPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
       <header className="mb-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Espace interne</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Espace interne</p>
+          <span className="inline-flex items-center gap-2 rounded-full border border-success/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-success">
+            <RadioTower className="size-3 animate-pulse" />
+            Temps réel
+          </span>
+        </div>
         <h1 className="mt-2 text-3xl font-semibold">Administration des dossiers</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Mettez à jour le statut d'une réparation et consultez l'historique des changements.
@@ -209,30 +248,13 @@ function AdminPage() {
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <select
-                  className={`${field} max-w-xs`}
-                  value={r.status}
-                  disabled={updateStatus.isPending}
-                  onChange={(e) =>
-                    updateStatus.mutate({ id: r.id, status: e.target.value as Status })
-                  }
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {STATUS_LABEL[s]}
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setOpenId(openId === r.id ? null : r.id)}
-                >
-                  <History className="mr-2 size-4" />
-                  {openId === r.id ? "Masquer l'historique" : "Historique"}
-                </Button>
-              </div>
+              <StageControls
+                current={r.status}
+                pending={updateStatus.isPending}
+                onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
+                historyOpen={openId === r.id}
+                onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
+              />
 
               {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
             </li>
@@ -244,6 +266,85 @@ function AdminPage() {
 }
 
 function StatusHistory({ reservationId }: { reservationId: string }) {
+  return <StatusHistoryList reservationId={reservationId} />;
+}
+
+function StageControls({
+  current,
+  pending,
+  onApply,
+  historyOpen,
+  onToggleHistory,
+}: {
+  current: Status;
+  pending: boolean;
+  onApply: (status: Status, note: string) => void;
+  historyOpen: boolean;
+  onToggleHistory: () => void;
+}) {
+  const [status, setStatus] = useState<Status>(current);
+  const [note, setNote] = useState("");
+  const next = NEXT_STATUS[current];
+  const dirty = status !== current;
+
+  useEffect(() => {
+    setStatus(current);
+  }, [current]);
+
+  return (
+    <div className="mt-4 space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <select
+          className={`${field} max-w-xs`}
+          value={status}
+          disabled={pending}
+          onChange={(e) => setStatus(e.target.value as Status)}
+        >
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {STATUS_LABEL[s]}
+            </option>
+          ))}
+        </select>
+        <Button
+          size="sm"
+          disabled={pending || !dirty}
+          onClick={() => {
+            onApply(status, note);
+            setNote("");
+          }}
+        >
+          Appliquer
+        </Button>
+        {next ? (
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={pending}
+            onClick={() => {
+              onApply(next, note);
+              setNote("");
+            }}
+          >
+            Passer à « {STATUS_LABEL[next]} »
+          </Button>
+        ) : null}
+        <Button variant="outline" size="sm" onClick={onToggleHistory}>
+          <History className="mr-2 size-4" />
+          {historyOpen ? "Masquer l'historique" : "Historique"}
+        </Button>
+      </div>
+      <textarea
+        className="min-h-16 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        placeholder="Note visible par le client (ex. : pièce commandée, écran remplacé…)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
+    </div>
+  );
+}
+
+function StatusHistoryList({ reservationId }: { reservationId: string }) {
   const history = useQuery({
     queryKey: ["status-history", reservationId],
     queryFn: async () => {
