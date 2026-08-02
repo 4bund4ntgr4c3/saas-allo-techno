@@ -1,0 +1,129 @@
+import { CalendarClock, Check, Cpu, MapPin, Pencil, Smartphone, Tag, Wallet } from "lucide-react";
+import { brandName, deviceBySlug, formatFcfa } from "@/data/catalog";
+import { Button } from "@/components/ui/button";
+import { PERIOD_LABEL, formatDateFr, type ReservationInput } from "@/lib/reservation-schema";
+
+const MODE_LABEL: Record<string, string> = {
+  boutique: "Dépôt en boutique — Zogbadjè, Abomey-Calavi",
+  domicile: "Enlèvement à domicile",
+};
+
+const PAY_LABEL: Record<string, string> = {
+  mtn: "MTN Mobile Money",
+  moov: "Moov Money",
+  especes: "Espèces",
+};
+
+/** Retrouve les pannes catalogue citées dans le texte libre pour estimer le coût. */
+export function matchedFaults(deviceSlug: string, panne: string) {
+  const device = deviceBySlug(deviceSlug);
+  if (!device) return [];
+  const text = panne.toLowerCase();
+  return device.faults.filter((f) => text.includes(f.label.toLowerCase()));
+}
+
+type Props = {
+  values: ReservationInput;
+  onEdit: () => void;
+  onConfirm: () => void;
+  submitting: boolean;
+};
+
+export function ReservationSummary({ values, onEdit, onConfirm, submitting }: Props) {
+  const device = deviceBySlug(values.appareil);
+  const faults = matchedFaults(values.appareil, values.panne);
+  const total = faults.reduce((sum, f) => sum + f.price, 0);
+
+  const rows = [
+    { icon: Cpu, label: "Type d'appareil", value: device?.category ?? "Autre appareil" },
+    { icon: Tag, label: "Marque", value: device ? brandName(device.brand) : "À préciser" },
+    { icon: Smartphone, label: "Modèle", value: device?.name ?? values.appareil },
+    { icon: MapPin, label: "Mode de dépôt", value: MODE_LABEL[values.mode] ?? values.mode },
+    { icon: Wallet, label: "Paiement", value: PAY_LABEL[values.paiement] ?? values.paiement },
+    {
+      icon: CalendarClock,
+      label: "Créneau",
+      value: `${formatDateFr(values.date)} · ${PERIOD_LABEL[values.creneau]}`,
+    },
+  ];
+
+  return (
+    <div className="border border-border bg-card p-8">
+      <span className="at-eyebrow mb-3 block">Récapitulatif avant validation</span>
+      <h2 className="at-display text-2xl">Vérifiez votre rendez-vous</h2>
+      <p className="mt-3 text-sm text-muted-foreground">
+        Rien n'est encore enregistré. Contrôlez les informations puis confirmez.
+      </p>
+
+      <dl className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
+        {rows.map((r) => (
+          <div key={r.label} className="flex gap-3 bg-card p-4">
+            <r.icon className="mt-0.5 size-4 shrink-0 text-primary" strokeWidth={1.5} />
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                {r.label}
+              </dt>
+              <dd className="text-sm font-bold tracking-tight">{r.value}</dd>
+            </div>
+          </div>
+        ))}
+      </dl>
+
+      <div className="mt-6 border border-border p-4">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          Pannes déclarées
+        </p>
+        {faults.length > 0 ? (
+          <ul className="mt-3 space-y-2">
+            {faults.map((f) => (
+              <li key={f.slug} className="flex items-center justify-between gap-4 text-sm">
+                <span className="flex items-center gap-2 font-semibold">
+                  <Check className="size-3.5 text-primary" />
+                  {f.label}
+                </span>
+                <span className="font-mono text-xs text-primary">{formatFcfa(f.price)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <p className="mt-3 text-sm text-muted-foreground">{values.panne}</p>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+        <p className="font-mono text-xs uppercase text-muted-foreground">
+          Coût estimé ·{" "}
+          <span className="text-primary">
+            {total > 0 ? formatFcfa(total) : "Diagnostic gratuit — devis après examen"}
+          </span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="technical" size="sm" onClick={onEdit}>
+            <Pencil className="size-3.5" /> Modifier
+          </Button>
+          <Button
+            type="button"
+            variant="primaryBlock"
+            size="sm"
+            onClick={onConfirm}
+            disabled={submitting}
+          >
+            {submitting ? "Enregistrement…" : "Confirmer la réservation"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-3">
+        {[
+          ["Client", values.nom],
+          ["Téléphone", values.telephone],
+          ["E-mail", values.email || "—"],
+        ].map(([k, v]) => (
+          <div key={k} className="bg-card p-4">
+            <p className="font-mono text-[10px] uppercase text-muted-foreground">{k}</p>
+            <p className="text-sm font-semibold">{v}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
