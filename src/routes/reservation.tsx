@@ -144,10 +144,10 @@ function Reservation() {
       });
       reset({ ...values, panne: "", message: "", date: "", heure: "" });
       setReview(null);
-      availability.refetch();
+      availability.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Réservation impossible");
-      availability.refetch();
+      availability.refresh();
     } finally {
       setSubmitting(false);
     }
@@ -320,17 +320,21 @@ function Reservation() {
                 <div className="flex flex-wrap gap-2">
                   {HOURS_BY_PERIOD[selectedPeriod].map((h) => {
                     const on = selectedHour === h;
+                    const taken = availability.isHourTaken(selectedDate, h);
                     return (
                       <button
                         key={h}
                         type="button"
                         aria-pressed={on}
-                        disabled={!selectedDate}
+                        disabled={!selectedDate || taken}
+                        title={taken ? "Déjà réservé" : undefined}
                         onClick={() => setValue("heure", h, { shouldValidate: true })}
                         className={`border px-4 py-2 font-mono text-xs transition-colors disabled:opacity-40 ${
-                          on
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border hover:border-foreground"
+                          taken
+                            ? "border-border/50 line-through"
+                            : on
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border hover:border-foreground"
                         }`}
                       >
                         {h}
