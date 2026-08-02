@@ -26,6 +26,8 @@ import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
 import { Route as BoutiqueSlugRouteImport } from './routes/boutique.$slug'
 import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
@@ -115,6 +117,16 @@ const AppareilSlugRoute = AppareilSlugRouteImport.update({
   path: '/appareil/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BoutiqueIndexRoute = BoutiqueIndexRouteImport.update({
   id: '/boutique/',
   path: '/boutique/',
@@ -153,8 +165,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog/': typeof BlogIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
@@ -175,8 +189,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog': typeof BlogIndexRoute
   '/boutique': typeof BoutiqueIndexRoute
   '/reparations': typeof ReparationsIndexRoute
 }
@@ -199,8 +215,10 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/blog/': typeof BlogIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
@@ -223,8 +241,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog/'
     | '/boutique/'
     | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
@@ -245,8 +265,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog'
     | '/boutique'
     | '/reparations'
   id:
@@ -268,8 +290,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
     | '/appareil/$slug'
+    | '/blog/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/blog/'
     | '/boutique/'
     | '/reparations/'
   fileRoutesById: FileRoutesById
@@ -290,8 +314,10 @@ export interface RootRouteChildren {
   SuiviRoute: typeof SuiviRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   BoutiqueSlugRoute: typeof BoutiqueSlugRoute
   ReparationsBrandRoute: typeof ReparationsBrandRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   BoutiqueIndexRoute: typeof BoutiqueIndexRoute
   ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
@@ -417,6 +443,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppareilSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/boutique/': {
       id: '/boutique/'
       path: '/boutique'
@@ -477,8 +517,10 @@ const rootRouteChildren: RootRouteChildren = {
   SuiviRoute: SuiviRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
+  BlogSlugRoute: BlogSlugRoute,
   BoutiqueSlugRoute: BoutiqueSlugRoute,
   ReparationsBrandRoute: ReparationsBrandRoute,
+  BlogIndexRoute: BlogIndexRoute,
   BoutiqueIndexRoute: BoutiqueIndexRoute,
   ReparationsIndexRoute: ReparationsIndexRoute,
 }
