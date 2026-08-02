@@ -16,6 +16,7 @@ import { Route as AvisRouteImport } from './routes/avis'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevisRouteImport } from './routes/devis'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GarantieRouteImport } from './routes/garantie'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SuiviRouteImport } from './routes/suivi'
@@ -60,6 +61,11 @@ const DevisRoute = DevisRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GarantieRoute = GarantieRouteImport.update({
+  id: '/garantie',
+  path: '/garantie',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanierRoute = PanierRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
   '/faq': typeof FaqRoute
+  '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devis'
     | '/faq'
+    | '/garantie'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devis'
     | '/faq'
+    | '/garantie'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devis'
     | '/faq'
+    | '/garantie'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DevisRoute: typeof DevisRoute
   FaqRoute: typeof FaqRoute
+  GarantieRoute: typeof GarantieRoute
   PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
   SuiviRoute: typeof SuiviRoute
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/garantie': {
+      id: '/garantie'
+      path: '/garantie'
+      fullPath: '/garantie'
+      preLoaderRoute: typeof GarantieRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panier': {
@@ -409,6 +429,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DevisRoute: DevisRoute,
   FaqRoute: FaqRoute,
+  GarantieRoute: GarantieRoute,
   PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
   SuiviRoute: SuiviRoute,
