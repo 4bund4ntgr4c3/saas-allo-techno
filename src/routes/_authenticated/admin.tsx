@@ -90,6 +90,25 @@ function AdminPage() {
     onError: () => toast.error("Mise à jour impossible"),
   });
 
+  const claimAdmin = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc("claim_first_admin");
+      if (error) throw error;
+      return Boolean(data);
+    },
+    onSuccess: (granted) => {
+      if (granted) {
+        toast.success("Vous êtes maintenant administrateur");
+        queryClient.invalidateQueries({ queryKey: ["is-staff", user.id] });
+      } else {
+        toast.error("Un administrateur existe déjà : demandez-lui de vous ajouter.");
+      }
+    },
+    onError: () => toast.error("Action impossible"),
+  });
+    onError: () => toast.error("Mise à jour impossible"),
+  });
+
   if (access.isLoading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
