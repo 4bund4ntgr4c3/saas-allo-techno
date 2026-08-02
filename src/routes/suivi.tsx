@@ -1,10 +1,15 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertCircle, Check, Package, Search, Wrench } from "lucide-react";
+import { AlertCircle, Check, Package, RadioTower, Search, Wrench } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
-import { getReservationStatus, type ReservationStatus } from "@/lib/suivi.functions";
+import {
+  getReservationTracking,
+  type ReservationStatus,
+  type TimelineEntry,
+} from "@/lib/suivi.functions";
 import { formatDateFr, PERIOD_LABEL, STATUS_LABEL } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
@@ -44,25 +49,32 @@ function Suivi() {
   const { ref } = Route.useSearch();
   const router = useRouter();
   const [reference, setReference] = useState(ref ?? "");
-  const [result, setResult] = useState<ReservationStatus | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const fetchStatus = useServerFn(getReservationStatus);
+  const fetchTracking = useServerFn(getReservationTracking);
 
   useEffect(() => {
-    if (!ref) return;
-    setReference(ref);
-    setError(null);
-    setResult(null);
-    setLoading(true);
-    fetchStatus({ data: { reference: ref } })
-      .then((res) => {
-        if (res.found) setResult(res.reservation);
-        else setError("Dossier introuvable. Vérifiez la référence.");
-      })
-      .catch((err) => setError(err instanceof Error ? err.message : "Erreur inattendue"))
-      .finally(() => setLoading(false));
-  }, [ref, fetchStatus]);
+    if (ref) setReference(ref);
+  }, [ref]);
+
+  const tracking = useQuery({
+    queryKey: ["suivi", ref],
+    enabled: Boolean(ref),
+    // Le dossier est public : on rafraîchit en continu pour refléter le travail de l'atelier.
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
+    queryFn: () => fetchTracking({ data: { reference: ref as string } }),
+  });
+
+  const loading = tracking.isFetching && !tracking.data;
+  const data = tracking.data;
+  const result = data?.found ? data.reservation : null;
+  const timeline = data?.found ? data.timeline : [];
+  const error = tracking.error
+    ? tracking.error instanceof Error
+      ? tracking.error.message
+      : "Erreur inattendue"
+    : data && !data.found
+      ? "Dossier introuvable. Vérifiez la référence."
+      : null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +121,14 @@ function Suivi() {
             )}
           </form>
 
-          {result && <StatusResult result={result} />}
+          {result && (
+            <StatusResult
+              result={result}
+              timeline={timeline}
+              live={tracking.isFetching}
+              updatedAt={tracking.dataUpdatedAt}
+            />
+          )}
         </div>
       </section>
 
