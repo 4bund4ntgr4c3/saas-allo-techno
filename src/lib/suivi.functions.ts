@@ -1,42 +1,42 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { Enums } from "@/integrations/supabase/types";
 
 const lookupSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise"),
 });
 
-type ReservationStatusRow = {
+export type ReservationStatus = {
   reference: string;
   device: string;
   issue: string;
   mode: string;
   payment: string;
   slot_date: string;
-  slot_period: "matin" | "apres-midi";
-  status: "en_attente" | "confirmee" | "en_cours" | "terminee" | "annulee";
+  slot_period: Enums<"slot_period">;
+  status: Enums<"reservation_status">;
   created_at: string;
 };
 
 export const getReservationStatus = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => lookupSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<ReservationStatus> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: rows, error } = await supabaseAdmin.rpc<ReservationStatusRow[]>(
-      "get_reservation_status",
-      {
-        _reference: data.reference,
-      },
-    );
+    const { data: row, error } = await supabaseAdmin
+      .from("reservations")
+      .select("reference, device, issue, mode, payment, slot_date, slot_period, status, created_at")
+      .eq("reference", data.reference)
+      .maybeSingle();
 
     if (error) {
-      console.error("[suivi] rpc failed", error);
+      console.error("[suivi] lookup failed", error);
       throw new Error("Impossible de vérifier ce dossier. Réessayez plus tard.");
     }
 
-    if (!rows || rows.length === 0) {
+    if (!row) {
       throw new Error("Dossier introuvable. Vérifiez la référence.");
     }
 
-    return rows[0];
+    return row as ReservationStatus;
   });

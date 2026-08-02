@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AlertCircle, Check, Package, Search, Wrench } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
-import { getReservationStatus } from "@/lib/suivi.functions";
+import { getReservationStatus, type ReservationStatus } from "@/lib/suivi.functions";
 import { formatDateFr, PERIOD_LABEL, STATUS_LABEL } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
@@ -44,7 +44,7 @@ function Suivi() {
   const { ref } = Route.useSearch();
   const router = useRouter();
   const [reference, setReference] = useState(ref ?? "");
-  const [result, setResult] = useState<Awaited<ReturnType<typeof getReservationStatus>> | null>(null);
+  const [result, setResult] = useState<ReservationStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fetchStatus = useServerFn(getReservationStatus);
@@ -115,11 +115,7 @@ function Suivi() {
   );
 }
 
-function StatusResult({
-  result,
-}: {
-  result: NonNullable<Awaited<ReturnType<typeof getReservationStatus>>>;
-}) {
+function StatusResult({ result }: { result: ReservationStatus }) {
   const statusIndex = STEPS.findIndex((s) => s.key === result.status);
   const isCancelled = result.status === "annulee";
   const activeIndex = isCancelled ? -1 : statusIndex >= 0 ? statusIndex : 0;
