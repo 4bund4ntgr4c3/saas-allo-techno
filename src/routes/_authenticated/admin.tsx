@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { History, Loader2, ShieldAlert } from "lucide-react";
+import { History, Loader2, RadioTower, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
@@ -33,6 +33,12 @@ export const Route = createFileRoute("/_authenticated/admin")({
 type Status = Enums<"reservation_status">;
 
 const STATUSES: Status[] = ["en_attente", "confirmee", "en_cours", "terminee", "annulee"];
+
+const NEXT_STATUS: Partial<Record<Status, Status>> = {
+  en_attente: "confirmee",
+  confirmee: "en_cours",
+  en_cours: "terminee",
+};
 
 const STATUS_TONE: Record<string, string> = {
   en_attente: "border-border text-muted-foreground",
@@ -78,8 +84,12 @@ function AdminPage() {
   });
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: Status }) => {
-      const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+    mutationFn: async ({ id, status, note }: { id: string; status: Status; note?: string }) => {
+      const { error } = await supabase.rpc("staff_set_reservation_status", {
+        _reservation_id: id,
+        _status: status,
+        _note: note?.trim() ? note.trim() : undefined,
+      });
       if (error) throw error;
     },
     onSuccess: (_d, vars) => {
@@ -87,8 +97,30 @@ function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
     },
-    onError: () => toast.error("Mise à jour impossible"),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
   });
+
+  // Flux temps réel : toute modification faite par un autre technicien remonte immédiatement.
+  useEffect(() => {
+    if (access.data !== true) return;
+    const channel = supabase
+      .channel("admin-reservations-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reservations" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
+      })
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reservation_status_history" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["status-history"] });
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [access.data, queryClient]);
 
   const claimAdmin = useMutation({
     mutationFn: async () => {
