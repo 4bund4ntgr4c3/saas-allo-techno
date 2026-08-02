@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { createReservation } from "@/lib/reservations.functions";
+import { ReservationSummary } from "@/components/site/ReservationSummary";
 import {
   PERIOD_LABEL,
   reservationInputSchema,
@@ -55,6 +56,7 @@ function Reservation() {
   const { user } = useSession();
   const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
+  const [review, setReview] = useState<ReservationInput | null>(null);
 
   const range = useMemo(() => {
     const from = new Date();
@@ -130,7 +132,16 @@ function Reservation() {
     }
   }, [selectedDate, daySlots, setValue, watch]);
 
-  const onSubmit = async (values: ReservationInput) => {
+  const onSubmit = (values: ReservationInput) => {
+    setReview(values);
+    setRef(null);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const confirmReservation = async () => {
+    const values = review;
+    if (!values) return;
+    setSubmitting(true);
     try {
       const row = await submit({ data: values });
       setRef(row.reference);
@@ -138,10 +149,13 @@ function Reservation() {
         description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
       });
       reset({ ...values, panne: "", message: "", date: "" });
+      setReview(null);
       availability.refetch();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Réservation impossible");
       availability.refetch();
+    } finally {
+      setSubmitting(false);
     }
   };
 
