@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AvisRouteImport } from './routes/avis'
 import { Route as DevisRouteImport } from './routes/devis'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SuiviRouteImport } from './routes/suivi'
@@ -48,6 +49,11 @@ const AvisRoute = AvisRouteImport.update({
 const DevisRoute = DevisRouteImport.update({
   id: '/devis',
   path: '/devis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanierRoute = PanierRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/avis': typeof AvisRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/avis'
     | '/devis'
+    | '/faq'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/avis'
     | '/devis'
+    | '/faq'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/avis'
     | '/devis'
+    | '/faq'
     | '/panier'
     | '/reservation'
     | '/suivi'
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   AvisRoute: typeof AvisRoute
   DevisRoute: typeof DevisRoute
+  FaqRoute: typeof FaqRoute
   PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
   SuiviRoute: typeof SuiviRoute
@@ -266,6 +279,13 @@ declare module '@tanstack/react-router' {
       path: '/devis'
       fullPath: '/devis'
       preLoaderRoute: typeof DevisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panier': {
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   AvisRoute: AvisRoute,
   DevisRoute: DevisRoute,
+  FaqRoute: FaqRoute,
   PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
   SuiviRoute: SuiviRoute,
