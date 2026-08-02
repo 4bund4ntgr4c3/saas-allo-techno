@@ -18,7 +18,27 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: `/blog/${params.slug}` },
         { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.excerpt,
+            datePublished: post.date,
+            inLanguage: "fr-BJ",
+            articleSection: post.category,
+            author: { "@type": "Organization", name: "Allô Techno" },
+            publisher: { "@type": "Organization", name: "Allô Techno" },
+            about: { "@type": "Place", name: "Abomey-Calavi, Bénin" },
+            mainEntityOfPage: `/blog/${params.slug}`,
+          }),
+        },
       ],
     };
   },
