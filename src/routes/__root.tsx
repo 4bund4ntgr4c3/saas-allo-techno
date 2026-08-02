@@ -15,6 +15,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { COMPANY } from "@/data/catalog";
+import { CartProvider } from "@/components/shop/cart";
 
 function NotFoundComponent() {
   return (
@@ -149,13 +150,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Header />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
-      <Toaster />
+      <CartProvider>
+        <Header />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+        <Toaster />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

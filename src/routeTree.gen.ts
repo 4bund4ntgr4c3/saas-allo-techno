@@ -10,15 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
+import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
+import { Route as BoutiqueSlugRouteImport } from './routes/boutique.$slug'
 import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
 import { Route as ReparationsBrandRouteImport } from './routes/reparations.$brand'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationRoute = ReservationRouteImport.update({
@@ -36,6 +44,16 @@ const AppareilSlugRoute = AppareilSlugRouteImport.update({
   path: '/appareil/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BoutiqueIndexRoute = BoutiqueIndexRouteImport.update({
+  id: '/boutique/',
+  path: '/boutique/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BoutiqueSlugRoute = BoutiqueSlugRouteImport.update({
+  id: '/boutique/$slug',
+  path: '/boutique/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReparationsIndexRoute = ReparationsIndexRouteImport.update({
   id: '/reparations/',
   path: '/reparations/',
@@ -49,62 +67,83 @@ const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/boutique': typeof BoutiqueIndexRoute
   '/reparations': typeof ReparationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
+  '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
+  '/boutique/': typeof BoutiqueIndexRoute
   '/reparations/': typeof ReparationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
+    | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/boutique/'
     | '/reparations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
+    | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/boutique'
     | '/reparations'
   id:
     | '__root__'
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
+    | '/boutique/$slug'
     | '/reparations/$brand'
+    | '/boutique/'
     | '/reparations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
+  BoutiqueSlugRoute: typeof BoutiqueSlugRoute
   ReparationsBrandRoute: typeof ReparationsBrandRoute
+  BoutiqueIndexRoute: typeof BoutiqueIndexRoute
   ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
 
@@ -115,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservation': {
@@ -138,6 +184,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppareilSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/boutique/': {
+      id: '/boutique/'
+      path: '/boutique'
+      fullPath: '/boutique/'
+      preLoaderRoute: typeof BoutiqueIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/boutique/$slug': {
+      id: '/boutique/$slug'
+      path: '/boutique/$slug'
+      fullPath: '/boutique/$slug'
+      preLoaderRoute: typeof BoutiqueSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reparations/': {
       id: '/reparations/'
       path: '/reparations'
@@ -157,10 +217,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
+  BoutiqueSlugRoute: BoutiqueSlugRoute,
   ReparationsBrandRoute: ReparationsBrandRoute,
+  BoutiqueIndexRoute: BoutiqueIndexRoute,
   ReparationsIndexRoute: ReparationsIndexRoute,
 }
 export const routeTree = rootRouteImport

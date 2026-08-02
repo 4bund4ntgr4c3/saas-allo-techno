@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Moon, Sun } from "lucide-react";
+import { Menu, Moon, ShoppingBag, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { COMPANY } from "@/data/catalog";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/components/shop/cart";
 
 const NAV = [
   { to: "/reparations", label: "Réparations" },
@@ -42,6 +43,24 @@ function ThemeToggle() {
   );
 }
 
+function CartButton() {
+  const { count } = useCart();
+  return (
+    <Link
+      to="/panier"
+      aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+      className="relative grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+    >
+      <ShoppingBag className="size-4" />
+      {count > 0 && (
+        <span className="absolute -right-1.5 -top-1.5 grid min-w-5 place-items-center rounded-full bg-primary px-1 font-mono text-[10px] font-bold text-primary-foreground">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
@@ -71,6 +90,7 @@ export function Header() {
               {COMPANY.phone}
             </a>
           </div>
+          <CartButton />
           <ThemeToggle />
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
             <Link to="/reservation">Réserver</Link>
@@ -87,7 +107,7 @@ export function Header() {
             <SheetContent side="right" className="w-72">
               <SheetTitle className="at-display text-lg">Menu</SheetTitle>
               <nav className="mt-6 flex flex-col gap-1">
-                {[...NAV, { to: "/reservation", label: "Réserver" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
+                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
                   <Link
                     key={i.to}
                     to={i.to}
