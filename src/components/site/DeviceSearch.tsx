@@ -294,6 +294,8 @@ export function DeviceSearch() {
             <label htmlFor="at-desc" className="at-eyebrow mt-6 mb-2 block">
               Description de la panne
             </label>
+              Description de la panne
+            </label>
             <textarea
               id="at-desc"
               rows={3}
