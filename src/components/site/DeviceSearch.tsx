@@ -11,6 +11,7 @@ import {
 } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
 import { Button } from "@/components/ui/button";
+import { computeEstimate } from "@/lib/estimate";
 
 const STEPS = ["Type", "Marque", "Modèle", "Panne"] as const;
 
@@ -47,13 +48,13 @@ export function DeviceSearch() {
     ).slice(0, 5);
   }, [query]);
 
-  const total = useMemo(
-    () =>
-      (device?.faults ?? [])
-        .filter((f) => faults.includes(f.slug))
-        .reduce((sum, f) => sum + f.price, 0),
+  const selectedFaults = useMemo(
+    () => (device?.faults ?? []).filter((f) => faults.includes(f.slug)),
     [device, faults],
   );
+
+  const estimate = useMemo(() => computeEstimate(selectedFaults), [selectedFaults]);
+  const total = estimate.total;
 
   const toggleFault = (slug: string) =>
     setFaults((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
