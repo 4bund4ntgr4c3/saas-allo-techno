@@ -8,9 +8,9 @@ import { getReservationStatus, type ReservationStatus } from "@/lib/suivi.functi
 import { formatDateFr, PERIOD_LABEL, STATUS_LABEL } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    ref: typeof search["ref"] === "string" ? (search["ref"] as string) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { ref?: string } =>
+    typeof search["ref"] === "string" ? { ref: search["ref"] as string } : {},
+
   head: () => ({
     meta: [
       { title: "Suivi de réparation — Allô Techno Abomey-Calavi" },
