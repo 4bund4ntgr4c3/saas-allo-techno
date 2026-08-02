@@ -1,8 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, CalendarClock, Check, ChevronLeft, Clock, Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useMemo, useState } from "react";
+import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
   CATEGORIES,
@@ -14,12 +13,7 @@ import {
 import { categoryMedia } from "@/data/device-media";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
-import {
-  HOURS_BY_PERIOD,
-  periodOfHour,
-  toIsoDate,
-  type AvailabilityRow,
-} from "@/lib/reservation-schema";
+import { HOURS_BY_PERIOD, periodOfHour } from "@/lib/reservation-schema";
 
 const STEPS = ["Type", "Marque", "Modèle", "Panne", "Créneau"] as const;
 const DAYS_AHEAD = 21;
@@ -40,42 +34,19 @@ export function DeviceSearch() {
   const [date, setDate] = useState<string | null>(null);
   const [hour, setHour] = useState<string | null>(null);
 
-  const range = useMemo(() => {
-    const from = new Date();
-    const to = new Date();
-    to.setDate(to.getDate() + DAYS_AHEAD);
-    return { from: toIsoDate(from), to: toIsoDate(to) };
-  }, []);
-
-  const availability = useQuery({
-    queryKey: ["availability", range.from, range.to],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("slot_availability", {
-        _from: range.from,
-        _to: range.to,
-      });
-      if (error) throw error;
-      return (data ?? []) as AvailabilityRow[];
-    },
-    staleTime: 30_000,
-  });
-
-  /** Dates ouvertes → périodes encore disponibles. */
-  const openDates = useMemo(() => {
-    const map = new Map<string, AvailabilityRow[]>();
-    for (const row of availability.data ?? []) {
-      if (row.remaining <= 0) continue;
-      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
-    }
-    return map;
-  }, [availability.data]);
+  const availability = useSlotAvailability(DAYS_AHEAD);
+  const { openDates } = availability;
 
   const dateKeys = useMemo(() => [...openDates.keys()].sort(), [openDates]);
-  const daySlots = date ? (openDates.get(date) ?? []) : [];
   const availableHours = useMemo(
-    () => daySlots.flatMap((s) => HOURS_BY_PERIOD[s.period]),
-    [daySlots],
+    () => (date ? (openDates.get(date) ?? []).flatMap((s) => HOURS_BY_PERIOD[s.period]) : []),
+    [openDates, date],
   );
+
+  // Temps réel : libère l'heure sélectionnée si elle est prise entre-temps.
+  useEffect(() => {
+    if (date && hour && availability.isHourTaken(date, hour)) setHour(null);
+  }, [date, hour, availability]);
 
   const brandsOfCategory = useMemo(() => {
     if (!category) return [];
@@ -482,16 +453,21 @@ export function DeviceSearch() {
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {availableHours.map((h) => {
                   const on = hour === h;
+                  const taken = availability.isHourTaken(date, h);
                   return (
                     <button
                       key={h}
                       type="button"
                       aria-pressed={on}
+                      disabled={taken}
+                      title={taken ? "Déjà réservé" : undefined}
                       onClick={() => setHour(h)}
-                      className={`border px-3 py-2 font-mono text-xs transition-colors ${
-                        on
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border hover:border-foreground"
+                      className={`border px-3 py-2 font-mono text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                        taken
+                          ? "border-border/50 line-through"
+                          : on
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border hover:border-foreground"
                       }`}
                     >
                       {h}

@@ -37,6 +37,7 @@ export const createReservation = createServerFn({ method: "POST" })
         payment: data.paiement,
         slot_date: data.date,
         slot_period: data.creneau,
+        slot_hour: data.heure ? data.heure : null,
         message: message ? message : null,
       })
       .select("id, reference, slot_date, slot_period, status")
@@ -44,6 +45,12 @@ export const createReservation = createServerFn({ method: "POST" })
 
     if (error) {
       console.error("[reservations] insert failed", error);
+      // 23505 = violation de l'index unique (date, heure) : quelqu'un a réservé avant nous.
+      if (error.code === "23505") {
+        throw new Error(
+          "Ce créneau vient d'être réservé par un autre client. Choisissez une autre heure.",
+        );
+      }
       const message = error.message.includes("complet")
         ? "Ce créneau vient d'être complété. Choisissez-en un autre."
         : error.message.includes("indisponible")

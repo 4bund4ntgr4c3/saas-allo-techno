@@ -93,6 +93,7 @@ export type Database = {
           phone: string
           reference: string
           slot_date: string
+          slot_hour: string | null
           slot_period: Database["public"]["Enums"]["slot_period"]
           staff_notes: string | null
           status: Database["public"]["Enums"]["reservation_status"]
@@ -112,6 +113,7 @@ export type Database = {
           phone: string
           reference?: string
           slot_date: string
+          slot_hour?: string | null
           slot_period: Database["public"]["Enums"]["slot_period"]
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["reservation_status"]
@@ -131,6 +133,7 @@ export type Database = {
           phone?: string
           reference?: string
           slot_date?: string
+          slot_hour?: string | null
           slot_period?: Database["public"]["Enums"]["slot_period"]
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["reservation_status"]
@@ -183,6 +186,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      booked_hours: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          slot_date: string
+          slot_hour: string
+        }[]
+      }
       claim_first_admin: { Args: never; Returns: boolean }
       get_reservation_status: {
         Args: { _reference: string }

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, ProcessSteps, SectionHeader } from "@/components/site/Blocks";
 import { BRANDS, CATEGORIES, DEVICES, formatFcfa } from "@/data/catalog";
@@ -12,12 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { createReservation } from "@/lib/reservations.functions";
 import { ReservationSummary } from "@/components/site/ReservationSummary";
+import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   HOURS_BY_PERIOD,
   PERIOD_LABEL,
   reservationInputSchema,
-  toIsoDate,
-  type AvailabilityRow,
   type ReservationInput,
   type SlotPeriod,
 } from "@/lib/reservation-schema";
@@ -71,34 +69,8 @@ function Reservation() {
   const [review, setReview] = useState<ReservationInput | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const range = useMemo(() => {
-    const from = new Date();
-    const to = new Date();
-    to.setDate(to.getDate() + DAYS_AHEAD);
-    return { from: toIsoDate(from), to: toIsoDate(to) };
-  }, []);
-
-  const availability = useQuery({
-    queryKey: ["availability", range.from, range.to],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("slot_availability", {
-        _from: range.from,
-        _to: range.to,
-      });
-      if (error) throw error;
-      return (data ?? []) as AvailabilityRow[];
-    },
-    staleTime: 30_000,
-  });
-
-  const openDates = useMemo(() => {
-    const map = new Map<string, AvailabilityRow[]>();
-    for (const row of availability.data ?? []) {
-      if (row.remaining <= 0) continue;
-      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
-    }
-    return map;
-  }, [availability.data]);
+  const availability = useSlotAvailability(DAYS_AHEAD);
+  const { openDates } = availability;
 
   const {
     register,
@@ -154,7 +126,22 @@ function Reservation() {
     if (selectedHour && !hours.includes(selectedHour)) setValue("heure", "");
   }, [selectedPeriod, selectedHour, setValue]);
 
+  // Temps réel : si l'heure choisie est réservée entre-temps, on la libère.
+  useEffect(() => {
+    if (!selectedHour || !selectedDate) return;
+    if (availability.isHourTaken(selectedDate, selectedHour)) {
+      setValue("heure", "");
+      toast.warning("Ce créneau vient d'être réservé. Choisissez une autre heure.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedHour, availability.takenHours]);
+
   const onSubmit = (values: ReservationInput) => {
+    if (values.heure && availability.isHourTaken(values.date, values.heure)) {
+      toast.error("Ce créneau vient d'être réservé. Choisissez une autre heure.");
+      setValue("heure", "");
+      return;
+    }
     setReview(values);
     setRef(null);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -172,10 +159,10 @@ function Reservation() {
       });
       reset({ ...values, panne: "", message: "", date: "", heure: "" });
       setReview(null);
-      availability.refetch();
+      availability.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Réservation impossible");
-      availability.refetch();
+      availability.refresh();
     } finally {
       setSubmitting(false);
     }
@@ -348,17 +335,21 @@ function Reservation() {
                 <div className="flex flex-wrap gap-2">
                   {HOURS_BY_PERIOD[selectedPeriod].map((h) => {
                     const on = selectedHour === h;
+                    const taken = availability.isHourTaken(selectedDate, h);
                     return (
                       <button
                         key={h}
                         type="button"
                         aria-pressed={on}
-                        disabled={!selectedDate}
+                        disabled={!selectedDate || taken}
+                        title={taken ? "Déjà réservé" : undefined}
                         onClick={() => setValue("heure", h, { shouldValidate: true })}
                         className={`border px-4 py-2 font-mono text-xs transition-colors disabled:opacity-40 ${
-                          on
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border hover:border-foreground"
+                          taken
+                            ? "border-border/50 line-through"
+                            : on
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border hover:border-foreground"
                         }`}
                       >
                         {h}
