@@ -43,7 +43,7 @@ export function ReservationSummary({ values, onEdit, onConfirm, submitting }: Pr
     {
       icon: CalendarClock,
       label: "Créneau",
-      value: `${formatDateFr(values.date)} · ${PERIOD_LABEL[values.creneau]}`,
+      value: `${formatDateFr(values.date)} · ${values.heure ? `${values.heure}` : PERIOD_LABEL[values.creneau]}`,
     },
   ];
 
