@@ -188,7 +188,13 @@ function AdminPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
       <header className="mb-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Espace interne</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Espace interne</p>
+          <span className="inline-flex items-center gap-2 rounded-full border border-success/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-success">
+            <RadioTower className="size-3 animate-pulse" />
+            Temps réel
+          </span>
+        </div>
         <h1 className="mt-2 text-3xl font-semibold">Administration des dossiers</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Mettez à jour le statut d'une réparation et consultez l'historique des changements.
