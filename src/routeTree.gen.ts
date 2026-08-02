@@ -22,6 +22,7 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as RepriseRouteImport } from './routes/reprise'
 import { Route as ReservationRouteImport } from './routes/reservation'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -98,6 +99,11 @@ const ReservationRoute = ReservationRouteImport.update({
   path: '/reservation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuiviRoute = SuiviRouteImport.update({
   id: '/suivi',
   path: '/suivi',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/panier': typeof PanierRoute
   '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/panier'
     | '/reprise'
     | '/reservation'
+    | '/sitemap.xml'
     | '/suivi'
     | '/tarifs'
     | '/admin'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/panier'
     | '/reprise'
     | '/reservation'
+    | '/sitemap.xml'
     | '/suivi'
     | '/tarifs'
     | '/admin'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/panier'
     | '/reprise'
     | '/reservation'
+    | '/sitemap.xml'
     | '/suivi'
     | '/tarifs'
     | '/_authenticated/admin'
@@ -324,6 +336,7 @@ export interface RootRouteChildren {
   PanierRoute: typeof PanierRoute
   RepriseRoute: typeof RepriseRoute
   ReservationRoute: typeof ReservationRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuiviRoute: typeof SuiviRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
@@ -426,6 +439,13 @@ declare module '@tanstack/react-router' {
       path: '/reservation'
       fullPath: '/reservation'
       preLoaderRoute: typeof ReservationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/suivi': {
@@ -535,6 +555,7 @@ const rootRouteChildren: RootRouteChildren = {
   PanierRoute: PanierRoute,
   RepriseRoute: RepriseRoute,
   ReservationRoute: ReservationRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuiviRoute: SuiviRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
@@ -548,13 +569,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
