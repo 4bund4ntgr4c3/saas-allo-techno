@@ -106,9 +106,20 @@ function AdminPage() {
         <p className="text-sm text-muted-foreground">
           Votre compte n'a pas les droits d'administration sur les dossiers de réparation.
         </p>
-        <Button asChild variant="outline">
-          <Link to="/mon-compte">Retour à mon compte</Link>
-        </Button>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button
+            disabled={claimAdmin.isPending}
+            onClick={() => claimAdmin.mutate()}
+          >
+            Devenir administrateur
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/mon-compte">Retour à mon compte</Link>
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Cette action n'est possible que tant qu'aucun administrateur n'existe.
+        </p>
       </div>
     );
   }
