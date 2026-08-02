@@ -5,6 +5,7 @@ import { COMPANY } from "@/data/catalog";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/shop/cart";
+import { useSession } from "@/hooks/useSession";
 
 const NAV = [
   { to: "/reparations", label: "Réparations" },
