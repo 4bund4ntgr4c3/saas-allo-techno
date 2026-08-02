@@ -411,11 +411,118 @@ export function DeviceSearch() {
                   variant="primaryBlock"
                   size="sm"
                   disabled={faults.length === 0 && description.trim().length === 0}
-                  onClick={reserve}
+                  onClick={() => setStep(4)}
                 >
-                  Réserver <ArrowRight className="size-3.5" />
+                  Choisir un créneau <ArrowRight className="size-3.5" />
                 </Button>
               </div>
+            </div>
+          </>
+        )}
+
+        {/* 05 — Date & heure du rendez-vous */}
+        {step === 4 && device && (
+          <>
+            <span className="at-eyebrow mb-3 block">05. Date & heure du rendez-vous</span>
+            <p className="mb-4 text-xs text-muted-foreground">
+              Choisissez un jour puis une heure. Seuls les créneaux réellement disponibles sont
+              affichés.
+            </p>
+
+            <div className="mb-2 flex items-center gap-2">
+              <CalendarClock className="size-4 text-primary" strokeWidth={1.5} />
+              <span className="font-mono text-[10px] uppercase tracking-wider">Jour</span>
+            </div>
+            {availability.isLoading ? (
+              <p className="text-xs text-muted-foreground">Chargement des disponibilités…</p>
+            ) : dateKeys.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Aucun créneau libre sur les 3 prochaines semaines — appelez-nous directement.
+              </p>
+            ) : (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {dateKeys.map((d) => {
+                  const on = date === d;
+                  const dt = new Date(`${d}T12:00:00`);
+                  return (
+                    <button
+                      key={d}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => {
+                        setDate(d);
+                        setHour(null);
+                      }}
+                      className={`min-w-[86px] shrink-0 border p-3 text-center transition-colors ${
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      <span className="block font-mono text-[10px] uppercase">
+                        {dt.toLocaleDateString("fr-FR", { weekday: "short" })}
+                      </span>
+                      <span className="block text-lg font-bold leading-tight">{dt.getDate()}</span>
+                      <span className="block font-mono text-[10px] uppercase">
+                        {dt.toLocaleDateString("fr-FR", { month: "short" })}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-6 mb-2 flex items-center gap-2">
+              <Clock className="size-4 text-primary" strokeWidth={1.5} />
+              <span className="font-mono text-[10px] uppercase tracking-wider">Heure</span>
+            </div>
+            {!date ? (
+              <p className="text-xs text-muted-foreground">Sélectionnez d'abord un jour.</p>
+            ) : (
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {availableHours.map((h) => {
+                  const on = hour === h;
+                  return (
+                    <button
+                      key={h}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setHour(h)}
+                      className={`border px-3 py-2 font-mono text-xs transition-colors ${
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      {h}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+              <p className="font-mono text-xs uppercase text-muted-foreground">
+                {date && hour
+                  ? `${new Date(`${date}T12:00:00`).toLocaleDateString("fr-FR", {
+                      weekday: "long",
+                      day: "2-digit",
+                      month: "long",
+                    })} · ${hour}`
+                  : "Aucun créneau sélectionné"}{" "}
+                ·{" "}
+                <span className="text-primary">
+                  {total > 0 ? `Estimation ${formatFcfa(total)}` : "Diagnostic gratuit"}
+                </span>
+              </p>
+              <Button
+                variant="primaryBlock"
+                size="sm"
+                disabled={!date || !hour}
+                onClick={reserve}
+              >
+                Réserver ce créneau <ArrowRight className="size-3.5" />
+              </Button>
             </div>
           </>
         )}
