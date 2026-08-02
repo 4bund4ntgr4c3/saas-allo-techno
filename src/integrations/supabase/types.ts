@@ -198,6 +198,15 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
         }[]
       }
+      get_reservation_timeline: {
+        Args: { _reference: string }
+        Returns: {
+          created_at: string
+          new_status: Database["public"]["Enums"]["reservation_status"]
+          note: string
+          old_status: Database["public"]["Enums"]["reservation_status"]
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -215,6 +224,14 @@ export type Database = {
           remaining: number
           slot_date: string
         }[]
+      }
+      staff_set_reservation_status: {
+        Args: {
+          _note?: string
+          _reservation_id: string
+          _status: Database["public"]["Enums"]["reservation_status"]
+        }
+        Returns: boolean
       }
     }
     Enums: {
