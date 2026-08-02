@@ -15,9 +15,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AvisRouteImport } from './routes/avis'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevisRouteImport } from './routes/devis'
+import { Route as EntreprisesRouteImport } from './routes/entreprises'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GarantieRouteImport } from './routes/garantie'
 import { Route as PanierRouteImport } from './routes/panier'
+import { Route as RepriseRouteImport } from './routes/reprise'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as TarifsRouteImport } from './routes/tarifs'
@@ -58,6 +60,11 @@ const DevisRoute = DevisRouteImport.update({
   path: '/devis',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EntreprisesRoute = EntreprisesRouteImport.update({
+  id: '/entreprises',
+  path: '/entreprises',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -71,6 +78,11 @@ const GarantieRoute = GarantieRouteImport.update({
 const PanierRoute = PanierRouteImport.update({
   id: '/panier',
   path: '/panier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RepriseRoute = RepriseRouteImport.update({
+  id: '/reprise',
+  path: '/reprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationRoute = ReservationRouteImport.update({
@@ -130,9 +142,11 @@ export interface FileRoutesByFullPath {
   '/avis': typeof AvisRoute
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
@@ -150,9 +164,11 @@ export interface FileRoutesByTo {
   '/avis': typeof AvisRoute
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
@@ -172,9 +188,11 @@ export interface FileRoutesById {
   '/avis': typeof AvisRoute
   '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/entreprises': typeof EntreprisesRoute
   '/faq': typeof FaqRoute
   '/garantie': typeof GarantieRoute
   '/panier': typeof PanierRoute
+  '/reprise': typeof RepriseRoute
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
@@ -194,9 +212,11 @@ export interface FileRouteTypes {
     | '/avis'
     | '/contact'
     | '/devis'
+    | '/entreprises'
     | '/faq'
     | '/garantie'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
@@ -214,9 +234,11 @@ export interface FileRouteTypes {
     | '/avis'
     | '/contact'
     | '/devis'
+    | '/entreprises'
     | '/faq'
     | '/garantie'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
@@ -235,9 +257,11 @@ export interface FileRouteTypes {
     | '/avis'
     | '/contact'
     | '/devis'
+    | '/entreprises'
     | '/faq'
     | '/garantie'
     | '/panier'
+    | '/reprise'
     | '/reservation'
     | '/suivi'
     | '/tarifs'
@@ -257,9 +281,11 @@ export interface RootRouteChildren {
   AvisRoute: typeof AvisRoute
   ContactRoute: typeof ContactRoute
   DevisRoute: typeof DevisRoute
+  EntreprisesRoute: typeof EntreprisesRoute
   FaqRoute: typeof FaqRoute
   GarantieRoute: typeof GarantieRoute
   PanierRoute: typeof PanierRoute
+  RepriseRoute: typeof RepriseRoute
   ReservationRoute: typeof ReservationRoute
   SuiviRoute: typeof SuiviRoute
   TarifsRoute: typeof TarifsRoute
@@ -314,6 +340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevisRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/entreprises': {
+      id: '/entreprises'
+      path: '/entreprises'
+      fullPath: '/entreprises'
+      preLoaderRoute: typeof EntreprisesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -333,6 +366,13 @@ declare module '@tanstack/react-router' {
       path: '/panier'
       fullPath: '/panier'
       preLoaderRoute: typeof PanierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reprise': {
+      id: '/reprise'
+      path: '/reprise'
+      fullPath: '/reprise'
+      preLoaderRoute: typeof RepriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservation': {
@@ -428,9 +468,11 @@ const rootRouteChildren: RootRouteChildren = {
   AvisRoute: AvisRoute,
   ContactRoute: ContactRoute,
   DevisRoute: DevisRoute,
+  EntreprisesRoute: EntreprisesRoute,
   FaqRoute: FaqRoute,
   GarantieRoute: GarantieRoute,
   PanierRoute: PanierRoute,
+  RepriseRoute: RepriseRoute,
   ReservationRoute: ReservationRoute,
   SuiviRoute: SuiviRoute,
   TarifsRoute: TarifsRoute,
