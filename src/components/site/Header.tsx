@@ -112,7 +112,7 @@ export function Header() {
             <SheetContent side="right" className="w-72">
               <SheetTitle className="at-display text-lg">Menu</SheetTitle>
               <nav className="mt-6 flex flex-col gap-1">
-                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
+                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: user ? "/mon-compte" : "/auth", label: user ? "Mon compte" : "Connexion" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
                   <Link
                     key={i.to}
                     to={i.to}
