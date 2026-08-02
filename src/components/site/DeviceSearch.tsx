@@ -166,20 +166,10 @@ export function DeviceSearch() {
                     }}
                     className="group flex flex-col items-start gap-3 bg-card p-5 text-left transition-colors hover:bg-surface"
                   >
-                    {media && (
-                      <img
-                        src={media.image}
-                        alt={c}
-                        loading="lazy"
-                        width={768}
-                        height={768}
-                        className="h-24 w-full rounded-sm object-cover"
-                      />
-                    )}
-                    <span className="flex items-center gap-2 text-sm font-bold tracking-tight">
-                      {Icon && <Icon className="size-4 text-primary" />}
-                      {c}
+                    <span className="flex size-14 items-center justify-center rounded-sm border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                      {Icon && <Icon className="size-7" strokeWidth={1.5} />}
                     </span>
+                    <span className="text-sm font-bold tracking-tight">{c}</span>
                     <span className="font-mono text-[10px] uppercase text-muted-foreground">
                       {media?.hint}
                     </span>
