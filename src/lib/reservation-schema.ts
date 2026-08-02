@@ -8,6 +8,16 @@ export const PERIOD_LABEL: Record<SlotPeriod, string> = {
   "apres-midi": "Après-midi (13:00 — 19:00)",
 };
 
+/** Heures de rendez-vous proposées pour chaque demi-journée. */
+export const HOURS_BY_PERIOD: Record<SlotPeriod, string[]> = {
+  matin: ["08:30", "09:30", "10:30", "11:30"],
+  "apres-midi": ["13:30", "14:30", "15:30", "16:30", "17:30", "18:30"],
+};
+
+export function periodOfHour(hour: string): SlotPeriod {
+  return Number(hour.slice(0, 2)) < 13 ? "matin" : "apres-midi";
+}
+
 export const STATUS_LABEL: Record<string, string> = {
   en_attente: "En attente de confirmation",
   confirmee: "Confirmée",
@@ -31,6 +41,11 @@ export const reservationInputSchema = z.object({
   paiement: z.enum(["mtn", "moov", "especes"]),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choisissez une date"),
   creneau: z.enum(SLOT_PERIODS),
+  heure: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, "Choisissez une heure")
+    .optional()
+    .or(z.literal("")),
   message: z.string().trim().max(800).optional().or(z.literal("")),
 });
 
