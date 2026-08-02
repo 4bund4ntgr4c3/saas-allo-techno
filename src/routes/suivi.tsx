@@ -137,7 +137,17 @@ function Suivi() {
   );
 }
 
-function StatusResult({ result }: { result: ReservationStatus }) {
+function StatusResult({
+  result,
+  timeline,
+  live,
+  updatedAt,
+}: {
+  result: ReservationStatus;
+  timeline: TimelineEntry[];
+  live: boolean;
+  updatedAt: number;
+}) {
   const statusIndex = STEPS.findIndex((s) => s.key === result.status);
   const isCancelled = result.status === "annulee";
   const activeIndex = isCancelled ? -1 : statusIndex >= 0 ? statusIndex : 0;
@@ -155,6 +165,14 @@ function StatusResult({ result }: { result: ReservationStatus }) {
           <p className="text-sm text-muted-foreground">Rendez-vous</p>
           <p className="font-medium">
             {formatDateFr(result.slot_date)} · {PERIOD_LABEL[result.slot_period]}
+          </p>
+          <p className="mt-2 flex items-center justify-start gap-2 font-mono text-[10px] uppercase text-muted-foreground sm:justify-end">
+            <RadioTower className={`size-3 ${live ? "animate-pulse text-primary" : ""}`} />
+            Actualisé à{" "}
+            {new Date(updatedAt).toLocaleTimeString("fr-FR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
       </div>
@@ -236,5 +254,43 @@ function StatusResult({ result }: { result: ReservationStatus }) {
         </Button>
       </div>
     </div>
+  );
+}
+
+function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
+  if (entries.length === 0) {
+    return (
+      <p className="mt-3 text-sm text-muted-foreground">
+        Aucun événement enregistré pour l'instant.
+      </p>
+    );
+  }
+
+  return (
+    <ol className="mt-4 space-y-4 border-l border-border pl-5">
+      {[...entries].reverse().map((e, i) => (
+        <li key={`${e.created_at}-${i}`} className="relative">
+          <span
+            className={`absolute -left-[27px] top-1 grid size-3 place-items-center rounded-full ${
+              i === 0 ? "bg-primary ring-4 ring-primary/20" : "bg-border"
+            }`}
+          />
+          <p className="text-sm font-semibold">
+            {e.old_status
+              ? `${STATUS_LABEL[e.old_status]} → ${STATUS_LABEL[e.new_status]}`
+              : `Dossier créé — ${STATUS_LABEL[e.new_status]}`}
+          </p>
+          <p className="font-mono text-[10px] uppercase text-muted-foreground">
+            {new Date(e.created_at).toLocaleString("fr-FR", {
+              day: "2-digit",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          {e.note ? <p className="mt-1 text-sm text-muted-foreground">{e.note}</p> : null}
+        </li>
+      ))}
+    </ol>
   );
 }
