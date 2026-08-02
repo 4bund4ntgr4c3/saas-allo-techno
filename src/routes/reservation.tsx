@@ -126,7 +126,22 @@ function Reservation() {
     if (selectedHour && !hours.includes(selectedHour)) setValue("heure", "");
   }, [selectedPeriod, selectedHour, setValue]);
 
+  // Temps réel : si l'heure choisie est réservée entre-temps, on la libère.
+  useEffect(() => {
+    if (!selectedHour || !selectedDate) return;
+    if (availability.isHourTaken(selectedDate, selectedHour)) {
+      setValue("heure", "");
+      toast.warning("Ce créneau vient d'être réservé. Choisissez une autre heure.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedHour, availability.takenHours]);
+
   const onSubmit = (values: ReservationInput) => {
+    if (values.heure && availability.isHourTaken(values.date, values.heure)) {
+      toast.error("Ce créneau vient d'être réservé. Choisissez une autre heure.");
+      setValue("heure", "");
+      return;
+    }
     setReview(values);
     setRef(null);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
