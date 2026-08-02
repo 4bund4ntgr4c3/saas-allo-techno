@@ -21,8 +21,10 @@ import {
 } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/reservation")({
-  validateSearch: (search: Record<string, unknown>): { device?: string } =>
-    typeof search["device"] === "string" ? { device: search["device"] as string } : {},
+  validateSearch: (search: Record<string, unknown>): { device?: string; panne?: string } => ({
+    ...(typeof search["device"] === "string" ? { device: search["device"] as string } : {}),
+    ...(typeof search["panne"] === "string" ? { panne: search["panne"] as string } : {}),
+  }),
 
   head: () => ({
     meta: [
@@ -49,7 +51,7 @@ export const Route = createFileRoute("/reservation")({
 const DAYS_AHEAD = 21;
 
 function Reservation() {
-  const { device } = Route.useSearch();
+  const { device, panne } = Route.useSearch();
   const { user } = useSession();
   const submit = useServerFn(createReservation);
   const [ref, setRef] = useState<string | null>(null);
@@ -94,6 +96,7 @@ function Reservation() {
     resolver: zodResolver(reservationInputSchema),
     defaultValues: {
       appareil: device ?? "",
+      panne: panne ?? "",
       mode: "boutique",
       creneau: "matin",
       paiement: "mtn",
