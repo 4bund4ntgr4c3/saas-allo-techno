@@ -119,7 +119,7 @@ function Panier() {
             </Button>
           </div>
         ) : (
-          <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.6fr_1fr]">
             <div className="divide-y divide-border border border-border bg-card">
               {cart.items.map(({ accessory, qty }) => (
                 <div key={accessory.slug} className="flex flex-wrap items-center gap-4 p-5">
