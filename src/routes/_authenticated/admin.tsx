@@ -106,8 +106,6 @@ function AdminPage() {
     },
     onError: () => toast.error("Action impossible"),
   });
-    onError: () => toast.error("Mise à jour impossible"),
-  });
 
   if (access.isLoading) {
     return (
