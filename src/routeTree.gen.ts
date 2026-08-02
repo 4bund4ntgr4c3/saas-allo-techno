@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
 import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
 import { Route as BoutiqueSlugRouteImport } from './routes/boutique.$slug'
@@ -23,6 +25,10 @@ import { Route as ReparationsBrandRouteImport } from './routes/reparations.$bran
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,6 +50,11 @@ const TarifsRoute = TarifsRouteImport.update({
   id: '/tarifs',
   path: '/tarifs',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedMonCompteRoute = AuthenticatedMonCompteRouteImport.update({
+  id: '/mon-compte',
+  path: '/mon-compte',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AppareilSlugRoute = AppareilSlugRouteImport.update({
   id: '/appareil/$slug',
@@ -77,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
+  '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
@@ -89,6 +101,7 @@ export interface FileRoutesByTo {
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
+  '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
@@ -98,10 +111,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
+  '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
   '/reparations/$brand': typeof ReparationsBrandRoute
@@ -116,6 +131,7 @@ export interface FileRouteTypes {
     | '/panier'
     | '/reservation'
     | '/tarifs'
+    | '/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
@@ -128,6 +144,7 @@ export interface FileRouteTypes {
     | '/panier'
     | '/reservation'
     | '/tarifs'
+    | '/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
@@ -136,10 +153,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/auth'
     | '/panier'
     | '/reservation'
     | '/tarifs'
+    | '/_authenticated/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
     | '/reparations/$brand'
@@ -149,6 +168,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
@@ -167,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -196,6 +223,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/tarifs'
       preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/mon-compte': {
+      id: '/_authenticated/mon-compte'
+      path: '/mon-compte'
+      fullPath: '/mon-compte'
+      preLoaderRoute: typeof AuthenticatedMonCompteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/appareil/$slug': {
       id: '/appareil/$slug'
@@ -235,8 +269,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMonCompteRoute: typeof AuthenticatedMonCompteRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMonCompteRoute: AuthenticatedMonCompteRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
