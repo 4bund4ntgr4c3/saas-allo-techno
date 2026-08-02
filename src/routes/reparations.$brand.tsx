@@ -201,6 +201,40 @@ function BrandPage() {
 
       <section className="border-t border-border bg-surface py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHeader
+            eyebrow="Questions fréquentes"
+            title={`Réparation ${brand.name} à Abomey-Calavi : vos questions`}
+          />
+          <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+            {local.faq.map((f) => (
+              <div key={f.q} className="bg-card p-8">
+                <h3 className="text-base font-bold tracking-tight">{f.q}</h3>
+                <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16">
+            <SectionHeader eyebrow="Guides locaux" title="À lire avant de déposer votre appareil" />
+            <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+              {localPosts.map((p) => (
+                <Link
+                  key={p.slug}
+                  to="/blog/$slug"
+                  params={{ slug: p.slug }}
+                  className="bg-card p-6 transition-colors hover:bg-card/70"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {p.category}
+                  </span>
+                  <h3 className="mt-3 text-base font-bold tracking-tight">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{p.excerpt}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-16" />
           <SectionHeader eyebrow="Autres marques" title="Continuer la navigation" />
           <div className="flex flex-wrap gap-2">
             {BRANDS.filter((b) => b.slug !== brand.slug).map((b) => (
