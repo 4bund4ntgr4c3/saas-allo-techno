@@ -16,6 +16,7 @@ import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
 import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
@@ -57,6 +58,11 @@ const TarifsRoute = TarifsRouteImport.update({
   path: '/tarifs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMonCompteRoute = AuthenticatedMonCompteRouteImport.update({
   id: '/mon-compte',
   path: '/mon-compte',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/reservation': typeof ReservationRoute
   '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
   '/boutique/$slug': typeof BoutiqueSlugRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/suivi'
     | '/tarifs'
+    | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/suivi'
     | '/tarifs'
+    | '/admin'
     | '/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/suivi'
     | '/tarifs'
+    | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
     | '/appareil/$slug'
     | '/boutique/$slug'
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/mon-compte': {
       id: '/_authenticated/mon-compte'
       path: '/mon-compte'
@@ -290,10 +309,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedMonCompteRoute: typeof AuthenticatedMonCompteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedMonCompteRoute: AuthenticatedMonCompteRoute,
 }
 

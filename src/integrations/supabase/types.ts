@@ -41,6 +41,44 @@ export type Database = {
         }
         Relationships: []
       }
+      reservation_status_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_status: Database["public"]["Enums"]["reservation_status"]
+          note: string | null
+          old_status: Database["public"]["Enums"]["reservation_status"] | null
+          reservation_id: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status: Database["public"]["Enums"]["reservation_status"]
+          note?: string | null
+          old_status?: Database["public"]["Enums"]["reservation_status"] | null
+          reservation_id: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status?: Database["public"]["Enums"]["reservation_status"]
+          note?: string | null
+          old_status?: Database["public"]["Enums"]["reservation_status"] | null
+          reservation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_status_history_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservations: {
         Row: {
           created_at: string
@@ -119,11 +157,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      claim_first_admin: { Args: never; Returns: boolean }
       get_reservation_status: {
         Args: { _reference: string }
         Returns: {
@@ -138,6 +198,14 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
       next_reservation_reference: { Args: never; Returns: string }
       slot_availability: {
         Args: { _from: string; _to: string }
@@ -150,6 +218,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "staff" | "user"
       reservation_status:
         | "en_attente"
         | "confirmee"
@@ -284,6 +353,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "staff", "user"],
       reservation_status: [
         "en_attente",
         "confirmee",

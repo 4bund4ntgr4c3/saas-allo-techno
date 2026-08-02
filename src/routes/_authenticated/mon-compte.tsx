@@ -132,6 +132,9 @@ function Dashboard() {
             <Button asChild variant="technical" size="sm">
               <Link to="/reservation">Nouvelle réservation</Link>
             </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin">Administration</Link>
+            </Button>
             <Button variant="outline" size="sm" onClick={signOut}>
               Se déconnecter
             </Button>
