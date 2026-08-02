@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
+import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
@@ -44,6 +45,11 @@ const PanierRoute = PanierRouteImport.update({
 const ReservationRoute = ReservationRouteImport.update({
   id: '/reservation',
   path: '/reservation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuiviRoute = SuiviRouteImport.update({
+  id: '/suivi',
+  path: '/suivi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TarifsRoute = TarifsRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
+  '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
+  '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
+  '/suivi': typeof SuiviRoute
   '/tarifs': typeof TarifsRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/panier'
     | '/reservation'
+    | '/suivi'
     | '/tarifs'
     | '/mon-compte'
     | '/appareil/$slug'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/panier'
     | '/reservation'
+    | '/suivi'
     | '/tarifs'
     | '/mon-compte'
     | '/appareil/$slug'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/panier'
     | '/reservation'
+    | '/suivi'
     | '/tarifs'
     | '/_authenticated/mon-compte'
     | '/appareil/$slug'
@@ -172,6 +184,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
+  SuiviRoute: typeof SuiviRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
   BoutiqueSlugRoute: typeof BoutiqueSlugRoute
@@ -215,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/reservation'
       fullPath: '/reservation'
       preLoaderRoute: typeof ReservationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suivi': {
+      id: '/suivi'
+      path: '/suivi'
+      fullPath: '/suivi'
+      preLoaderRoute: typeof SuiviRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tarifs': {
@@ -286,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
+  SuiviRoute: SuiviRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
   BoutiqueSlugRoute: BoutiqueSlugRoute,
@@ -296,13 +317,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
