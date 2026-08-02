@@ -92,6 +92,9 @@ export function Header() {
           </div>
           <CartButton />
           <ThemeToggle />
+          <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
+            <Link to={user ? "/mon-compte" : "/auth"}>{user ? "Mon compte" : "Connexion"}</Link>
+          </Button>
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
             <Link to="/reservation">Réserver</Link>
           </Button>
