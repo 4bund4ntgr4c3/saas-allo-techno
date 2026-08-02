@@ -17,8 +17,10 @@ export const Route = createFileRoute("/blog/")({
         content: "Nos techniciens partagent leurs guides d'entretien et de dépannage.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/blog" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/blog" }],
   }),
   component: BlogIndex,
 });
