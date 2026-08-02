@@ -35,7 +35,7 @@ function Panier() {
   const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
   const [form, setForm] = useState({ name: "", phone: "", address: "", note: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
   const [order, setOrder] = useState<Order | null>(null);
 
   const option = DELIVERY_OPTIONS.find((o) => o.id === delivery) ?? DELIVERY_OPTIONS[0];
@@ -45,7 +45,7 @@ function Panier() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const next: Record<string, string> = {};
+    const next: { name?: string; phone?: string; address?: string } = {};
     if (form.name.trim().length < 3) next.name = "Indiquez votre nom complet.";
     if (!/^[+0-9\s]{8,}$/.test(form.phone.trim())) next.phone = "Numéro de téléphone invalide.";
     if (option.id !== "retrait" && form.address.trim().length < 6)

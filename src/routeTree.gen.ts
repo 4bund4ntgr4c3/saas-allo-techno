@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
@@ -21,6 +22,11 @@ import { Route as ReparationsBrandRouteImport } from './routes/reparations.$bran
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationRoute = ReservationRouteImport.update({
@@ -61,6 +67,7 @@ const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/panier': typeof PanierRoute
   '/reservation': typeof ReservationRoute
   '/tarifs': typeof TarifsRoute
   '/appareil/$slug': typeof AppareilSlugRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/panier'
     | '/reservation'
     | '/tarifs'
     | '/appareil/$slug'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PanierRoute: typeof PanierRoute
   ReservationRoute: typeof ReservationRoute
   TarifsRoute: typeof TarifsRoute
   AppareilSlugRoute: typeof AppareilSlugRoute
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservation': {
@@ -197,6 +217,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PanierRoute: PanierRoute,
   ReservationRoute: ReservationRoute,
   TarifsRoute: TarifsRoute,
   AppareilSlugRoute: AppareilSlugRoute,
