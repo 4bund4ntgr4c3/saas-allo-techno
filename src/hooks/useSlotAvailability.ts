@@ -3,19 +3,24 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   HOURS_BY_PERIOD,
+  openWindowFor,
   toIsoDate,
   type AvailabilityRow,
+  type DepositMode,
   type SlotPeriod,
 } from "@/lib/reservation-schema";
 
 export type BookedHour = { slot_date: string; slot_hour: string };
 
+const PERIODS: SlotPeriod[] = ["matin", "apres-midi"];
+
 /**
- * Disponibilités en temps réel : capacité par demi-journée + heures déjà réservées.
- * Un canal Realtime sur `reservations` invalide les données dès qu'une réservation
- * est créée, annulée ou déplacée par quelqu'un d'autre.
+ * Disponibilités dérivées automatiquement des horaires d'ouverture (OPEN_HOURS) :
+ * chaque jour ouvert du calendrier propose ses deux demi-journées, sans dépendre
+ * d'une table de capacité. Seules les heures déjà réservées (booked_hours) sont
+ * lues côté serveur ; un canal Realtime sur `reservations` les invalide en direct.
  */
-export function useSlotAvailability(daysAhead = 21) {
+export function useSlotAvailability(mode: DepositMode = "boutique", daysAhead = 10) {
   const queryClient = useQueryClient();
 
   const range = useMemo(() => {
@@ -25,28 +30,33 @@ export function useSlotAvailability(daysAhead = 21) {
     return { from: toIsoDate(from), to: toIsoDate(to) };
   }, [daysAhead]);
 
-  const availability = useQuery({
-    queryKey: ["availability", range.from, range.to],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("slot_availability", {
-        _from: range.from,
-        _to: range.to,
-      });
-      if (error) throw error;
-      return (data ?? []) as AvailabilityRow[];
-    },
-    staleTime: 15_000,
-    refetchOnWindowFocus: true,
-  });
+  /** Dates ouvertes pour le mode choisi, selon les horaires (fermé le dimanche). */
+  const openDates = useMemo(() => {
+    const map = new Map<string, AvailabilityRow[]>();
+    const start = new Date(`${range.from}T00:00:00`);
+    for (let i = 0; i <= daysAhead; i++) {
+      const day = new Date(start);
+      day.setDate(start.getDate() + i);
+      if (!openWindowFor(mode, day.getDay())) continue;
+      const iso = toIsoDate(day);
+      map.set(
+        iso,
+        PERIODS.map((p) => ({ slot_date: iso, period: p, capacity: 0, remaining: 1 })),
+      );
+    }
+    return map;
+  }, [range.from, daysAhead, mode]);
 
+  /** Heures déjà prises, par date (aucune si la requête échoue). */
   const booked = useQuery({
-    queryKey: ["booked-hours", range.from, range.to],
+    queryKey: ["booked-hours", mode, range.from, range.to],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("booked_hours", {
         _from: range.from,
         _to: range.to,
+        _mode: mode,
       });
-      if (error) throw error;
+      if (error) return [] as BookedHour[];
       return (data ?? []) as BookedHour[];
     },
     staleTime: 15_000,
@@ -57,7 +67,6 @@ export function useSlotAvailability(daysAhead = 21) {
     const channel = supabase
       .channel("slot-availability")
       .on("postgres_changes", { event: "*", schema: "public", table: "reservations" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["availability"] });
         queryClient.invalidateQueries({ queryKey: ["booked-hours"] });
       })
       .subscribe();
@@ -65,16 +74,6 @@ export function useSlotAvailability(daysAhead = 21) {
       supabase.removeChannel(channel);
     };
   }, [queryClient]);
-
-  /** Dates ouvertes → périodes encore disponibles. */
-  const openDates = useMemo(() => {
-    const map = new Map<string, AvailabilityRow[]>();
-    for (const row of availability.data ?? []) {
-      if (row.remaining <= 0) continue;
-      map.set(row.slot_date, [...(map.get(row.slot_date) ?? []), row]);
-    }
-    return map;
-  }, [availability.data]);
 
   /** Heures déjà prises, par date. */
   const takenHours = useMemo(() => {
@@ -98,13 +97,12 @@ export function useSlotAvailability(daysAhead = 21) {
   };
 
   const refresh = () => {
-    void availability.refetch();
     void booked.refetch();
   };
 
   return {
     range,
-    isLoading: availability.isLoading || booked.isLoading,
+    isLoading: booked.isLoading,
     openDates,
     takenHours,
     isHourTaken,

@@ -1,16 +1,33 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertCircle, Check, Package, RadioTower, Search, Wrench } from "lucide-react";
+import {
+  AlertCircle,
+  Boxes,
+  CalendarClock,
+  CheckCircle2,
+  Package,
+  RadioTower,
+  ScanSearch,
+  Search,
+  Truck,
+  Wrench,
+} from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
+import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { Button } from "@/components/ui/button";
 import {
   getReservationTracking,
   type ReservationStatus,
   type TimelineEntry,
 } from "@/lib/suivi.functions";
-import { formatDateFr, PERIOD_LABEL, STATUS_LABEL } from "@/lib/reservation-schema";
+import {
+  formatDateFr,
+  PERIOD_LABEL,
+  STATUS_LABEL,
+  type DepositMode,
+} from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
   validateSearch: (search: Record<string, unknown>): { ref?: string } =>
@@ -38,12 +55,35 @@ export const Route = createFileRoute("/suivi")({
   component: Suivi,
 });
 
-const STEPS = [
-  { key: "en_attente", label: "Dossier reçu", icon: Package },
-  { key: "confirmee", label: "Confirmé", icon: Check },
-  { key: "en_cours", label: "En réparation", icon: Wrench },
-  { key: "terminee", label: "Terminé", icon: Check },
+const MILESTONES = [
+  { key: "en_attente", label: "Reçu", detail: "Dossier reçu à l'atelier", icon: Package },
+  {
+    key: "confirmee",
+    label: "Diagnostic",
+    detail: "Panne identifiée et devis validé",
+    icon: ScanSearch,
+  },
+  { key: "pieces", label: "Pièces", detail: "Pièces commandées et remplacées", icon: Boxes },
+  { key: "en_cours", label: "Réparation", detail: "Réparation en cours en atelier", icon: Wrench },
+  {
+    key: "pret",
+    label: "Prêt",
+    detail: "Votre appareil est prêt à être récupéré",
+    icon: CheckCircle2,
+  },
+  { key: "livre", label: "Livré", detail: "Appareil remis au client", icon: Truck },
 ] as const;
+
+// `terminee` (ancien parcours) est assimilé à « Prêt ».
+const MILESTONE_INDEX: Record<string, number> = {
+  en_attente: 0,
+  confirmee: 1,
+  pieces: 2,
+  en_cours: 3,
+  pret: 4,
+  livre: 5,
+  terminee: 4,
+};
 
 function Suivi() {
   const { ref } = Route.useSearch();
@@ -127,6 +167,7 @@ function Suivi() {
               timeline={timeline}
               live={tracking.isFetching}
               updatedAt={tracking.dataUpdatedAt}
+              ref={ref ?? ""}
             />
           )}
         </div>
@@ -142,15 +183,28 @@ function StatusResult({
   timeline,
   live,
   updatedAt,
+  ref,
 }: {
   result: ReservationStatus;
   timeline: TimelineEntry[];
   live: boolean;
   updatedAt: number;
+  ref: string;
 }) {
-  const statusIndex = STEPS.findIndex((s) => s.key === result.status);
+  const queryClient = useQueryClient();
+  const [rescheduling, setRescheduling] = useState(false);
+  const statusIndex = MILESTONE_INDEX[result.status] ?? -1;
   const isCancelled = result.status === "annulee";
   const activeIndex = isCancelled ? -1 : statusIndex >= 0 ? statusIndex : 0;
+  const reschedulable =
+    !isCancelled && (result.status === "en_attente" || result.status === "confirmee");
+
+  const milestoneDates = new Map<string, string>();
+  for (const e of timeline) {
+    if (e.new_status && !milestoneDates.has(e.new_status)) {
+      milestoneDates.set(e.new_status, e.created_at);
+    }
+  }
 
   return (
     <div className="mt-8 border border-border bg-card p-8">
@@ -165,6 +219,7 @@ function StatusResult({
           <p className="text-sm text-muted-foreground">Rendez-vous</p>
           <p className="font-medium">
             {formatDateFr(result.slot_date)} · {PERIOD_LABEL[result.slot_period]}
+            {result.slot_hour ? ` à ${result.slot_hour}` : ""}
           </p>
           <p className="mt-2 flex items-center justify-start gap-2 font-mono text-[10px] uppercase text-muted-foreground sm:justify-end">
             <RadioTower className={`size-3 ${live ? "animate-pulse text-primary" : ""}`} />
@@ -179,36 +234,67 @@ function StatusResult({
 
       {!isCancelled && (
         <div className="mt-10">
-          <div className="relative">
-            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-border" />
-            <div className="relative grid grid-cols-4 gap-4">
-              {STEPS.map((step, i) => {
-                const Icon = step.icon;
-                const done = i <= activeIndex;
-                const current = i === activeIndex;
-                return (
-                  <div key={step.key} className="flex flex-col items-center text-center">
-                    <div
-                      className={`grid size-10 place-items-center rounded-full border ${
-                        done
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-card text-muted-foreground"
-                      } ${current ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
-                    >
-                      <Icon className="size-4" />
-                    </div>
+          <span className="at-eyebrow">Avancement de la réparation</span>
+          <ol className="mt-6">
+            {MILESTONES.map((milestone, i) => {
+              const Icon = milestone.icon;
+              const done = i < activeIndex;
+              const current = i === activeIndex;
+              const reachedAt = milestoneDates.get(milestone.key);
+              return (
+                <li key={milestone.key} className="relative flex gap-5 pb-10 last:pb-0">
+                  {i < MILESTONES.length - 1 && (
                     <span
-                      className={`mt-3 text-[10px] font-bold uppercase tracking-wider ${
-                        done ? "text-foreground" : "text-muted-foreground"
+                      aria-hidden
+                      className={`absolute left-5 top-11 h-[calc(100%-2.75rem)] w-px ${
+                        done ? "bg-primary" : "bg-border"
                       }`}
-                    >
-                      {step.label}
-                    </span>
+                    />
+                  )}
+                  <div
+                    className={`relative z-10 grid size-10 shrink-0 place-items-center rounded-full border ${
+                      done
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : current
+                          ? "border-primary bg-card text-primary ring-2 ring-primary/30"
+                          : "border-border bg-card text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="size-4" />
                   </div>
-                );
-              })}
-            </div>
-          </div>
+                  <div className="flex flex-1 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pt-1.5">
+                    <div>
+                      <p
+                        className={`text-xs font-bold uppercase tracking-wider ${
+                          done || current ? "text-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        {milestone.label}
+                      </p>
+                      <p className="mt-0.5 text-sm text-muted-foreground">{milestone.detail}</p>
+                    </div>
+                    {current ? (
+                      <span className="rounded-full border border-primary/50 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary">
+                        En cours
+                      </span>
+                    ) : reachedAt ? (
+                      <time className="font-mono text-[10px] uppercase text-muted-foreground">
+                        {new Date(reachedAt).toLocaleDateString("fr-FR", {
+                          day: "2-digit",
+                          month: "short",
+                        })}{" "}
+                        ·{" "}
+                        {new Date(reachedAt).toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </time>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       )}
 
@@ -243,7 +329,9 @@ function StatusResult({
               ? "MTN Mobile Money"
               : result.payment === "moov"
                 ? "Moov Money"
-                : "Espèces"}
+                : result.payment === "celtiis"
+                  ? "Celtiis"
+                  : "Espèces"}
           </p>
         </div>
       </div>
@@ -254,10 +342,28 @@ function StatusResult({
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
+        {reschedulable && (
+          <Button variant="outline" onClick={() => setRescheduling((v) => !v)}>
+            <CalendarClock className="size-3.5" />
+            {rescheduling ? "Masquer" : "Reprogrammer le rendez-vous"}
+          </Button>
+        )}
         <Button asChild variant="technicalOutline">
           <Link to="/reservation">Nouvelle réservation</Link>
         </Button>
       </div>
+
+      {rescheduling && (
+        <ReschedulePanel
+          reference={result.reference}
+          mode={(result.mode as DepositMode) ?? "boutique"}
+          current={{ date: result.slot_date, hour: result.slot_hour }}
+          onDone={() => {
+            setRescheduling(false);
+            queryClient.invalidateQueries({ queryKey: ["suivi", ref] });
+          }}
+        />
+      )}
     </div>
   );
 }

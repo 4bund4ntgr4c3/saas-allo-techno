@@ -187,7 +187,7 @@ export type Database = {
     }
     Functions: {
       booked_hours: {
-        Args: { _from: string; _to: string }
+        Args: { _from: string; _to: string; _mode?: string }
         Returns: {
           slot_date: string
           slot_hour: string
@@ -227,7 +227,7 @@ export type Database = {
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       next_reservation_reference: { Args: never; Returns: string }
       slot_availability: {
-        Args: { _from: string; _to: string }
+        Args: { _from: string; _to: string; _mode?: string }
         Returns: {
           capacity: number
           period: Database["public"]["Enums"]["slot_period"]
@@ -249,7 +249,10 @@ export type Database = {
       reservation_status:
         | "en_attente"
         | "confirmee"
+        | "pieces"
         | "en_cours"
+        | "pret"
+        | "livre"
         | "terminee"
         | "annulee"
       slot_period: "matin" | "apres-midi"
@@ -384,7 +387,10 @@ export const Constants = {
       reservation_status: [
         "en_attente",
         "confirmee",
+        "pieces",
         "en_cours",
+        "pret",
+        "livre",
         "terminee",
         "annulee",
       ],

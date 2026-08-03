@@ -156,7 +156,7 @@ function DevicePage() {
             {[
               "Diagnostic gratuit avant toute intervention",
               "Facture PDF et garantie remises à la restitution",
-              "Paiement MTN MoMo, Moov Money ou espèces",
+              "Paiement MTN MoMo, Moov Money, Celtiis ou espèces",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2 text-sm text-muted-foreground">
                 <Check className="mt-0.5 size-4 shrink-0 text-success" /> {t}

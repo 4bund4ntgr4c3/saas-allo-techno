@@ -162,7 +162,7 @@ function Reprise() {
             {[
               { t: "Estimation en ligne", x: "Sélectionnez modèle et état pour obtenir une fourchette immédiate." },
               { t: "Contrôle atelier", x: "Test complet en 20 minutes : batterie, écran, ports, déverrouillage." },
-              { t: "Paiement immédiat", x: "MTN MoMo, Moov Money ou espèces, ou déduction sur une réparation." },
+              { t: "Paiement immédiat", x: "MTN MoMo, Moov Money, Celtiis ou espèces, ou déduction sur une réparation." },
             ].map((s, i) => (
               <div key={s.t} className="bg-card p-8">
                 <span className="font-mono text-4xl font-medium text-primary">{i + 1}</span>

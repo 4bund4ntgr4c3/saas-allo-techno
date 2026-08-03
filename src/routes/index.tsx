@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Timer, Wrench } from "lucide-react";
-import { DeviceSearch } from "@/components/site/DeviceSearch";
+import { CategoryPicker } from "@/components/site/DeviceSearch";
 import {
   CtaBand,
   MobileMoneyBar,
@@ -38,9 +38,10 @@ const POPULAR = DEVICES.flatMap((d) =>
 ).slice(0, 8);
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <>
-      {/* Hero + recherche intelligente */}
+      {/* Hero + sélecteur de type d'appareil */}
       <section className="relative overflow-hidden pt-16 pb-24">
         <div className="at-grid-lines pointer-events-none absolute inset-0 -z-10 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -58,7 +59,18 @@ function Home() {
             </p>
           </div>
 
-          <DeviceSearch />
+          <div className="at-in [animation-delay:150ms]">
+            <span className="at-eyebrow mb-3 block">Quel type d'appareil ?</span>
+            <CategoryPicker
+              onSelect={(c) =>
+                navigate({ to: "/reparations", search: { categorie: c } })
+              }
+            />
+            <p className="mt-4 text-xs text-muted-foreground">
+              Vous continuerez sur la page réparation pour choisir la marque, le modèle et le
+              créneau.
+            </p>
+          </div>
 
           <div className="mt-8 flex flex-wrap gap-6">
             {[
@@ -184,6 +196,7 @@ function Home() {
               <div className="flex gap-4 font-mono text-[10px] font-bold uppercase">
                 <span>MTN MoMo</span>
                 <span>Moov Money</span>
+                <span>Celtiis</span>
               </div>
             </div>
           </div>

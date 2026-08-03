@@ -16,6 +16,7 @@ import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { COMPANY } from "@/data/catalog";
 import { CartProvider } from "@/components/shop/cart";
+import { SearchModal } from "@/components/site/SearchModal";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
@@ -163,12 +164,19 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
+        <a
+          href="#contenu-principal"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-sm focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:uppercase focus:tracking-widest focus:text-primary-foreground"
+        >
+          Aller au contenu principal
+        </a>
         <Header />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <main>
+        <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
           <Outlet />
         </main>
         <Footer />
+        <SearchModal />
         <Toaster />
       </CartProvider>
     </QueryClientProvider>

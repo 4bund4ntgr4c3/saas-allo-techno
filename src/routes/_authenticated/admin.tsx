@@ -32,18 +32,32 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 type Status = Enums<"reservation_status">;
 
-const STATUSES: Status[] = ["en_attente", "confirmee", "en_cours", "terminee", "annulee"];
+const STATUSES: Status[] = [
+  "en_attente",
+  "confirmee",
+  "pieces",
+  "en_cours",
+  "pret",
+  "livre",
+  "terminee",
+  "annulee",
+];
 
 const NEXT_STATUS: Partial<Record<Status, Status>> = {
   en_attente: "confirmee",
-  confirmee: "en_cours",
-  en_cours: "terminee",
+  confirmee: "pieces",
+  pieces: "en_cours",
+  en_cours: "pret",
+  pret: "livre",
 };
 
 const STATUS_TONE: Record<string, string> = {
   en_attente: "border-border text-muted-foreground",
   confirmee: "border-primary/50 text-primary",
+  pieces: "border-amber-500/50 text-amber-500",
   en_cours: "border-primary/50 text-primary",
+  pret: "border-success/50 text-success",
+  livre: "border-success/50 text-success",
   terminee: "border-success/50 text-success",
   annulee: "border-destructive/50 text-destructive",
 };

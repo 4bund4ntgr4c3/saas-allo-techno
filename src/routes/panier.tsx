@@ -26,7 +26,7 @@ export const Route = createFileRoute("/panier")({
   component: Panier,
 });
 
-const PAYMENTS = ["MTN MoMo", "Moov Money", "Espèces à la remise"] as const;
+const PAYMENTS = ["MTN MoMo", "Moov Money", "Celtiis", "Espèces à la remise"] as const;
 
 type Order = { ref: string; total: number; delivery: string; payment: string; name: string };
 

@@ -73,10 +73,21 @@ export function MobileMoneyBar() {
   return (
     <div className="flex flex-wrap items-center gap-4 border border-border bg-surface p-4">
       <span className="at-eyebrow">Paiements acceptés</span>
-      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">MTN MoMo</span>
-      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">Moov Money</span>
-      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">Espèces</span>
-      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">Virement B2B</span>
+      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
+        MTN MoMo
+      </span>
+      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
+        Moov Money
+      </span>
+      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
+        Celtiis
+      </span>
+      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
+        Espèces
+      </span>
+      <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
+        Virement B2B
+      </span>
     </div>
   );
 }

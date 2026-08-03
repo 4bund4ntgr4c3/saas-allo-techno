@@ -1,10 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { CalendarClock } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { PERIOD_LABEL, STATUS_LABEL, formatDateFr, type SlotPeriod } from "@/lib/reservation-schema";
+import { ReschedulePanel } from "@/components/site/ReschedulePanel";
+import {
+  PERIOD_LABEL,
+  STATUS_LABEL,
+  formatDateFr,
+  type DepositMode,
+  type SlotPeriod,
+} from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/_authenticated/mon-compte")({
   head: () => ({
@@ -34,7 +42,10 @@ const field =
 const STATUS_TONE: Record<string, string> = {
   en_attente: "border-border text-muted-foreground",
   confirmee: "border-primary/50 text-primary",
+  pieces: "border-amber-500/50 text-amber-500",
   en_cours: "border-primary/50 text-primary",
+  pret: "border-success/50 text-success",
+  livre: "border-success/50 text-success",
   terminee: "border-success/50 text-success",
   annulee: "border-destructive/50 text-destructive",
 };
@@ -45,6 +56,7 @@ function Dashboard() {
   const { user } = Route.useRouteContext();
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [reschedulingId, setReschedulingId] = useState<string | null>(null);
 
   const profile = useQuery({
     queryKey: ["profile", user.id],
@@ -72,7 +84,7 @@ function Dashboard() {
       const { data, error } = await supabase
         .from("reservations")
         .select(
-          "id, reference, device, issue, mode, payment, slot_date, slot_period, status, message, created_at",
+          "id, reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, message, created_at",
         )
         .order("slot_date", { ascending: false });
       if (error) throw error;
@@ -147,13 +159,11 @@ function Dashboard() {
           <div>
             <h2 className="at-display mb-2 text-2xl">Mes réservations</h2>
             <p className="mb-8 text-sm text-muted-foreground">
-              {active.length} intervention{active.length > 1 ? "s" : ""} en cours ·{" "}
-              {rows.length} au total
+              {active.length} intervention{active.length > 1 ? "s" : ""} en cours · {rows.length} au
+              total
             </p>
 
-            {reservations.isLoading && (
-              <p className="text-sm text-muted-foreground">Chargement…</p>
-            )}
+            {reservations.isLoading && <p className="text-sm text-muted-foreground">Chargement…</p>}
 
             {!reservations.isLoading && rows.length === 0 && (
               <div className="border border-border bg-card p-8">
@@ -192,24 +202,52 @@ function Dashboard() {
                     </div>
                     <div>
                       <dt className="at-eyebrow mb-1">Créneau</dt>
-                      <dd>{PERIOD_LABEL[r.slot_period as SlotPeriod]}</dd>
+                      <dd>
+                        {PERIOD_LABEL[r.slot_period as SlotPeriod]}
+                        {r.slot_hour ? ` à ${r.slot_hour}` : ""}
+                      </dd>
                     </div>
                     <div>
                       <dt className="at-eyebrow mb-1">Mode</dt>
-                      <dd>{r.mode === "domicile" ? "Enlèvement à domicile" : "Dépôt en boutique"}</dd>
+                      <dd>
+                        {r.mode === "domicile" ? "Enlèvement à domicile" : "Dépôt en boutique"}
+                      </dd>
                     </div>
                   </dl>
 
                   {(r.status === "en_attente" || r.status === "confirmee") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-6"
-                      disabled={cancel.isPending}
-                      onClick={() => cancel.mutate(r.id)}
-                    >
-                      Annuler cette réservation
-                    </Button>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setReschedulingId(reschedulingId === r.id ? null : r.id)}
+                      >
+                        <CalendarClock className="size-3.5" />
+                        {reschedulingId === r.id ? "Masquer" : "Reprogrammer"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={cancel.isPending}
+                        onClick={() => cancel.mutate(r.id)}
+                      >
+                        Annuler cette réservation
+                      </Button>
+                    </div>
+                  )}
+
+                  {reschedulingId === r.id && (
+                    <div className="mt-6">
+                      <ReschedulePanel
+                        reference={r.reference}
+                        mode={(r.mode as DepositMode) ?? "boutique"}
+                        current={{ date: r.slot_date, hour: r.slot_hour }}
+                        onDone={() => {
+                          setReschedulingId(null);
+                          queryClient.invalidateQueries({ queryKey: ["reservations", user.id] });
+                        }}
+                      />
+                    </div>
                   )}
                 </li>
               ))}

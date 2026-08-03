@@ -1,5 +1,39 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { COMPANY } from "@/data/catalog";
+import { OPEN_SCHEDULE, isOpenNow } from "@/lib/reservation-schema";
+
+function OpenNow() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  const open = isOpenNow(now);
+  const schedule = OPEN_SCHEDULE[now.getDay()];
+  const timeLabel = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  const next = schedule
+    ? open
+      ? `Fermeture ${schedule[1]}`
+      : `Ouverture ${schedule[0]}`
+    : "Rouvre lundi 08:30";
+  return (
+    <li className="mb-2 flex items-center justify-between gap-4 border border-border bg-card px-3 py-2">
+      <span className="flex items-center gap-2">
+        <span
+          aria-hidden="true"
+          className={`size-1.5 rounded-full ${open ? "bg-emerald-500" : "bg-destructive"}`}
+        />
+        <span className={open ? "text-emerald-500" : "text-destructive"}>
+          {open ? "Ouvert" : "Fermé"}
+        </span>
+      </span>
+      <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        {timeLabel}
+      </span>
+    </li>
+  );
+}
 
 export function Footer() {
   return (
@@ -30,8 +64,12 @@ export function Footer() {
           <div>
             <h2 className="at-eyebrow mb-6 text-foreground">Horaires</h2>
             <ul className="space-y-2 text-xs font-medium text-muted-foreground">
+              <OpenNow />
               {COMPANY.hours.map((h) => (
-                <li key={h.d} className={`flex justify-between gap-4 ${h.h === "Fermé" ? "text-primary" : ""}`}>
+                <li
+                  key={h.d}
+                  className={`flex justify-between gap-4 ${h.h === "Fermé" ? "text-primary" : ""}`}
+                >
                   <span>{h.d}</span>
                   <span className="font-mono">{h.h}</span>
                 </li>
@@ -39,11 +77,31 @@ export function Footer() {
             </ul>
             <h2 className="at-eyebrow mt-8 mb-4 text-foreground">Services</h2>
             <ul className="space-y-2 text-xs font-medium text-muted-foreground">
-              <li><Link to="/devis" className="hover:text-primary">Devis instantané</Link></li>
-              <li><Link to="/reprise" className="hover:text-primary">Reprise d'appareils</Link></li>
-              <li><Link to="/garantie" className="hover:text-primary">Garantie</Link></li>
-              <li><Link to="/avis" className="hover:text-primary">Avis clients</Link></li>
-              <li><Link to="/faq" className="hover:text-primary">FAQ</Link></li>
+              <li>
+                <Link to="/devis" className="hover:text-primary">
+                  Devis instantané
+                </Link>
+              </li>
+              <li>
+                <Link to="/reprise" className="hover:text-primary">
+                  Reprise d'appareils
+                </Link>
+              </li>
+              <li>
+                <Link to="/garantie" className="hover:text-primary">
+                  Garantie
+                </Link>
+              </li>
+              <li>
+                <Link to="/avis" className="hover:text-primary">
+                  Avis clients
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="hover:text-primary">
+                  FAQ
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -66,7 +124,9 @@ export function Footer() {
             © {new Date().getFullYear()} Allô Techno Bénin. Tous droits réservés.
           </span>
           <div className="flex gap-6">
-            <Link to="/garantie" className="text-[10px] font-bold uppercase tracking-wider">Garanties</Link>
+            <Link to="/garantie" className="text-[10px] font-bold uppercase tracking-wider">
+              Garanties
+            </Link>
             <Link to="/mentions-legales" className="text-[10px] font-bold uppercase tracking-wider">
               Mentions légales
             </Link>

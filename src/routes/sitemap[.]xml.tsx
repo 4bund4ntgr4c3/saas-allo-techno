@@ -4,6 +4,7 @@ import { BRANDS, DEVICES, POSTS, ACCESSORIES } from "@/data/catalog";
 const STATIC_PATHS = [
   "/",
   "/reparations",
+  "/catalogue",
   "/tarifs",
   "/boutique",
   "/blog",

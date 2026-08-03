@@ -1,14 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Moon, ShoppingBag, Sun } from "lucide-react";
+import { Menu, Moon, Search, ShoppingBag, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { COMPANY } from "@/data/catalog";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/shop/cart";
 import { useSession } from "@/hooks/useSession";
+import { openSearch } from "@/lib/search-events";
 
 const NAV = [
   { to: "/reparations", label: "Réparations" },
+  { to: "/catalogue", label: "Catalogue" },
   { to: "/tarifs", label: "Tarifs" },
   { to: "/boutique", label: "Boutique" },
   { to: "/suivi", label: "Suivi" },
@@ -92,6 +94,13 @@ export function Header() {
               {COMPANY.phone}
             </a>
           </div>
+          <button
+            onClick={openSearch}
+            aria-label="Rechercher sur le site (Ctrl+K)"
+            className="grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Search className="size-4" />
+          </button>
           <CartButton />
           <ThemeToggle />
           <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">

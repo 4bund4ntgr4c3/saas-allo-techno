@@ -103,6 +103,10 @@ function BrandPage() {
             <Link to="/reparations" className="hover:text-primary">
               Réparations
             </Link>{" "}
+            /{" "}
+            <Link to="/catalogue" className="hover:text-primary">
+              Catalogue
+            </Link>{" "}
             / {brand.name}
           </nav>
           <h1 className="at-display text-4xl md:text-6xl">
