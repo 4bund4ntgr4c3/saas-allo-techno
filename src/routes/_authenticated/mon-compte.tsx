@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
+import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   PERIOD_LABEL,
   STATUS_LABEL,
@@ -193,6 +194,29 @@ function Dashboard() {
                     >
                       {STATUS_LABEL[r.status] ?? r.status}
                     </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        downloadInvoicePdf({
+                          reference: r.reference,
+                          customer_name: profile.data?.full_name ?? "Client",
+                          phone: profile.data?.phone ?? "",
+                          email: user.email ?? null,
+                          device: r.device,
+                          issue: r.issue,
+                          mode: r.mode,
+                          payment: r.payment,
+                          slot_date: r.slot_date,
+                          slot_period: r.slot_period as SlotPeriod,
+                          slot_hour: r.slot_hour ?? null,
+                          status: r.status,
+                        })
+                      }
+                      aria-label={`Reçu PDF du dossier ${r.reference}`}
+                    >
+                      <FileDown className="size-4" />
+                    </Button>
                   </div>
 
                   <dl className="mt-6 grid gap-4 text-sm sm:grid-cols-3">

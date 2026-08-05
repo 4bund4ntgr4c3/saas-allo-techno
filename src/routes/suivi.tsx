@@ -7,6 +7,7 @@ import {
   Boxes,
   CalendarClock,
   CheckCircle2,
+  FileDown,
   Package,
   RadioTower,
   ScanSearch,
@@ -15,8 +16,11 @@ import {
   Wrench,
 } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
+import { LeadForm } from "@/components/site/LeadForm";
+import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { Button } from "@/components/ui/button";
+import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
   type ReservationStatus,
@@ -156,10 +160,23 @@ function Suivi() {
             {error && (
               <div className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
                 <AlertCircle className="size-4 shrink-0" />
-                {error}
+                <div className="flex-1">
+                  {error}
+                  {tracking.error ? (
+                    <button
+                      type="button"
+                      onClick={() => void tracking.refetch()}
+                      className="ml-2 text-destructive underline"
+                    >
+                      Réessayer
+                    </button>
+                  ) : null}
+                </div>
               </div>
             )}
           </form>
+
+          {loading && <SuiviSkeleton />}
 
           {result && (
             <StatusResult
@@ -170,6 +187,17 @@ function Suivi() {
               ref={ref ?? ""}
             />
           )}
+
+          <div className="mt-10">
+            <LeadForm
+              source="suivi"
+              title="Besoin d'aide sur un dossier ?"
+              description="Indiquez votre numéro de dossier : l'équipe vous répond par téléphone ou WhatsApp."
+              showReference={false}
+              defaultReference={ref ?? ""}
+              successText="Demande enregistrée. Nous vous rappelons rapidement."
+            />
+          </div>
         </div>
       </section>
 
@@ -229,6 +257,28 @@ function StatusResult({
               minute: "2-digit",
             })}
           </p>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
+        <p className="max-w-sm text-sm text-muted-foreground">
+          Gardez ce code sous la main : scannez-le depuis votre téléphone pour
+          retrouver le dossier à tout moment.
+        </p>
+        <div className="flex flex-wrap items-center gap-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => downloadInvoicePdf(result)}
+          >
+            <FileDown className="mr-2 size-4" />
+            Télécharger le reçu (PDF)
+          </Button>
+          <QrCode
+            value={`https://allotechno.bj/suivi?ref=${result.reference}`}
+            label={`Dossier ${result.reference}`}
+            caption="QR code de suivi du dossier"
+          />
         </div>
       </div>
 
@@ -403,5 +453,31 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+function SuiviSkeleton() {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Chargement du dossier"
+      className="mt-8 space-y-6 border border-border bg-card p-8"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="h-6 w-48 animate-pulse rounded-sm bg-border" />
+        <div className="h-4 w-32 animate-pulse rounded-sm bg-border" />
+      </div>
+      <ol aria-hidden className="space-y-6">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <li key={i} className="flex items-center gap-5">
+            <div className="size-10 animate-pulse rounded-full bg-border" />
+            <div className="flex-1">
+              <div className="h-3 w-1/3 animate-pulse rounded-sm bg-border" />
+              <div className="mt-2 h-3 w-2/3 animate-pulse rounded-sm bg-border" />
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }

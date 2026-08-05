@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, Timer, Wrench } from "lucide-react";
+import { ArrowRight, Check, Clock, ShieldCheck, Star, Timer, Wrench } from "lucide-react";
 import { CategoryPicker } from "@/components/site/DeviceSearch";
 import {
   CtaBand,
@@ -39,50 +39,157 @@ const POPULAR = DEVICES.flatMap((d) =>
 
 function Home() {
   const navigate = useNavigate();
+
   return (
     <>
-      {/* Hero + sélecteur de type d'appareil */}
-      <section className="relative overflow-hidden pt-16 pb-24">
+      {/* Hero */}
+      <section className="relative overflow-hidden pt-16 pb-12">
         <div className="at-grid-lines pointer-events-none absolute inset-0 -z-10 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="at-in mb-12 max-w-3xl">
-            <span className="at-eyebrow mb-6 block">
-              {COMPANY.city} · {COMPANY.country}
-            </span>
-            <h1 className="at-display text-5xl text-balance md:text-7xl">
-              L'art de la précision
-              <br />à votre portée.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-pretty text-muted-foreground">
-              Réparation experte de smartphones, tablettes, MacBook, iMac, consoles et montres
-              connectées à Calavi. Pièces certifiées, résultats garantis.
-            </p>
-          </div>
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left: text */}
+            <div>
+              <span className="at-in at-eyebrow mb-6 block [animation-delay:50ms]">
+                Atelier certifié · {COMPANY.city}
+              </span>
+              <h1 className="at-in at-display max-w-2xl text-5xl text-balance [animation-delay:150ms] md:text-7xl">
+                Votre appareil réparé{" "}
+                <span className="bg-gradient-to-r from-primary via-amber-400 to-primary bg-clip-text font-extrabold text-transparent drop-shadow-[0_0_12px_oklch(0.68_0.19_38_/_0.4)]">
+                  aujourd'hui
+                </span>
+                ,<br />pas la semaine prochaine.
+              </h1>
+              <p className="at-in mt-6 max-w-xl text-lg text-pretty text-muted-foreground [animation-delay:250ms]">
+                Smartphones, tablettes, ordinateurs, MacBook, consoles et montres connectées.
+                Prix affiché avant démontage, garantie jusqu'à 6 mois, paiement Mobile Money.
+              </p>
+              <div className="at-in mt-8 flex flex-wrap gap-6 [animation-delay:350ms]">
+                {[
+                  { icon: Wrench, t: "Diagnostic gratuit" },
+                  { icon: Timer, t: "Express dès 25 min" },
+                  { icon: ShieldCheck, t: "Garantie jusqu'à 12 mois" },
+                ].map((i) => (
+                  <div key={i.t} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+                    <i.icon className="size-4 text-primary" />
+                    {i.t}
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <div className="at-in [animation-delay:150ms]">
-            <span className="at-eyebrow mb-3 block">Quel type d'appareil ?</span>
+            {/* Right: tracking card */}
+            <div className="at-in [animation-delay:200ms] flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-md">
+                {/* Floating badge: rating */}
+                <div className="absolute -top-6 -left-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.6s_both] rounded-lg border border-border bg-card px-4 py-3 shadow-lg transition-shadow hover:shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                      <Star className="size-4 fill-primary text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-foreground">4,9 / 5</div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">312 avis</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating badge: technicians */}
+                <div className="absolute -bottom-6 -right-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.8s_both] rounded-lg border border-border bg-card px-4 py-3 shadow-lg transition-shadow hover:shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                      <Wrench className="size-4 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-foreground">5 techniciens</div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">dont 1 microsoudure</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main card */}
+                <div className="rounded-xl border border-border bg-card p-6 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
+                  {/* Header */}
+                  <div className="mb-6 flex items-center justify-between border-b border-border pb-5">
+                    <span className="font-mono text-sm font-bold uppercase tracking-widest text-muted-foreground">AT-7K3M9Q</span>
+                    <span className="flex items-center gap-1.5 rounded-lg bg-success/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-success">
+                      <span className="size-1.5 rounded-full bg-success animate-pulse" />
+                      Prêt
+                    </span>
+                  </div>
+
+                  {/* Steps */}
+                  <div className="space-y-0">
+                    {[
+                      { label: "Reçu à l'atelier", time: "Lun 09:12" },
+                      { label: "Diagnostic terminé", time: "Lun 09:38" },
+                      { label: "Écran remplacé", time: "Lun 10:24" },
+                      { label: "Contrôle qualité", time: "Lun 10:51" },
+                      { label: "Prêt à récupérer", time: "Lun 11:03", current: true },
+                    ].map((step, i) => (
+                      <div
+                        key={step.label}
+                        className="flex items-start gap-3 animate-[slide-up_0.4s_var(--ease-precision)_both]"
+                        style={{ animationDelay: `${0.3 + i * 0.1}s` }}
+                      >
+                        <div className="flex flex-col items-center">
+                          {step.current ? (
+                            <div className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md shadow-primary/30 transition-transform duration-200 hover:scale-110">
+                              <Check className="size-3.5" strokeWidth={3} />
+                            </div>
+                          ) : (
+                            <div className="flex size-6 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors duration-200 hover:bg-primary/20 hover:text-primary">
+                              <Check className="size-3.5" strokeWidth={3} />
+                            </div>
+                          )}
+                          {i < 4 && <div className="my-0.5 w-px flex-1 bg-border transition-colors duration-300" />}
+                        </div>
+                        <div className="flex flex-1 items-center justify-between pb-4">
+                          <span className={`text-sm transition-colors duration-200 ${step.current ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                            {step.label}
+                          </span>
+                          <span className="font-mono text-xs text-muted-foreground">{step.time}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Summary */}
+                  <div className="mt-4 rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:bg-muted/50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-foreground">iPhone 13 · Écran</span>
+                      <span className="font-mono text-sm font-bold text-foreground">48 000 F CFA</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="size-3.5" />
+                        1 h 51 au total
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <ShieldCheck className="size-3.5" />
+                        Garanti 6 mois
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Catégories */}
+      <section className="border-y border-border bg-surface py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="at-in [animation-delay:200ms]">
+            <span className="at-eyebrow mb-3 block">Choisissez par catégorie</span>
             <CategoryPicker
               onSelect={(c) =>
                 navigate({ to: "/reparations", search: { categorie: c } })
               }
             />
             <p className="mt-4 text-xs text-muted-foreground">
-              Vous continuerez sur la page réparation pour choisir la marque, le modèle et le
-              créneau.
+              Vous continuerez sur la page réparation pour choisir la marque, le modèle et le créneau.
             </p>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-6">
-            {[
-              { icon: Wrench, t: "Diagnostic gratuit" },
-              { icon: Timer, t: "Express dès 25 min" },
-              { icon: ShieldCheck, t: "Garantie jusqu'à 12 mois" },
-            ].map((i) => (
-              <div key={i.t} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
-                <i.icon className="size-4 text-primary" />
-                {i.t}
-              </div>
-            ))}
           </div>
         </div>
       </section>

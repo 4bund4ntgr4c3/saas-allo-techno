@@ -7,11 +7,14 @@ import {
   Check,
   ChevronLeft,
   Clock,
+  ImagePlus,
+  Loader2,
   Search,
   Truck,
   Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
@@ -27,10 +30,12 @@ import { categoryMedia } from "@/data/device-media";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
 import { ContactForm } from "@/components/site/ContactForm";
 import { ProcessSteps, SectionHeader } from "@/components/site/Blocks";
+import { QrCode } from "@/components/site/QrCode";
 import { ReservationSummary } from "@/components/site/ReservationSummary";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
 import { createReservation } from "@/lib/reservations.functions";
+import { trackWizardEvent } from "@/lib/analytics";
 import {
   DOMICILE_HOURS_LABEL,
   HOURS_BY_PERIOD,
@@ -178,6 +183,84 @@ export function DeviceSearch({
   });
   const [ref, setRef] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+
+  // URLs de prévisualisation des photos (évite les fuites mémoire)
+  const previewUrls = useMemo(() => photos.map((f) => URL.createObjectURL(f)), [photos]);
+  useEffect(() => {
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [previewUrls]);
+
+  const DRAFT_KEY = "at-wizard-draft";
+
+  const [showDraftPrompt, setShowDraftPrompt] = useState(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return false;
+      const draft = JSON.parse(raw);
+      return Date.now() - draft.timestamp < 24 * 60 * 60 * 1000;
+    } catch {
+      return false;
+    }
+  });
+
+  const saveDraft = () => {
+    const draft = {
+      step,
+      category,
+      brand,
+      series,
+      family,
+      deviceSlug: device?.slug ?? null,
+      faults,
+      description,
+      mode,
+      date,
+      hour,
+      comeNow,
+      contact,
+      timestamp: Date.now(),
+    };
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {}
+  };
+
+  const restoreDraft = () => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return false;
+      const draft = JSON.parse(raw);
+      if (Date.now() - draft.timestamp > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(DRAFT_KEY);
+        return false;
+      }
+      setStep(draft.step);
+      setCategory(draft.category);
+      setBrand(draft.brand);
+      setSeries(draft.series);
+      setFamily(draft.family);
+      if (draft.deviceSlug) {
+        const d = deviceBySlug(draft.deviceSlug);
+        if (d) setDevice(d);
+      }
+      setFaults(draft.faults);
+      setDescription(draft.description);
+      setMode(draft.mode);
+      setDate(draft.date);
+      setHour(draft.hour);
+      setComeNow(draft.comeNow);
+      setContact(draft.contact);
+      localStorage.removeItem(DRAFT_KEY);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const clearDraft = () => localStorage.removeItem(DRAFT_KEY);
 
   // Pré-remplissage depuis les paramètres d'URL (liens « Réserver » → /reservation
   // → redirection ici) : appareil, panne, date et heure déjà connus.
@@ -212,6 +295,22 @@ export function DeviceSearch({
     if (prevStepRef.current === step) return;
     prevStepRef.current = step;
     stepContentRef.current?.focus({ preventScroll: true });
+    trackWizardEvent({
+      event: "step_viewed",
+      step,
+      ...(category ? { category } : {}),
+      ...(brand ? { brand } : {}),
+      ...(device?.name ? { device: device.name } : {}),
+    });
+    if (step === 8) {
+      trackWizardEvent({
+        event: "estimation_shown",
+        step: 8,
+        ...(category ? { category } : {}),
+        ...(brand ? { brand } : {}),
+        ...(device?.name ? { device: device.name } : {}),
+      });
+    }
   }, [step]);
 
   const availability = useSlotAvailability(mode, DAYS_AHEAD);
@@ -229,6 +328,11 @@ export function DeviceSearch({
       .flatMap((s) => HOURS_BY_PERIOD[s.period])
       .filter((h) => allowed.has(h) && !isPastSlot(date, h));
   }, [openDates, date, mode]);
+
+  // Auto-save draft on every change
+  useEffect(() => {
+    if (step > 0) saveDraft();
+  }, [step, category, brand, series, family, device, faults, description, mode, date, hour, comeNow, contact]);
 
   // Temps réel : libère l'heure sélectionnée si elle est prise entre-temps.
   useEffect(() => {
@@ -366,6 +470,14 @@ export function DeviceSearch({
     try {
       const row = await submit({ data: values });
       setRef(row.reference);
+      clearDraft();
+      trackWizardEvent({
+        event: "reservation_created",
+        step: 8,
+        ...(category ? { category } : {}),
+        ...(brand ? { brand } : {}),
+        ...(device?.name ? { device: device.name } : {}),
+      });
       toast.success(`Réservation enregistrée — dossier ${row.reference}`, {
         description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
       });
@@ -463,6 +575,35 @@ export function DeviceSearch({
           })}
         </ol>
       </nav>
+
+      {showDraftPrompt && step === 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border border-primary/30 bg-primary/5 p-4">
+          <p className="text-sm">
+            <strong>Reprendre votre dossier ?</strong> Votre progression a été sauvegardée.
+          </p>
+          <div className="flex gap-3">
+            <Button
+              size="sm"
+              onClick={() => {
+                restoreDraft();
+                setShowDraftPrompt(false);
+              }}
+            >
+              Reprendre
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                clearDraft();
+                setShowDraftPrompt(false);
+              }}
+            >
+              Recommencer
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="lg:grid lg:grid-cols-[1fr_320px] lg:items-start lg:gap-8">
         <div className="rounded-sm border border-border bg-card p-6 md:p-8">
@@ -1018,18 +1159,112 @@ export function DeviceSearch({
                 tabIndex={-1}
                 className="mt-6 border border-success/40 bg-success/10 p-4"
               >
-                <p className="text-sm font-bold">Dossier {ref} créé.</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Conservez ce numéro. Suivez l'avancement dans votre{" "}
-                  <Link to="/mon-compte" className="text-primary underline">
-                    espace client
-                  </Link>{" "}
-                  ou sur la page{" "}
-                  <Link to="/suivi" className="text-primary underline">
-                    Suivi
-                  </Link>
-                  . Pour un nouveau dossier, reprenez l'assistant ci-dessus.
-                </p>
+                <div className="flex flex-wrap items-start gap-6">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold">Dossier {ref} créé.</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Conservez ce numéro. Suivez l'avancement dans votre{" "}
+                      <Link to="/mon-compte" className="text-primary underline">
+                        espace client
+                      </Link>{" "}
+                      ou sur la page{" "}
+                      <Link to="/suivi" className="text-primary underline">
+                        Suivi
+                      </Link>
+                      . Pour un nouveau dossier, reprenez l'assistant ci-dessus.
+                    </p>
+                  </div>
+                  <QrCode
+                    value={`https://allotechno.bj/suivi?ref=${ref}`}
+                    label={`Suivi du dossier ${ref}`}
+                    caption="QR code de suivi du dossier"
+                  />
+                </div>
+                <div className="mt-6 border-t border-success/30 pt-4">
+                  <p className="mb-3 text-sm font-semibold">Photos de l'appareil (facultatif)</p>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    Envoyez une ou plusieurs photos pour accélérer le diagnostic.
+                  </p>
+                  <label
+                    htmlFor="photo-upload"
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
+                  >
+                    <ImagePlus className="size-4" />
+                    Ajouter des photos
+                  </label>
+                  <input
+                    id="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files ?? []);
+                      if (files.length > 0) setPhotos((prev) => [...prev, ...files].slice(0, 5));
+                    }}
+                  />
+                  {photos.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {photos.map((_f, i) => (
+                        <div key={i} className="relative size-16 rounded-sm border border-border bg-surface">
+                          <img
+                            src={previewUrls[i]}
+                            alt={`Photo ${i + 1}`}
+                            className="size-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
+                            className="absolute -right-2 -top-2 size-5 rounded-full bg-destructive text-xs text-white"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {photos.length > 0 && (
+                    <Button
+                      size="sm"
+                      className="mt-3"
+                      disabled={uploading}
+                      onClick={async () => {
+                        setUploading(true);
+                        try {
+                          const urls: string[] = [];
+                          for (const file of photos) {
+                            const ext = file.name.split(".").pop() ?? "jpg";
+                            const path = `uploads/${ref}/${crypto.randomUUID()}.${ext}`;
+                            const { error } = await supabase.storage
+                              .from("device-photos")
+                              .upload(path, file, { upsert: false });
+                            if (!error) {
+                              const { data } = supabase.storage
+                                .from("device-photos")
+                                .getPublicUrl(path);
+                              urls.push(data.publicUrl);
+                            }
+                          }
+                          setPhotoUrls(urls);
+                          setPhotos([]);
+                          toast.success(`${urls.length} photo(s) envoyée(s)`);
+                        } catch {
+                          toast.error("Erreur lors de l'envoi des photos");
+                        } finally {
+                          setUploading(false);
+                        }
+                      }}
+                    >
+                      {uploading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ImagePlus className="mr-2 size-4" />}
+                      {uploading ? "Envoi…" : `Envoyer ${photos.length} photo(s)`}
+                    </Button>
+                  )}
+                  {photoUrls.length > 0 && (
+                    <p className="mt-2 text-xs text-success">
+                      ✓ {photoUrls.length} photo(s) envoyée(s) avec succès.
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>

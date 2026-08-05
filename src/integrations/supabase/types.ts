@@ -14,6 +14,274 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_otp: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          secret: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          secret: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          secret?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          brand: string | null
+          category: string | null
+          created_at: string
+          device: string | null
+          event: string
+          id: string
+          session_id: string | null
+          step: number | null
+        }
+        Insert: {
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          device?: string | null
+          event: string
+          id?: string
+          session_id?: string | null
+          step?: number | null
+        }
+        Update: {
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          device?: string | null
+          event?: string
+          id?: string
+          session_id?: string | null
+          step?: number | null
+        }
+        Relationships: []
+      }
+      catalog_brands: {
+        Row: {
+          active: boolean
+          name: string
+          slug: string
+          sort: number
+          tag: string
+        }
+        Insert: {
+          active?: boolean
+          name: string
+          slug: string
+          sort?: number
+          tag?: string
+        }
+        Update: {
+          active?: boolean
+          name?: string
+          slug?: string
+          sort?: number
+          tag?: string
+        }
+        Relationships: []
+      }
+      catalog_categories: {
+        Row: {
+          active: boolean
+          label: string
+          slug: string
+          sort: number
+        }
+        Insert: {
+          active?: boolean
+          label: string
+          slug: string
+          sort?: number
+        }
+        Update: {
+          active?: boolean
+          label?: string
+          slug?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      catalog_devices: {
+        Row: {
+          active: boolean
+          brand_slug: string
+          category_slug: string
+          created_at: string
+          name: string
+          series: string
+          slug: string
+          sort: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          active?: boolean
+          brand_slug: string
+          category_slug: string
+          created_at?: string
+          name: string
+          series?: string
+          slug: string
+          sort?: number
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          active?: boolean
+          brand_slug?: string
+          category_slug?: string
+          created_at?: string
+          name?: string
+          series?: string
+          slug?: string
+          sort?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_devices_brand_slug_fkey"
+            columns: ["brand_slug"]
+            isOneToOne: false
+            referencedRelation: "catalog_brands"
+            referencedColumns: ["slug"]
+          },
+          {
+            foreignKeyName: "catalog_devices_category_slug_fkey"
+            columns: ["category_slug"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      catalog_faults: {
+        Row: {
+          device_slug: string
+          duration: string
+          id: number
+          label: string
+          part: string
+          price: number
+          slug: string
+          sort: number
+          warranty: string
+        }
+        Insert: {
+          device_slug: string
+          duration?: string
+          id?: number
+          label: string
+          part?: string
+          price?: number
+          slug: string
+          sort?: number
+          warranty?: string
+        }
+        Update: {
+          device_slug?: string
+          duration?: string
+          id?: number
+          label?: string
+          part?: string
+          price?: number
+          slug?: string
+          sort?: number
+          warranty?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_faults_device_slug_fkey"
+            columns: ["device_slug"]
+            isOneToOne: false
+            referencedRelation: "catalog_devices"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      catalog_photos: {
+        Row: {
+          alt: string
+          device_slug: string
+          id: number
+          sort: number
+          url: string
+        }
+        Insert: {
+          alt?: string
+          device_slug: string
+          id?: number
+          sort?: number
+          url: string
+        }
+        Update: {
+          alt?: string
+          device_slug?: string
+          id?: number
+          sort?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_photos_device_slug_fkey"
+            columns: ["device_slug"]
+            isOneToOne: false
+            referencedRelation: "catalog_devices"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          message: string | null
+          name: string | null
+          phone: string | null
+          reference: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          reference?: string | null
+          source: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          reference?: string | null
+          source?: string
+          status?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -40,6 +308,54 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reservation_attachments: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          kind: string
+          reservation_id: string
+          stage: string
+          uploaded_by: string | null
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          reservation_id: string
+          stage?: string
+          uploaded_by?: string | null
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          reservation_id?: string
+          stage?: string
+          uploaded_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_attachments_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservation_attachments_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reservation_status_history: {
         Row: {
@@ -85,6 +401,7 @@ export type Database = {
           customer_name: string
           device: string
           email: string | null
+          estimated_delivery: string | null
           id: string
           issue: string
           message: string | null
@@ -125,6 +442,7 @@ export type Database = {
           customer_name?: string
           device?: string
           email?: string | null
+          estimated_delivery?: string | null
           id?: string
           issue?: string
           message?: string | null
@@ -159,6 +477,48 @@ export type Database = {
           weekday?: number
         }
         Relationships: []
+      }
+      technician_assignments: {
+        Row: {
+          assigned_by: string | null
+          created_at: string
+          id: string
+          note: string | null
+          reservation_id: string
+          technician_id: string | null
+        }
+        Insert: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          reservation_id: string
+          technician_id?: string | null
+        }
+        Update: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          reservation_id?: string
+          technician_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technician_assignments_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technician_assignments_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -226,6 +586,10 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       next_reservation_reference: { Args: never; Returns: string }
+      set_user_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _user_id: string }
+        Returns: boolean
+      }
       slot_availability: {
         Args: { _from: string; _to: string; _mode?: string }
         Returns: {
@@ -243,9 +607,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      technician_set_reservation_status: {
+        Args: {
+          _note?: string
+          _reservation_id: string
+          _status: Database["public"]["Enums"]["reservation_status"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      app_role: "admin" | "staff" | "user"
+      app_role: "admin" | "staff" | "technicien" | "user"
       reservation_status:
         | "en_attente"
         | "confirmee"
@@ -383,7 +755,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "staff", "user"],
+      app_role: ["admin", "staff", "technicien", "user"],
       reservation_status: [
         "en_attente",
         "confirmee",

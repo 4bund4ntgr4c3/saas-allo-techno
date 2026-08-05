@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowRight, Clock, ShieldCheck } from "lucide-react";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
+import { LeadForm } from "@/components/site/LeadForm";
 import { Button } from "@/components/ui/button";
 import { BRANDS, DEVICES, devicesOfBrand, formatFcfa } from "@/data/catalog";
 
@@ -182,9 +183,19 @@ function Devis() {
             title="Nous réparons aussi les appareils hors catalogue"
             text="Décrivez votre panne lors de la réservation : nous vous rappelons avec un devis personnalisé sous 15 minutes ouvrées."
           />
-          <Button asChild variant="technical">
-            <Link to="/reservation">Demander un devis personnalisé</Link>
-          </Button>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <Button asChild variant="technical" className="self-start">
+              <Link to="/reservation">Demander un devis personnalisé</Link>
+            </Button>
+            <LeadForm
+              source="devis"
+              title="Demande de devis personnalisé"
+              messageLabel="Appareil et panne"
+              messagePlaceholder="Ex. : iPhone 12 — l'écran ne répond plus après une chute…"
+              showReference={false}
+              successText="Votre demande est enregistrée. Nous vous rappelons sous 15 minutes ouvrées."
+            />
+          </div>
         </div>
       </section>
 

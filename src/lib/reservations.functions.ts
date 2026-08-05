@@ -40,7 +40,9 @@ export const createReservation = createServerFn({ method: "POST" })
         slot_hour: data.heure ? data.heure : null,
         message: message ? message : null,
       })
-      .select("id, reference, slot_date, slot_period, status")
+      .select(
+        "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
+      )
       .single();
 
     if (error) {
@@ -60,6 +62,12 @@ export const createReservation = createServerFn({ method: "POST" })
             : "La réservation n'a pas pu être enregistrée. Réessayez.";
       throw new Error(message);
     }
+
+    const { notifyReservationCreated, notifyStaffNewReservation } = await import(
+      "@/lib/notifications"
+    );
+    void notifyReservationCreated(row);
+    void notifyStaffNewReservation(row);
 
     return row;
   });

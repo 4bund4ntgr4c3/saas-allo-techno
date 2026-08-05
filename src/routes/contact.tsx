@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { CtaBand, MobileMoneyBar } from "@/components/site/Blocks";
+import { LeadForm } from "@/components/site/LeadForm";
 import { COMPANY } from "@/data/catalog";
 
 export const Route = createFileRoute("/contact")({
@@ -118,6 +119,25 @@ function Contact() {
 
         <div className="mx-auto mt-12 max-w-7xl px-4 sm:px-6">
           <MobileMoneyBar />
+        </div>
+      </section>
+
+      <section className="border-t border-border py-16">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-2">
+          <div>
+            <span className="at-eyebrow mb-4 block">Écrivez-nous</span>
+            <h2 className="at-display text-3xl">Envoyez un message</h2>
+            <p className="mt-4 max-w-md text-sm text-muted-foreground">
+              Une question sur une réparation, un prix, un accessoire ? Nous
+              répondons rapidement — généralement sous une heure ouvrée.
+            </p>
+          </div>
+          <LeadForm
+            source="contact"
+            title="Contact direct"
+            description="Message envoyé directement à l'équipe de l'atelier."
+            successText="Merci ! Nous revenons vers vous rapidement."
+          />
         </div>
       </section>
 

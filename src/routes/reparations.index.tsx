@@ -59,7 +59,7 @@ export const Route = createFileRoute("/reparations/")({
 });
 
 function Reparations() {
-  const { categorie, device, panne, date, creneau, heure } = Route.useSearch();
+  const { categorie, device, panne, date, heure } = Route.useSearch();
   return (
     <>
       <section className="border-b border-border py-14">

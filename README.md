@@ -61,3 +61,25 @@ Le projet s'appuie sur Supabase. Les variables d'environnement suivantes sont at
 - `VITE_SUPABASE_URL` / `SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (côté serveur uniquement)
+
+### Notifications (e-mail Resend + WhatsApp Meta)
+
+Les notifications sont optionnelles : sans clé, le site fonctionne normalement
+(rien n'est envoyé, les tentatives sont loggées côté serveur).
+
+- `RESEND_API_KEY` — clé API [Resend](https://resend.com/api-keys). Expéditeur
+  configurable via `RESEND_FROM` (par défaut `Allô Techno <noreply@…>`).
+  **Action requise côté Resend** : vérifier le domaine de l'expéditeur (DNS
+  `SPF`/`DKIM`) avant la mise en production.
+- `WHATSAPP_TOKEN` — jeton d'accès Meta (WhatsApp Cloud API, généré dans
+  WhatsApp Manager → Configuration de l'API).
+- `WHATSAPP_PHONE_NUMBER_ID` — identifiant du numéro WhatsApp utilisé pour
+  l'envoi.
+  **Action requise côté Meta** : les messages initiés par l'entreprise doivent
+  utiliser un **modèle approuvé** (WhatsApp Manager → Modèles). Sans modèle,
+  l'envoi texte direct fonctionne uniquement vers les numéros de test du compte
+  ou dans la fenêtre de session client (24 h).
+
+Canaux activés automatiquement : confirmation de réservation, changement de
+statut, reprogrammation du rendez-vous (client), alerte interne à l'équipe
+(nouveau dossier).

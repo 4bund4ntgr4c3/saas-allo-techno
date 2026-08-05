@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { Enums } from "@/integrations/supabase/types";
 import { isPastSlot, toIsoDate } from "@/lib/reservation-schema";
+import type { ReservationEvent } from "@/lib/notifications";
 
 const lookupSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise"),
@@ -16,6 +17,9 @@ const rescheduleSchema = z.object({
 
 export type ReservationStatus = {
   reference: string;
+  customer_name: string;
+  phone: string;
+  email: string | null;
   device: string;
   issue: string;
   mode: string;
@@ -45,7 +49,7 @@ export const getReservationStatus = createServerFn({ method: "POST" })
       const { data: row, error } = await supabaseAdmin
         .from("reservations")
         .select(
-          "reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
+          "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
         )
         .eq("reference", data.reference)
         .maybeSingle();
@@ -102,7 +106,7 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
       })
       .eq("id", row.id)
       .select(
-        "reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
+        "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
       )
       .single();
 
@@ -125,6 +129,9 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
       );
     }
 
+    const { notifyReservationRescheduled } = await import("@/lib/notifications");
+    void notifyReservationRescheduled(updated as ReservationEvent);
+
     return updated as ReservationStatus;
   });
 
@@ -141,7 +148,7 @@ export const getReservationTracking = createServerFn({ method: "POST" })
       const { data: row, error } = await supabaseAdmin
         .from("reservations")
         .select(
-          "reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
+          "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
         )
         .eq("reference", data.reference)
         .maybeSingle();
