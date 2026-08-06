@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
-import { COMPANY, REVIEWS, STEPS, formatFcfa } from "@/data/catalog";
+import { REVIEWS, STEPS } from "@/data/catalog/static";
+import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 
 export function SectionHeader({

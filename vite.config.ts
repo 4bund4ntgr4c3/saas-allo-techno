@@ -40,6 +40,19 @@ export default defineConfig(async ({ mode }) => {
       host: "::",
       port: 8080,
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            // Regrouper les données du catalogue (DEVICES, marques, helpers) dans
+            // un chunk dédié, chargé uniquement par les routes qui en ont besoin —
+            // pas dans le bundle initial du premier rendu.
+            if (id.includes("/src/data/catalog/")) return "catalog";
+            return undefined;
+          },
+        },
+      },
+    },
     plugins: [
       tanstackStart({
         importProtection: {

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BRANDS, DEVICES, POSTS, ACCESSORIES } from "@/data/catalog";
 
 const STATIC_PATHS = [
   "/",
@@ -23,7 +22,8 @@ const STATIC_PATHS = [
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: ({ request }) => {
+      GET: async ({ request }) => {
+        const { BRANDS, DEVICES, POSTS, ACCESSORIES } = await import("@/data/catalog");
         const origin = new URL(request.url).origin;
         const urls = [
           ...STATIC_PATHS,

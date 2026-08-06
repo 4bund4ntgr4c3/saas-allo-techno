@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
-import { absoluteUrl } from "@/data/catalog";
+import { absoluteUrl } from "@/data/catalog/company";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   PERIOD_LABEL,

@@ -17,7 +17,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
-  CATEGORIES,
   DEVICES,
   brandName,
   deviceBySlug,
@@ -80,32 +79,10 @@ const DEPOSIT_OPTIONS: { value: DepositMode; label: string; hint: string }[] = [
  * Sélecteur de catégorie d'appareil (grille d'icônes). Réutilisé sur la page
  * d'accueil (redirige vers /reparations) et à l'étape 1 de l'assistant.
  */
-export function CategoryPicker({ onSelect }: { onSelect: (category: string) => void }) {
-  return (
-    <div className="grid grid-cols-2 gap-px bg-border md:grid-cols-3">
-      {CATEGORIES.map((c) => {
-        const media = categoryMedia(c);
-        const Icon = media?.icon;
-        return (
-          <button
-            key={c}
-            type="button"
-            onClick={() => onSelect(c)}
-            className="group flex flex-col items-start gap-3 bg-card p-5 text-left transition-colors hover:bg-surface"
-          >
-            <span className="flex size-14 items-center justify-center rounded-sm border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-              {Icon && <Icon className="size-7" strokeWidth={1.5} />}
-            </span>
-            <span className="text-sm font-bold tracking-tight">{c}</span>
-            <span className="font-mono text-[10px] uppercase text-muted-foreground">
-              {media?.hint}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+// La grille de catégories vit dans un fichier autonome pour ne pas tirer le
+// catalogue complet quand la page d'accueil l'importe.
+import { CategoryPicker } from "./CategoryPicker";
+export { CategoryPicker };
 
 /**
  * Carte flottante de suivi : une seule ligne qui se met à jour au fil des

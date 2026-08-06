@@ -60,7 +60,9 @@ Le projet s'appuie sur Supabase. Les variables d'environnement suivantes sont at
 
 - `VITE_SUPABASE_URL` / `SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (côté serveur uniquement)
+- `SUPABASE_SECRET_KEY` (côté serveur uniquement ; l'ancien nom
+  `SUPABASE_SERVICE_ROLE_KEY` reste accepté pour compatibilité)
+- `TRACKING_CODE_PEPPER` — sel de hachage des codes de suivi (côté serveur)
 
 ### Notifications (e-mail Resend + WhatsApp Meta)
 

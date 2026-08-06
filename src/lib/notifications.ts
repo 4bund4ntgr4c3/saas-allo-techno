@@ -14,7 +14,7 @@
 // modèle configuré, l'envoi texte direct fonctionne uniquement dans la fenêtre
 // de session client de 24 h ou vers les numéros de test du compte.
 
-import { COMPANY } from "@/data/catalog";
+import { COMPANY } from "@/data/catalog/company";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import type { Enums } from "@/integrations/supabase/types";
 

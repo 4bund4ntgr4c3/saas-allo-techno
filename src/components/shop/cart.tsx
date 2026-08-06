@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ACCESSORIES, type Accessory } from "@/data/catalog";
+import { ACCESSORIES, type Accessory } from "@/data/catalog/accessories";
 
 const STORAGE_KEY = "at-cart";
 

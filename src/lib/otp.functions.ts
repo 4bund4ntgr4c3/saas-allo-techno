@@ -3,7 +3,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
-import { COMPANY } from "@/data/catalog";
+import { COMPANY } from "@/data/catalog/company";
 import { generateTotpSecret, otpauthUri, verifyTotp } from "@/lib/totp";
 import { rateLimit } from "@/lib/security";
 

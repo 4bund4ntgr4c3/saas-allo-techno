@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+﻿import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -7,16 +7,22 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, Suspense, lazy, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
-import { COMPANY } from "@/data/catalog";
+import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
-import { SearchModal } from "@/components/site/SearchModal";
 import { supabase } from "@/integrations/supabase/client";
+
+// La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
+// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargÃ©e
+// juste avant/sur le premier besoin (voir RootComponent).
+const SearchModal = lazy(() =>
+  import("@/components/site/SearchModal").then((m) => ({ default: m.SearchModal })),
+);
 
 function NotFoundComponent() {
   return (
@@ -25,7 +31,7 @@ function NotFoundComponent() {
         <h1 className="at-display text-7xl">404</h1>
         <h2 className="mt-4 text-xl font-bold tracking-tight">Page introuvable</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Cette page n'existe pas ou a été déplacée.
+          Cette page n'existe pas ou a Ã©tÃ© dÃ©placÃ©e.
         </p>
         <div className="mt-6">
           <Link
@@ -59,7 +65,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
           >
-            Réessayer
+            RÃ©essayer
           </button>
           <a
             href="/"
@@ -78,13 +84,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Allô Techno — Réparation d'appareils à Abomey-Calavi" },
+      { title: "AllÃ´ Techno â€” RÃ©paration d'appareils Ã  Abomey-Calavi" },
       {
         name: "description",
         content:
-          "Réparation de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi, Bénin.",
+          "RÃ©paration de smartphones, tablettes, MacBook, iMac, consoles et montres connectÃ©es Ã  Abomey-Calavi, BÃ©nin.",
       },
-      { property: "og:site_name", content: "Allô Techno" },
+      { property: "og:site_name", content: "AllÃ´ Techno" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_BJ" },
       { property: "og:url", content: COMPANY.url },
@@ -110,13 +116,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "LocalBusiness",
           name: COMPANY.name,
           description:
-            "Atelier de réparation de smartphones, tablettes, ordinateurs, consoles et montres connectées.",
+            "Atelier de rÃ©paration de smartphones, tablettes, ordinateurs, consoles et montres connectÃ©es.",
           telephone: COMPANY.phone,
           email: COMPANY.email,
           priceRange: "3.500 - 195.000 FCFA",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Quartier Zogbadjè, Rue de l'Université",
+            streetAddress: "Quartier ZogbadjÃ¨, Rue de l'UniversitÃ©",
             addressLocality: COMPANY.city,
             addressCountry: "BJ",
           },
@@ -174,7 +180,9 @@ function RootComponent() {
           <Outlet />
         </main>
         <Footer />
-        <SearchModal />
+        <Suspense fallback={null}>
+          <SearchModal />
+        </Suspense>
         <Toaster />
       </CartProvider>
     </QueryClientProvider>

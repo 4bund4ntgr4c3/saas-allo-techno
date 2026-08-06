@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
-import { COMPANY } from "@/data/catalog";
+import { COMPANY } from "@/data/catalog/company";
 import { OPEN_SCHEDULE, isOpenNow } from "@/lib/reservation-schema";
 
 function OpenNow() {

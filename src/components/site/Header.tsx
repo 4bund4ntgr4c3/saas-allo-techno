@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, Moon, Search, ShoppingBag, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { COMPANY } from "@/data/catalog";
+import { COMPANY } from "@/data/catalog/company";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/shop/cart";

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, Clock, ShieldCheck, Star, Timer, Wrench } from "lucide-react";
-import { CategoryPicker } from "@/components/site/DeviceSearch";
+import { CategoryPicker } from "@/components/site/CategoryPicker";
 import {
   CtaBand,
   MobileMoneyBar,
@@ -9,7 +9,8 @@ import {
   SectionHeader,
   TrustStats,
 } from "@/components/site/Blocks";
-import { BRANDS, COMPANY, DEVICES, REVIEWS, absoluteUrl, formatFcfa } from "@/data/catalog";
+import { BRANDS, REVIEWS } from "@/data/catalog/static";
+import { COMPANY, absoluteUrl, formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -36,9 +37,111 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const POPULAR = DEVICES.flatMap((d) =>
-  d.faults.slice(0, 1).map((f) => ({ device: d, fault: f })),
-).slice(0, 8);
+// Réparations populaires — équivalent statique de
+// DEVICES.flatMap(d => d.faults.slice(0,1)).slice(0,8) calculé sur les 8
+// premiers appareils du catalogue. On évite ainsi d'importer tout le catalogue
+// de données (~500 Ko) dans le bundle du premier rendu : les liens mènent
+// vers les pages /appareil/$slug qui, elles, chargent le catalogue en lazy.
+const POPULAR: {
+  device: { slug: string; name: string };
+  fault: {
+    slug: string;
+    label: string;
+    price: number;
+    duration: string;
+    warranty: string;
+    part: string;
+  };
+}[] = [
+  {
+    device: { slug: "infinix-smart-5", name: "Infinix Smart 5" },
+    fault: {
+      slug: "ecran",
+      label: "Écran complet",
+      price: 15000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-smart-6", name: "Infinix Smart 6" },
+    fault: {
+      slug: "ecran",
+      label: "Écran complet",
+      price: 18000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-smart-7", name: "Infinix Smart 7" },
+    fault: {
+      slug: "ecran",
+      label: "Écran complet",
+      price: 18000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-hot-10", name: "Infinix Hot 10" },
+    fault: {
+      slug: "ecran",
+      label: 'Écran IPS LCD 6.82"',
+      price: 22000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-hot-10-play", name: "Infinix Hot 10 Play" },
+    fault: {
+      slug: "ecran",
+      label: 'Écran IPS LCD 6.82"',
+      price: 20000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-hot-10s", name: "Infinix Hot 10S" },
+    fault: {
+      slug: "ecran",
+      label: 'Écran IPS LCD 6.82" 90Hz',
+      price: 25000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-hot-11", name: "Infinix Hot 11" },
+    fault: {
+      slug: "ecran",
+      label: 'Écran IPS LCD 6.78" FHD+',
+      price: 28000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+  {
+    device: { slug: "infinix-hot-11-play", name: "Infinix Hot 11 Play" },
+    fault: {
+      slug: "ecran",
+      label: 'Écran IPS LCD 6.82"',
+      price: 25000,
+      duration: "40 min",
+      warranty: "3 mois",
+      part: "Écran compatible",
+    },
+  },
+];
 
 function Home() {
   const navigate = useNavigate();

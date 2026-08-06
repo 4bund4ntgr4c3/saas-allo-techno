@@ -3,8 +3,7 @@
 
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { COMPANY, formatFcfa } from "@/data/catalog";
-import { searchDevices } from "@/lib/catalog-search";
+import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { computeEstimate } from "@/lib/estimate";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import type { ReservationEvent } from "@/lib/notifications";
@@ -25,7 +24,8 @@ export type InvoiceRow = Pick<
   | "status"
 >;
 
-function invoiceEstimate(deviceName: string, issueLabel: string) {
+async function invoiceEstimate(deviceName: string, issueLabel: string) {
+  const { searchDevices } = await import("@/lib/catalog-search");
   const device = searchDevices(deviceName)[0]?.device;
   const fault = device?.faults.find(
     (f) => f.label.toLowerCase() === issueLabel.trim().toLowerCase(),
@@ -34,8 +34,8 @@ function invoiceEstimate(deviceName: string, issueLabel: string) {
 }
 
 /** Reçu / facture PDF d'un dossier (remis au client à la restitution). */
-export function downloadInvoicePdf(r: InvoiceRow) {
-  const { estimate, found } = invoiceEstimate(r.device, r.issue);
+export async function downloadInvoicePdf(r: InvoiceRow) {
+  const { estimate, found } = await invoiceEstimate(r.device, r.issue);
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const margin = 18;
