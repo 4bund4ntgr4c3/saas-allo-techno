@@ -2,11 +2,16 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 
 import { reservationInputSchema } from "./reservation-schema";
+import { generateTrackingCode, hashTrackingCode, rateLimit } from "./security";
 
 export const createReservation = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => reservationInputSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("reservation-create", 8)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
 
     let userId: string | null = null;
     const authHeader = getRequestHeader("authorization");
@@ -17,10 +22,12 @@ export const createReservation = createServerFn({ method: "POST" })
       userId = typeof sub === "string" ? sub : null;
     }
 
-    const message = [
-      data.heure ? `Heure souhaitée : ${data.heure}` : "",
-      data.message ?? "",
-    ]
+    // Code de suivi secret : seul le client le reçoit (confirmation + notifications),
+    // seule son empreinte poivrée est stockée.
+    const trackingCode = generateTrackingCode();
+    const trackingCodeHash = await hashTrackingCode(trackingCode);
+
+    const message = [data.heure ? `Heure souhaitée : ${data.heure}` : "", data.message ?? ""]
       .filter(Boolean)
       .join("\n");
 
@@ -39,6 +46,7 @@ export const createReservation = createServerFn({ method: "POST" })
         slot_period: data.creneau,
         slot_hour: data.heure ? data.heure : null,
         message: message ? message : null,
+        tracking_code_hash: trackingCodeHash,
       })
       .select(
         "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
@@ -63,11 +71,10 @@ export const createReservation = createServerFn({ method: "POST" })
       throw new Error(message);
     }
 
-    const { notifyReservationCreated, notifyStaffNewReservation } = await import(
-      "@/lib/notifications"
-    );
-    void notifyReservationCreated(row);
+    const { notifyReservationCreated, notifyStaffNewReservation } =
+      await import("@/lib/notifications");
+    void notifyReservationCreated({ ...row, tracking_code: trackingCode });
     void notifyStaffNewReservation(row);
 
-    return row;
+    return { ...row, tracking_code: trackingCode };
   });

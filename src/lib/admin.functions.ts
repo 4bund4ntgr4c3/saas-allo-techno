@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import type { Enums } from "@/integrations/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+import { rateLimit } from "@/lib/security";
 
 const setStatusSchema = z.object({
   id: z.string().uuid(),
@@ -18,6 +21,39 @@ const setStatusSchema = z.object({
   note: z.string().trim().max(500).optional(),
 });
 
+const OTP_WINDOW_MS = 24 * 3600 * 1000;
+
+async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const authHeader = getRequestHeader("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  let userId: string | null = null;
+  if (token) {
+    const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
+    const sub = claimsData?.claims?.sub;
+    userId = typeof sub === "string" ? sub : null;
+  }
+  if (!userId) throw new Error("Non authentifié");
+  return userId;
+}
+
+/**
+ * Vérifie la double authentification serveur : si l'utilisateur a activé un
+ * TOTP, il doit l'avoir confirmé il y a moins de 24 h. Empêche un JWT volé de
+ * contourner la 2FA côté client.
+ */
+async function requireFreshOtp(supabaseAdmin: SupabaseClient<Database>, userId: string) {
+  const { data: otp } = await supabaseAdmin
+    .from("admin_otp")
+    .select("enabled, verified_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (!otp?.enabled) return;
+  const verifiedAt = otp.verified_at ? new Date(otp.verified_at).getTime() : 0;
+  if (Date.now() - verifiedAt > OTP_WINDOW_MS) {
+    throw new Error("Sécurité : confirmez votre code d'authentification pour continuer.");
+  }
+}
+
 /**
  * Changement de statut d'un dossier par le personnel : délègue au RPC
  * PostgreSQL (historique + contrôles), puis notifie le client (e-mail +
@@ -28,15 +64,12 @@ export const setReservationStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const authHeader = getRequestHeader("authorization");
-    const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-    let userId: string | null = null;
-    if (token) {
-      const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
-      const sub = claimsData?.claims?.sub;
-      userId = typeof sub === "string" ? sub : null;
+    if (!rateLimit("admin-status", 30)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    if (!userId) throw new Error("Non authentifié");
+
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
 
     const { data: staff, error: staffError } = await supabaseAdmin.rpc("is_staff", {
       _user_id: userId,
@@ -47,14 +80,11 @@ export const setReservationStatus = createServerFn({ method: "POST" })
         _role: "technicien",
       });
       if (techError || !isTech) throw new Error("Action non autorisée sur ce dossier");
-      const { error: techRpcError } = await supabaseAdmin.rpc(
-        "technician_set_reservation_status",
-        {
-          _reservation_id: data.id,
-          _status: data.status,
-          ...(data.note ? { _note: data.note } : {}),
-        },
-      );
+      const { error: techRpcError } = await supabaseAdmin.rpc("technician_set_reservation_status", {
+        _reservation_id: data.id,
+        _status: data.status,
+        ...(data.note ? { _note: data.note } : {}),
+      });
       if (techRpcError) {
         console.error("[admin] technician set status failed", techRpcError);
         throw new Error(techRpcError.message);

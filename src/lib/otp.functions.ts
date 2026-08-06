@@ -5,14 +5,16 @@ import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { COMPANY } from "@/data/catalog";
 import { generateTotpSecret, otpauthUri, verifyTotp } from "@/lib/totp";
+import { rateLimit } from "@/lib/security";
 
 const codeSchema = z.object({
-  code: z.string().trim().regex(/^\d{6}$/, "Code à 6 chiffres requis"),
+  code: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, "Code à 6 chiffres requis"),
 });
 
-async function currentUserId(
-  supabaseAdmin: SupabaseClient<Database>,
-): Promise<string> {
+async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
   if (!token) throw new Error("Non authentifié");
@@ -22,9 +24,7 @@ async function currentUserId(
   return sub;
 }
 
-async function adminOnly(
-  supabaseAdmin: SupabaseClient<Database>,
-): Promise<string> {
+async function adminOnly(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
   const userId = await currentUserId(supabaseAdmin);
 
   const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
@@ -77,7 +77,7 @@ export const confirmOtp = createServerFn({ method: "POST" })
 
     const { error: updateError } = await supabaseAdmin
       .from("admin_otp")
-      .update({ enabled: true })
+      .update({ enabled: true, verified_at: new Date().toISOString() })
       .eq("user_id", userId);
     if (updateError) throw new Error("Impossible d'activer la double authentification.");
     return true;
@@ -119,11 +119,21 @@ export const verifyOtpLogin = createServerFn({ method: "POST" })
       return false;
     }
 
+    if (!rateLimit("otp-verify", 10)) return false;
+
     const { data: row } = await supabaseAdmin
       .from("admin_otp")
       .select("secret, enabled")
       .eq("user_id", userId)
       .maybeSingle();
     if (!row?.enabled) return true;
-    return verifyTotp(row.secret, data.code);
+
+    const ok = await verifyTotp(row.secret, data.code);
+    if (ok) {
+      await supabaseAdmin
+        .from("admin_otp")
+        .update({ verified_at: new Date().toISOString() })
+        .eq("user_id", userId);
+    }
+    return ok;
   });

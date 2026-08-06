@@ -17,6 +17,7 @@ import { rescheduleReservation } from "@/lib/suivi.functions";
 
 type Props = {
   reference: string;
+  code?: string;
   mode: DepositMode;
   current: { date: string; hour: string | null };
   onDone: () => void;
@@ -26,8 +27,10 @@ type Props = {
  * Panneau de reprogrammation : mêmes créneaux en temps réel que l'assistant de
  * réservation (jours ouverts selon les horaires du mode, heures déjà prises
  * barrées, mises à jour en direct via Realtime).
+ * `code` est le code de suivi secret (requis côté public) ; en espace client
+ * authentifié, l'authentification tient lieu de preuve de propriété.
  */
-export function ReschedulePanel({ reference, mode, current, onDone }: Props) {
+export function ReschedulePanel({ reference, code = "", mode, current, onDone }: Props) {
   const submit = useServerFn(rescheduleReservation);
   const availability = useSlotAvailability(mode);
   const [date, setDate] = useState<string | null>(null);
@@ -53,7 +56,7 @@ export function ReschedulePanel({ reference, mode, current, onDone }: Props) {
     setSaving(true);
     try {
       await submit({
-        data: { reference, date, creneau: periodOfHour(hour), heure: hour },
+        data: { reference, code, date, creneau: periodOfHour(hour), heure: hour },
       });
       toast.success("Rendez-vous reprogrammé", {
         description: `${formatDateFr(date)} à ${hour} — confirmation envoyée.`,

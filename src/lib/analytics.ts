@@ -1,7 +1,8 @@
 // Suivi d'événements anonymes (parcours de réservation) — best-effort :
 // jamais bloquant, jamais envoyé si un problème réseau survient.
+// Les données sont enregistrées via une server function (validation + rate limit).
 
-import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics.functions";
 
 let sessionId: string | null = null;
 
@@ -25,15 +26,7 @@ export function trackWizardEvent(opts: {
   brand?: string;
   device?: string;
 }) {
-  const { event, step, category, brand, device } = opts;
-  void supabase.from("analytics_events").insert({
-    event,
-    step: step ?? null,
-    category: category ?? null,
-    brand: brand ?? null,
-    device: device ?? null,
-    session_id: session(),
-  }).then(({ error }) => {
-    if (error) console.warn("[analytics] insert failed", error.message);
+  void trackEvent({ data: { ...opts, session_id: session() } }).catch(() => {
+    // best-effort : jamais bloquant
   });
 }

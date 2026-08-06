@@ -21,6 +21,7 @@ export type Database = {
           secret: string
           updated_at: string
           user_id: string
+          verified_at: string | null
         }
         Insert: {
           created_at?: string
@@ -28,6 +29,7 @@ export type Database = {
           secret: string
           updated_at?: string
           user_id: string
+          verified_at?: string | null
         }
         Update: {
           created_at?: string
@@ -35,6 +37,7 @@ export type Database = {
           secret?: string
           updated_at?: string
           user_id?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -414,6 +417,7 @@ export type Database = {
           slot_period: Database["public"]["Enums"]["slot_period"]
           staff_notes: string | null
           status: Database["public"]["Enums"]["reservation_status"]
+          tracking_code_hash: string | null
           updated_at: string
           user_id: string | null
         }
@@ -434,6 +438,7 @@ export type Database = {
           slot_period: Database["public"]["Enums"]["slot_period"]
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["reservation_status"]
+          tracking_code_hash?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -455,6 +460,7 @@ export type Database = {
           slot_period?: Database["public"]["Enums"]["slot_period"]
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["reservation_status"]
+          tracking_code_hash?: string | null
           updated_at?: string
           user_id?: string | null
         }

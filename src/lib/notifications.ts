@@ -20,6 +20,7 @@ import type { Enums } from "@/integrations/supabase/types";
 
 export type ReservationEvent = {
   reference: string;
+  tracking_code?: string | null;
   customer_name: string;
   email: string | null;
   phone: string;
@@ -117,16 +118,24 @@ function shell(title: string, blocks: string[]): string {
 }
 
 function reservationSummary(r: ReservationEvent): string {
-  return [
+  const lines = [
     `Dossier : <strong>${r.reference}</strong>`,
     `Appareil : <strong>${r.device}</strong> (${r.issue})`,
     `Rendez-vous : <strong>${formatDateFr(r.slot_date)}</strong>, ${PERIOD_LABEL[r.slot_period]}${
       r.slot_hour ? ` à ${r.slot_hour}` : ""
     }`,
     `Statut : ${STATUS_LABEL[r.status]}`,
-  ]
-    .map((line) => `<p style="margin:4px 0;font-size:14px">${line}</p>`)
-    .join("");
+  ];
+  if (r.tracking_code) {
+    lines.push(
+      `Code de suivi : <strong>${r.tracking_code}</strong> (à garder pour consulter le dossier)`,
+    );
+  }
+  return lines.map((line) => `<p style="margin:4px 0;font-size:14px">${line}</p>`).join("");
+}
+
+function trackingLink(r: ReservationEvent): string {
+  return `https://allotechno.bj/suivi?ref=${r.reference}${r.tracking_code ? `&code=${r.tracking_code}` : ""}`;
 }
 
 /** Confirmation d'une réservation : e-mail client + WhatsApp client. */
@@ -135,7 +144,10 @@ export async function notifyReservationCreated(r: ReservationEvent): Promise<voi
   const waBody = [
     `Bonjour ${r.customer_name}, votre réservation ${r.reference} (${r.device}) est confirmée.`,
     `Rendez-vous le ${formatDateFr(r.slot_date)} à ${r.slot_hour ?? PERIOD_LABEL[r.slot_period].toLowerCase()}.`,
-    `Suivez votre dossier : https://allotechno.bj/suivi?ref=${r.reference}`,
+    ...(r.tracking_code
+      ? [`Votre code de suivi : ${r.tracking_code} (à garder précieusement).`]
+      : []),
+    `Suivez votre dossier : ${trackingLink(r)}`,
     `${COMPANY.name} — ${COMPANY.phone}`,
   ].join("\n");
 
@@ -143,7 +155,7 @@ export async function notifyReservationCreated(r: ReservationEvent): Promise<voi
     const html = shell(sujet, [
       `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, merci pour votre confiance. Voici le récapitulatif de votre dossier :</p>`,
       reservationSummary(r),
-      `<p style="font-size:14px">Consultez l'avancement à tout moment : <a href="https://allotechno.bj/suivi?ref=${r.reference}">suivre mon dossier</a></p>`,
+      `<p style="font-size:14px">Consultez l'avancement à tout moment : <a href="${trackingLink(r)}">suivre mon dossier</a></p>`,
       `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
     ]);
     await sendEmail(r.email, sujet, html);
@@ -204,7 +216,7 @@ export async function notifyReservationStatusChanged(r: ReservationEvent): Promi
   const sujet = `Dossier ${r.reference} — ${STATUS_LABEL[r.status]}`;
   let waBody = [
     `Bonjour ${r.customer_name}, votre dossier ${r.reference} (${r.device}) est maintenant : ${STATUS_LABEL[r.status]}.`,
-    `Détails : https://allotechno.bj/suivi?ref=${r.reference}`,
+    `Détails : ${trackingLink(r)}`,
   ].join("\n");
 
   if (r.status === "pret") {
@@ -227,7 +239,7 @@ export async function notifyReservationRescheduled(r: ReservationEvent): Promise
   const waBody = [
     `Bonjour ${r.customer_name}, votre rendez-vous ${r.reference} a été reprogrammé.`,
     `Nouveau créneau : ${formatDateFr(r.slot_date)} à ${r.slot_hour ?? PERIOD_LABEL[r.slot_period].toLowerCase()}.`,
-    `Détails : https://allotechno.bj/suivi?ref=${r.reference}`,
+    `Détails : ${trackingLink(r)}`,
   ].join("\n");
 
   if (r.email) {

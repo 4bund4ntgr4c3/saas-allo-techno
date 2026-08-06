@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 const leadSchema = z.object({
   source: z.enum(["devis", "contact", "suivi"]),
@@ -21,6 +22,10 @@ export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => leadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("lead-submit", 3)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
 
     const reference = data.reference || null;
     const { error } = await supabaseAdmin.from("leads").insert({

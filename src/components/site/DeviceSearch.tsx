@@ -14,7 +14,6 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
@@ -35,6 +34,7 @@ import { ReservationSummary } from "@/components/site/ReservationSummary";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
 import { createReservation } from "@/lib/reservations.functions";
+import { getDevicePhotoUpload } from "@/lib/photos.functions";
 import { trackWizardEvent } from "@/lib/analytics";
 import {
   DOMICILE_HOURS_LABEL,
@@ -165,6 +165,7 @@ export function DeviceSearch({
   initialHeure?: string | null;
 }) {
   const submit = useServerFn(createReservation);
+  const getPhotoUpload = useServerFn(getDevicePhotoUpload);
   const [step, setStep] = useState(initialCategory ? 1 : 0);
   const [category, setCategory] = useState<string | null>(initialCategory ?? null);
   const [brand, setBrand] = useState<string | null>(null);
@@ -182,6 +183,7 @@ export function DeviceSearch({
     paiement: "mtn",
   });
   const [ref, setRef] = useState<string | null>(null);
+  const [trackingCode, setTrackingCode] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -332,7 +334,21 @@ export function DeviceSearch({
   // Auto-save draft on every change
   useEffect(() => {
     if (step > 0) saveDraft();
-  }, [step, category, brand, series, family, device, faults, description, mode, date, hour, comeNow, contact]);
+  }, [
+    step,
+    category,
+    brand,
+    series,
+    family,
+    device,
+    faults,
+    description,
+    mode,
+    date,
+    hour,
+    comeNow,
+    contact,
+  ]);
 
   // Temps réel : libère l'heure sélectionnée si elle est prise entre-temps.
   useEffect(() => {
@@ -470,6 +486,7 @@ export function DeviceSearch({
     try {
       const row = await submit({ data: values });
       setRef(row.reference);
+      setTrackingCode(row.tracking_code ?? null);
       clearDraft();
       trackWizardEvent({
         event: "reservation_created",
@@ -1162,20 +1179,35 @@ export function DeviceSearch({
                 <div className="flex flex-wrap items-start gap-6">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold">Dossier {ref} créé.</p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Conservez ce numéro. Suivez l'avancement dans votre{" "}
+                    {trackingCode && (
+                      <p className="mt-2">
+                        <span className="at-eyebrow mb-1 block">Code de suivi</span>
+                        <span className="inline-block rounded-sm border border-primary/50 bg-primary/10 px-3 py-1 font-mono text-sm font-bold tracking-[0.2em] text-primary">
+                          {trackingCode}
+                        </span>
+                      </p>
+                    )}
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      Conservez ce numéro et ce code. Suivez l'avancement dans votre{" "}
                       <Link to="/mon-compte" className="text-primary underline">
                         espace client
                       </Link>{" "}
                       ou sur la page{" "}
-                      <Link to="/suivi" className="text-primary underline">
+                      <Link
+                        to="/suivi"
+                        search={{
+                          ...(ref ? { ref } : {}),
+                          ...(trackingCode ? { code: trackingCode } : {}),
+                        }}
+                        className="text-primary underline"
+                      >
                         Suivi
                       </Link>
                       . Pour un nouveau dossier, reprenez l'assistant ci-dessus.
                     </p>
                   </div>
                   <QrCode
-                    value={`https://allotechno.bj/suivi?ref=${ref}`}
+                    value={`https://allotechno.bj/suivi?ref=${ref}${trackingCode ? `&code=${trackingCode}` : ""}`}
                     label={`Suivi du dossier ${ref}`}
                     caption="QR code de suivi du dossier"
                   />
@@ -1206,7 +1238,10 @@ export function DeviceSearch({
                   {photos.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {photos.map((_f, i) => (
-                        <div key={i} className="relative size-16 rounded-sm border border-border bg-surface">
+                        <div
+                          key={i}
+                          className="relative size-16 rounded-sm border border-border bg-surface"
+                        >
                           <img
                             src={previewUrls[i]}
                             alt={`Photo ${i + 1}`}
@@ -1227,27 +1262,39 @@ export function DeviceSearch({
                     <Button
                       size="sm"
                       className="mt-3"
-                      disabled={uploading}
+                      disabled={uploading || !trackingCode}
                       onClick={async () => {
                         setUploading(true);
                         try {
-                          const urls: string[] = [];
+                          const ok: string[] = [];
                           for (const file of photos) {
-                            const ext = file.name.split(".").pop() ?? "jpg";
-                            const path = `uploads/${ref}/${crypto.randomUUID()}.${ext}`;
-                            const { error } = await supabase.storage
-                              .from("device-photos")
-                              .upload(path, file, { upsert: false });
-                            if (!error) {
-                              const { data } = supabase.storage
-                                .from("device-photos")
-                                .getPublicUrl(path);
-                              urls.push(data.publicUrl);
+                            try {
+                              const prepared = await getPhotoUpload({
+                                data: {
+                                  reference: ref as string,
+                                  code: trackingCode as string,
+                                  fileName: file.name,
+                                  contentType: file.type,
+                                  fileSize: file.size,
+                                },
+                              });
+                              const res = await fetch(prepared.signedUrl, {
+                                method: "PUT",
+                                headers: {
+                                  "Content-Type": file.type,
+                                  "x-upsert": "false",
+                                },
+                                body: file,
+                              });
+                              if (!res.ok) throw new Error(`Upload ${res.status}`);
+                              ok.push(prepared.path);
+                            } catch {
+                              toast.error(`Impossible d'envoyer « ${file.name} »`);
                             }
                           }
-                          setPhotoUrls(urls);
+                          setPhotoUrls(ok);
                           setPhotos([]);
-                          toast.success(`${urls.length} photo(s) envoyée(s)`);
+                          toast.success(`${ok.length} photo(s) envoyée(s)`);
                         } catch {
                           toast.error("Erreur lors de l'envoi des photos");
                         } finally {
@@ -1255,7 +1302,11 @@ export function DeviceSearch({
                         }
                       }}
                     >
-                      {uploading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ImagePlus className="mr-2 size-4" />}
+                      {uploading ? (
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                      ) : (
+                        <ImagePlus className="mr-2 size-4" />
+                      )}
                       {uploading ? "Envoi…" : `Envoyer ${photos.length} photo(s)`}
                     </Button>
                   )}

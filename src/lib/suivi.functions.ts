@@ -1,19 +1,26 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import type { Enums } from "@/integrations/supabase/types";
 import { isPastSlot, toIsoDate } from "@/lib/reservation-schema";
 import type { ReservationEvent } from "@/lib/notifications";
+import { rateLimit, verifyTrackingCode } from "@/lib/security";
 
 const lookupSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise"),
+  code: z.string().trim().min(1, "Code de suivi requis").max(20),
 });
 
 const rescheduleSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise"),
+  code: z.string().trim().max(20).optional().or(z.literal("")),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choisissez une date"),
   creneau: z.enum(["matin", "apres-midi"]),
   heure: z.string().regex(/^\d{2}:\d{2}$/, "Choisissez une heure"),
 });
+
+const RESERVATION_FIELDS =
+  "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at";
 
 export type ReservationStatus = {
   reference: string;
@@ -38,6 +45,16 @@ export type TimelineEntry = {
   created_at: string;
 };
 
+/** Masque les données personnelles d'une réservation (vue publique sans code). */
+function publicReservation(row: ReservationStatus): ReservationStatus {
+  return {
+    ...row,
+    customer_name: "Client",
+    phone: "",
+    email: null,
+  };
+}
+
 export const getReservationStatus = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => lookupSchema.parse(data))
   .handler(
@@ -46,11 +63,13 @@ export const getReservationStatus = createServerFn({ method: "POST" })
     }): Promise<{ found: true; reservation: ReservationStatus } | { found: false }> => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+      if (!rateLimit("suivi-lookup", 30)) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
+
       const { data: row, error } = await supabaseAdmin
         .from("reservations")
-        .select(
-          "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
-        )
+        .select(`${RESERVATION_FIELDS}, tracking_code_hash`)
         .eq("reference", data.reference)
         .maybeSingle();
 
@@ -61,23 +80,32 @@ export const getReservationStatus = createServerFn({ method: "POST" })
 
       if (!row) return { found: false };
 
-      return { found: true, reservation: row as ReservationStatus };
+      const valid = await verifyTrackingCode(data.code, row.tracking_code_hash);
+      const { tracking_code_hash: _hash, ...reservation } = row;
+
+      if (!valid) return { found: true, reservation: publicReservation(reservation) };
+
+      return { found: true, reservation: reservation as ReservationStatus };
     },
   );
 
 /**
  * Reprogramme le rendez-vous d'un dossier (date + heure). La validation du
  * créneau (capacité par mode, dates passées, doublons d'heure) est appliquée
- * par les triggers PostgreSQL côté serveur.
+ * par les triggers PostgreSQL côté serveur. Le code de suivi secret est requis.
  */
 export const rescheduleReservation = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => rescheduleSchema.parse(data))
   .handler(async ({ data }): Promise<ReservationStatus> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    if (!rateLimit("suivi-reschedule", 5)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
     const { data: row, error } = await supabaseAdmin
       .from("reservations")
-      .select("id, status")
+      .select("id, status, user_id, tracking_code_hash")
       .eq("reference", data.reference)
       .maybeSingle();
 
@@ -86,6 +114,22 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
       throw new Error("Impossible de vérifier ce dossier. Réessayez plus tard.");
     }
     if (!row) throw new Error("Dossier introuvable. Vérifiez la référence.");
+
+    // Preuve de propriété : code de suivi secret, OU session connectée du client propriétaire.
+    const codeOk = await verifyTrackingCode(data.code ?? "", row.tracking_code_hash);
+    let ownerOk = false;
+    if (!codeOk && row.user_id) {
+      const authHeader = getRequestHeader("authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        const token = authHeader.slice(7);
+        const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
+        const sub = claimsData?.claims?.sub;
+        ownerOk = typeof sub === "string" && sub === row.user_id;
+      }
+    }
+    if (!codeOk && !ownerOk) {
+      throw new Error("Code de suivi invalide. Vérifiez le code reçu à la réservation.");
+    }
 
     if (row.status !== "en_attente" && row.status !== "confirmee") {
       throw new Error("Ce dossier ne peut plus être reprogrammé — la réparation est déjà engagée.");
@@ -105,9 +149,7 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
         slot_hour: data.heure,
       })
       .eq("id", row.id)
-      .select(
-        "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
-      )
+      .select(RESERVATION_FIELDS)
       .single();
 
     if (updateError) {
@@ -145,11 +187,13 @@ export const getReservationTracking = createServerFn({ method: "POST" })
     > => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+      if (!rateLimit("suivi-lookup", 30)) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
+
       const { data: row, error } = await supabaseAdmin
         .from("reservations")
-        .select(
-          "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, created_at",
-        )
+        .select(`${RESERVATION_FIELDS}, tracking_code_hash`)
         .eq("reference", data.reference)
         .maybeSingle();
 
@@ -160,6 +204,9 @@ export const getReservationTracking = createServerFn({ method: "POST" })
 
       if (!row) return { found: false };
 
+      const valid = await verifyTrackingCode(data.code, row.tracking_code_hash);
+      const { tracking_code_hash: _hash, ...reservation } = row;
+
       const { data: timeline, error: timelineError } = await supabaseAdmin.rpc(
         "get_reservation_timeline",
         { _reference: data.reference },
@@ -169,7 +216,9 @@ export const getReservationTracking = createServerFn({ method: "POST" })
 
       return {
         found: true,
-        reservation: row as ReservationStatus,
+        reservation: valid
+          ? (reservation as ReservationStatus)
+          : publicReservation(reservation as ReservationStatus),
         timeline: (timeline ?? []) as TimelineEntry[],
       };
     },

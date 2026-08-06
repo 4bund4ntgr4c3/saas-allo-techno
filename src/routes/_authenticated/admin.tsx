@@ -21,12 +21,7 @@ import { Button } from "@/components/ui/button";
 import { QrCode } from "@/components/site/QrCode";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import { setReservationStatus } from "@/lib/admin.functions";
-import {
-  confirmOtp,
-  disableOtp,
-  enrollOtp,
-  verifyOtpLogin,
-} from "@/lib/otp.functions";
+import { confirmOtp, disableOtp, enrollOtp, verifyOtpLogin } from "@/lib/otp.functions";
 import {
   downloadInvoicePdf,
   downloadReservationsCsv,
@@ -98,7 +93,9 @@ function AdminPage() {
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [tab, setTab] = useState<"dossiers" | "equipe" | "leads" | "analytics" | "securite">("dossiers");
+  const [tab, setTab] = useState<"dossiers" | "equipe" | "leads" | "analytics" | "securite">(
+    "dossiers",
+  );
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
     Number(sessionStorage.getItem("at-otp-unlocked") ?? 0),
@@ -153,10 +150,7 @@ function AdminPage() {
       if (rError) throw rError;
       const ids = roles.map((r) => r.user_id);
       if (ids.length === 0) return [];
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name")
-        .in("id", ids);
+      const { data, error } = await supabase.from("profiles").select("id, full_name").in("id", ids);
       if (error) throw error;
       return data;
     },
@@ -241,8 +235,17 @@ function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
     },
-    onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Mise à jour impossible";
+      if (message.includes("code d'authentification")) {
+        // La 2FA a expiré côté serveur : on re-demande le code OTP.
+        sessionStorage.removeItem("at-otp-unlocked");
+        setOtpUnlockedAt(0);
+        toast.error("Veuillez confirmer votre code d'authentification.");
+      } else {
+        toast.error(message);
+      }
+    },
   });
 
   // Flux temps réel : toute modification faite par un autre technicien remonte immédiatement.
@@ -300,10 +303,7 @@ function AdminPage() {
           Votre compte n'a pas les droits d'administration sur les dossiers de réparation.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button
-            disabled={claimAdmin.isPending}
-            onClick={() => claimAdmin.mutate()}
-          >
+          <Button disabled={claimAdmin.isPending} onClick={() => claimAdmin.mutate()}>
             Devenir administrateur
           </Button>
           <Button asChild variant="outline">
@@ -323,10 +323,12 @@ function AdminPage() {
         <KeyRound className="size-10 text-primary" />
         <h1 className="text-2xl font-semibold">Double authentification</h1>
         <p className="text-sm text-muted-foreground">
-          Votre compte est protégé par un code à 6 chiffres généré par votre
-          application d'authentification.
+          Votre compte est protégé par un code à 6 chiffres généré par votre application
+          d'authentification.
         </p>
-        <label htmlFor="otp-code" className="sr-only">Code OTP</label>
+        <label htmlFor="otp-code" className="sr-only">
+          Code OTP
+        </label>
         <input
           id="otp-code"
           className={`${field} w-full max-w-xs text-center font-mono text-lg tracking-widest`}
@@ -352,7 +354,10 @@ function AdminPage() {
     );
   }
 
-  const latestTechByReservation = new Map<string, { technician_id: string | null; created_at: string }>();
+  const latestTechByReservation = new Map<
+    string,
+    { technician_id: string | null; created_at: string }
+  >();
   for (const a of assignments.data ?? []) {
     if (!latestTechByReservation.has(a.reservation_id)) {
       latestTechByReservation.set(a.reservation_id, {
@@ -441,157 +446,165 @@ function AdminPage() {
 
       {tab === "dossiers" && (
         <>
-      <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
-        <label htmlFor="admin-search" className="sr-only">Rechercher</label>
-        <input
-          id="admin-search"
-          className={field}
-          placeholder="Rechercher (référence, client, appareil)"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <label htmlFor="filter-status" className="sr-only">Filtrer par statut</label>
-        <select
-          id="filter-status"
-          className={field}
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as Status | "toutes")}
-        >
-          <option value="toutes">Tous les statuts</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {STATUS_LABEL[s]}
-            </option>
-          ))}
-        </select>
-        {!isTechnicien && (
-          <>
-            <label htmlFor="filter-tech" className="sr-only">Filtrer par technicien</label>
-            <select
-              id="filter-tech"
+          <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+            <label htmlFor="admin-search" className="sr-only">
+              Rechercher
+            </label>
+            <input
+              id="admin-search"
               className={field}
-              value={techFilter}
-              onChange={(e) => setTechFilter(e.target.value)}
+              placeholder="Rechercher (référence, client, appareil)"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <label htmlFor="filter-status" className="sr-only">
+              Filtrer par statut
+            </label>
+            <select
+              id="filter-status"
+              className={field}
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as Status | "toutes")}
             >
-              <option value="tous">Tous les techniciens</option>
-              <option value="non-assigne">Non assigné</option>
-              {(technicians.data ?? []).map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.full_name ?? "Technicien"}
+              <option value="toutes">Tous les statuts</option>
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {STATUS_LABEL[s]}
                 </option>
               ))}
             </select>
-          </>
-        )}
-      </div>
-
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={rows.length === 0}
-          onClick={() => downloadReservationsCsv(rows)}
-        >
-          <FileDown className="mr-2 size-4" />
-          Exporter CSV ({rows.length})
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={rows.length === 0}
-          onClick={() => downloadReservationsPdf(rows)}
-        >
-          <FileDown className="mr-2 size-4" />
-          Exporter PDF ({rows.length})
-        </Button>
-        <span className="text-xs text-muted-foreground">
-          Export des dossiers affichés (filtres appliqués)
-        </span>
-      </div>
-
-      {reservations.isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement des dossiers…</p>
-      ) : rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Aucun dossier ne correspond à ce filtre.</p>
-      ) : (
-        <ul className="space-y-4">
-          {rows.map((r) => (
-            <li key={r.id} className="rounded-sm border border-border bg-card p-5">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
-                  <h2 className="text-lg font-semibold">
-                    {r.customer_name} — {r.device}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
-                  </p>
-                </div>
-                <span
-                  className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
+            {!isTechnicien && (
+              <>
+                <label htmlFor="filter-tech" className="sr-only">
+                  Filtrer par technicien
+                </label>
+                <select
+                  id="filter-tech"
+                  className={field}
+                  value={techFilter}
+                  onChange={(e) => setTechFilter(e.target.value)}
                 >
-                  {STATUS_LABEL[r.status]}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => downloadInvoicePdf(r)}
-                  aria-label={`Reçu PDF du dossier ${r.reference}`}
-                >
-                  <FileDown className="size-4" />
-                </Button>
-              </div>
+                  <option value="tous">Tous les techniciens</option>
+                  <option value="non-assigne">Non assigné</option>
+                  {(technicians.data ?? []).map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.full_name ?? "Technicien"}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+          </div>
 
-              <StageControls
-                current={r.status}
-                pending={updateStatus.isPending}
-                onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
-                historyOpen={openId === r.id}
-                onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
-              />
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={rows.length === 0}
+              onClick={() => downloadReservationsCsv(rows)}
+            >
+              <FileDown className="mr-2 size-4" />
+              Exporter CSV ({rows.length})
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={rows.length === 0}
+              onClick={() => downloadReservationsPdf(rows)}
+            >
+              <FileDown className="mr-2 size-4" />
+              Exporter PDF ({rows.length})
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Export des dossiers affichés (filtres appliqués)
+            </span>
+          </div>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-                <Wrench className="size-3.5 text-muted-foreground" />
-                <span className="text-muted-foreground">Technicien :</span>
-                {isTechnicien ? (
-                  <strong>
-                    {latestTechByReservation.get(r.id)?.technician_id === user.id
-                      ? "Vous"
-                      : "Non assigné à vous"}
-                  </strong>
-                ) : (
-                  <select
-                    className={`${field} max-w-56 py-1.5 text-xs`}
-                    value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
-                    disabled={assignTech.isPending}
-                    onChange={(e) =>
-                      assignTech.mutate({ reservationId: r.id, technicianId: e.target.value })
-                    }
-                  >
-                    <option value="">Non assigné</option>
-                    {(technicians.data ?? []).map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.full_name ?? "Technicien"}
-                      </option>
-                    ))}
-                  </select>
-                )}
-                <span className="text-muted-foreground">
-                  {latestTechByReservation.get(r.id)
-                    ? technicianName.get(
-                        latestTechByReservation.get(r.id)?.technician_id ?? "",
-                      ) ?? ""
-                    : ""}
-                </span>
-              </div>
+          {reservations.isLoading ? (
+            <p className="text-sm text-muted-foreground">Chargement des dossiers…</p>
+          ) : rows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Aucun dossier ne correspond à ce filtre.
+            </p>
+          ) : (
+            <ul className="space-y-4">
+              {rows.map((r) => (
+                <li key={r.id} className="rounded-sm border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
+                      <h2 className="text-lg font-semibold">
+                        {r.customer_name} — {r.device}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
+                    >
+                      {STATUS_LABEL[r.status]}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => downloadInvoicePdf(r)}
+                      aria-label={`Reçu PDF du dossier ${r.reference}`}
+                    >
+                      <FileDown className="size-4" />
+                    </Button>
+                  </div>
 
-              {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
-            </li>
-          ))}
-        </ul>
-      )}
-      </>
+                  <StageControls
+                    current={r.status}
+                    pending={updateStatus.isPending}
+                    onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
+                    historyOpen={openId === r.id}
+                    onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
+                  />
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                    <Wrench className="size-3.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Technicien :</span>
+                    {isTechnicien ? (
+                      <strong>
+                        {latestTechByReservation.get(r.id)?.technician_id === user.id
+                          ? "Vous"
+                          : "Non assigné à vous"}
+                      </strong>
+                    ) : (
+                      <select
+                        className={`${field} max-w-56 py-1.5 text-xs`}
+                        value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
+                        disabled={assignTech.isPending}
+                        onChange={(e) =>
+                          assignTech.mutate({ reservationId: r.id, technicianId: e.target.value })
+                        }
+                      >
+                        <option value="">Non assigné</option>
+                        {(technicians.data ?? []).map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.full_name ?? "Technicien"}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <span className="text-muted-foreground">
+                      {latestTechByReservation.get(r.id)
+                        ? (technicianName.get(
+                            latestTechByReservation.get(r.id)?.technician_id ?? "",
+                          ) ?? "")
+                        : ""}
+                    </span>
+                  </div>
+
+                  {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
       )}
 
       {tab === "equipe" && <TeamSection />}
@@ -864,13 +877,7 @@ function TeamSection() {
   });
 
   const setRole = useMutation({
-    mutationFn: async ({
-      userId,
-      role,
-    }: {
-      userId: string;
-      role: Enums<"app_role">;
-    }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: Enums<"app_role"> }) => {
       const { error } = await supabase.rpc("set_user_role", {
         _user_id: userId,
         _role: role,
@@ -889,9 +896,7 @@ function TeamSection() {
     return <p className="text-sm text-muted-foreground">Chargement de l'équipe…</p>;
   }
 
-  const rolesByUser = new Map(
-    (members.data?.roles ?? []).map((r) => [r.user_id, r.role]),
-  );
+  const rolesByUser = new Map((members.data?.roles ?? []).map((r) => [r.user_id, r.role]));
 
   return (
     <div>
@@ -903,7 +908,10 @@ function TeamSection() {
         {(members.data?.profiles ?? []).map((p) => {
           const role = rolesByUser.get(p.id) ?? "user";
           return (
-            <li key={p.id} className="flex flex-wrap items-center justify-between gap-4 border border-border bg-card p-4">
+            <li
+              key={p.id}
+              className="flex flex-wrap items-center justify-between gap-4 border border-border bg-card p-4"
+            >
               <div className="min-w-0">
                 <p className="font-medium">{p.full_name ?? "Sans nom"}</p>
                 <p className="text-xs text-muted-foreground">{p.email ?? p.phone ?? p.id}</p>
@@ -984,8 +992,7 @@ function SecuritySection() {
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Code invalide"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Code invalide"),
   });
 
   const disable = useMutation({
@@ -996,8 +1003,7 @@ function SecuritySection() {
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Code invalide"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Code invalide"),
   });
 
   const enrolling = pendingSecret !== null;
@@ -1103,9 +1109,7 @@ function AnalyticsSection() {
   const counts = useQuery({
     queryKey: ["analytics-counts"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("analytics_events")
-        .select("event");
+      const { data, error } = await supabase.from("analytics_events").select("event");
       if (error) throw error;
       const map = new Map<string, number>();
       for (const row of data ?? []) {
@@ -1133,10 +1137,7 @@ function AnalyticsSection() {
         <h2 className="mb-4 text-xl font-semibold">Vue d'ensemble</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {(counts.data ?? []).map((c) => (
-            <div
-              key={c.event}
-              className="border border-border bg-card p-4 text-center"
-            >
+            <div key={c.event} className="border border-border bg-card p-4 text-center">
               <p className="text-2xl font-bold">{c.count}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {EVENT_LABEL[c.event] ?? c.event}
@@ -1158,10 +1159,7 @@ function AnalyticsSection() {
             </thead>
             <tbody>
               {(events.data ?? []).slice(0, 50).map((e, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-border last:border-b-0 hover:bg-surface"
-                >
+                <tr key={i} className="border-b border-border last:border-b-0 hover:bg-surface">
                   <td className="px-4 py-2">
                     <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                       {EVENT_LABEL[e.event] ?? e.event}

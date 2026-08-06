@@ -34,8 +34,11 @@ import {
 } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/suivi")({
-  validateSearch: (search: Record<string, unknown>): { ref?: string } =>
-    typeof search["ref"] === "string" ? { ref: search["ref"] as string } : {},
+  validateSearch: (search: Record<string, unknown>): { ref?: string; code?: string } => {
+    const ref = typeof search["ref"] === "string" ? search["ref"] : undefined;
+    const code = typeof search["code"] === "string" ? search["code"] : undefined;
+    return { ...(ref ? { ref } : {}), ...(code ? { code } : {}) };
+  },
 
   head: () => ({
     meta: [
@@ -90,22 +93,26 @@ const MILESTONE_INDEX: Record<string, number> = {
 };
 
 function Suivi() {
-  const { ref } = Route.useSearch();
+  const { ref, code } = Route.useSearch();
   const router = useRouter();
   const [reference, setReference] = useState(ref ?? "");
+  const [codeInput, setCodeInput] = useState(code ?? "");
   const fetchTracking = useServerFn(getReservationTracking);
 
   useEffect(() => {
     if (ref) setReference(ref);
   }, [ref]);
+  useEffect(() => {
+    if (code) setCodeInput(code);
+  }, [code]);
 
   const tracking = useQuery({
-    queryKey: ["suivi", ref],
-    enabled: Boolean(ref),
+    queryKey: ["suivi", ref, code],
+    enabled: Boolean(ref) && Boolean(code),
     // Le dossier est public : on rafraîchit en continu pour refléter le travail de l'atelier.
     refetchInterval: 10_000,
     refetchIntervalInBackground: false,
-    queryFn: () => fetchTracking({ data: { reference: ref as string } }),
+    queryFn: () => fetchTracking({ data: { reference: ref as string, code: code as string } }),
   });
 
   const loading = tracking.isFetching && !tracking.data;
@@ -118,11 +125,16 @@ function Suivi() {
       : "Erreur inattendue"
     : data && !data.found
       ? "Dossier introuvable. Vérifiez la référence."
-      : null;
+      : !code
+        ? "Saisissez votre code de suivi pour consulter le dossier."
+        : null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.navigate({ to: "/suivi", search: { ref: reference.trim() } });
+    router.navigate({
+      to: "/suivi",
+      search: { ref: reference.trim(), code: codeInput.trim() },
+    });
   };
 
   return (
@@ -157,6 +169,23 @@ function Suivi() {
                 <span className="ml-2 hidden sm:inline">Vérifier</span>
               </Button>
             </div>
+            <label htmlFor="code" className="at-eyebrow mt-5 mb-2 block">
+              Code de suivi
+            </label>
+            <div className="flex gap-3">
+              <input
+                id="code"
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                placeholder="ex. K7M2Q9XW3B"
+                autoComplete="off"
+                className="h-11 flex-1 rounded-sm border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Le code de suivi vous a été communiqué à la réservation (e-mail, WhatsApp) et figure
+              sur votre reçu.
+            </p>
             {error && (
               <div className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
                 <AlertCircle className="size-4 shrink-0" />
@@ -185,6 +214,7 @@ function Suivi() {
               live={tracking.isFetching}
               updatedAt={tracking.dataUpdatedAt}
               ref={ref ?? ""}
+              code={code ?? ""}
             />
           )}
 
@@ -212,12 +242,14 @@ function StatusResult({
   live,
   updatedAt,
   ref,
+  code,
 }: {
   result: ReservationStatus;
   timeline: TimelineEntry[];
   live: boolean;
   updatedAt: number;
   ref: string;
+  code: string;
 }) {
   const queryClient = useQueryClient();
   const [rescheduling, setRescheduling] = useState(false);
@@ -262,20 +294,16 @@ function StatusResult({
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
         <p className="max-w-sm text-sm text-muted-foreground">
-          Gardez ce code sous la main : scannez-le depuis votre téléphone pour
-          retrouver le dossier à tout moment.
+          Gardez ce code sous la main : scannez-le depuis votre téléphone pour retrouver le dossier
+          à tout moment.
         </p>
         <div className="flex flex-wrap items-center gap-6">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => downloadInvoicePdf(result)}
-          >
+          <Button variant="outline" size="sm" onClick={() => downloadInvoicePdf(result)}>
             <FileDown className="mr-2 size-4" />
             Télécharger le reçu (PDF)
           </Button>
           <QrCode
-            value={`https://allotechno.bj/suivi?ref=${result.reference}`}
+            value={`https://allotechno.bj/suivi?ref=${result.reference}&code=${code}`}
             label={`Dossier ${result.reference}`}
             caption="QR code de suivi du dossier"
           />
@@ -406,11 +434,12 @@ function StatusResult({
       {rescheduling && (
         <ReschedulePanel
           reference={result.reference}
+          code={code}
           mode={(result.mode as DepositMode) ?? "boutique"}
           current={{ date: result.slot_date, hour: result.slot_hour }}
           onDone={() => {
             setRescheduling(false);
-            queryClient.invalidateQueries({ queryKey: ["suivi", ref] });
+            queryClient.invalidateQueries({ queryKey: ["suivi", ref, code] });
           }}
         />
       )}
