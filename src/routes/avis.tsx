@@ -9,7 +9,7 @@ export const Route = createFileRoute("/avis")({
       {
         name: "description",
         content:
-          "Plus de 12 400 appareils réparés et 4,9/5 de satisfaction : lisez les avis vérifiés des clients Allô Techno à Abomey-Calavi et Cotonou.",
+          "Plus de 5 000 appareils réparés et 4,8/5 de satisfaction : lisez les avis vérifiés des clients Allô Techno à Abomey-Calavi et Cotonou.",
       },
       { property: "og:title", content: "Avis clients — Allô Techno" },
       {

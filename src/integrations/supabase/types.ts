@@ -592,6 +592,7 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       next_reservation_reference: { Args: never; Returns: string }
+      next_shop_reference: { Args: never; Returns: string }
       set_user_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _user_id: string }
         Returns: boolean

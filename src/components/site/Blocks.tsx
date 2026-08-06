@@ -123,10 +123,10 @@ export function CtaBand() {
 
 export function TrustStats() {
   const stats = [
-    { v: "12 400+", l: "Appareils réparés" },
+    { v: "5 000+", l: "Appareils réparés" },
     { v: "35 min", l: "Délai moyen smartphone" },
-    { v: "180+", l: "Pièces en stock" },
-    { v: "4,9/5", l: "Satisfaction client" },
+    { v: "200+", l: "Pièces en stock" },
+    { v: "4,8/5", l: "Satisfaction client" },
   ];
   return (
     <div className="grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-4">

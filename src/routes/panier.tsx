@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { CheckCircle2, ShoppingBag, Trash2 } from "lucide-react";
+import { CheckCircle2, Loader2, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MobileMoneyBar } from "@/components/site/Blocks";
 import { DELIVERY_OPTIONS, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
+import { submitShopOrder } from "@/lib/shop.functions";
 
 export const Route = createFileRoute("/panier")({
   head: () => ({
@@ -32,18 +34,20 @@ type Order = { ref: string; total: number; delivery: string; payment: string; na
 
 function Panier() {
   const cart = useCart();
+  const placeOrder = useServerFn(submitShopOrder);
   const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
-  const [form, setForm] = useState({ name: "", phone: "", address: "", note: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", note: "" });
   const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
   const [order, setOrder] = useState<Order | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const option = DELIVERY_OPTIONS.find((o) => o.id === delivery) ?? DELIVERY_OPTIONS[0];
   const freeShipping = cart.subtotal >= FREE_DELIVERY_FROM;
   const shipping = freeShipping ? 0 : option.fee;
   const total = cart.subtotal + shipping;
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: { name?: string; phone?: string; address?: string } = {};
     if (form.name.trim().length < 3) next.name = "Indiquez votre nom complet.";
@@ -52,11 +56,33 @@ function Panier() {
       next.address = "Précisez l'adresse de livraison.";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
+    if (submitting) return;
 
-    const ref = `AC-2026-${Math.floor(100 + Math.random() * 900)}`;
-    setOrder({ ref, total, delivery: option.label, payment, name: form.name.trim() });
-    cart.clear();
-    toast.success(`Commande ${ref} enregistrée`);
+    setSubmitting(true);
+    try {
+      const { reference } = await placeOrder({
+        data: {
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          email: form.email,
+          address: form.address.trim(),
+          delivery: option.label,
+          payment,
+          total,
+          lines: cart.items.map((i) => ({
+            label: i.accessory.name,
+            qty: i.qty,
+            price: i.accessory.price,
+          })),
+        },
+      });      setOrder({ ref: reference, total, delivery: option.label, payment, name: form.name.trim() });
+      cart.clear();
+      toast.success(`Commande ${reference} enregistrée`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Commande impossible, réessayez.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (order) {
@@ -243,6 +269,18 @@ function Panier() {
                     />
                     {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone}</p>}
                   </div>
+                  <div>
+                    <label htmlFor="email" className="mb-1 block text-xs font-semibold">
+                      E-mail <span className="font-normal text-muted-foreground">(facultatif)</span>
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                    />
+                  </div>
                   {option.id !== "retrait" && (
                     <div>
                       <label htmlFor="address" className="mb-1 block text-xs font-semibold">
@@ -289,8 +327,15 @@ function Panier() {
                     />
                   </div>
                 </div>
-                <Button type="submit" variant="technical" size="lg" className="mt-6 w-full">
-                  Valider la commande — {formatFcfa(total)}
+                <Button type="submit" variant="technical" size="lg" className="mt-6 w-full" disabled={submitting}>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      Enregistrement…
+                    </>
+                  ) : (
+                    <>Valider la commande — {formatFcfa(total)}</>
+                  )}
                 </Button>
               </div>
             </form>

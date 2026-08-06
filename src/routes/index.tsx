@@ -9,7 +9,7 @@ import {
   SectionHeader,
   TrustStats,
 } from "@/components/site/Blocks";
-import { BRANDS, COMPANY, DEVICES, absoluteUrl, formatFcfa } from "@/data/catalog";
+import { BRANDS, COMPANY, DEVICES, REVIEWS, absoluteUrl, formatFcfa } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -39,6 +39,7 @@ const POPULAR = DEVICES.flatMap((d) =>
 
 function Home() {
   const navigate = useNavigate();
+  const avgRating = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length;
 
   return (
     <>
@@ -87,8 +88,12 @@ function Home() {
                       <Star className="size-4 fill-primary text-primary" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-foreground">4,9 / 5</div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">312 avis</div>
+                      <div className="text-sm font-bold text-foreground">
+                        {avgRating.toFixed(1).replace(".", ",")} / 5
+                      </div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {REVIEWS.length} avis vérifiés
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -100,7 +105,7 @@ function Home() {
                       <Wrench className="size-4 text-primary" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-foreground">5 techniciens</div>
+                      <div className="text-sm font-bold text-foreground">3 techniciens</div>
                       <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">dont 1 microsoudure</div>
                     </div>
                   </div>

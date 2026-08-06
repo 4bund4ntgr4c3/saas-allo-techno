@@ -746,6 +746,7 @@ const LEAD_SOURCE_LABEL: Record<string, string> = {
   devis: "Devis",
   contact: "Contact",
   suivi: "Assistance",
+  boutique: "Commande boutique",
 };
 
 const LEAD_STATUS_LABEL: Record<string, string> = {

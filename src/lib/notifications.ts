@@ -189,6 +189,7 @@ export async function notifyStaffNewLead(lead: {
     devis: "Demande de devis",
     contact: "Message de contact",
     suivi: "Demande d'assistance (suivi)",
+    boutique: "Commande boutique",
   };
   const label = sourceLabel[lead.source] ?? "Nouveau lead";
   const sujet = `${label} — ${lead.name ?? "Anonyme"}`;
