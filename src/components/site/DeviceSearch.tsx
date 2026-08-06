@@ -1207,7 +1207,7 @@ export function DeviceSearch({
                     </p>
                   </div>
                   <QrCode
-                    value={`https://allotechno.bj/suivi?ref=${ref}${trackingCode ? `&code=${trackingCode}` : ""}`}
+                    value={`https://allotechno.africa/suivi?ref=${ref}${trackingCode ? `&code=${trackingCode}` : ""}`}
                     label={`Suivi du dossier ${ref}`}
                     caption="QR code de suivi du dossier"
                   />

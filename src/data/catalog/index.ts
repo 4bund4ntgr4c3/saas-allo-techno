@@ -12,8 +12,8 @@ export const COMPANY = {
   address: "Quartier Zogbadjè, Rue de l'Université, Abomey-Calavi, Bénin",
   phone: "+229 01 43 67 97 67",
   whatsapp: "+229 01 43 67 97 67",
-  email: "contact@allotechno.bj",
-  url: "https://allotechno.bj",
+  email: "contact@allotechno.africa",
+  url: "https://allotechno.africa",
   lat: 6.4489,
   lng: 2.3553,
   hours: [

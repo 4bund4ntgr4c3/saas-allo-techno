@@ -8,6 +8,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "deploy": "vite build && npx wrangler --cwd .output/server deploy",
+    "deploy:dev": "vite build --mode development && npx wrangler --cwd .output/server deploy",
+    "deploy:preview": "npx wrangler --cwd .output/server dev",
+    "deploy:logs": "npx wrangler --cwd .output/server tail",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
@@ -93,6 +97,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.1.5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.119.0"
   }
 }

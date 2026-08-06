@@ -1,0 +1,15 @@
+{
+  // Configuration Cloudflare Workers — fusionnée par nitro dans .output/server/wrangler.json au build.
+  // NE PAS mettre de secrets ici (service role, pepper, Resend, WhatsApp) : utiliser `wrangler secret put`.
+  "name": "saas-allo-techno",
+  // Variables non secrètes, accessibles via process.env côté serveur
+  "vars": {
+    "SUPABASE_URL": "https://gaehpwfliwervqywyxee.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_..."
+  },
+  // Domaine de production — les routes *.workers.dev sont conservées en attendant le provisionnement SSL
+  "routes": [
+    { "pattern": "allotechno.africa", "custom_domain": true },
+    { "pattern": "www.allotechno.africa", "custom_domain": true }
+  ]
+}

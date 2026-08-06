@@ -304,7 +304,7 @@ function StatusResult({
             Télécharger le reçu (PDF)
           </Button>
           <QrCode
-            value={`https://allotechno.bj/suivi?ref=${result.reference}&code=${code}`}
+            value={`https://allotechno.africa/suivi?ref=${result.reference}&code=${code}`}
             label={`Dossier ${result.reference}`}
             caption="QR code de suivi du dossier"
           />

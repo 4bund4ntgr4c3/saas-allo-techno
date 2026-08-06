@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://allotechno.bj/sitemap.xml
+Sitemap: https://allotechno.africa/sitemap.xml
