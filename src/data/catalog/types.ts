@@ -23,3 +23,13 @@ export type Brand = {
   tag: string;
   devices: string[];
 };
+
+/** Factory de panne (définition compacte des tarifs catalogue). */
+export const fault = (
+  slug: string,
+  label: string,
+  price: number,
+  duration: string,
+  warranty: string,
+  part: string,
+): Fault => ({ slug, label, price, duration, warranty, part });
