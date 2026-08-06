@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { absoluteUrl } from "@/data/catalog";
 
@@ -82,15 +81,13 @@ function AuthPage() {
   };
 
   const onGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin },
     });
-    if (result.error) {
+    if (error) {
       toast.error("Connexion Google impossible");
-      return;
     }
-    if (result.redirected) return;
-    navigate({ to: "/mon-compte", replace: true });
   };
 
   return (
