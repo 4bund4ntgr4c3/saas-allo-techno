@@ -21,7 +21,10 @@ export const Route = createFileRoute("/")({
         content:
           "Réparation experte de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi. Diagnostic gratuit, pièces certifiées, garantie 6 mois.",
       },
-      { property: "og:title", content: "Allô Techno — Réparation d'appareils électroniques au Bénin" },
+      {
+        property: "og:title",
+        content: "Allô Techno — Réparation d'appareils électroniques au Bénin",
+      },
       {
         property: "og:description",
         content: "Diagnostic gratuit, devis en 15 minutes, réparation express à Abomey-Calavi.",
@@ -58,11 +61,12 @@ function Home() {
                 <span className="bg-gradient-to-r from-primary via-amber-400 to-primary bg-clip-text font-extrabold text-transparent drop-shadow-[0_0_12px_oklch(0.68_0.19_38_/_0.4)]">
                   aujourd'hui
                 </span>
-                ,<br />pas la semaine prochaine.
+                ,<br />
+                pas la semaine prochaine.
               </h1>
               <p className="at-in mt-6 max-w-xl text-lg text-pretty text-muted-foreground [animation-delay:250ms]">
-                Smartphones, tablettes, ordinateurs, MacBook, consoles et montres connectées.
-                Prix affiché avant démontage, garantie jusqu'à 6 mois, paiement Mobile Money.
+                Smartphones, tablettes, ordinateurs, MacBook, consoles et montres connectées. Prix
+                affiché avant démontage, garantie jusqu'à 6 mois, paiement Mobile Money.
               </p>
               <div className="at-in mt-8 flex flex-wrap gap-6 [animation-delay:350ms]">
                 {[
@@ -70,7 +74,10 @@ function Home() {
                   { icon: Timer, t: "Express dès 25 min" },
                   { icon: ShieldCheck, t: "Garantie jusqu'à 12 mois" },
                 ].map((i) => (
-                  <div key={i.t} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+                  <div
+                    key={i.t}
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                  >
                     <i.icon className="size-4 text-primary" />
                     {i.t}
                   </div>
@@ -106,7 +113,9 @@ function Home() {
                     </div>
                     <div>
                       <div className="text-sm font-bold text-foreground">3 techniciens</div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">dont 1 microsoudure</div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                        dont 1 microsoudure
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -115,7 +124,9 @@ function Home() {
                 <div className="rounded-xl border border-border bg-card p-6 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
                   {/* Header */}
                   <div className="mb-6 flex items-center justify-between border-b border-border pb-5">
-                    <span className="font-mono text-sm font-bold uppercase tracking-widest text-muted-foreground">AT-7K3M9Q</span>
+                    <span className="font-mono text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                      AT-7K3M9Q
+                    </span>
                     <span className="flex items-center gap-1.5 rounded-lg bg-success/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-success">
                       <span className="size-1.5 rounded-full bg-success animate-pulse" />
                       Prêt
@@ -146,13 +157,19 @@ function Home() {
                               <Check className="size-3.5" strokeWidth={3} />
                             </div>
                           )}
-                          {i < 4 && <div className="my-0.5 w-px flex-1 bg-border transition-colors duration-300" />}
+                          {i < 4 && (
+                            <div className="my-0.5 w-px flex-1 bg-border transition-colors duration-300" />
+                          )}
                         </div>
                         <div className="flex flex-1 items-center justify-between pb-4">
-                          <span className={`text-sm transition-colors duration-200 ${step.current ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                          <span
+                            className={`text-sm transition-colors duration-200 ${step.current ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          >
                             {step.label}
                           </span>
-                          <span className="font-mono text-xs text-muted-foreground">{step.time}</span>
+                          <span className="font-mono text-xs text-muted-foreground">
+                            {step.time}
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -162,12 +179,13 @@ function Home() {
                   <div className="mt-4 rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:bg-muted/50">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-foreground">iPhone 13 · Écran</span>
-                      <span className="font-mono text-sm font-bold text-foreground">48 000 F CFA</span>
+                      <span className="font-mono text-sm font-bold text-foreground">
+                        48 000 F CFA
+                      </span>
                     </div>
                     <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1.5">
-                        <Clock className="size-3.5" />
-                        1 h 51 au total
+                        <Clock className="size-3.5" />1 h 51 au total
                       </span>
                       <span className="flex items-center gap-1.5">
                         <ShieldCheck className="size-3.5" />
@@ -188,12 +206,11 @@ function Home() {
           <div className="at-in [animation-delay:200ms]">
             <span className="at-eyebrow mb-3 block">Choisissez par catégorie</span>
             <CategoryPicker
-              onSelect={(c) =>
-                navigate({ to: "/reparations", search: { categorie: c } })
-              }
+              onSelect={(c) => navigate({ to: "/reparations", search: { categorie: c } })}
             />
             <p className="mt-4 text-xs text-muted-foreground">
-              Vous continuerez sur la page réparation pour choisir la marque, le modèle et le créneau.
+              Vous continuerez sur la page réparation pour choisir la marque, le modèle et le
+              créneau.
             </p>
           </div>
         </div>
@@ -222,7 +239,9 @@ function Home() {
                 params={{ brand: b.slug }}
                 className="group bg-card p-6 transition-colors hover:bg-foreground hover:text-background"
               >
-                <span className="block text-sm font-extrabold uppercase tracking-tight">{b.name}</span>
+                <span className="block text-sm font-extrabold uppercase tracking-tight">
+                  {b.name}
+                </span>
                 <span className="mt-2 block font-mono text-[10px] uppercase text-muted-foreground group-hover:text-background/60">
                   {b.tag}
                 </span>
@@ -242,7 +261,9 @@ function Home() {
             right={
               <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5">
                 <span className="size-2 animate-pulse rounded-full bg-success" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Stock disponible</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider">
+                  Stock disponible
+                </span>
               </div>
             }
           />

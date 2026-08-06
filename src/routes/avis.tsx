@@ -14,7 +14,8 @@ export const Route = createFileRoute("/avis")({
       { property: "og:title", content: "Avis clients — Allô Techno" },
       {
         property: "og:description",
-        content: "Témoignages vérifiés de nos clients réparation smartphone, ordinateur et console au Bénin.",
+        content:
+          "Témoignages vérifiés de nos clients réparation smartphone, ordinateur et console au Bénin.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

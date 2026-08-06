@@ -38,8 +38,7 @@ function Tarifs() {
     const term = q.trim().toLowerCase();
     if (!term) return list;
     return list.filter(
-      ({ d, f }) =>
-        d.name.toLowerCase().includes(term) || f.label.toLowerCase().includes(term),
+      ({ d, f }) => d.name.toLowerCase().includes(term) || f.label.toLowerCase().includes(term),
     );
   }, [brand, category, q]);
 
@@ -168,7 +167,10 @@ function Tarifs() {
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {[
               { t: "Diagnostic", d: "Toujours gratuit, y compris si vous refusez le devis." },
-              { t: "Pièce & pose", d: "La pièce indiquée sur le devis, posée et testée en atelier." },
+              {
+                t: "Pièce & pose",
+                d: "La pièce indiquée sur le devis, posée et testée en atelier.",
+              },
               { t: "Garantie", d: "3 à 12 mois selon la pièce, mentionnée sur la facture." },
             ].map((i) => (
               <div key={i.t} className="bg-card p-8">

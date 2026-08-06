@@ -48,7 +48,12 @@ function Reprise() {
   const factor = CONDITIONS.find((c) => c.key === condition)?.factor ?? 0.8;
   const estimate = device
     ? Math.round(
-        (baseValue(device.year, device.faults.reduce((s, f) => s + f.price, 0)) * factor) / 500,
+        (baseValue(
+          device.year,
+          device.faults.reduce((s, f) => s + f.price, 0),
+        ) *
+          factor) /
+          500,
       ) * 500
     : 0;
 
@@ -154,15 +159,21 @@ function Reprise() {
 
       <section className="border-t border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <SectionHeader
-            eyebrow="Comment ça marche"
-            title="Trois étapes, paiement le jour même"
-          />
+          <SectionHeader eyebrow="Comment ça marche" title="Trois étapes, paiement le jour même" />
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {[
-              { t: "Estimation en ligne", x: "Sélectionnez modèle et état pour obtenir une fourchette immédiate." },
-              { t: "Contrôle atelier", x: "Test complet en 20 minutes : batterie, écran, ports, déverrouillage." },
-              { t: "Paiement immédiat", x: "MTN MoMo, Moov Money, Celtiis ou espèces, ou déduction sur une réparation." },
+              {
+                t: "Estimation en ligne",
+                x: "Sélectionnez modèle et état pour obtenir une fourchette immédiate.",
+              },
+              {
+                t: "Contrôle atelier",
+                x: "Test complet en 20 minutes : batterie, écran, ports, déverrouillage.",
+              },
+              {
+                t: "Paiement immédiat",
+                x: "MTN MoMo, Moov Money, Celtiis ou espèces, ou déduction sur une réparation.",
+              },
             ].map((s, i) => (
               <div key={s.t} className="bg-card p-8">
                 <span className="font-mono text-4xl font-medium text-primary">{i + 1}</span>

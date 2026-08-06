@@ -29,7 +29,10 @@ export const Route = createFileRoute("/appareil/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Appareil introuvable — Allô Techno" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Appareil introuvable — Allô Techno" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const d = loaderData.device;
@@ -85,8 +88,15 @@ function DevicePage() {
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <nav className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <Link to="/reparations" className="hover:text-primary">Réparations</Link> /{" "}
-            <Link to="/reparations/$brand" params={{ brand: device.brand }} className="hover:text-primary">
+            <Link to="/reparations" className="hover:text-primary">
+              Réparations
+            </Link>{" "}
+            /{" "}
+            <Link
+              to="/reparations/$brand"
+              params={{ brand: device.brand }}
+              className="hover:text-primary"
+            >
               {brandName(device.brand)}
             </Link>{" "}
             / {device.name}
@@ -175,8 +185,8 @@ function DevicePage() {
             <AccordionItem value="1" className="px-6">
               <AccordionTrigger>Mes données sont-elles conservées ?</AccordionTrigger>
               <AccordionContent>
-                Un remplacement d'écran, de batterie ou de connecteur ne touche pas vos données. Pour
-                les interventions sur carte mère, une sauvegarde préalable est recommandée.
+                Un remplacement d'écran, de batterie ou de connecteur ne touche pas vos données.
+                Pour les interventions sur carte mère, une sauvegarde préalable est recommandée.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="2" className="px-6">
@@ -189,15 +199,15 @@ function DevicePage() {
             <AccordionItem value="3" className="px-6">
               <AccordionTrigger>Puis-je attendre sur place ?</AccordionTrigger>
               <AccordionContent>
-                Oui pour les interventions de moins d'une heure. Un espace d'attente est disponible à
-                l'atelier d'Abomey-Calavi.
+                Oui pour les interventions de moins d'une heure. Un espace d'attente est disponible
+                à l'atelier d'Abomey-Calavi.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="4" className="px-6">
               <AccordionTrigger>Que couvre la garantie ?</AccordionTrigger>
               <AccordionContent>
-                Les défauts de pièce et de main-d'œuvre. Les chutes, l'oxydation et les interventions
-                par un tiers ne sont pas couvertes.
+                Les défauts de pièce et de main-d'œuvre. Les chutes, l'oxydation et les
+                interventions par un tiers ne sont pas couvertes.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -207,7 +217,10 @@ function DevicePage() {
       {siblings.length > 0 && (
         <section className="py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <SectionHeader eyebrow="Même marque" title={`Autres modèles ${brandName(device.brand)}`} />
+            <SectionHeader
+              eyebrow="Même marque"
+              title={`Autres modèles ${brandName(device.brand)}`}
+            />
             <div className="grid gap-px border border-border bg-border md:grid-cols-3">
               {siblings.map((d) => (
                 <Link

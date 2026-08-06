@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -50,7 +50,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\"", 22000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82"', 22000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5200 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -63,7 +63,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\"", 20000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82"', 20000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -76,7 +76,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\" 90Hz", 25000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82" 90Hz', 25000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -89,7 +89,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" FHD+", 28000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" FHD+', 28000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5200 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 9000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -102,7 +102,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\"", 25000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82"', 25000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -115,7 +115,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\" 90Hz", 28000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82" 90Hz', 28000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 9000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -128,7 +128,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\"", 25000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82"', 25000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -141,7 +141,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" FHD+ 90Hz", 30000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" FHD+ 90Hz', 30000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 9000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -154,7 +154,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.82\"", 27000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.82"', 27000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 9000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -167,7 +167,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" FHD+ 90Hz", 30000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" FHD+ 90Hz', 30000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -180,7 +180,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.56\" 90Hz", 28000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.56" 90Hz', 28000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 9000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -193,7 +193,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" FHD+", 35000, "45 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" FHD+', 35000, "45 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5200 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -206,7 +206,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.95\" FHD+", 38000, "45 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.95" FHD+', 38000, "45 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -219,7 +219,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.95\" FHD+ 90Hz", 42000, "45 min", "6 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.95" FHD+ 90Hz', 42000, "45 min", "6 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -232,7 +232,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.7\" FHD+", 45000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.7" FHD+', 45000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -245,7 +245,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" FHD+ 120Hz", 42000, "45 min", "6 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" FHD+ 120Hz', 42000, "45 min", "6 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -258,7 +258,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.7\" FHD+", 45000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.7" FHD+', 45000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -271,7 +271,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.7\" FHD+", 48000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.7" FHD+', 48000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -284,7 +284,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.78\" FHD+ 120Hz", 52000, "45 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        'Écran AMOLED 6.78" FHD+ 120Hz',
+        52000,
+        "45 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -297,7 +304,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD 6.85\" 90Hz", 42000, "45 min", "6 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.85" 90Hz', 42000, "45 min", "6 mois", "Écran compatible"),
       f("batterie", "Batterie 4500 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -310,7 +317,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.7\" FHD+ 90Hz", 55000, "45 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        'Écran AMOLED 6.7" FHD+ 90Hz',
+        55000,
+        "45 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 4500 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 12000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -671,7 +685,14 @@ export const DEVICES: Device[] = [
       f("connecteur", "Connecteur de charge", 13000, "50 min", "1 mois", "Nappe de charge"),
       f("camera", "Bloc caméra arrière", 32000, "70 min", "6 mois", "Module capteur"),
       f("haut-parleur", "Haut-parleur / écouteur", 10000, "45 min", "3 mois", "Module audio"),
-      f("desoxydation", "Désoxydation carte mère", 18000, "48 h", "1 mois", "Bain ultrasons + reflow"),
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        18000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
       f("vitre-arriere", "Vitre arrière", 25000, "60 min", "3 mois", "Verre + adhésif"),
     ],
   },
@@ -736,7 +757,14 @@ export const DEVICES: Device[] = [
       f("connecteur", "Connecteur de charge", 13000, "50 min", "1 mois", "Nappe de charge"),
       f("camera", "Bloc caméra arrière", 32000, "70 min", "6 mois", "Module capteur"),
       f("haut-parleur", "Haut-parleur / écouteur", 10000, "45 min", "3 mois", "Module audio"),
-      f("desoxydation", "Désoxydation carte mère", 18000, "48 h", "1 mois", "Bain ultrasons + reflow"),
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        18000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
     ],
   },
   {
@@ -784,7 +812,14 @@ export const DEVICES: Device[] = [
       f("connecteur", "Connecteur de charge", 13000, "50 min", "1 mois", "Nappe de charge"),
       f("camera", "Bloc caméra arrière", 32000, "70 min", "6 mois", "Module capteur"),
       f("haut-parleur", "Haut-parleur / écouteur", 10000, "45 min", "3 mois", "Module audio"),
-      f("desoxydation", "Désoxydation carte mère", 18000, "48 h", "1 mois", "Bain ultrasons + reflow"),
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        18000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
       f("vitre-arriere", "Vitre arrière", 28000, "60 min", "3 mois", "Verre + adhésif"),
     ],
   },
@@ -815,7 +850,14 @@ export const DEVICES: Device[] = [
       f("connecteur", "Connecteur de charge", 13000, "50 min", "1 mois", "Nappe de charge"),
       f("camera", "Bloc caméra arrière", 32000, "70 min", "6 mois", "Module capteur"),
       f("haut-parleur", "Haut-parleur / écouteur", 10000, "45 min", "3 mois", "Module audio"),
-      f("desoxydation", "Désoxydation carte mère", 18000, "48 h", "1 mois", "Bain ultrasons + reflow"),
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        18000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
       f("vitre-arriere", "Vitre arrière", 24000, "60 min", "3 mois", "Verre + adhésif"),
     ],
   },
@@ -832,7 +874,14 @@ export const DEVICES: Device[] = [
       f("connecteur", "Connecteur de charge", 13000, "50 min", "1 mois", "Nappe de charge"),
       f("camera", "Bloc caméra arrière", 32000, "70 min", "6 mois", "Module capteur"),
       f("haut-parleur", "Haut-parleur / écouteur", 10000, "45 min", "3 mois", "Module audio"),
-      f("desoxydation", "Désoxydation carte mère", 18000, "48 h", "1 mois", "Bain ultrasons + reflow"),
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        18000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
     ],
   },
 ];

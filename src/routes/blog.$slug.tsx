@@ -8,7 +8,10 @@ export const Route = createFileRoute("/blog/$slug")({
     const post = POSTS.find((p) => p.slug === params.slug);
     if (!post) {
       return {
-        meta: [{ title: "Article introuvable — Allô Techno" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Article introuvable — Allô Techno" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     return {
@@ -71,7 +74,6 @@ function BlogPost() {
   const { slug } = Route.useParams();
   const post = POSTS.find((p) => p.slug === slug)!;
   const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 2);
-
 
   return (
     <>

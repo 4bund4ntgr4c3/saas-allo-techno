@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -11,7 +11,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" HD+", 22000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" HD+', 22000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -24,7 +24,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran IPS LCD 6.78\" HD+ 90Hz", 24000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.78" HD+ 90Hz', 24000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -37,7 +37,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.6\"", 20000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.6"', 20000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur Micro-USB", 7000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -50,7 +50,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.8\"", 22000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.8"', 22000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 6000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -63,7 +63,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.8\"", 24000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.8"', 24000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 7000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -76,7 +76,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran IPS LCD 6.8\" 90Hz", 25000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.8" 90Hz', 25000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 8000, "30 min", "1 mois", "Nappe de charge"),
     ],
@@ -89,7 +89,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran IPS LCD 6.8\" 90Hz", 28000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.8" 90Hz', 28000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Connecteur USB-C", 10000, "30 min", "1 mois", "Nappe de charge"),
     ],

@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -167,7 +167,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 120 Hz", 100000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f(
+        "ecran",
+        "Écran Fluid AMOLED 120 Hz",
+        100000,
+        "55 min",
+        "6 mois",
+        "Écran d'origine OnePlus",
+      ),
       f("batterie", "Batterie 4510 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -180,7 +187,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 120 Hz", 78000, "50 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        "Écran Fluid AMOLED 120 Hz",
+        78000,
+        "50 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 4500 mAh", 30000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -193,7 +207,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 120 Hz", 80000, "50 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        "Écran Fluid AMOLED 120 Hz",
+        80000,
+        "50 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 4500 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -232,7 +253,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran LTPO2 AMOLED 120 Hz", 110000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f(
+        "ecran",
+        "Écran LTPO2 AMOLED 120 Hz",
+        110000,
+        "55 min",
+        "6 mois",
+        "Écran d'origine OnePlus",
+      ),
       f("batterie", "Batterie 5000 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -245,7 +273,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 120 Hz", 85000, "50 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        "Écran Fluid AMOLED 120 Hz",
+        85000,
+        "50 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 4800 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -271,7 +306,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran LTPO4 AMOLED 120 Hz", 115000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f(
+        "ecran",
+        "Écran LTPO4 AMOLED 120 Hz",
+        115000,
+        "55 min",
+        "6 mois",
+        "Écran d'origine OnePlus",
+      ),
       f("batterie", "Batterie 5400 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 14000, "40 min", "1 mois", "Nappe de charge"),
     ],
@@ -440,7 +482,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 120 Hz", 60000, "45 min", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        "Écran Fluid AMOLED 120 Hz",
+        60000,
+        "45 min",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 5000 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
     ],

@@ -73,14 +73,7 @@ export function downloadInvoicePdf(r: InvoiceRow) {
     theme: "grid",
     styles: { fontSize: 9.5, cellPadding: 2.5 },
     head: [["Dossier", "Client", "Téléphone", "E-mail"]],
-    body: [
-      [
-        r.reference,
-        r.customer_name,
-        r.phone,
-        r.email ?? "—",
-      ],
-    ],
+    body: [[r.reference, r.customer_name, r.phone, r.email ?? "—"]],
   });
 
   autoTable(doc, {
@@ -113,14 +106,18 @@ export function downloadInvoicePdf(r: InvoiceRow) {
       : [["Estimation", "Montant confirmé après diagnostic", "—"]],
     footStyles: { fontStyle: "bold", fillColor: [241, 245, 249], textColor: [15, 23, 42] },
     didParseCell: (data) => {
-      if (found && data.section === "body" && data.column.index === 2 && data.row.index === estimate.lines.length) {
+      if (
+        found &&
+        data.section === "body" &&
+        data.column.index === 2 &&
+        data.row.index === estimate.lines.length
+      ) {
         data.cell.styles.fontStyle = "bold";
       }
     },
   });
 
-  const noteY =
-    (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  const noteY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
   doc.setFontSize(8.5);
   doc.setTextColor(90, 90, 90);
   doc.text(
@@ -156,8 +153,7 @@ export function downloadReservationsCsv(rows: InvoiceRow[]) {
     "Heure",
     "Statut",
   ];
-  const escape = (v: string | null | undefined) =>
-    `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const escape = (v: string | null | undefined) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const lines = [
     header.map(escape).join(","),
     ...rows.map((r) =>

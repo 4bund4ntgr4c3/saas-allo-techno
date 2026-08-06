@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -37,7 +37,14 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 45000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("ventilation", "Nettoyage + pâte thermique liquide", 25000, "24 h", "1 mois", "Metal thermal compound"),
+      f(
+        "ventilation",
+        "Nettoyage + pâte thermique liquide",
+        25000,
+        "24 h",
+        "1 mois",
+        "Metal thermal compound",
+      ),
       f("lecteur", "Lecteur Blu-ray", 65000, "48 h", "3 mois", "Bloc optique"),
       f("manette", "Réparation drift manette DualSense", 12000, "6 h", "3 mois", "Joystick neuf"),
     ],
@@ -178,7 +185,14 @@ export const DEVICES: Device[] = [
       f("ecran", "Dalle LCD complète", 88000, "24 h", "3 mois", "Dalle + vitre tactile"),
       f("joycon", "Réparation drift Joy-Con", 14000, "6 h", "3 mois", "Joystick neuf"),
       f("connecteur", "Port USB-C de charge", 22000, "24 h", "3 mois", "Carte fille USB-C"),
-      f("ventilation", "Nettoyage + pâte thermique", 18000, "12 h", "1 mois", "Pâte thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pâte thermique",
+        18000,
+        "12 h",
+        "1 mois",
+        "Pâte thermique premium",
+      ),
     ],
   },
   {
@@ -190,7 +204,14 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 48000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("ventilation", "Nettoyage + pâte thermique liquide", 25000, "24 h", "1 mois", "Metal thermal compound"),
+      f(
+        "ventilation",
+        "Nettoyage + pâte thermique liquide",
+        25000,
+        "24 h",
+        "1 mois",
+        "Metal thermal compound",
+      ),
       f("ssd", "Upgrade SSD NVMe 1 To", 105000, "6 h", "1 an", "SSD NVMe Gen4"),
       f("manette", "Réparation drift DualSense", 12000, "6 h", "3 mois", "Joystick neuf"),
     ],
@@ -205,7 +226,14 @@ export const DEVICES: Device[] = [
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 45000, "48 h", "3 mois", "Port HDMI + reflow"),
       f("lecteur", "Lecteur Blu-ray 4K", 62000, "48 h", "3 mois", "Bloc optique"),
-      f("ventilation", "Nettoyage + pâte thermique", 22000, "24 h", "1 mois", "Pâte thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pâte thermique",
+        22000,
+        "24 h",
+        "1 mois",
+        "Pâte thermique premium",
+      ),
     ],
   },
   {
@@ -216,7 +244,7 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2024,
     faults: [
-      f("ecran", "Dalle 14\" FHD", 82000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
       f("carte-mere", "Micro-soudure carte mère", 75000, "72 h", "3 mois", "Composants CMS"),
     ],
@@ -229,9 +257,16 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2024,
     faults: [
-      f("ecran", "Dalle 13,4\" InfinityEdge", 165000, "48 h", "6 mois", "Dalle complète"),
+      f("ecran", 'Dalle 13,4" InfinityEdge', 165000, "48 h", "6 mois", "Dalle complète"),
       f("batterie", "Batterie 55 Wh", 68000, "3 h", "1 an", "Batterie certifiée"),
-      f("nettoyage", "Nettoyage + pâte thermique", 20000, "6 h", "1 mois", "Pâte thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage + pâte thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "Pâte thermique premium",
+      ),
     ],
   },
   {
@@ -243,8 +278,22 @@ export const DEVICES: Device[] = [
     year: 2016,
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 35000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "24 h", "1 mois", "PÃ¢te thermique premium"),
-      f("alimentation", "Bloc d'alimentation interne", 42000, "48 h", "3 mois", "Alimentation compatible"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "24 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
+      f(
+        "alimentation",
+        "Bloc d'alimentation interne",
+        42000,
+        "48 h",
+        "3 mois",
+        "Alimentation compatible",
+      ),
       f("lecteur", "Lecteur Blu-ray", 55000, "48 h", "3 mois", "Bloc optique"),
     ],
   },
@@ -257,8 +306,22 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 42000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "24 h", "1 mois", "PÃ¢te thermique premium"),
-      f("alimentation", "Bloc d'alimentation interne", 48000, "48 h", "3 mois", "Alimentation compatible"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "24 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
+      f(
+        "alimentation",
+        "Bloc d'alimentation interne",
+        48000,
+        "48 h",
+        "3 mois",
+        "Alimentation compatible",
+      ),
       f("lecteur", "Lecteur Blu-ray 4K", 62000, "48 h", "3 mois", "Bloc optique"),
     ],
   },
@@ -271,7 +334,14 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("hdmi", "Port HDMI (micro-soudure)", 38000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "24 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "24 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
       f("connecteur", "Port USB-C manette", 22000, "24 h", "3 mois", "Connecteur USB-C"),
     ],
   },
@@ -283,10 +353,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2015,
     faults: [
-      f("ecran", "Dalle 12,3\" PixelSense", 95000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 12,3" PixelSense', 95000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 38 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -297,10 +374,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2017,
     faults: [
-      f("ecran", "Dalle 12,3\" PixelSense", 100000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 12,3" PixelSense', 100000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 45 Wh", 60000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -311,10 +395,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 12,3\" PixelSense", 105000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 12,3" PixelSense', 105000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,4 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -325,10 +416,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 12,3\" PixelSense", 110000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 12,3" PixelSense', 110000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 43,2 Wh", 60000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C / Surface Connect", 38000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -339,10 +437,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 12,3\" PixelSense", 115000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 12,3" PixelSense', 115000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 49,9 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C / Surface Connect", 38000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -353,10 +458,24 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 13\" PixelSense Flow", 130000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13" PixelSense Flow', 130000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,7 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Thunderbolt 4 / Surface Connect", 42000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "connecteur",
+        "Port Thunderbolt 4 / Surface Connect",
+        42000,
+        "24 h",
+        "3 mois",
+        "Carte connecteur",
+      ),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -367,10 +486,24 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 13\" PixelSense Flow", 135000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13" PixelSense Flow', 135000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,7 Wh", 70000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Thunderbolt 4 / Surface Connect", 42000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "connecteur",
+        "Port Thunderbolt 4 / Surface Connect",
+        42000,
+        "24 h",
+        "3 mois",
+        "Carte connecteur",
+      ),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -381,10 +514,24 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2024,
     faults: [
-      f("ecran", "Dalle 13\" PixelSense Flow", 145000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13" PixelSense Flow', 145000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,7 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Thunderbolt 4 / Surface Connect", 42000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "connecteur",
+        "Port Thunderbolt 4 / Surface Connect",
+        42000,
+        "24 h",
+        "3 mois",
+        "Carte connecteur",
+      ),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -395,10 +542,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2017,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 95000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 95000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 45 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier Alcantara", 42000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -409,10 +563,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 100000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 100000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,4 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier Alcantara", 42000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -423,10 +584,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 105000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 105000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 45,8 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier metal", 45000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -437,10 +605,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 115000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 115000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,4 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier metal", 45000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -451,10 +626,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 120000, "24 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 120000, "24 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,4 Wh", 70000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier metal", 48000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -465,10 +647,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2024,
     faults: [
-      f("ecran", "Dalle 13,5\" / 15\" PixelSense Flow", 155000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" / 15" PixelSense Flow', 155000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 47,4 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier metal", 48000, "6 h", "6 mois", "Clavier compatible"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -479,10 +668,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2015,
     faults: [
-      f("ecran", "Dalle 13,5\" PixelSense", 120000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" PixelSense', 120000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 51 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -493,10 +689,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2017,
     faults: [
-      f("ecran", "Dalle 13,5\" / 15\" PixelSense", 140000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" / 15" PixelSense', 140000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 67 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -507,10 +710,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 13,5\" / 15\" PixelSense", 185000, "48 h", "6 mois", "Dalle complÃ¨te"),
+      f("ecran", 'Dalle 13,5" / 15" PixelSense', 185000, "48 h", "6 mois", "Dalle complÃ¨te"),
       f("batterie", "Batterie interne 74 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
       f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
-      f("ventilation", "Nettoyage + pÃ¢te thermique", 25000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "ventilation",
+        "Nettoyage + pÃ¢te thermique",
+        25000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -521,10 +731,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 88000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 88000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 72 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 16000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        16000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -535,10 +752,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 92000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 92000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 50 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 16000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        16000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -549,10 +773,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 102000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 102000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 50 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -563,10 +794,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 105000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 50000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -577,10 +815,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 14\" WUXGA IPS", 115000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WUXGA IPS', 115000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 50 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -591,10 +836,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" WUXGA IPS", 125000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WUXGA IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52,5 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -605,10 +857,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" WUXGA IPS", 145000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WUXGA IPS', 145000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52,5 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -619,10 +878,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2017,
     faults: [
-      f("ecran", "Dalle 14\" WQHD IPS", 125000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WQHD IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -633,10 +899,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 14\" WQHD IPS", 130000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WQHD IPS', 130000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -647,10 +920,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 14\" WQHD IPS", 140000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WQHD IPS', 140000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 51 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -661,10 +941,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" WQHD IPS", 150000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WQHD IPS', 150000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 51 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -675,10 +962,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED", 170000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 14" 2.8K OLED', 170000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 57 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -689,10 +983,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED", 175000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 14" 2.8K OLED', 175000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 57 Wh", 72000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -703,10 +1004,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED", 180000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 14" 2.8K OLED', 180000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 57 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -717,10 +1025,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2024,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED", 185000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 14" 2.8K OLED', 185000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 57 Wh", 78000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 25000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        25000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -731,10 +1046,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 13,3\" FHD IPS", 105000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 48 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -745,10 +1067,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 13,3\" FHD IPS", 100000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" FHD IPS', 100000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 48 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -759,10 +1088,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 55000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 55000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 45 Wh", 32000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -773,10 +1109,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 17,3\" FHD IPS", 65000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 17,3" FHD IPS', 65000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 45 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -787,10 +1130,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 62000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 62000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 56,5 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -801,10 +1151,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 68000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 68000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 56,5 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -815,10 +1172,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 16\" 2.5K IPS", 85000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 16" 2.5K IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 75 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -829,10 +1193,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED", 92000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 14" 2.8K OLED', 92000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 61 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -843,10 +1214,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 58000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 58000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 47 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -857,10 +1235,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" WUXGA IPS", 72000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WUXGA IPS', 72000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 25000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -871,10 +1256,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 16\" WUXGA IPS", 82000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 16" WUXGA IPS', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 76 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 25000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -885,10 +1277,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" 2.8K OLED tactile", 115000, "48 h", "6 mois", "Dalle OLED tactile"),
+      f("ecran", 'Dalle 14" 2.8K OLED tactile', 115000, "48 h", "6 mois", "Dalle OLED tactile"),
       f("batterie", "Batterie interne 71 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -899,10 +1298,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 16\" WQXGA IPS tactile", 125000, "48 h", "6 mois", "Dalle tactile IPS"),
+      f("ecran", 'Dalle 16" WQXGA IPS tactile', 125000, "48 h", "6 mois", "Dalle tactile IPS"),
       f("batterie", "Batterie interne 75 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -913,10 +1319,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" 4K OLED tactile", 145000, "48 h", "6 mois", "Dalle OLED tactile"),
+      f("ecran", 'Dalle 14" 4K OLED tactile', 145000, "48 h", "6 mois", "Dalle OLED tactile"),
       f("batterie", "Batterie interne 75 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -927,10 +1340,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" 4K OLED tactile", 155000, "48 h", "6 mois", "Dalle OLED tactile"),
+      f("ecran", 'Dalle 14" 4K OLED tactile', 155000, "48 h", "6 mois", "Dalle OLED tactile"),
       f("batterie", "Batterie interne 75 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -941,10 +1361,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 85000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -955,10 +1382,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 90000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 90000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -969,10 +1403,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 98000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 98000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 63 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 16000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        16000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -983,10 +1424,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 105000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 58 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -997,10 +1445,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" WUXGA IPS", 118000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" WUXGA IPS', 118000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1011,10 +1466,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 102000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 102000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 63 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1025,10 +1487,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 110000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 110000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 58 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1039,10 +1508,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 15,6\" WUXGA IPS", 125000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" WUXGA IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1053,10 +1529,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 112000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 112000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1067,10 +1550,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 118000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 118000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1081,10 +1571,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 14\" FHD IPS", 125000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1095,10 +1592,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" FHD+ IPS", 135000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" FHD+ IPS', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 58 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1109,10 +1613,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" QHD+ IPS", 145000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" QHD+ IPS', 145000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1123,10 +1634,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 14\" QHD+ IPS", 155000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 14" QHD+ IPS', 155000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 57 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1137,10 +1655,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2015,
     faults: [
-      f("ecran", "Dalle 13,3\" FHD InfinityEdge", 115000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" FHD InfinityEdge', 115000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1151,10 +1676,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2016,
     faults: [
-      f("ecran", "Dalle 13,3\" QHD+ InfinityEdge", 135000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" QHD+ InfinityEdge', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 60 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1165,10 +1697,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 13,3\" 4K InfinityEdge", 165000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1179,10 +1718,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 13,3\" 4K InfinityEdge", 165000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1193,10 +1739,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 13,3\" FHD+ InfinityEdge", 135000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 13,3" FHD+ InfinityEdge', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 32000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1207,10 +1760,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 13,4\" OLED", 175000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 13,4" OLED', 175000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 55 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1221,10 +1781,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2016,
     faults: [
-      f("ecran", "Dalle 15,6\" 4K InfinityEdge", 165000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1235,10 +1802,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2017,
     faults: [
-      f("ecran", "Dalle 15,6\" 4K InfinityEdge", 170000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" 4K InfinityEdge', 170000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 20000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        20000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1249,10 +1823,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2018,
     faults: [
-      f("ecran", "Dalle 15,6\" 4K InfinityEdge", 180000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" 4K InfinityEdge', 180000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 72000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 35000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1263,10 +1844,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 15,6\" 3.5K OLED", 210000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 15,6" 3.5K OLED', 210000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 86 Wh", 78000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1277,10 +1865,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 15,6\" 3.5K OLED", 210000, "48 h", "6 mois", "Dalle OLED"),
+      f("ecran", 'Dalle 15,6" 3.5K OLED', 210000, "48 h", "6 mois", "Dalle OLED"),
       f("batterie", "Batterie interne 86 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 25000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        25000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1291,10 +1886,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 17\" 4K InfinityEdge", 195000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 17" 4K InfinityEdge', 195000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1305,10 +1907,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2021,
     faults: [
-      f("ecran", "Dalle 17\" 4K InfinityEdge", 205000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 17" 4K InfinityEdge', 205000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 85000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 22000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        22000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1319,10 +1928,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 17\" 4K InfinityEdge", 210000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 17" 4K InfinityEdge', 210000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 88000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 25000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        25000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1333,10 +1949,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 17\" 4K InfinityEdge", 210000, "48 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 17" 4K InfinityEdge', 210000, "48 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 97 Wh", 90000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 38000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 25000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        25000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1347,10 +1970,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2019,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD TN", 52000, "24 h", "6 mois", "Dalle compatible"),
+      f("ecran", 'Dalle 15,6" FHD TN', 52000, "24 h", "6 mois", "Dalle compatible"),
       f("batterie", "Batterie interne 42 Wh", 28000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1361,10 +1991,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 65000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 65000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 52 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 25000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 15000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        15000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1375,10 +2012,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2020,
     faults: [
-      f("ecran", "Dalle 15,6\" FHD IPS", 82000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 15,6" FHD IPS', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 56 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1389,10 +2033,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2022,
     faults: [
-      f("ecran", "Dalle 14\" FHD+ IPS tactile", 78000, "24 h", "6 mois", "Dalle tactile IPS"),
+      f("ecran", 'Dalle 14" FHD+ IPS tactile', 78000, "24 h", "6 mois", "Dalle tactile IPS"),
       f("batterie", "Batterie interne 64 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 16000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        16000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {
@@ -1403,10 +2054,17 @@ export const DEVICES: Device[] = [
     category: "Ordinateur portable",
     year: 2023,
     faults: [
-      f("ecran", "Dalle 16\" WUXGA IPS", 85000, "24 h", "6 mois", "Dalle IPS neuve"),
+      f("ecran", 'Dalle 16" WUXGA IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne 64 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY rÃ©troÃ©clairÃ©", 28000, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pÃ¢te thermique", 18000, "6 h", "1 mois", "PÃ¢te thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pÃ¢te thermique",
+        18000,
+        "6 h",
+        "1 mois",
+        "PÃ¢te thermique premium",
+      ),
     ],
   },
   {

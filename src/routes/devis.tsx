@@ -18,7 +18,8 @@ export const Route = createFileRoute("/devis")({
       { property: "og:title", content: "Devis instantané — Allô Techno" },
       {
         property: "og:description",
-        content: "Choisissez votre appareil et votre panne : prix, délai et garantie affichés immédiatement.",
+        content:
+          "Choisissez votre appareil et votre panne : prix, délai et garantie affichés immédiatement.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

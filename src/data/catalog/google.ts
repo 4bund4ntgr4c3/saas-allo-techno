@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -310,7 +310,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran LTPO OLED intérieur 120 Hz", 180000, "90 min", "6 mois", "Écran pliable d'origine"),
+      f(
+        "ecran",
+        "Écran LTPO OLED intérieur 120 Hz",
+        180000,
+        "90 min",
+        "6 mois",
+        "Écran pliable d'origine",
+      ),
       f("ecran-ext", "Écran OLED extérieur", 85000, "50 min", "6 mois", "Écran cover d'origine"),
       f("batterie", "Batterie 4650 mAh", 42000, "45 min", "6 mois", "Batterie certifiée"),
       f("connecteur", "Port USB-C", 14000, "40 min", "1 mois", "Nappe de charge"),

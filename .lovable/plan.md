@@ -1,6 +1,6 @@
 The project is a full repair-service site (Allô Techno) with a working catalog, pricing grid, accessory shop, cart, reservation flow, and auth. Several pages linked in the navigation do not exist yet. Here are three high-impact next features, ordered by value.
 
-````text
+```text
 Option A — Repair status tracker (/suivi)
 -----------------------------------------
 What it is
@@ -74,4 +74,4 @@ Technical notes
 - RLS on reservations must allow anon/select for the reference lookup in
   Option A, or the lookup must happen through an unauthenticated server function
   using a publishable client with a narrow policy.
-````
+```

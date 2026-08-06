@@ -59,8 +59,8 @@ function Produit() {
                 {formatFcfa(product.price)}
               </div>
               <p className="mt-4 text-sm text-muted-foreground">
-                Référence testée par nos techniciens avant mise en rayon. Garantie d'échange 14 jours
-                en cas de défaut constaté.
+                Référence testée par nos techniciens avant mise en rayon. Garantie d'échange 14
+                jours en cas de défaut constaté.
               </p>
 
               <dl className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-2">

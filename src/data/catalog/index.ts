@@ -24,34 +24,141 @@ export const COMPANY = {
 };
 
 export const BRANDS: Brand[] = [
-  { slug: "apple", name: "Apple", tag: "iPhone · iPad · MacBook · iMac · Watch", devices: ["iPhone", "iPad", "MacBook", "Mac mini", "iMac", "Apple Watch"] },
-  { slug: "samsung", name: "Samsung", tag: "Galaxy S26 · A56 · Z Fold 7", devices: ["Galaxy S", "Galaxy Note", "Galaxy Z", "Galaxy A", "Galaxy J", "Galaxy M", "Galaxy F", "Galaxy Xcover", "Galaxy Tab", "Galaxy Watch", "Galaxy Book"] },
-  { slug: "xiaomi", name: "Xiaomi", tag: "Xiaomi 15 · Redmi Note 14", devices: ["Xiaomi Série", "Redmi Note", "Redmi", "Poco"] },
+  {
+    slug: "apple",
+    name: "Apple",
+    tag: "iPhone · iPad · MacBook · iMac · Watch",
+    devices: ["iPhone", "iPad", "MacBook", "Mac mini", "iMac", "Apple Watch"],
+  },
+  {
+    slug: "samsung",
+    name: "Samsung",
+    tag: "Galaxy S26 · A56 · Z Fold 7",
+    devices: [
+      "Galaxy S",
+      "Galaxy Note",
+      "Galaxy Z",
+      "Galaxy A",
+      "Galaxy J",
+      "Galaxy M",
+      "Galaxy F",
+      "Galaxy Xcover",
+      "Galaxy Tab",
+      "Galaxy Watch",
+      "Galaxy Book",
+    ],
+  },
+  {
+    slug: "xiaomi",
+    name: "Xiaomi",
+    tag: "Xiaomi 15 · Redmi Note 14",
+    devices: ["Xiaomi Série", "Redmi Note", "Redmi", "Poco"],
+  },
   { slug: "huawei", name: "Huawei", tag: "Pura · Mate · Nova", devices: ["Pura", "Mate", "Nova"] },
   { slug: "oppo", name: "Oppo", tag: "Reno 13 · A Series", devices: ["Reno", "A Series", "Find"] },
   { slug: "google", name: "Google Pixel", tag: "Pixel 6 à 10", devices: ["Pixel"] },
   { slug: "oneplus", name: "OnePlus", tag: "Nord · Série 13", devices: ["Nord", "Série 13"] },
-  { slug: "tecno", name: "Tecno", tag: "Camon 50 · Spark 40 · Phantom", devices: ["Camon", "Spark", "Phantom", "Pova", "Pop"] },
-  { slug: "infinix", name: "Infinix", tag: "Note 60 · Hot 70 · Zero 40", devices: ["Note", "Hot", "Zero", "Smart", "GT"] },
-  { slug: "itel", name: "Itel", tag: "A · S · P Series", devices: ["A Series", "S Series", "P Series"] },
+  {
+    slug: "tecno",
+    name: "Tecno",
+    tag: "Camon 50 · Spark 40 · Phantom",
+    devices: ["Camon", "Spark", "Phantom", "Pova", "Pop"],
+  },
+  {
+    slug: "infinix",
+    name: "Infinix",
+    tag: "Note 60 · Hot 70 · Zero 40",
+    devices: ["Note", "Hot", "Zero", "Smart", "GT"],
+  },
+  {
+    slug: "itel",
+    name: "Itel",
+    tag: "A · S · P Series",
+    devices: ["A Series", "S Series", "P Series"],
+  },
   { slug: "nokia", name: "Nokia", tag: "G · X · C Series", devices: ["G Series", "C Series"] },
   { slug: "motorola", name: "Motorola", tag: "Moto G · Edge 50", devices: ["Moto G", "Edge"] },
   { slug: "honor", name: "Honor", tag: "Magic 7 · X Series", devices: ["Magic", "X Series"] },
-  { slug: "sony", name: "Sony", tag: "PlayStation 4 · 5 · Xperia", devices: ["PlayStation", "Xperia"] },
+  {
+    slug: "sony",
+    name: "Sony",
+    tag: "PlayStation 4 · 5 · Xperia",
+    devices: ["PlayStation", "Xperia"],
+  },
   { slug: "nintendo", name: "Nintendo", tag: "Switch · Switch 2", devices: ["Switch"] },
-  { slug: "microsoft", name: "Microsoft", tag: "Xbox Series X|S · Surface", devices: ["Xbox", "Surface"] },
-  { slug: "hp", name: "HP", tag: "EliteBook · ProBook · Pavilion", devices: ["EliteBook", "ProBook", "Pavilion", "Spectre", "Envy", "OMEN", "Victus", "HP Laptop", "HP 200/300"] },
-  { slug: "lenovo", name: "Lenovo", tag: "IdeaPad · ThinkPad · Tab", devices: ["IdeaPad", "ThinkPad"] },
+  {
+    slug: "microsoft",
+    name: "Microsoft",
+    tag: "Xbox Series X|S · Surface",
+    devices: ["Xbox", "Surface"],
+  },
+  {
+    slug: "hp",
+    name: "HP",
+    tag: "EliteBook · ProBook · Pavilion",
+    devices: [
+      "EliteBook",
+      "ProBook",
+      "Pavilion",
+      "Spectre",
+      "Envy",
+      "OMEN",
+      "Victus",
+      "HP Laptop",
+      "HP 200/300",
+    ],
+  },
+  {
+    slug: "lenovo",
+    name: "Lenovo",
+    tag: "IdeaPad · ThinkPad · Tab",
+    devices: ["IdeaPad", "ThinkPad"],
+  },
   { slug: "dell", name: "Dell", tag: "XPS · Latitude · Inspiron", devices: ["XPS", "Latitude"] },
-  { slug: "realme", name: "Realme", tag: "Realme 12 · GT 6 · C Series", devices: ["Realme numbered", "C Series", "GT", "Narzo"] },
-  { slug: "lg", name: "LG", tag: "TV OLED · Frigo Inverter · Son", devices: ["LG TV", "LG Réfrigérateur", "LG Machine à laver", "LG Climatiseur"] },
-  { slug: "philips", name: "Philips", tag: "Petit électro · Ampoules · Micro-ondes", devices: ["Philips Petit électro"] },
-  { slug: "hisense", name: "Hisense", tag: "TV 4K · Frigo · Clim", devices: ["Hisense TV", "Hisense Réfrigérateur", "Hisense Climatiseur"] },
-  { slug: "tcl", name: "TCL", tag: "TV HD/4K · Petit électro", devices: ["TCL TV", "TCL Petit électro"] },
-  { slug: "bosch", name: "Bosch", tag: "Électro · Outillage · Électroménager", devices: ["Bosch Électroménager", "Bosch Outillage"] },
+  {
+    slug: "realme",
+    name: "Realme",
+    tag: "Realme 12 · GT 6 · C Series",
+    devices: ["Realme numbered", "C Series", "GT", "Narzo"],
+  },
+  {
+    slug: "lg",
+    name: "LG",
+    tag: "TV OLED · Frigo Inverter · Son",
+    devices: ["LG TV", "LG Réfrigérateur", "LG Machine à laver", "LG Climatiseur"],
+  },
+  {
+    slug: "philips",
+    name: "Philips",
+    tag: "Petit électro · Ampoules · Micro-ondes",
+    devices: ["Philips Petit électro"],
+  },
+  {
+    slug: "hisense",
+    name: "Hisense",
+    tag: "TV 4K · Frigo · Clim",
+    devices: ["Hisense TV", "Hisense Réfrigérateur", "Hisense Climatiseur"],
+  },
+  {
+    slug: "tcl",
+    name: "TCL",
+    tag: "TV HD/4K · Petit électro",
+    devices: ["TCL TV", "TCL Petit électro"],
+  },
+  {
+    slug: "bosch",
+    name: "Bosch",
+    tag: "Électro · Outillage · Électroménager",
+    devices: ["Bosch Électroménager", "Bosch Outillage"],
+  },
   { slug: "jbl", name: "JBL", tag: "Enceintes · Casques · Son", devices: ["JBL Audio"] },
   { slug: "bose", name: "Bose", tag: "Casques · Enceintes premium", devices: ["Bose Audio"] },
-  { slug: "whirlpool", name: "Whirlpool", tag: "Frigo · Lave-linge · Four", devices: ["Whirlpool Électroménager"] },
+  {
+    slug: "whirlpool",
+    name: "Whirlpool",
+    tag: "Frigo · Lave-linge · Four",
+    devices: ["Whirlpool Électroménager"],
+  },
 ];
 
 // Import brand device arrays
@@ -111,7 +218,8 @@ export const deviceBySlug = (slug: string) => DEVICES.find((d) => d.slug === slu
 export const brandName = (slug: string) => brandBySlug(slug)?.name ?? slug;
 
 /** URL absolue du site (canonicals, Open Graph). */
-export const absoluteUrl = (path: string) => `${COMPANY.url}${path.startsWith("/") ? path : `/${path}`}`;
+export const absoluteUrl = (path: string) =>
+  `${COMPANY.url}${path.startsWith("/") ? path : `/${path}`}`;
 
 /**
  * Famille de modèles (génération) déduite du nom commercial :
@@ -180,18 +288,90 @@ export type Accessory = {
 };
 
 export const ACCESSORIES: Accessory[] = [
-  { slug: "coque-silicone-iphone", name: "Coque silicone renforcée iPhone", category: "Coques", price: 6500, stock: 42 },
-  { slug: "coque-antichoc-samsung", name: "Coque antichoc Galaxy A/S", category: "Coques", price: 5500, stock: 31 },
-  { slug: "verre-trempe-9h", name: "Protection écran verre trempé 9H", category: "Protections d'écran", price: 3500, stock: 120 },
-  { slug: "chargeur-20w-usbc", name: "Chargeur rapide 20W USB-C", category: "Chargeurs", price: 9000, stock: 55 },
-  { slug: "chargeur-65w-gan", name: "Chargeur GaN 65W multi-ports", category: "Chargeurs", price: 24000, stock: 12 },
-  { slug: "cable-usbc-lightning", name: "Câble USB-C vers Lightning 1 m", category: "Câbles", price: 7000, stock: 64 },
-  { slug: "cable-usbc-usbc-2m", name: "Câble USB-C vers USB-C 2 m tressé", category: "Câbles", price: 6000, stock: 48 },
-  { slug: "batterie-externe-20000", name: "Batterie externe 20 000 mAh", category: "Batteries", price: 22000, stock: 18 },
-  { slug: "batterie-iphone-12", name: "Batterie de remplacement iPhone 12", category: "Batteries", price: 19000, stock: 9 },
-  { slug: "ecouteurs-tws", name: "Écouteurs TWS réduction de bruit", category: "Écouteurs", price: 17500, stock: 26 },
-  { slug: "ecouteurs-filaires", name: "Écouteurs filaires USB-C", category: "Écouteurs", price: 4500, stock: 73 },
-  { slug: "support-voiture", name: "Support téléphone voiture magnétique", category: "Accessoires", price: 5000, stock: 37 },
+  {
+    slug: "coque-silicone-iphone",
+    name: "Coque silicone renforcée iPhone",
+    category: "Coques",
+    price: 6500,
+    stock: 42,
+  },
+  {
+    slug: "coque-antichoc-samsung",
+    name: "Coque antichoc Galaxy A/S",
+    category: "Coques",
+    price: 5500,
+    stock: 31,
+  },
+  {
+    slug: "verre-trempe-9h",
+    name: "Protection écran verre trempé 9H",
+    category: "Protections d'écran",
+    price: 3500,
+    stock: 120,
+  },
+  {
+    slug: "chargeur-20w-usbc",
+    name: "Chargeur rapide 20W USB-C",
+    category: "Chargeurs",
+    price: 9000,
+    stock: 55,
+  },
+  {
+    slug: "chargeur-65w-gan",
+    name: "Chargeur GaN 65W multi-ports",
+    category: "Chargeurs",
+    price: 24000,
+    stock: 12,
+  },
+  {
+    slug: "cable-usbc-lightning",
+    name: "Câble USB-C vers Lightning 1 m",
+    category: "Câbles",
+    price: 7000,
+    stock: 64,
+  },
+  {
+    slug: "cable-usbc-usbc-2m",
+    name: "Câble USB-C vers USB-C 2 m tressé",
+    category: "Câbles",
+    price: 6000,
+    stock: 48,
+  },
+  {
+    slug: "batterie-externe-20000",
+    name: "Batterie externe 20 000 mAh",
+    category: "Batteries",
+    price: 22000,
+    stock: 18,
+  },
+  {
+    slug: "batterie-iphone-12",
+    name: "Batterie de remplacement iPhone 12",
+    category: "Batteries",
+    price: 19000,
+    stock: 9,
+  },
+  {
+    slug: "ecouteurs-tws",
+    name: "Écouteurs TWS réduction de bruit",
+    category: "Écouteurs",
+    price: 17500,
+    stock: 26,
+  },
+  {
+    slug: "ecouteurs-filaires",
+    name: "Écouteurs filaires USB-C",
+    category: "Écouteurs",
+    price: 4500,
+    stock: 73,
+  },
+  {
+    slug: "support-voiture",
+    name: "Support téléphone voiture magnétique",
+    category: "Accessoires",
+    price: 5000,
+    stock: 37,
+  },
 ];
 
 export const ACCESSORY_CATEGORIES = [
@@ -333,7 +513,8 @@ export const POSTS: Post[] = [
   {
     slug: "console-ps5-surchauffe",
     title: "PS5 qui surchauffe : diagnostic et entretien",
-    excerpt: "Poussière, pâte thermique sèche, ventilation obstruée : le protocole d'entretien complet de votre console.",
+    excerpt:
+      "Poussière, pâte thermique sèche, ventilation obstruée : le protocole d'entretien complet de votre console.",
     date: "2026-03-15",
     category: "Consoles",
     readingTime: "7 min",
@@ -347,30 +528,117 @@ export const POSTS: Post[] = [
 ];
 
 export const FAQ: { q: string; a: string; cat: string }[] = [
-  { cat: "Réparation", q: "Combien de temps prend une réparation d'écran ?", a: "La majorité des remplacements d'écran smartphone se font en 25 à 50 minutes sur place. Les tablettes et ordinateurs demandent entre 3 h et 48 h selon la pièce." },
-  { cat: "Réparation", q: "Le diagnostic est-il payant ?", a: "Non. Le diagnostic est gratuit et sans engagement. Vous recevez un devis détaillé avant toute intervention." },
-  { cat: "Garantie", q: "Quelle est la durée de la garantie ?", a: "6 mois sur les écrans et batteries premium, 3 mois sur les pièces compatibles et les interventions de micro-soudure, 1 an sur certaines pièces Apple d'origine." },
-  { cat: "Garantie", q: "La garantie couvre-t-elle une nouvelle chute ?", a: "Non. La garantie couvre les défauts de pièce et de main-d'œuvre, pas les dommages accidentels, l'oxydation ou une intervention par un tiers." },
-  { cat: "Paiement", q: "Quels moyens de paiement acceptez-vous ?", a: "MTN Mobile Money, Moov Money, Celtiis, espèces et virement pour les entreprises. Le paiement s'effectue après validation de la réparation." },
-  { cat: "Paiement", q: "Puis-je payer en plusieurs fois ?", a: "Un acompte de 50 % est possible sur les réparations supérieures à 100 000 FCFA, le solde à la restitution de l'appareil." },
-  { cat: "Données", q: "Mes données sont-elles conservées ?", a: "Un remplacement d'écran ou de batterie ne touche pas vos données. Pour toute intervention sur la carte mère, nous recommandons une sauvegarde préalable." },
-  { cat: "Données", q: "Dois-je fournir mon code de déverrouillage ?", a: "Oui, pour tester l'ensemble des fonctions après réparation. Vous pouvez aussi le saisir vous-même à la restitution." },
-  { cat: "Suivi", q: "Comment suivre ma réparation ?", a: "Chaque dépôt génère un numéro de dossier (format AT-2026-XXX). Saisissez-le dans la page Suivi ou recevez les notifications par WhatsApp." },
-  { cat: "Suivi", q: "Proposez-vous l'enlèvement à domicile ?", a: "Oui, à Abomey-Calavi, Cotonou et Godomey. L'enlèvement est gratuit dès 50 000 FCFA de réparation." },
+  {
+    cat: "Réparation",
+    q: "Combien de temps prend une réparation d'écran ?",
+    a: "La majorité des remplacements d'écran smartphone se font en 25 à 50 minutes sur place. Les tablettes et ordinateurs demandent entre 3 h et 48 h selon la pièce.",
+  },
+  {
+    cat: "Réparation",
+    q: "Le diagnostic est-il payant ?",
+    a: "Non. Le diagnostic est gratuit et sans engagement. Vous recevez un devis détaillé avant toute intervention.",
+  },
+  {
+    cat: "Garantie",
+    q: "Quelle est la durée de la garantie ?",
+    a: "6 mois sur les écrans et batteries premium, 3 mois sur les pièces compatibles et les interventions de micro-soudure, 1 an sur certaines pièces Apple d'origine.",
+  },
+  {
+    cat: "Garantie",
+    q: "La garantie couvre-t-elle une nouvelle chute ?",
+    a: "Non. La garantie couvre les défauts de pièce et de main-d'œuvre, pas les dommages accidentels, l'oxydation ou une intervention par un tiers.",
+  },
+  {
+    cat: "Paiement",
+    q: "Quels moyens de paiement acceptez-vous ?",
+    a: "MTN Mobile Money, Moov Money, Celtiis, espèces et virement pour les entreprises. Le paiement s'effectue après validation de la réparation.",
+  },
+  {
+    cat: "Paiement",
+    q: "Puis-je payer en plusieurs fois ?",
+    a: "Un acompte de 50 % est possible sur les réparations supérieures à 100 000 FCFA, le solde à la restitution de l'appareil.",
+  },
+  {
+    cat: "Données",
+    q: "Mes données sont-elles conservées ?",
+    a: "Un remplacement d'écran ou de batterie ne touche pas vos données. Pour toute intervention sur la carte mère, nous recommandons une sauvegarde préalable.",
+  },
+  {
+    cat: "Données",
+    q: "Dois-je fournir mon code de déverrouillage ?",
+    a: "Oui, pour tester l'ensemble des fonctions après réparation. Vous pouvez aussi le saisir vous-même à la restitution.",
+  },
+  {
+    cat: "Suivi",
+    q: "Comment suivre ma réparation ?",
+    a: "Chaque dépôt génère un numéro de dossier (format AT-2026-XXX). Saisissez-le dans la page Suivi ou recevez les notifications par WhatsApp.",
+  },
+  {
+    cat: "Suivi",
+    q: "Proposez-vous l'enlèvement à domicile ?",
+    a: "Oui, à Abomey-Calavi, Cotonou et Godomey. L'enlèvement est gratuit dès 50 000 FCFA de réparation.",
+  },
 ];
 
 export const REVIEWS = [
-  { name: "Koffi S.", city: "Abomey-Calavi", rating: 5, text: "Service impeccable à Calavi. Mon iPhone 15 Pro Max a été réparé en moins d'une heure.", device: "iPhone 15 Pro Max" },
-  { name: "Mariam A.", city: "Cotonou", rating: 5, text: "Devis clair, prix respecté, facture fournie. Ma batterie tient à nouveau deux jours.", device: "Galaxy A54" },
-  { name: "Yves D.", city: "Godomey", rating: 5, text: "Micro-soudure sur mon MacBook que deux autres ateliers avaient refusée. Machine sauvée.", device: "MacBook Air M1" },
-  { name: "Rachida B.", city: "Abomey-Calavi", rating: 4, text: "Bon suivi WhatsApp du dossier. Une journée de plus que prévu mais résultat parfait.", device: "PlayStation 5" },
-  { name: "Serge H.", city: "Calavi Zogbadjè", rating: 5, text: "Écran Tecno changé pendant que j'attendais. Paiement MoMo, très pratique.", device: "Tecno Camon 20" },
-  { name: "Aline T.", city: "Cotonou", rating: 5, text: "Notre société fait entretenir 20 postes ici. Sérieux et factures en règle.", device: "Parc informatique" },
+  {
+    name: "Koffi S.",
+    city: "Abomey-Calavi",
+    rating: 5,
+    text: "Service impeccable à Calavi. Mon iPhone 15 Pro Max a été réparé en moins d'une heure.",
+    device: "iPhone 15 Pro Max",
+  },
+  {
+    name: "Mariam A.",
+    city: "Cotonou",
+    rating: 5,
+    text: "Devis clair, prix respecté, facture fournie. Ma batterie tient à nouveau deux jours.",
+    device: "Galaxy A54",
+  },
+  {
+    name: "Yves D.",
+    city: "Godomey",
+    rating: 5,
+    text: "Micro-soudure sur mon MacBook que deux autres ateliers avaient refusée. Machine sauvée.",
+    device: "MacBook Air M1",
+  },
+  {
+    name: "Rachida B.",
+    city: "Abomey-Calavi",
+    rating: 4,
+    text: "Bon suivi WhatsApp du dossier. Une journée de plus que prévu mais résultat parfait.",
+    device: "PlayStation 5",
+  },
+  {
+    name: "Serge H.",
+    city: "Calavi Zogbadjè",
+    rating: 5,
+    text: "Écran Tecno changé pendant que j'attendais. Paiement MoMo, très pratique.",
+    device: "Tecno Camon 20",
+  },
+  {
+    name: "Aline T.",
+    city: "Cotonou",
+    rating: 5,
+    text: "Notre société fait entretenir 20 postes ici. Sérieux et factures en règle.",
+    device: "Parc informatique",
+  },
 ];
 
 export const STEPS = [
-  { n: "01", title: "Diagnostic gratuit", text: "Sur place ou à distance. Nous identifions la panne réelle et sa cause, sans frais." },
-  { n: "02", title: "Devis & validation", text: "Prix ferme, délai, catégorie de pièce et garantie. Rien ne démarre sans votre accord." },
-  { n: "03", title: "Réparation & contrôle", text: "Intervention en atelier, tests complets, restitution avec facture et garantie." },
+  {
+    n: "01",
+    title: "Diagnostic gratuit",
+    text: "Sur place ou à distance. Nous identifions la panne réelle et sa cause, sans frais.",
+  },
+  {
+    n: "02",
+    title: "Devis & validation",
+    text: "Prix ferme, délai, catégorie de pièce et garantie. Rien ne démarre sans votre accord.",
+  },
+  {
+    n: "03",
+    title: "Réparation & contrôle",
+    text: "Intervention en atelier, tests complets, restitution avec facture et garantie.",
+  },
 ];
-

@@ -18,6 +18,7 @@ INSERT INTO public.slot_capacity (weekday, period, mode, capacity) VALUES
 
 -- La validation des créneaux prend le mode en compte.
 DROP TRIGGER IF EXISTS reservations_validate_slot ON public.reservations;
+DROP TRIGGER IF EXISTS trg_reservations_validate_slot ON public.reservations;
 DROP FUNCTION IF EXISTS public.validate_reservation_slot();
 
 CREATE OR REPLACE FUNCTION public.validate_reservation_slot()

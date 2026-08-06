@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 export const DEVICES: Device[] = [
   {
@@ -11,7 +11,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 6.81\" 120Hz", 70000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.81" 120Hz', 70000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 4600 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -24,7 +24,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 65000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 65000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -37,7 +37,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.28\" 120Hz", 72000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.28" 120Hz', 72000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 4500 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -50,7 +50,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 68000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 68000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -63,7 +63,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.36\" 120Hz", 78000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.36" 120Hz', 78000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 4500 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -76,7 +76,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 144Hz", 72000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 144Hz', 72000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -89,7 +89,14 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran LTPO AMOLED 6.36\" 120Hz", 85000, "1 h", "6 mois", "Écran compatible grade A"),
+      f(
+        "ecran",
+        'Écran LTPO AMOLED 6.36" 120Hz',
+        85000,
+        "1 h",
+        "6 mois",
+        "Écran compatible grade A",
+      ),
       f("batterie", "Batterie 4610 mAh", 30000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -102,7 +109,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 144Hz", 78000, "1 h", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 144Hz', 78000, "1 h", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 30000, "35 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -115,7 +122,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 6.43\" 90Hz", 38000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran AMOLED 6.43" 90Hz', 38000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -128,7 +135,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 45000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 45000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5020 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -141,7 +148,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.43\" 90Hz", 40000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran AMOLED 6.43" 90Hz', 40000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -154,7 +161,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 48000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 48000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -167,7 +174,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 52000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 52000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -180,7 +187,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 48000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 48000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -193,7 +200,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 55000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 55000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5100 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -206,7 +213,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.5\" 90Hz", 28000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.5" 90Hz', 28000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -219,7 +226,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 6.79\" 90Hz", 30000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.79" 90Hz', 30000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -232,7 +239,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran IPS LCD 6.79\" 90Hz", 32000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.79" 90Hz', 32000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5030 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -245,7 +252,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 6.67\" 120Hz", 38000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.67" 120Hz', 38000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5160 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -258,7 +265,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 45000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 45000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -271,7 +278,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 48000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 48000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -284,7 +291,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 55000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 55000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 4500 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -297,7 +304,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 60000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 60000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 25000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -310,7 +317,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 6.58\" 90Hz", 30000, "40 min", "3 mois", "Écran compatible"),
+      f("ecran", 'Écran IPS LCD 6.58" 90Hz', 30000, "40 min", "3 mois", "Écran compatible"),
       f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
@@ -323,7 +330,7 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED 6.67\" 120Hz", 42000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("ecran", 'Écran AMOLED 6.67" 120Hz', 42000, "45 min", "6 mois", "Écran compatible grade A"),
       f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
       f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],

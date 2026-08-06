@@ -1,6 +1,6 @@
 import { fault, type Device, type Fault } from "./types";
 
-const f = fault
+const f = fault;
 
 /* ── Helpers iPhone ─────────────────────────────────────────────────────── */
 
@@ -8,16 +8,88 @@ type IPhoneTier = "old" | "x" | "gen12" | "gen13" | "gen14" | "gen15" | "gen16" 
 
 const IPHONE: Record<
   IPhoneTier,
-  { base: number; bat: number; pro: number; promax: number; proBat: number; connector: string; cam: number }
+  {
+    base: number;
+    bat: number;
+    pro: number;
+    promax: number;
+    proBat: number;
+    connector: string;
+    cam: number;
+  }
 > = {
-  old:     { base: 45000, bat: 22000, pro: 0, promax: 0, proBat: 24000, connector: "Nappe de charge d'origine", cam: 0 },
-  x:       { base: 65000, bat: 26000, pro: 80000, promax: 90000, proBat: 30000, connector: "Nappe de charge d'origine", cam: 35000 },
-  gen12:   { base: 75000, bat: 30000, pro: 95000, promax: 115000, proBat: 35000, connector: "Nappe de charge d'origine", cam: 55000 },
-  gen13:   { base: 75000, bat: 30000, pro: 95000, promax: 115000, proBat: 35000, connector: "Nappe de charge d'origine", cam: 55000 },
-  gen14:   { base: 85000, bat: 33000, pro: 115000, promax: 145000, proBat: 40000, connector: "Nappe USB-C d'origine", cam: 60000 },
-  gen15:   { base: 95000, bat: 38000, pro: 135000, promax: 165000, proBat: 45000, connector: "Nappe USB-C d'origine", cam: 65000 },
-  gen16:   { base: 145000, bat: 48000, pro: 175000, promax: 195000, proBat: 52000, connector: "Nappe USB-C d'origine", cam: 78000 },
-  gen17:   { base: 155000, bat: 50000, pro: 185000, promax: 215000, proBat: 55000, connector: "Nappe USB-C d'origine", cam: 85000 },
+  old: {
+    base: 45000,
+    bat: 22000,
+    pro: 0,
+    promax: 0,
+    proBat: 24000,
+    connector: "Nappe de charge d'origine",
+    cam: 0,
+  },
+  x: {
+    base: 65000,
+    bat: 26000,
+    pro: 80000,
+    promax: 90000,
+    proBat: 30000,
+    connector: "Nappe de charge d'origine",
+    cam: 35000,
+  },
+  gen12: {
+    base: 75000,
+    bat: 30000,
+    pro: 95000,
+    promax: 115000,
+    proBat: 35000,
+    connector: "Nappe de charge d'origine",
+    cam: 55000,
+  },
+  gen13: {
+    base: 75000,
+    bat: 30000,
+    pro: 95000,
+    promax: 115000,
+    proBat: 35000,
+    connector: "Nappe de charge d'origine",
+    cam: 55000,
+  },
+  gen14: {
+    base: 85000,
+    bat: 33000,
+    pro: 115000,
+    promax: 145000,
+    proBat: 40000,
+    connector: "Nappe USB-C d'origine",
+    cam: 60000,
+  },
+  gen15: {
+    base: 95000,
+    bat: 38000,
+    pro: 135000,
+    promax: 165000,
+    proBat: 45000,
+    connector: "Nappe USB-C d'origine",
+    cam: 65000,
+  },
+  gen16: {
+    base: 145000,
+    bat: 48000,
+    pro: 175000,
+    promax: 195000,
+    proBat: 52000,
+    connector: "Nappe USB-C d'origine",
+    cam: 78000,
+  },
+  gen17: {
+    base: 155000,
+    bat: 50000,
+    pro: 185000,
+    promax: 215000,
+    proBat: 55000,
+    connector: "Nappe USB-C d'origine",
+    cam: 85000,
+  },
 };
 
 type IPhoneVariant = "base" | "plus" | "mini" | "pro" | "promax" | "se";
@@ -69,10 +141,30 @@ function iPhone(
     ),
   ];
   if (variant === "pro" || variant === "promax") {
-    faults.push(f("camera", "Bloc caméra arrière", t.cam, "70 min", "6 mois", "Module triple capteur"));
-    faults.push(f("vitre-arriere", "Vitre arrière", Math.round(t.cam * 0.85), "90 min", "3 mois", "Verre trempé laminé"));
+    faults.push(
+      f("camera", "Bloc caméra arrière", t.cam, "70 min", "6 mois", "Module triple capteur"),
+    );
+    faults.push(
+      f(
+        "vitre-arriere",
+        "Vitre arrière",
+        Math.round(t.cam * 0.85),
+        "90 min",
+        "3 mois",
+        "Verre trempé laminé",
+      ),
+    );
   } else {
-    faults.push(f("desoxydation", "Désoxydation carte mère", 20000, "48 h", "1 mois", "Bain ultrasons + reflow"));
+    faults.push(
+      f(
+        "desoxydation",
+        "Désoxydation carte mère",
+        20000,
+        "48 h",
+        "1 mois",
+        "Bain ultrasons + reflow",
+      ),
+    );
   }
   return { slug, name, brand: "apple", series: "iPhone", category: "Smartphone", year, faults };
 }
@@ -84,35 +176,45 @@ type IpadTier = "mini" | "base" | "air" | "pro";
 const IPAD: Record<IpadTier, { ecran: number; bat: number; conn: number }> = {
   mini: { ecran: 70000, bat: 32000, conn: 22000 },
   base: { ecran: 85000, bat: 38000, conn: 25000 },
-  air:  { ecran: 105000, bat: 48000, conn: 28000 },
-  pro:  { ecran: 160000, bat: 62000, conn: 32000 },
+  air: { ecran: 105000, bat: 48000, conn: 28000 },
+  pro: { ecran: 160000, bat: 62000, conn: 32000 },
 };
 
 function iPad(slug: string, name: string, year: number, tier: IpadTier): Device {
   const t = IPAD[tier];
   const faults: Fault[] = [
-    f("ecran", tier === "pro" ? "Dalle OLED laminée" : "Vitre tactile + LCD", t.ecran, "3 h", "6 mois", "Ensemble écran laminé"),
+    f(
+      "ecran",
+      tier === "pro" ? "Dalle OLED laminée" : "Vitre tactile + LCD",
+      t.ecran,
+      "3 h",
+      "6 mois",
+      "Ensemble écran laminé",
+    ),
     f("batterie", "Batterie interne", t.bat, "6 h", "6 mois", "Batterie certifiée"),
     f("connecteur", "Port Lightning/USB-C", t.conn, "6 h", "3 mois", "Nappe de charge"),
   ];
   if (tier === "pro") {
-    faults.push(f("carte-mere", "Micro-soudure carte mère", 90000, "72 h", "3 mois", "Composants CMS"));
+    faults.push(
+      f("carte-mere", "Micro-soudure carte mère", 90000, "72 h", "3 mois", "Composants CMS"),
+    );
   }
   return { slug, name, brand: "apple", series: "iPad", category: "Tablette", year, faults };
 }
 
 /* ── Helpers MacBook ────────────────────────────────────────────────────── */
 
-type MacTier = "airIntel" | "airM" | "proIntel13" | "proIntel15" | "proM14" | "proM16" | "macbook12";
+type MacTier =
+  "airIntel" | "airM" | "proIntel13" | "proIntel15" | "proM14" | "proM16" | "macbook12";
 
 const MAC: Record<MacTier, { ecran: number; bat: number; clavier: number; carte: number }> = {
-  airIntel:   { ecran: 145000, bat: 48000, clavier: 85000, carte: 65000 },
-  airM:       { ecran: 195000, bat: 65000, clavier: 115000, carte: 85000 },
+  airIntel: { ecran: 145000, bat: 48000, clavier: 85000, carte: 65000 },
+  airM: { ecran: 195000, bat: 65000, clavier: 115000, carte: 85000 },
   proIntel13: { ecran: 185000, bat: 55000, clavier: 95000, carte: 75000 },
   proIntel15: { ecran: 230000, bat: 65000, clavier: 105000, carte: 85000 },
-  proM14:     { ecran: 320000, bat: 88000, clavier: 145000, carte: 110000 },
-  proM16:     { ecran: 360000, bat: 95000, clavier: 150000, carte: 120000 },
-  macbook12:  { ecran: 135000, bat: 42000, clavier: 75000, carte: 60000 },
+  proM14: { ecran: 320000, bat: 88000, clavier: 145000, carte: 110000 },
+  proM16: { ecran: 360000, bat: 95000, clavier: 150000, carte: 120000 },
+  macbook12: { ecran: 135000, bat: 42000, clavier: 75000, carte: 60000 },
 };
 
 function MacBook(
@@ -131,10 +233,24 @@ function MacBook(
     category: "Ordinateur portable",
     year,
     faults: [
-      f("clavier", "Clavier complet (topcase)", t.clavier, "24 h", "1 an", "Topcase AZERTY d'origine"),
+      f(
+        "clavier",
+        "Clavier complet (topcase)",
+        t.clavier,
+        "24 h",
+        "1 an",
+        "Topcase AZERTY d'origine",
+      ),
       f("ecran", "Dalle Retina", t.ecran, "48 h", "6 mois", "Dalle LCD complète"),
       f("batterie", "Batterie interne", t.bat, "3 h", "1 an", "Batterie certifiée"),
-      f("carte-mere", "Réparation carte mère (micro-soudure)", t.carte, "72 h", "3 mois", "Composants CMS"),
+      f(
+        "carte-mere",
+        "Réparation carte mère (micro-soudure)",
+        t.carte,
+        "72 h",
+        "3 mois",
+        "Composants CMS",
+      ),
     ],
   };
 }
@@ -144,11 +260,11 @@ function MacBook(
 type DeskTier = "mini" | "imac" | "imac27" | "studio" | "pro";
 
 const DESK: Record<DeskTier, { alim: number; ssd: number; nettoyage: number; ecran?: number }> = {
-  mini:     { alim: 55000, ssd: 65000, nettoyage: 18000 },
-  imac:     { alim: 78000, ssd: 95000, nettoyage: 22000, ecran: 295000 },
-  imac27:   { alim: 88000, ssd: 105000, nettoyage: 24000, ecran: 380000 },
-  studio:   { alim: 95000, ssd: 120000, nettoyage: 25000 },
-  pro:      { alim: 120000, ssd: 150000, nettoyage: 28000 },
+  mini: { alim: 55000, ssd: 65000, nettoyage: 18000 },
+  imac: { alim: 78000, ssd: 95000, nettoyage: 22000, ecran: 295000 },
+  imac27: { alim: 88000, ssd: 105000, nettoyage: 24000, ecran: 380000 },
+  studio: { alim: 95000, ssd: 120000, nettoyage: 25000 },
+  pro: { alim: 120000, ssd: 150000, nettoyage: 28000 },
 };
 
 function MacDesk(slug: string, name: string, year: number, tier: DeskTier, series: string): Device {
@@ -156,7 +272,14 @@ function MacDesk(slug: string, name: string, year: number, tier: DeskTier, serie
   const faults: Fault[] = [
     f("alimentation", "Bloc d'alimentation", t.alim, "48 h", "6 mois", "Alimentation interne"),
     f("ssd", "Upgrade / remplacement SSD", t.ssd, "24 h", "1 an", "SSD NVMe 512 Go"),
-    f("nettoyage", "Nettoyage complet + pâte thermique", t.nettoyage, "6 h", "1 mois", "Pâte thermique premium"),
+    f(
+      "nettoyage",
+      "Nettoyage complet + pâte thermique",
+      t.nettoyage,
+      "6 h",
+      "1 mois",
+      "Pâte thermique premium",
+    ),
   ];
   if (t.ecran) {
     faults.unshift(f("ecran", "Dalle Retina", t.ecran, "72 h", "6 mois", "Dalle complète"));
@@ -166,7 +289,14 @@ function MacDesk(slug: string, name: string, year: number, tier: DeskTier, serie
 
 /* ── Helper Apple Watch ─────────────────────────────────────────────────── */
 
-function Watch(slug: string, name: string, year: number, ecran: number, bat: number, series: string): Device {
+function Watch(
+  slug: string,
+  name: string,
+  year: number,
+  ecran: number,
+  bat: number,
+  series: string,
+): Device {
   return {
     slug,
     name,

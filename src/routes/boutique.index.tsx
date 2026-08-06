@@ -140,7 +140,11 @@ function Boutique() {
                   <article key={p.slug} className="flex flex-col bg-card p-6">
                     <span className="at-eyebrow">{p.category}</span>
                     <h3 className="mt-3 text-base font-bold tracking-tight">
-                      <Link to="/boutique/$slug" params={{ slug: p.slug }} className="hover:text-primary">
+                      <Link
+                        to="/boutique/$slug"
+                        params={{ slug: p.slug }}
+                        className="hover:text-primary"
+                      >
                         {p.name}
                       </Link>
                     </h3>

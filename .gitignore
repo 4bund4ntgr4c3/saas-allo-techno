@@ -28,7 +28,9 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
+
+# Supabase CLI
+supabase/.temp/
 *.ntvs*
 *.njsproj
 *.sln

@@ -1,0 +1,16 @@
+# Forcer LF pour tous les fichiers texte (Prettier impose endOfLine lf).
+* text=auto eol=lf
+
+# Fichiers binaires à ne jamais normaliser
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.pdf binary
+*.zip binary

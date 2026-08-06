@@ -75,7 +75,8 @@ function Panier() {
             price: i.accessory.price,
           })),
         },
-      });      setOrder({ ref: reference, total, delivery: option.label, payment, name: form.name.trim() });
+      });
+      setOrder({ ref: reference, total, delivery: option.label, payment, name: form.name.trim() });
       cart.clear();
       toast.success(`Commande ${reference} enregistrée`);
     } catch (err) {
@@ -205,7 +206,9 @@ function Panier() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-muted-foreground">Livraison ({option.eta})</dt>
-                    <dd className="font-mono">{shipping === 0 ? "Offerte" : formatFcfa(shipping)}</dd>
+                    <dd className="font-mono">
+                      {shipping === 0 ? "Offerte" : formatFcfa(shipping)}
+                    </dd>
                   </div>
                   <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
                     <dt>Total</dt>
@@ -267,7 +270,9 @@ function Panier() {
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                     />
-                    {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone}</p>}
+                    {errors.phone && (
+                      <p className="mt-1 text-xs text-destructive">{errors.phone}</p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="email" className="mb-1 block text-xs font-semibold">
@@ -327,7 +332,13 @@ function Panier() {
                     />
                   </div>
                 </div>
-                <Button type="submit" variant="technical" size="lg" className="mt-6 w-full" disabled={submitting}>
+                <Button
+                  type="submit"
+                  variant="technical"
+                  size="lg"
+                  className="mt-6 w-full"
+                  disabled={submitting}
+                >
                   {submitting ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />

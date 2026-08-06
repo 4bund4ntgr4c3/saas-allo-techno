@@ -61,7 +61,10 @@ export function LeadForm({
 
   if (sent) {
     return (
-      <div className="flex flex-col items-start gap-2 border border-success/40 bg-success/10 p-6" role="status">
+      <div
+        className="flex flex-col items-start gap-2 border border-success/40 bg-success/10 p-6"
+        role="status"
+      >
         <p className="flex items-center gap-2 text-sm font-bold text-success">
           <CheckCircle2 className="size-5" />
           Message envoyé

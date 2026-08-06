@@ -26,9 +26,21 @@ export const Route = createFileRoute("/garantie")({
 });
 
 const TIERS = [
-  { d: "6 mois", t: "Écrans & batteries premium", x: "Pièces grade A+ et service pack posées en atelier." },
-  { d: "3 mois", t: "Pièces compatibles & micro-soudure", x: "Interventions carte mère, connecteurs de charge, nappes." },
-  { d: "12 mois", t: "Pièces Apple d'origine", x: "Sur les modèles éligibles au programme pièces d'origine." },
+  {
+    d: "6 mois",
+    t: "Écrans & batteries premium",
+    x: "Pièces grade A+ et service pack posées en atelier.",
+  },
+  {
+    d: "3 mois",
+    t: "Pièces compatibles & micro-soudure",
+    x: "Interventions carte mère, connecteurs de charge, nappes.",
+  },
+  {
+    d: "12 mois",
+    t: "Pièces Apple d'origine",
+    x: "Sur les modèles éligibles au programme pièces d'origine.",
+  },
 ];
 
 const COVERED = [

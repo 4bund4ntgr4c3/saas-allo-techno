@@ -227,7 +227,9 @@ export function DeviceSearch({
     };
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    } catch {}
+    } catch {
+      // Quota localStorage atteint (navigation privée, mode avion) : on ignore, le brouillon sera perdu.
+    }
   };
 
   const restoreDraft = () => {

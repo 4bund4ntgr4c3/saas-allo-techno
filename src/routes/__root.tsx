@@ -159,7 +159,6 @@ function RootComponent() {
     return () => sub.subscription.unsubscribe();
   }, [router, queryClient]);
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>

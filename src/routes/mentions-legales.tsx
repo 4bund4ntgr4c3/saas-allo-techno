@@ -50,7 +50,9 @@ function Mentions() {
       t: "Données personnelles",
       p: [
         "Les informations collectées lors d'une réservation (nom, téléphone, e-mail, description de la panne) servent exclusivement au traitement du dossier de réparation et au suivi client.",
-        "Elles ne sont ni vendues ni cédées à des tiers. Vous pouvez demander leur consultation, leur rectification ou leur suppression en écrivant à " + COMPANY.email + ".",
+        "Elles ne sont ni vendues ni cédées à des tiers. Vous pouvez demander leur consultation, leur rectification ou leur suppression en écrivant à " +
+          COMPANY.email +
+          ".",
         "Un remplacement d'écran ou de batterie n'implique aucun accès au contenu de votre appareil. Pour les interventions carte mère, une sauvegarde préalable est recommandée.",
       ],
     },
@@ -75,7 +77,10 @@ function Mentions() {
               <h2 className="at-display text-xl">{s.t}</h2>
               <div className="mt-4 space-y-3">
                 {s.p.map((par) => (
-                  <p key={par.slice(0, 30)} className="text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    key={par.slice(0, 30)}
+                    className="text-sm leading-relaxed text-muted-foreground"
+                  >
                     {par}
                   </p>
                 ))}

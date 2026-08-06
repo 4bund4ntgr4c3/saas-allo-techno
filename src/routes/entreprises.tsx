@@ -16,7 +16,8 @@ export const Route = createFileRoute("/entreprises")({
       { property: "og:title", content: "Offre entreprises — Allô Techno" },
       {
         property: "og:description",
-        content: "Prise en charge prioritaire, appareils de prêt et facturation adaptée aux structures.",
+        content:
+          "Prise en charge prioritaire, appareils de prêt et facturation adaptée aux structures.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -26,16 +27,57 @@ export const Route = createFileRoute("/entreprises")({
 });
 
 const SERVICES = [
-  { icon: Building2, t: "Gestion de parc", x: "Inventaire, étiquetage et historique d'intervention par appareil." },
-  { icon: Truck, t: "Enlèvement sur site", x: "Collecte et restitution à votre bureau à Abomey-Calavi, Cotonou et Godomey." },
-  { icon: Users, t: "Appareils de prêt", x: "Un poste ou smartphone de remplacement pendant l'immobilisation." },
-  { icon: FileText, t: "Facturation B2B", x: "Devis signés, factures conformes et paiement par virement à 30 jours." },
+  {
+    icon: Building2,
+    t: "Gestion de parc",
+    x: "Inventaire, étiquetage et historique d'intervention par appareil.",
+  },
+  {
+    icon: Truck,
+    t: "Enlèvement sur site",
+    x: "Collecte et restitution à votre bureau à Abomey-Calavi, Cotonou et Godomey.",
+  },
+  {
+    icon: Users,
+    t: "Appareils de prêt",
+    x: "Un poste ou smartphone de remplacement pendant l'immobilisation.",
+  },
+  {
+    icon: FileText,
+    t: "Facturation B2B",
+    x: "Devis signés, factures conformes et paiement par virement à 30 jours.",
+  },
 ];
 
 const PLANS = [
-  { name: "Essentiel", price: 75000, unit: "/ mois", items: ["Jusqu'à 15 appareils", "Prise en charge sous 48 h", "Diagnostic illimité", "Facturation mensuelle"] },
-  { name: "Business", price: 180000, unit: "/ mois", items: ["Jusqu'à 50 appareils", "Prise en charge sous 24 h", "Enlèvement sur site inclus", "2 appareils de prêt"] },
-  { name: "Sur mesure", price: 0, unit: "", items: ["Parc illimité", "Technicien dédié", "SLA contractuel", "Reporting trimestriel"] },
+  {
+    name: "Essentiel",
+    price: 75000,
+    unit: "/ mois",
+    items: [
+      "Jusqu'à 15 appareils",
+      "Prise en charge sous 48 h",
+      "Diagnostic illimité",
+      "Facturation mensuelle",
+    ],
+  },
+  {
+    name: "Business",
+    price: 180000,
+    unit: "/ mois",
+    items: [
+      "Jusqu'à 50 appareils",
+      "Prise en charge sous 24 h",
+      "Enlèvement sur site inclus",
+      "2 appareils de prêt",
+    ],
+  },
+  {
+    name: "Sur mesure",
+    price: 0,
+    unit: "",
+    items: ["Parc illimité", "Technicien dédié", "SLA contractuel", "Reporting trimestriel"],
+  },
 ];
 
 function Entreprises() {

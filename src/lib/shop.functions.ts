@@ -31,8 +31,7 @@ export const submitShopOrder = createServerFn({ method: "POST" })
       throw new Error("Trop de commandes. Réessayez dans une minute.");
     }
 
-    const { data: refData, error: refError } = await supabaseAdmin
-      .rpc("next_shop_reference");
+    const { data: refData, error: refError } = await supabaseAdmin.rpc("next_shop_reference");
     if (refError || !refData) {
       console.error("[shop] reference failed", refError);
       throw new Error("La commande n'a pas pu être enregistrée. Réessayez.");

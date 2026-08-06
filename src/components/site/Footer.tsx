@@ -103,7 +103,10 @@ export function Footer() {
                 { to: "/garantie", label: "Garantie" },
               ].map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary">
+                  <Link
+                    to={link.to}
+                    className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -123,7 +126,10 @@ export function Footer() {
                 { to: "/blog", label: "Blog & conseils" },
               ].map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary">
+                  <Link
+                    to={link.to}
+                    className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
+                  >
                     {link.label}
                   </Link>
                 </li>

@@ -24,7 +24,12 @@ export const Route = createFileRoute("/reparations/$brand")({
   head: ({ params, loaderData }) => {
     const name = loaderData?.brand.name ?? "Marque";
     if (!loaderData) {
-      return { meta: [{ title: "Marque introuvable — Allô Techno" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Marque introuvable — Allô Techno" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     return {
       meta: [
@@ -181,7 +186,9 @@ function BrandPage() {
                     {d.faults.slice(0, 3).map((f) => (
                       <li key={f.slug} className="flex justify-between gap-4 text-sm">
                         <span className="text-muted-foreground">{f.label}</span>
-                        <span className="font-mono text-xs text-primary">{formatFcfa(f.price)}</span>
+                        <span className="font-mono text-xs text-primary">
+                          {formatFcfa(f.price)}
+                        </span>
                       </li>
                     ))}
                   </ul>

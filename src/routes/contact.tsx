@@ -16,7 +16,8 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact — Allô Techno Abomey-Calavi" },
       {
         property: "og:description",
-        content: "Venez à l'atelier de Zogbadjè ou écrivez-nous sur WhatsApp pour un diagnostic gratuit.",
+        content:
+          "Venez à l'atelier de Zogbadjè ou écrivez-nous sur WhatsApp pour un diagnostic gratuit.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -128,8 +129,8 @@ function Contact() {
             <span className="at-eyebrow mb-4 block">Écrivez-nous</span>
             <h2 className="at-display text-3xl">Envoyez un message</h2>
             <p className="mt-4 max-w-md text-sm text-muted-foreground">
-              Une question sur une réparation, un prix, un accessoire ? Nous
-              répondons rapidement — généralement sous une heure ouvrée.
+              Une question sur une réparation, un prix, un accessoire ? Nous répondons rapidement —
+              généralement sous une heure ouvrée.
             </p>
           </div>
           <LeadForm

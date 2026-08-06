@@ -1,26 +1,29 @@
 import { fault, type Device, type Fault } from "./types";
 
-const f = fault
+const f = fault;
 
 /* ── Helpers Électroménager ─────────────────────────────────────────────── */
 
 type BigTier =
-  | "frigo"
-  | "lave-linge"
-  | "clim"
-  | "micro-ondes"
-  | "four"
-  | "lave-vaisselle"
-  | "congelateur";
+  "frigo" | "lave-linge" | "clim" | "micro-ondes" | "four" | "lave-vaisselle" | "congelateur";
 
-const BIG: Record<BigTier, { moteur: number; carte: number; compresseur: number; resistance: number; joint: number }> = {
-  frigo:          { moteur: 0, carte: 35000, compresseur: 85000, resistance: 25000, joint: 18000 },
-  congelateur:    { moteur: 0, carte: 38000, compresseur: 95000, resistance: 28000, joint: 20000 },
-  "lave-linge":   { moteur: 45000, carte: 32000, compresseur: 0, resistance: 22000, joint: 15000 },
-  clim:           { moteur: 0, carte: 40000, compresseur: 90000, resistance: 0, joint: 20000 },
-  "micro-ondes":  { moteur: 20000, carte: 28000, compresseur: 0, resistance: 0, joint: 12000 },
-  four:           { moteur: 0, carte: 30000, compresseur: 0, resistance: 24000, joint: 15000 },
-  "lave-vaisselle": { moteur: 42000, carte: 35000, compresseur: 0, resistance: 25000, joint: 16000 },
+const BIG: Record<
+  BigTier,
+  { moteur: number; carte: number; compresseur: number; resistance: number; joint: number }
+> = {
+  frigo: { moteur: 0, carte: 35000, compresseur: 85000, resistance: 25000, joint: 18000 },
+  congelateur: { moteur: 0, carte: 38000, compresseur: 95000, resistance: 28000, joint: 20000 },
+  "lave-linge": { moteur: 45000, carte: 32000, compresseur: 0, resistance: 22000, joint: 15000 },
+  clim: { moteur: 0, carte: 40000, compresseur: 90000, resistance: 0, joint: 20000 },
+  "micro-ondes": { moteur: 20000, carte: 28000, compresseur: 0, resistance: 0, joint: 12000 },
+  four: { moteur: 0, carte: 30000, compresseur: 0, resistance: 24000, joint: 15000 },
+  "lave-vaisselle": {
+    moteur: 42000,
+    carte: 35000,
+    compresseur: 0,
+    resistance: 25000,
+    joint: 16000,
+  },
 };
 
 function BigAppliance(
@@ -35,25 +38,68 @@ function BigAppliance(
   const faults: Fault[] = [
     f("carte", "Réparation carte électronique", t.carte, "48 h", "3 mois", "Composants CMS"),
   ];
-  if (t.compresseur) faults.push(f("compresseur", "Remplacement compresseur / moteur", t.compresseur, "72 h", "6 mois", "Compresseur compatible"));
-  if (t.moteur) faults.push(f("moteur", "Remplacement moteur", t.moteur, "48 h", "6 mois", "Moteur compatible"));
-  if (t.resistance) faults.push(f("resistance", "Remplacement résistance chauffante", t.resistance, "24 h", "3 mois", "Résistance compatible"));
-  if (t.joint) faults.push(f("joint", "Remplacement joint de porte", t.joint, "6 h", "6 mois", "Joint neuf"));
-  return { slug, name, brand, series: name.split(" ").slice(0, 2).join(" "), category, year, faults };
+  if (t.compresseur)
+    faults.push(
+      f(
+        "compresseur",
+        "Remplacement compresseur / moteur",
+        t.compresseur,
+        "72 h",
+        "6 mois",
+        "Compresseur compatible",
+      ),
+    );
+  if (t.moteur)
+    faults.push(
+      f("moteur", "Remplacement moteur", t.moteur, "48 h", "6 mois", "Moteur compatible"),
+    );
+  if (t.resistance)
+    faults.push(
+      f(
+        "resistance",
+        "Remplacement résistance chauffante",
+        t.resistance,
+        "24 h",
+        "3 mois",
+        "Résistance compatible",
+      ),
+    );
+  if (t.joint)
+    faults.push(f("joint", "Remplacement joint de porte", t.joint, "6 h", "6 mois", "Joint neuf"));
+  return {
+    slug,
+    name,
+    brand,
+    series: name.split(" ").slice(0, 2).join(" "),
+    category,
+    year,
+    faults,
+  };
 }
 
 /* ── Helpers Petit électroménager ───────────────────────────────────────── */
 
-type SmallTier = "blender" | "fer" | "cafetiere" | "bouilloire" | "robot" | "ventilateur" | "aspirateur" | "grille-pain";
+type SmallTier =
+  | "blender"
+  | "fer"
+  | "cafetiere"
+  | "bouilloire"
+  | "robot"
+  | "ventilateur"
+  | "aspirateur"
+  | "grille-pain";
 
-const SMALL: Record<SmallTier, { moteur: number; resistance: number; carte: number; lame: number }> = {
-  blender:     { moteur: 12000, resistance: 0, carte: 8000, lame: 7000 },
-  fer:         { moteur: 0, resistance: 10000, carte: 6000, lame: 0 },
-  cafetiere:   { moteur: 0, resistance: 12000, carte: 9000, lame: 0 },
-  bouilloire:  { moteur: 0, resistance: 9000, carte: 5000, lame: 0 },
-  robot:       { moteur: 18000, resistance: 0, carte: 10000, lame: 9000 },
+const SMALL: Record<
+  SmallTier,
+  { moteur: number; resistance: number; carte: number; lame: number }
+> = {
+  blender: { moteur: 12000, resistance: 0, carte: 8000, lame: 7000 },
+  fer: { moteur: 0, resistance: 10000, carte: 6000, lame: 0 },
+  cafetiere: { moteur: 0, resistance: 12000, carte: 9000, lame: 0 },
+  bouilloire: { moteur: 0, resistance: 9000, carte: 5000, lame: 0 },
+  robot: { moteur: 18000, resistance: 0, carte: 10000, lame: 9000 },
   ventilateur: { moteur: 14000, resistance: 0, carte: 7000, lame: 5000 },
-  aspirateur:  { moteur: 20000, resistance: 0, carte: 12000, lame: 0 },
+  aspirateur: { moteur: 20000, resistance: 0, carte: 12000, lame: 0 },
   "grille-pain": { moteur: 0, resistance: 11000, carte: 6000, lame: 0 },
 };
 
@@ -68,22 +114,49 @@ function SmallAppliance(
   const faults: Fault[] = [
     f("carte", "Réparation carte électronique", t.carte, "24 h", "3 mois", "Composants CMS"),
   ];
-  if (t.moteur) faults.push(f("moteur", "Remplacement moteur", t.moteur, "24 h", "3 mois", "Moteur compatible"));
-  if (t.resistance) faults.push(f("resistance", "Remplacement résistance chauffante", t.resistance, "24 h", "3 mois", "Résistance compatible"));
-  if (t.lame) faults.push(f("lame", "Remplacement lames / accessoire", t.lame, "6 h", "3 mois", "Pièce compatible"));
-  return { slug, name, brand, series: name.split(" ").slice(0, 2).join(" "), category: "Petit électroménager", year, faults };
+  if (t.moteur)
+    faults.push(
+      f("moteur", "Remplacement moteur", t.moteur, "24 h", "3 mois", "Moteur compatible"),
+    );
+  if (t.resistance)
+    faults.push(
+      f(
+        "resistance",
+        "Remplacement résistance chauffante",
+        t.resistance,
+        "24 h",
+        "3 mois",
+        "Résistance compatible",
+      ),
+    );
+  if (t.lame)
+    faults.push(
+      f("lame", "Remplacement lames / accessoire", t.lame, "6 h", "3 mois", "Pièce compatible"),
+    );
+  return {
+    slug,
+    name,
+    brand,
+    series: name.split(" ").slice(0, 2).join(" "),
+    category: "Petit électroménager",
+    year,
+    faults,
+  };
 }
 
 /* ── Helpers Audio & Hi-Fi ──────────────────────────────────────────────── */
 
 type AudioTier = "casque" | "enceinte" | "soundbar" | "micro" | "tvbox";
 
-const AUDIO: Record<AudioTier, { hp: number; batterie: number; carte: number; connecteur: number }> = {
-  casque:    { hp: 15000, batterie: 12000, carte: 10000, connecteur: 8000 },
-  enceinte:  { hp: 22000, batterie: 18000, carte: 14000, connecteur: 10000 },
-  soundbar:  { hp: 45000, batterie: 0, carte: 25000, connecteur: 15000 },
-  micro:     { hp: 0, batterie: 10000, carte: 12000, connecteur: 8000 },
-  tvbox:     { hp: 0, batterie: 0, carte: 18000, connecteur: 12000 },
+const AUDIO: Record<
+  AudioTier,
+  { hp: number; batterie: number; carte: number; connecteur: number }
+> = {
+  casque: { hp: 15000, batterie: 12000, carte: 10000, connecteur: 8000 },
+  enceinte: { hp: 22000, batterie: 18000, carte: 14000, connecteur: 10000 },
+  soundbar: { hp: 45000, batterie: 0, carte: 25000, connecteur: 15000 },
+  micro: { hp: 0, batterie: 10000, carte: 12000, connecteur: 8000 },
+  tvbox: { hp: 0, batterie: 0, carte: 18000, connecteur: 12000 },
 };
 
 function AudioDevice(
@@ -97,10 +170,33 @@ function AudioDevice(
   const faults: Fault[] = [
     f("carte", "Réparation carte électronique", t.carte, "24 h", "3 mois", "Composants CMS"),
   ];
-  if (t.hp) faults.push(f("hp", "Remplacement haut-parleur", t.hp, "6 h", "3 mois", "Haut-parleur compatible"));
-  if (t.batterie) faults.push(f("batterie", "Remplacement batterie", t.batterie, "3 h", "3 mois", "Batterie certifiée"));
-  faults.push(f("connecteur", "Remplacement connecteur / prise", t.connecteur, "6 h", "3 mois", "Connecteur compatible"));
-  return { slug, name, brand, series: name.split(" ").slice(0, 2).join(" "), category: "Audio & Hi-Fi", year, faults };
+  if (t.hp)
+    faults.push(
+      f("hp", "Remplacement haut-parleur", t.hp, "6 h", "3 mois", "Haut-parleur compatible"),
+    );
+  if (t.batterie)
+    faults.push(
+      f("batterie", "Remplacement batterie", t.batterie, "3 h", "3 mois", "Batterie certifiée"),
+    );
+  faults.push(
+    f(
+      "connecteur",
+      "Remplacement connecteur / prise",
+      t.connecteur,
+      "6 h",
+      "3 mois",
+      "Connecteur compatible",
+    ),
+  );
+  return {
+    slug,
+    name,
+    brand,
+    series: name.split(" ").slice(0, 2).join(" "),
+    category: "Audio & Hi-Fi",
+    year,
+    faults,
+  };
 }
 
 /* ── Helpers TV & Vidéo ─────────────────────────────────────────────────── */
@@ -108,27 +204,47 @@ function AudioDevice(
 type TvTier = "tv-hd" | "tv-4k" | "tv-oled" | "projecteur";
 
 const TV: Record<TvTier, { dalle: number; backlight: number; carte: number; alim: number }> = {
-  "tv-hd":    { dalle: 65000, backlight: 25000, carte: 30000, alim: 25000 },
-  "tv-4k":    { dalle: 120000, backlight: 35000, carte: 38000, alim: 30000 },
-  "tv-oled":  { dalle: 280000, backlight: 0, carte: 50000, alim: 35000 },
+  "tv-hd": { dalle: 65000, backlight: 25000, carte: 30000, alim: 25000 },
+  "tv-4k": { dalle: 120000, backlight: 35000, carte: 38000, alim: 30000 },
+  "tv-oled": { dalle: 280000, backlight: 0, carte: 50000, alim: 35000 },
   projecteur: { dalle: 0, backlight: 0, carte: 45000, alim: 40000 },
 };
 
-function TvDevice(
-  slug: string,
-  name: string,
-  brand: string,
-  year: number,
-  tier: TvTier,
-): Device {
+function TvDevice(slug: string, name: string, brand: string, year: number, tier: TvTier): Device {
   const t = TV[tier];
   const faults: Fault[] = [
     f("carte", "Réparation carte mère", t.carte, "48 h", "3 mois", "Composants CMS"),
-    f("alim", "Réparation bloc d'alimentation", t.alim, "48 h", "3 mois", "Alimentation compatible"),
+    f(
+      "alim",
+      "Réparation bloc d'alimentation",
+      t.alim,
+      "48 h",
+      "3 mois",
+      "Alimentation compatible",
+    ),
   ];
-  if (t.dalle) faults.unshift(f("dalle", "Remplacement dalle", t.dalle, "72 h", "6 mois", "Dalle compatible"));
-  if (t.backlight) faults.push(f("backlight", "Remplacement rétroéclairage LED", t.backlight, "48 h", "3 mois", "Bandes LED"));
-  return { slug, name, brand, series: name.split(" ").slice(0, 2).join(" "), category: "TV & Vidéo", year, faults };
+  if (t.dalle)
+    faults.unshift(f("dalle", "Remplacement dalle", t.dalle, "72 h", "6 mois", "Dalle compatible"));
+  if (t.backlight)
+    faults.push(
+      f(
+        "backlight",
+        "Remplacement rétroéclairage LED",
+        t.backlight,
+        "48 h",
+        "3 mois",
+        "Bandes LED",
+      ),
+    );
+  return {
+    slug,
+    name,
+    brand,
+    series: name.split(" ").slice(0, 2).join(" "),
+    category: "TV & Vidéo",
+    year,
+    faults,
+  };
 }
 
 /* ── Helpers Outillage ──────────────────────────────────────────────────── */
@@ -136,14 +252,20 @@ function TvDevice(
 type ToolTier = "perceuse" | "meuleuse" | "ponceuse" | "scie" | "tondeuse";
 
 const TOOL: Record<ToolTier, { moteur: number; batterie: number; carte: number }> = {
-  perceuse:  { moteur: 20000, batterie: 22000, carte: 12000 },
-  meuleuse:  { moteur: 25000, batterie: 24000, carte: 14000 },
-  ponceuse:  { moteur: 18000, batterie: 20000, carte: 10000 },
-  scie:      { moteur: 28000, batterie: 26000, carte: 15000 },
-  tondeuse:  { moteur: 35000, batterie: 30000, carte: 18000 },
+  perceuse: { moteur: 20000, batterie: 22000, carte: 12000 },
+  meuleuse: { moteur: 25000, batterie: 24000, carte: 14000 },
+  ponceuse: { moteur: 18000, batterie: 20000, carte: 10000 },
+  scie: { moteur: 28000, batterie: 26000, carte: 15000 },
+  tondeuse: { moteur: 35000, batterie: 30000, carte: 18000 },
 };
 
-function ToolDevice(slug: string, name: string, brand: string, year: number, tier: ToolTier): Device {
+function ToolDevice(
+  slug: string,
+  name: string,
+  brand: string,
+  year: number,
+  tier: ToolTier,
+): Device {
   const t = TOOL[tier];
   return {
     slug,
@@ -162,29 +284,183 @@ function ToolDevice(slug: string, name: string, brand: string, year: number, tie
 
 export const DEVICES: Device[] = [
   // ── Électroménager (gros) ───────────────────────────────────────────────
-  BigAppliance("frigo-samsung-2018", "Samsung Réfrigérateur No Frost", "samsung", 2018, "frigo", "Électroménager"),
-  BigAppliance("frigo-samsung-2021", "Samsung Réfrigérateur French Door", "samsung", 2021, "frigo", "Électroménager"),
+  BigAppliance(
+    "frigo-samsung-2018",
+    "Samsung Réfrigérateur No Frost",
+    "samsung",
+    2018,
+    "frigo",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "frigo-samsung-2021",
+    "Samsung Réfrigérateur French Door",
+    "samsung",
+    2021,
+    "frigo",
+    "Électroménager",
+  ),
   BigAppliance("frigo-lg-2019", "LG Réfrigérateur Inverter", "lg", 2019, "frigo", "Électroménager"),
-  BigAppliance("frigo-whirlpool-2017", "Whirlpool Réfrigérateur", "whirlpool", 2017, "frigo", "Électroménager"),
-  BigAppliance("frigo-hisense-2020", "Hisense Réfrigérateur", "hisense", 2020, "frigo", "Électroménager"),
-  BigAppliance("congelateur-lg-2018", "LG Congélateur coffre", "lg", 2018, "congelateur", "Électroménager"),
-  BigAppliance("congelateur-hisense-2019", "Hisense Congélateur", "hisense", 2019, "congelateur", "Électroménager"),
-  BigAppliance("lave-linge-samsung-2019", "Samsung Machine à laver", "samsung", 2019, "lave-linge", "Électroménager"),
-  BigAppliance("lave-linge-lg-2020", "LG Machine à laver Inverter", "lg", 2020, "lave-linge", "Électroménager"),
-  BigAppliance("lave-linge-whirlpool-2018", "Whirlpool Machine à laver", "whirlpool", 2018, "lave-linge", "Électroménager"),
-  BigAppliance("lave-linge-bosch-2021", "Bosch Machine à laver", "bosch", 2021, "lave-linge", "Électroménager"),
-  BigAppliance("clim-samsung-2019", "Samsung Climatiseur Split", "samsung", 2019, "clim", "Électroménager"),
-  BigAppliance("clim-lg-2020", "LG Climatiseur Dual Inverter", "lg", 2020, "clim", "Électroménager"),
-  BigAppliance("clim-hisense-2021", "Hisense Climatiseur", "hisense", 2021, "clim", "Électroménager"),
-  BigAppliance("micro-ondes-samsung-2018", "Samsung Micro-ondes", "samsung", 2018, "micro-ondes", "Petit électroménager"),
-  BigAppliance("micro-ondes-lg-2020", "LG Micro-ondes", "lg", 2020, "micro-ondes", "Petit électroménager"),
-  BigAppliance("micro-ondes-philips-2019", "Philips Micro-ondes", "philips", 2019, "micro-ondes", "Petit électroménager"),
-  BigAppliance("four-samsung-2020", "Samsung Four encastrable", "samsung", 2020, "four", "Électroménager"),
-  BigAppliance("four-bosch-2019", "Bosch Four encastrable", "bosch", 2019, "four", "Électroménager"),
-  BigAppliance("four-whirlpool-2017", "Whirlpool Four", "whirlpool", 2017, "four", "Électroménager"),
-  BigAppliance("lave-vaisselle-bosch-2020", "Bosch Lave-vaisselle", "bosch", 2020, "lave-vaisselle", "Électroménager"),
-  BigAppliance("lave-vaisselle-samsung-2019", "Samsung Lave-vaisselle", "samsung", 2019, "lave-vaisselle", "Électroménager"),
-  BigAppliance("lave-vaisselle-whirlpool-2018", "Whirlpool Lave-vaisselle", "whirlpool", 2018, "lave-vaisselle", "Électroménager"),
+  BigAppliance(
+    "frigo-whirlpool-2017",
+    "Whirlpool Réfrigérateur",
+    "whirlpool",
+    2017,
+    "frigo",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "frigo-hisense-2020",
+    "Hisense Réfrigérateur",
+    "hisense",
+    2020,
+    "frigo",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "congelateur-lg-2018",
+    "LG Congélateur coffre",
+    "lg",
+    2018,
+    "congelateur",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "congelateur-hisense-2019",
+    "Hisense Congélateur",
+    "hisense",
+    2019,
+    "congelateur",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-linge-samsung-2019",
+    "Samsung Machine à laver",
+    "samsung",
+    2019,
+    "lave-linge",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-linge-lg-2020",
+    "LG Machine à laver Inverter",
+    "lg",
+    2020,
+    "lave-linge",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-linge-whirlpool-2018",
+    "Whirlpool Machine à laver",
+    "whirlpool",
+    2018,
+    "lave-linge",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-linge-bosch-2021",
+    "Bosch Machine à laver",
+    "bosch",
+    2021,
+    "lave-linge",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "clim-samsung-2019",
+    "Samsung Climatiseur Split",
+    "samsung",
+    2019,
+    "clim",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "clim-lg-2020",
+    "LG Climatiseur Dual Inverter",
+    "lg",
+    2020,
+    "clim",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "clim-hisense-2021",
+    "Hisense Climatiseur",
+    "hisense",
+    2021,
+    "clim",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "micro-ondes-samsung-2018",
+    "Samsung Micro-ondes",
+    "samsung",
+    2018,
+    "micro-ondes",
+    "Petit électroménager",
+  ),
+  BigAppliance(
+    "micro-ondes-lg-2020",
+    "LG Micro-ondes",
+    "lg",
+    2020,
+    "micro-ondes",
+    "Petit électroménager",
+  ),
+  BigAppliance(
+    "micro-ondes-philips-2019",
+    "Philips Micro-ondes",
+    "philips",
+    2019,
+    "micro-ondes",
+    "Petit électroménager",
+  ),
+  BigAppliance(
+    "four-samsung-2020",
+    "Samsung Four encastrable",
+    "samsung",
+    2020,
+    "four",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "four-bosch-2019",
+    "Bosch Four encastrable",
+    "bosch",
+    2019,
+    "four",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "four-whirlpool-2017",
+    "Whirlpool Four",
+    "whirlpool",
+    2017,
+    "four",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-vaisselle-bosch-2020",
+    "Bosch Lave-vaisselle",
+    "bosch",
+    2020,
+    "lave-vaisselle",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-vaisselle-samsung-2019",
+    "Samsung Lave-vaisselle",
+    "samsung",
+    2019,
+    "lave-vaisselle",
+    "Électroménager",
+  ),
+  BigAppliance(
+    "lave-vaisselle-whirlpool-2018",
+    "Whirlpool Lave-vaisselle",
+    "whirlpool",
+    2018,
+    "lave-vaisselle",
+    "Électroménager",
+  ),
 
   // ── Petit électroménager ────────────────────────────────────────────────
   SmallAppliance("blender-philips-2020", "Philips Blender", "philips", 2020, "blender"),
@@ -192,7 +468,13 @@ export const DEVICES: Device[] = [
   SmallAppliance("blender-lg-2021", "LG Mixeur", "lg", 2021, "blender"),
   SmallAppliance("fer-philips-2020", "Philips Fer à repasser", "philips", 2020, "fer"),
   SmallAppliance("fer-tcl-2019", "TCL Fer à repasser", "tcl", 2019, "fer"),
-  SmallAppliance("cafetiere-philips-2020", "Philips Cafetière filtre", "philips", 2020, "cafetiere"),
+  SmallAppliance(
+    "cafetiere-philips-2020",
+    "Philips Cafetière filtre",
+    "philips",
+    2020,
+    "cafetiere",
+  ),
   SmallAppliance("cafetiere-samsung-2018", "Samsung Cafetière", "samsung", 2018, "cafetiere"),
   SmallAppliance("bouilloire-philips-2019", "Philips Bouilloire", "philips", 2019, "bouilloire"),
   SmallAppliance("robot-philips-2021", "Philips Robot culinaire", "philips", 2021, "robot"),

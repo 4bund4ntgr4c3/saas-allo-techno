@@ -23,7 +23,9 @@ function ThemeToggle() {
 
   useEffect(() => {
     const stored = localStorage.getItem("at-theme");
-    const isDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = stored
+      ? stored === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark(isDark);
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
@@ -73,7 +75,10 @@ export function Header() {
           <Link to="/" className="at-display text-xl">
             Allô Techno
           </Link>
-          <nav aria-label="Navigation principale" className="hidden gap-6 text-sm font-medium text-muted-foreground lg:flex">
+          <nav
+            aria-label="Navigation principale"
+            className="hidden gap-6 text-sm font-medium text-muted-foreground lg:flex"
+          >
             {NAV.map((item) => (
               <Link
                 key={item.to}
@@ -90,7 +95,10 @@ export function Header() {
         <div className="flex items-center gap-3">
           <div className="hidden flex-col items-end sm:flex">
             <span className="at-eyebrow">{COMPANY.city}</span>
-            <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`} className="font-mono text-xs hover:text-primary">
+            <a
+              href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}
+              className="font-mono text-xs hover:text-primary"
+            >
               {COMPANY.phone}
             </a>
           </div>
@@ -121,7 +129,18 @@ export function Header() {
             <SheetContent side="right" className="w-72">
               <SheetTitle className="at-display text-lg">Menu</SheetTitle>
               <nav className="mt-6 flex flex-col gap-1" aria-label="Navigation mobile">
-                {[...NAV, { to: "/panier", label: "Panier" }, { to: "/reservation", label: "Réserver" }, { to: user ? "/mon-compte" : "/auth", label: user ? "Mon compte" : "Connexion" }, { to: "/devis", label: "Devis instantané" }, { to: "/garantie", label: "Garantie" }, { to: "/reprise", label: "Reprise" }, { to: "/avis", label: "Avis clients" }, { to: "/faq", label: "FAQ" }, { to: "/contact", label: "Contact" }].map((i) => (
+                {[
+                  ...NAV,
+                  { to: "/panier", label: "Panier" },
+                  { to: "/reservation", label: "Réserver" },
+                  { to: user ? "/mon-compte" : "/auth", label: user ? "Mon compte" : "Connexion" },
+                  { to: "/devis", label: "Devis instantané" },
+                  { to: "/garantie", label: "Garantie" },
+                  { to: "/reprise", label: "Reprise" },
+                  { to: "/avis", label: "Avis clients" },
+                  { to: "/faq", label: "FAQ" },
+                  { to: "/contact", label: "Contact" },
+                ].map((i) => (
                   <Link
                     key={i.to}
                     to={i.to}

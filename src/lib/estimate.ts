@@ -38,7 +38,9 @@ export function computeEstimate(faults: Fault[]): Estimate {
       {
         key: "parts",
         label: "Pièces détachées",
-        detail: faults.length ? faults.map((f) => f.label).join(" · ") : "Aucune panne sélectionnée",
+        detail: faults.length
+          ? faults.map((f) => f.label).join(" · ")
+          : "Aucune panne sélectionnée",
         amount: parts,
       },
       {

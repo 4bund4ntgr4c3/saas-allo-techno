@@ -170,7 +170,13 @@ function AuthPage() {
                 />
               </div>
 
-              <Button type="submit" variant="primaryBlock" size="lg" className="w-full" disabled={busy}>
+              <Button
+                type="submit"
+                variant="primaryBlock"
+                size="lg"
+                className="w-full"
+                disabled={busy}
+              >
                 {mode === "login" ? "Se connecter" : "Créer mon compte"}
               </Button>
 
@@ -180,7 +186,13 @@ function AuthPage() {
                 <span className="h-px flex-1 bg-border" />
               </div>
 
-              <Button type="button" variant="outline" size="lg" className="w-full" onClick={onGoogle}>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={onGoogle}
+              >
                 Continuer avec Google
               </Button>
             </form>

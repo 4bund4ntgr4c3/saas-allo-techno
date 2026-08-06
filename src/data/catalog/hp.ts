@@ -1,6 +1,6 @@
 import { fault, type Device } from "./types";
 
-const f = fault
+const f = fault;
 
 type Tier = "premium" | "business" | "mid" | "entry";
 
@@ -11,7 +11,10 @@ const SCREEN: Record<Tier, string> = {
   entry: "HD/FHD",
 };
 
-const PRICES: Record<Tier, { ecran: number; batterie: number; clavier: number; nettoyage: number }> = {
+const PRICES: Record<
+  Tier,
+  { ecran: number; batterie: number; clavier: number; nettoyage: number }
+> = {
   premium: { ecran: 165000, batterie: 75000, clavier: 55000, nettoyage: 25000 },
   business: { ecran: 125000, batterie: 58000, clavier: 35000, nettoyage: 20000 },
   mid: { ecran: 88000, batterie: 42000, clavier: 28000, nettoyage: 16000 },
@@ -19,13 +22,7 @@ const PRICES: Record<Tier, { ecran: number; batterie: number; clavier: number; n
 };
 
 /** Fabrique un portable HP avec les 4 pannes standard. */
-function mk(
-  slug: string,
-  name: string,
-  year: number,
-  screen: string,
-  tier: Tier,
-): Device {
+function mk(slug: string, name: string, year: number, screen: string, tier: Tier): Device {
   const p = PRICES[tier];
   return {
     slug,
@@ -38,7 +35,14 @@ function mk(
       f("ecran", `Dalle ${screen} ${SCREEN[tier]}`, p.ecran, "24 h", "6 mois", "Dalle IPS neuve"),
       f("batterie", "Batterie interne", p.batterie, "3 h", "6 mois", "Batterie compatible"),
       f("clavier", "Clavier AZERTY", p.clavier, "6 h", "6 mois", "Clavier compatible"),
-      f("nettoyage", "Nettoyage complet + pâte thermique", p.nettoyage, "6 h", "1 mois", "Pâte thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pâte thermique",
+        p.nettoyage,
+        "6 h",
+        "1 mois",
+        "Pâte thermique premium",
+      ),
     ],
   };
 }
@@ -46,7 +50,10 @@ function mk(
 const L = (slug: string, name: string, year: number, screen: string, tier: Tier) =>
   mk(slug, name, year, screen, tier);
 
-const DESK_PRICES: Record<Tier, { alimentation: number; disque: number; carte: number; nettoyage: number }> = {
+const DESK_PRICES: Record<
+  Tier,
+  { alimentation: number; disque: number; carte: number; nettoyage: number }
+> = {
   premium: { alimentation: 95000, disque: 75000, carte: 120000, nettoyage: 25000 },
   business: { alimentation: 65000, disque: 55000, carte: 90000, nettoyage: 20000 },
   mid: { alimentation: 45000, disque: 42000, carte: 70000, nettoyage: 16000 },
@@ -64,16 +71,29 @@ function mkDesk(slug: string, name: string, year: number, tier: Tier): Device {
     category: "Ordinateur de bureau",
     year,
     faults: [
-      f("alimentation", "Bloc d'alimentation interne", p.alimentation, "24 h", "6 mois", "Alimentation compatible"),
+      f(
+        "alimentation",
+        "Bloc d'alimentation interne",
+        p.alimentation,
+        "24 h",
+        "6 mois",
+        "Alimentation compatible",
+      ),
       f("disque", "Upgrade SSD NVMe", p.disque, "3 h", "1 an", "SSD NVMe"),
       f("carte-mere", "Micro-soudure carte mère", p.carte, "72 h", "3 mois", "Composants CMS"),
-      f("nettoyage", "Nettoyage complet + pâte thermique", p.nettoyage, "6 h", "1 mois", "Pâte thermique premium"),
+      f(
+        "nettoyage",
+        "Nettoyage complet + pâte thermique",
+        p.nettoyage,
+        "6 h",
+        "1 mois",
+        "Pâte thermique premium",
+      ),
     ],
   };
 }
 
-const D = (slug: string, name: string, year: number, tier: Tier) =>
-  mkDesk(slug, name, year, tier);
+const D = (slug: string, name: string, year: number, tier: Tier) => mkDesk(slug, name, year, tier);
 
 export const DEVICES: Device[] = [
   // ── EliteBook 800 series ────────────────────────────────────────────────
