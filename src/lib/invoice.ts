@@ -3,7 +3,8 @@
 
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { COMPANY, deviceBySlug, formatFcfa } from "@/data/catalog";
+import { COMPANY, formatFcfa } from "@/data/catalog";
+import { searchDevices } from "@/lib/catalog-search";
 import { computeEstimate } from "@/lib/estimate";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import type { ReservationEvent } from "@/lib/notifications";
@@ -25,8 +26,7 @@ export type InvoiceRow = Pick<
 >;
 
 function invoiceEstimate(deviceName: string, issueLabel: string) {
-  const slug = deviceName.toLowerCase().replace(/\s+/g, "-");
-  const device = deviceBySlug(slug);
+  const device = searchDevices(deviceName)[0]?.device;
   const fault = device?.faults.find(
     (f) => f.label.toLowerCase() === issueLabel.trim().toLowerCase(),
   );

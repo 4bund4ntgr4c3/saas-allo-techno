@@ -1,5 +1,5 @@
 // Contenu local SEO — Abomey-Calavi & agglomération de Cotonou.
-import { BRANDS, type Brand } from "./catalog";
+import type { Brand } from "./catalog";
 
 export const QUARTIERS = [
   "Zogbadjè",
@@ -95,5 +95,3 @@ export const brandLocal = (b: Brand): BrandLocal => {
       ],
   };
 };
-
-export const OTHER_BRANDS = BRANDS;

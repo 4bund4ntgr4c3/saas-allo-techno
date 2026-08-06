@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
+import { absoluteUrl } from "@/data/catalog";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   PERIOD_LABEL,
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/mon-compte")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/mon-compte" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/mon-compte") }],
   }),
   component: Dashboard,
 });

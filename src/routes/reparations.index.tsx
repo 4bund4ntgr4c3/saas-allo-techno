@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BadgeCheck, Clock, Home, ShieldCheck, Store, Wallet } from "lucide-react";
 import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
-import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, devicesOfBrand } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
 
 export const Route = createFileRoute("/reparations/")({
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/reparations/")({
       },
       { property: "og:url", content: "/reparations" },
     ],
-    links: [{ rel: "canonical", href: "/reparations" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/reparations") }],
   }),
   component: Reparations,
 });

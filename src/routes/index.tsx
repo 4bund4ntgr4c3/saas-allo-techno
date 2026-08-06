@@ -9,7 +9,7 @@ import {
   SectionHeader,
   TrustStats,
 } from "@/components/site/Blocks";
-import { BRANDS, COMPANY, DEVICES, formatFcfa } from "@/data/catalog";
+import { BRANDS, COMPANY, DEVICES, absoluteUrl, formatFcfa } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/") }],
   }),
   component: Home,
 });

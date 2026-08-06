@@ -13,11 +13,12 @@ export const COMPANY = {
   phone: "+229 01 43 67 97 67",
   whatsapp: "+229 01 43 67 97 67",
   email: "contact@allotechno.bj",
+  url: "https://allotechno.bj",
   lat: 6.4489,
   lng: 2.3553,
   hours: [
     { d: "Lundi — Vendredi", h: "08:30 — 20:30" },
-    { d: "Samedi", h: "08:30 — 20:30" },
+    { d: "Samedi", h: "09:00 — 17:00" },
     { d: "Dimanche", h: "Fermé" },
   ],
 };
@@ -108,6 +109,9 @@ export const brandBySlug = (slug: string) => BRANDS.find((b) => b.slug === slug)
 export const devicesOfBrand = (slug: string) => DEVICES.filter((d) => d.brand === slug);
 export const deviceBySlug = (slug: string) => DEVICES.find((d) => d.slug === slug);
 export const brandName = (slug: string) => brandBySlug(slug)?.name ?? slug;
+
+/** URL absolue du site (canonicals, Open Graph). */
+export const absoluteUrl = (path: string) => `${COMPANY.url}${path.startsWith("/") ? path : `/${path}`}`;
 
 /**
  * Famille de modèles (génération) déduite du nom commercial :
@@ -363,40 +367,6 @@ export const REVIEWS = [
   { name: "Serge H.", city: "Calavi Zogbadjè", rating: 5, text: "Écran Tecno changé pendant que j'attendais. Paiement MoMo, très pratique.", device: "Tecno Camon 20" },
   { name: "Aline T.", city: "Cotonou", rating: 5, text: "Notre société fait entretenir 20 postes ici. Sérieux et factures en règle.", device: "Parc informatique" },
 ];
-
-export type TrackingStep = { label: string; detail: string; done: boolean; current?: boolean };
-
-export const DEMO_TRACKING: Record<
-  string,
-  { device: string; owner: string; status: string; total: number; steps: TrackingStep[] }
-> = {
-  "AT-2026-088": {
-    device: "iPhone 13 Pro — Remplacement écran",
-    owner: "Jean-Luc K.",
-    status: "En cours",
-    total: 95000,
-    steps: [
-      { label: "Réception & diagnostic", detail: "10:45 — Validé par Tech #02", done: true },
-      { label: "Devis accepté", detail: "11:10 — Accepté par le client", done: true },
-      { label: "Remplacement de l'écran", detail: "En cours par Tech #04", done: false, current: true },
-      { label: "Contrôle qualité", detail: "Estimation 14:00", done: false },
-      { label: "Prêt pour retrait", detail: "Estimation 14:30", done: false },
-    ],
-  },
-  "AT-2026-091": {
-    device: "PlayStation 5 — Entretien thermique",
-    owner: "Rachida B.",
-    status: "Prêt",
-    total: 25000,
-    steps: [
-      { label: "Réception & diagnostic", detail: "09:20 — Validé par Tech #01", done: true },
-      { label: "Devis accepté", detail: "09:40 — Accepté par le client", done: true },
-      { label: "Nettoyage + pâte thermique", detail: "Terminé par Tech #01", done: true },
-      { label: "Contrôle qualité", detail: "Test de charge 2 h — OK", done: true },
-      { label: "Prêt pour retrait", detail: "Disponible en boutique", done: true, current: true },
-    ],
-  },
-};
 
 export const STEPS = [
   { n: "01", title: "Diagnostic gratuit", text: "Sur place ou à distance. Nous identifions la panne réelle et sa cause, sans frais." },

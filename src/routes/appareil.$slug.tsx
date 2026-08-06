@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Clock, Package, ShieldCheck } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import {
+  absoluteUrl,
   brandName,
   deviceBySlug,
   devicesOfBrand,
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/appareil/$slug")({
         { property: "og:type", content: "product" },
         { property: "og:url", content: `/appareil/${params.slug}` },
       ],
-      links: [{ rel: "canonical", href: `/appareil/${params.slug}` }],
+      links: [{ rel: "canonical", href: absoluteUrl(`/appareil/${params.slug}`) }],
       scripts: [
         {
           type: "application/ld+json",

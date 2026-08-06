@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CtaBand } from "@/components/site/Blocks";
-import { POSTS } from "@/data/catalog";
+import { POSTS, absoluteUrl } from "@/data/catalog";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:url", content: "/blog" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/blog" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/blog") }],
   }),
   component: BlogIndex,
 });

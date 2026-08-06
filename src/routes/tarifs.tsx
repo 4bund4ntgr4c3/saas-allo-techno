@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, brandName, formatFcfa } from "@/data/catalog";
 
 export const Route = createFileRoute("/tarifs")({
   head: () => ({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/tarifs")({
       },
       { property: "og:url", content: "/tarifs" },
     ],
-    links: [{ rel: "canonical", href: "/tarifs" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/tarifs") }],
   }),
   component: Tarifs,
 });

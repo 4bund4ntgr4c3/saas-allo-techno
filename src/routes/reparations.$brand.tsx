@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import {
   BRANDS,
+  absoluteUrl,
   brandBySlug,
   devicesOfBrand,
   formatFcfa,
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/reparations/$brand")({
         { name: "twitter:card", content: "summary_large_image" },
         { property: "og:url", content: `/reparations/${params.brand}` },
       ],
-      links: [{ rel: "canonical", href: `/reparations/${params.brand}` }],
+      links: [{ rel: "canonical", href: absoluteUrl(`/reparations/${params.brand}`) }],
       scripts: [
         {
           type: "application/ld+json",

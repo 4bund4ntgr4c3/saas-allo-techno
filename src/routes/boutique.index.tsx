@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
-import { ACCESSORIES, ACCESSORY_CATEGORIES, formatFcfa } from "@/data/catalog";
+import { ACCESSORIES, ACCESSORY_CATEGORIES, absoluteUrl, formatFcfa } from "@/data/catalog";
 
 export const Route = createFileRoute("/boutique/")({
   head: () => ({
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/boutique/")({
       },
       { property: "og:url", content: "/boutique" },
     ],
-    links: [{ rel: "canonical", href: "/boutique" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/boutique") }],
   }),
   component: Boutique,
 });

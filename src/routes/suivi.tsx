@@ -20,6 +20,7 @@ import { LeadForm } from "@/components/site/LeadForm";
 import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { Button } from "@/components/ui/button";
+import { absoluteUrl } from "@/data/catalog";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
@@ -57,7 +58,7 @@ export const Route = createFileRoute("/suivi")({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/suivi" },
     ],
-    links: [{ rel: "canonical", href: "/suivi" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/suivi") }],
   }),
   component: Suivi,
 });

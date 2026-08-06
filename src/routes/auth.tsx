@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
+import { absoluteUrl } from "@/data/catalog";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/auth" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/auth") }],
   }),
   component: AuthPage,
 });

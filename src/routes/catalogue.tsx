@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, brandName, formatFcfa } from "@/data/catalog";
 import { searchDevices } from "@/lib/catalog-search";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/catalogue")({
       },
       { property: "og:url", content: "/catalogue" },
     ],
-    links: [{ rel: "canonical", href: "/catalogue" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/catalogue") }],
   }),
   component: Catalogue,
 });
