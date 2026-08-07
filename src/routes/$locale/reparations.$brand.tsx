@@ -2,7 +2,6 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import {
   BRANDS,
-  absoluteUrl,
   brandBySlug,
   devicesOfBrand,
   formatFcfa,
@@ -17,6 +16,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/reparations/$brand")({
   loader: ({ params }): { brand: Brand; devices: Device[] } => {
@@ -36,6 +36,8 @@ export const Route = createFileRoute("/$locale/reparations/$brand")({
         ],
       };
     }
+    const suffix = `/reparations/${params.brand}`;
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "reparations.brand.title", [name]) },
@@ -53,9 +55,9 @@ export const Route = createFileRoute("/$locale/reparations/$brand")({
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
-        { property: "og:url", content: `/reparations/${params.brand}` },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl(`/reparations/${params.brand}`) }],
+      links: [...seo.links],
       scripts: [
         {
           type: "application/ld+json",

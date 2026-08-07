@@ -20,7 +20,6 @@ import { LeadForm } from "@/components/site/LeadForm";
 import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { Button } from "@/components/ui/button";
-import { absoluteUrl } from "@/data/catalog";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
@@ -33,6 +32,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/suivi";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/suivi")({
   validateSearch: (search: Record<string, unknown>): { ref?: string; code?: string } => {
@@ -43,6 +43,8 @@ export const Route = createFileRoute("/$locale/suivi")({
 
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/suivi";
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "suivi.meta.title") },
@@ -54,9 +56,9 @@ export const Route = createFileRoute("/$locale/suivi")({
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
-        { property: "og:url", content: "/$locale/suivi" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/$locale/suivi") }],
+      links: [...seo.links],
     };
   },
   component: Suivi,
@@ -220,7 +222,10 @@ function Suivi() {
             </div>
             <p className="mt-3 text-xs text-muted-foreground">{t("suivi.code.hint")}</p>
             {error && (
-              <div className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+              <div
+                role="alert"
+                className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+              >
                 <AlertCircle className="size-4 shrink-0" />
                 <div className="flex-1">
                   {error}
@@ -339,7 +344,7 @@ function StatusResult({
             {t("suivi.invoice")}
           </Button>
           <QrCode
-            value={`https://allotechno.africa/suivi?ref=${result.reference}&code=${code}`}
+            value={`${window.location.origin}/${locale}/suivi?ref=${result.reference}&code=${code}`}
             label={`${t("suivi.dossier")} ${result.reference}`}
             caption={t("suivi.qr.caption")}
           />

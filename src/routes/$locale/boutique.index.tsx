@@ -5,27 +5,30 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
-import { ACCESSORIES, ACCESSORY_CATEGORIES, absoluteUrl, formatFcfa } from "@/data/catalog";
+import { ACCESSORIES, ACCESSORY_CATEGORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/boutique";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/boutique/")({
   loader: () => listInventory().then((stock) => ({ stock })),
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/boutique";
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "boutique.meta.title") },
         { name: "description", content: translate(locale, "boutique.meta.description") },
         { property: "og:title", content: translate(locale, "boutique.og.title") },
         { property: "og:description", content: translate(locale, "boutique.og.description") },
-        { property: "og:url", content: "/boutique" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/boutique") }],
+      links: [...seo.links],
     };
   },
   component: Boutique,

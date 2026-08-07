@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { absoluteUrl } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 
 export const Route = createFileRoute("/auth")({
@@ -22,9 +21,9 @@ export const Route = createFileRoute("/auth")({
         content: "Connexion et création de compte pour suivre vos réparations.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: absoluteUrl("/auth") }],
   }),
   component: AuthPage,
 });

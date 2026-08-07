@@ -1,10 +1,6 @@
 import { CalendarClock, Clock } from "lucide-react";
-import {
-  HOURS_BY_PERIOD,
-  PERIOD_LABEL,
-  type AvailabilityRow,
-  type SlotPeriod,
-} from "@/lib/reservation-schema";
+import { useI18n } from "@/lib/i18n/context";
+import { HOURS_BY_PERIOD, type AvailabilityRow, type SlotPeriod } from "@/lib/reservation-schema";
 
 type Props = {
   date: string;
@@ -31,21 +27,22 @@ export function SlotPicker({
   onSelectDate,
   onSelectHour,
 }: Props) {
+  const { locale, t } = useI18n();
   const dateKeys = [...openDates.keys()].sort();
   const daySlots = openDates.get(date) ?? [];
 
   return (
     <div>
       <span id="slot-day-label" className="at-eyebrow mb-3 block">
-        Choisissez un jour
+        {t("wizard.day.choose")}
       </span>
       {isLoading ? (
         <p role="status" className="text-sm text-muted-foreground">
-          Chargement des disponibilités…
+          {t("wizard.availability.loading")}
         </p>
       ) : dateKeys.length === 0 ? (
         <p role="status" className="text-sm text-muted-foreground">
-          Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.
+          {t("wizard.availability.empty")}
         </p>
       ) : (
         <div
@@ -70,11 +67,11 @@ export function SlotPicker({
                 }`}
               >
                 <span className="block font-mono text-[10px] uppercase">
-                  {dt.toLocaleDateString("fr-FR", { weekday: "short" })}
+                  {dt.toLocaleDateString(locale, { weekday: "short" })}
                 </span>
                 <span className="block text-lg font-bold leading-tight">{dt.getDate()}</span>
                 <span className="block font-mono text-[10px] uppercase">
-                  {dt.toLocaleDateString("fr-FR", { month: "short" })}
+                  {dt.toLocaleDateString(locale, { month: "short" })}
                 </span>
               </button>
             );
@@ -91,19 +88,24 @@ export function SlotPicker({
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
                   <Clock className="size-4 text-primary" strokeWidth={1.5} />
-                  <span className="at-eyebrow">{PERIOD_LABEL[period]}</span>
+                  <span className="at-eyebrow">{t("wizard.period." + period)}</span>
                 </span>
                 <span className="font-mono text-[10px] uppercase text-muted-foreground">
                   {!date
-                    ? "Choisissez d'abord un jour"
+                    ? t("wizard.day.first")
                     : slot
-                      ? `${slot.remaining} place${slot.remaining > 1 ? "s" : ""} restante${slot.remaining > 1 ? "s" : ""}`
-                      : "Complet"}
+                      ? t(
+                          slot.remaining > 1
+                            ? "wizard.availability.remaining.plural"
+                            : "wizard.availability.remaining.single",
+                          [slot.remaining],
+                        )
+                      : t("wizard.availability.full")}
                 </span>
               </div>
               <div
                 role="radiogroup"
-                aria-label={PERIOD_LABEL[period]}
+                aria-label={t("wizard.period." + period)}
                 className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"
               >
                 {HOURS_BY_PERIOD[period].map((h) => {
@@ -116,7 +118,7 @@ export function SlotPicker({
                       role="radio"
                       aria-checked={on}
                       disabled={disabled || taken}
-                      title={taken ? "Déjà réservé" : undefined}
+                      title={taken ? t("wizard.hour.taken") : undefined}
                       onClick={() => onSelectHour(h)}
                       className={`border px-3 py-2.5 font-mono text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                         taken
@@ -143,16 +145,16 @@ export function SlotPicker({
         <CalendarClock className="size-5 shrink-0 text-primary" strokeWidth={1.5} />
         <div>
           <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            Créneau sélectionné
+            {t("wizard.slot.selected")}
           </p>
           <p className="text-sm font-bold">
             {date && heure
-              ? `${new Date(`${date}T12:00:00`).toLocaleDateString("fr-FR", {
+              ? `${new Date(`${date}T12:00:00`).toLocaleDateString(locale, {
                   weekday: "long",
                   day: "2-digit",
                   month: "long",
                 })} à ${heure}`
-              : "Aucun créneau sélectionné"}
+              : t("wizard.slot.none")}
           </p>
         </div>
       </div>

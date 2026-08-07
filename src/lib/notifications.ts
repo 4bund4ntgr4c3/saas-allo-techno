@@ -135,7 +135,7 @@ function reservationSummary(r: ReservationEvent): string {
 }
 
 function trackingLink(r: ReservationEvent): string {
-  return `https://allotechno.africa/suivi?ref=${r.reference}${r.tracking_code ? `&code=${r.tracking_code}` : ""}`;
+  return `${COMPANY.url}/fr/suivi?ref=${r.reference}${r.tracking_code ? `&code=${r.tracking_code}` : ""}`;
 }
 
 /** Confirmation d'une réservation : e-mail client + WhatsApp client. */

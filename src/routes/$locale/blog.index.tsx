@@ -1,16 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CtaBand } from "@/components/site/Blocks";
-import { POSTS, absoluteUrl } from "@/data/catalog";
+import { POSTS } from "@/data/catalog";
 import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/blog";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/blog/")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/blog";
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "blog.meta.title") },
@@ -18,10 +21,10 @@ export const Route = createFileRoute("/$locale/blog/")({
         { property: "og:title", content: translate(locale, "blog.og.title") },
         { property: "og:description", content: translate(locale, "blog.og.description") },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: "/blog" },
         { name: "twitter:card", content: "summary_large_image" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/blog") }],
+      links: [...seo.links],
     };
   },
   loader: (): Promise<{ posts: BlogPost[] }> =>

@@ -10,32 +10,38 @@ import {
   TrustStats,
 } from "@/components/site/Blocks";
 import { BRANDS, REVIEWS } from "@/data/catalog/static";
-import { COMPANY, absoluteUrl, formatFcfa } from "@/data/catalog/company";
+import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale, type Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/")({
-  head: ({ params }) => ({
-    meta: [
-      { title: translate(headLocale(params), "home.meta.title") },
-      {
-        name: "description",
-        content: translate(headLocale(params), "home.meta.description"),
-      },
-      {
-        property: "og:title",
-        content: translate(headLocale(params), "home.og.title"),
-      },
-      {
-        property: "og:description",
-        content: translate(headLocale(params), "home.og.description"),
-      },
-      { property: "og:url", content: "/$locale/" },
-    ],
-    links: [{ rel: "canonical", href: absoluteUrl("/$locale/") }],
-  }),
+  head: ({ params }) => {
+    const locale = headLocale(params);
+    const suffix = "/";
+    const seo = localeSeo(locale, suffix);
+    return {
+      meta: [
+        { title: translate(locale, "home.meta.title") },
+        {
+          name: "description",
+          content: translate(locale, "home.meta.description"),
+        },
+        {
+          property: "og:title",
+          content: translate(locale, "home.og.title"),
+        },
+        {
+          property: "og:description",
+          content: translate(locale, "home.og.description"),
+        },
+        ...seo.meta,
+      ],
+      links: [...seo.links],
+    };
+  },
   component: Home,
 });
 
@@ -168,7 +174,7 @@ function Home() {
               </span>
               <h1 className="at-in at-display max-w-2xl text-5xl text-balance [animation-delay:150ms] md:text-7xl">
                 {t("home.hero.h1.a")}{" "}
-                <span className="bg-gradient-to-r from-primary via-amber-400 to-primary bg-clip-text font-extrabold text-transparent drop-shadow-[0_0_12px_oklch(0.68_0.19_38_/_0.4)]">
+                <span className="bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text font-extrabold text-transparent drop-shadow-[0_0_12px_oklch(0.68_0.19_38_/_0.4)]">
                   {t("home.hero.h1.highlight")}
                 </span>
                 {t("home.hero.h1.b")}

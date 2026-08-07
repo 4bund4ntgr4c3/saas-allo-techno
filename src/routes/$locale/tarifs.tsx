@@ -1,25 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, brandName, formatFcfa } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import "@/lib/i18n/segments/info";
 
 export const Route = createFileRoute("/$locale/tarifs")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const seo = localeSeo(locale, "/tarifs");
     return {
       meta: [
         { title: translate(locale, "tarifs.meta.title") },
         { name: "description", content: translate(locale, "tarifs.meta.description") },
         { property: "og:title", content: translate(locale, "tarifs.og.title") },
         { property: "og:description", content: translate(locale, "tarifs.og.description") },
-        { property: "og:url", content: "/$locale/tarifs" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/$locale/tarifs") }],
+      links: seo.links,
     };
   },
   component: Tarifs,

@@ -1,20 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Clock, Package, ShieldCheck } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
-import {
-  absoluteUrl,
-  brandName,
-  deviceBySlug,
-  devicesOfBrand,
-  formatFcfa,
-  type Device,
-} from "@/data/catalog";
+import { brandName, deviceBySlug, devicesOfBrand, formatFcfa, type Device } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/appareil";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import {
   Accordion,
   AccordionContent,
@@ -47,6 +41,8 @@ export const Route = createFileRoute("/$locale/appareil/$slug")({
       .slice(0, 3)
       .map((f) => translate(locale, f.label).toLowerCase())
       .join(", ");
+    const suffix = `/appareil/${params.slug}`;
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "appareil.meta.title", [d.name]) },
@@ -64,9 +60,9 @@ export const Route = createFileRoute("/$locale/appareil/$slug")({
           content: translate(locale, "appareil.meta.og.description", [d.faults.length]),
         },
         { property: "og:type", content: "product" },
-        { property: "og:url", content: `/appareil/${params.slug}` },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl(`/appareil/${params.slug}`) }],
+      links: [...seo.links],
       scripts: [
         {
           type: "application/ld+json",

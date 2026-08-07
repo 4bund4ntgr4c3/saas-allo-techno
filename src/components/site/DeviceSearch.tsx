@@ -37,11 +37,9 @@ import { createReservation } from "@/lib/reservations.functions";
 import { getDevicePhotoUpload } from "@/lib/photos.functions";
 import { trackWizardEvent } from "@/lib/analytics";
 import {
-  DOMICILE_HOURS_LABEL,
   HOURS_BY_PERIOD,
   isOpenNow,
   isPastSlot,
-  OPEN_NOW_LABEL,
   periodOfHour,
   slotHoursFor,
   toIsoDate,
@@ -49,32 +47,80 @@ import {
   type DepositMode,
   type ReservationInput,
 } from "@/lib/reservation-schema";
+import "@/lib/i18n/segments/reservation";
 
 const STEPS = [
-  "Type",
-  "Marque",
-  "Série",
-  "Famille",
-  "Modèle",
-  "Panne",
-  "Créneau",
-  "Coordonnées",
-  "Récapitulatif",
+  "wizard.step.type",
+  "wizard.step.marque",
+  "wizard.step.serie",
+  "wizard.step.famille",
+  "wizard.step.modele",
+  "wizard.step.panne",
+  "wizard.step.creneau",
+  "wizard.step.coordonnees",
+  "wizard.step.recapitulatif",
 ] as const;
 const DAYS_AHEAD = 10;
 
 const DEPOSIT_OPTIONS: { value: DepositMode; label: string; hint: string }[] = [
   {
     value: "boutique",
-    label: "Dépôt en boutique",
+    label: "wizard.mode.boutique",
     hint: "Zogbadjè, Abomey-Calavi",
   },
   {
     value: "domicile",
-    label: "Enlèvement à domicile",
+    label: "wizard.mode.domicile",
     hint: "Cotonou & Abomey-Calavi",
   },
 ];
+
+/**
+ * Navigation clavier « radiogroup » (roving tabindex, motif WAI-ARIA) : les
+ * flèches déplacent le focus et sélectionnent l'option cible. tabIndex est
+ * porté par l'option sélectionnée (ou la première active du groupe).
+ */
+function rovingRadio({
+  count,
+  selectedIndex,
+  onSelect,
+  isDisabled = () => false,
+}: {
+  count: number;
+  selectedIndex: number | null;
+  onSelect: (index: number) => void;
+  isDisabled?: (index: number) => boolean;
+}) {
+  const focusIndex = (() => {
+    if (selectedIndex !== null && selectedIndex >= 0) return selectedIndex;
+    for (let i = 0; i < count; i++) {
+      if (!isDisabled(i)) return i;
+    }
+    return -1;
+  })();
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    e.preventDefault();
+    if (count === 0) return;
+    const from = focusIndex >= 0 ? focusIndex : 0;
+    const step = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+    for (let i = 1; i <= count; i++) {
+      const next = (from + i * step + count) % count;
+      if (!isDisabled(next)) {
+        onSelect(next);
+        e.currentTarget.parentElement
+          ?.querySelector<HTMLElement>(`[data-radio-index="${next}"]`)
+          ?.focus();
+        return;
+      }
+    }
+  };
+
+  const tabIndexFor = (i: number) => (i === focusIndex ? 0 : -1);
+
+  return { handleKeyDown, tabIndexFor };
+}
 
 /**
  * Sélecteur de catégorie d'appareil (grille d'icônes). Réutilisé sur la page
@@ -106,15 +152,16 @@ function SelectionSummary({
   const crumbs = [category, brand ? brandName(brand) : null, series, family].filter(
     Boolean,
   ) as string[];
+  const { t } = useI18n();
   const line = device
     ? device.name
     : crumbs.length > 0
       ? crumbs.join(" · ")
-      : "Choisissez un appareil";
+      : t("wizard.select.device");
 
   return (
     <div className="border border-border bg-surface px-5 py-4">
-      <span className="at-eyebrow block">Votre sélection</span>
+      <span className="at-eyebrow block">{t("wizard.selection")}</span>
       <p aria-live="polite" className="mt-2 truncate text-sm font-bold tracking-tight">
         {line}
       </p>
@@ -416,6 +463,37 @@ export function DeviceSearch({
   const estimate = useMemo(() => computeEstimate(selectedFaults), [selectedFaults]);
   const total = estimate.total;
 
+  const depositRadio = rovingRadio({
+    count: DEPOSIT_OPTIONS.length,
+    selectedIndex: DEPOSIT_OPTIONS.findIndex((o) => o.value === mode),
+    onSelect: (i) => {
+      setMode(DEPOSIT_OPTIONS[i]!.value);
+      setDate(null);
+      setHour(null);
+      setComeNow(false);
+    },
+  });
+
+  const dayRadio = rovingRadio({
+    count: dateKeys.length,
+    selectedIndex: date === null ? null : dateKeys.indexOf(date),
+    onSelect: (i) => {
+      setDate(dateKeys[i]!);
+      setHour(null);
+      setComeNow(false);
+    },
+  });
+
+  const hourRadio = rovingRadio({
+    count: availableHours.length,
+    selectedIndex: hour === null ? null : availableHours.indexOf(hour),
+    onSelect: (i) => {
+      setHour(availableHours[i]!);
+      setComeNow(false);
+    },
+    isDisabled: (i) => availability.isHourTaken(date, availableHours[i]!),
+  });
+
   const toggleFault = (slug: string) =>
     setFaults((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
 
@@ -448,18 +526,18 @@ export function DeviceSearch({
     if (!device) return;
     if (!comeNow) {
       if (!date || !hour) {
-        toast.error("Choisissez une date et une heure pour votre rendez-vous.");
+        toast.error(t("wizard.error.no.slot"));
         setStep(6);
         return;
       }
       if (availability.isHourTaken(date, hour)) {
-        toast.error("Ce créneau vient d'être réservé. Choisissez une autre heure.");
+        toast.error(t("wizard.error.taken"));
         setHour(null);
         setStep(6);
         return;
       }
     } else if (!isOpenNow()) {
-      toast.error("La boutique est fermée maintenant — choisissez un créneau.");
+      toast.error(t("wizard.error.closed"));
       setComeNow(false);
       return;
     }
@@ -476,8 +554,10 @@ export function DeviceSearch({
         ...(brand ? { brand } : {}),
         ...(device?.name ? { device: device.name } : {}),
       });
-      toast.success(`Réservation enregistrée — dossier ${row.reference}`, {
-        description: `Confirmation envoyée${values.email ? ` à ${values.email} et` : ""} par WhatsApp au ${values.telephone}.`,
+      toast.success(t("wizard.success.toast", [row.reference]), {
+        description: values.email
+          ? t("wizard.success.toast.email", [values.email, values.telephone])
+          : t("wizard.success.toast.phone", [values.telephone]),
       });
       setDevice(null);
       setFaults([]);
@@ -488,7 +568,7 @@ export function DeviceSearch({
       setStep(0);
       availability.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Réservation impossible");
+      toast.error(error instanceof Error ? error.message : t("wizard.error.generic"));
       availability.refresh();
     } finally {
       setSubmitting(false);
@@ -501,15 +581,25 @@ export function DeviceSearch({
       <div className="relative mb-4">
         <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
         <label htmlFor="at-search" className="sr-only">
-          Rechercher un appareil
+          {t("wizard.search.aria")}
         </label>
         <input
           id="at-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Rechercher un appareil (ex : iPhone 17 Pro, Camon 40, Switch 2)"
+          placeholder={t("wizard.search.placeholder")}
           className="h-14 w-full rounded-sm border border-border bg-card pr-4 pl-12 font-mono text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         />
+        {query.trim().length >= 2 && (
+          <p role="status" className="sr-only">
+            {t(
+              suggestions.length > 1
+                ? "wizard.search.results.plural"
+                : "wizard.search.results.single",
+              [suggestions.length],
+            )}
+          </p>
+        )}
         {suggestions.length > 0 && (
           <ul className="absolute z-20 mt-1 max-h-80 w-full overflow-y-auto border border-border bg-card shadow-xl">
             {suggestions.map((s) => (
@@ -536,15 +626,19 @@ export function DeviceSearch({
               </li>
             ))}
             <li className="border-t border-border px-4 py-2 font-mono text-[10px] uppercase text-muted-foreground">
-              {suggestions.length} appareil{suggestions.length > 1 ? "s" : ""} trouvé
-              {suggestions.length > 1 ? "s" : ""}
+              {t(
+                suggestions.length > 1
+                  ? "wizard.search.results.plural"
+                  : "wizard.search.results.single",
+                [suggestions.length],
+              )}
             </li>
           </ul>
         )}
       </div>
 
       {/* Fil d'étapes */}
-      <nav aria-label="Étapes de l'assistant de diagnostic" className="mb-4">
+      <nav aria-label={t("wizard.nav.aria")} className="mb-4">
         <ol className="flex flex-wrap items-center gap-2">
           {STEPS.map((label, i) => {
             const done = i < step;
@@ -577,7 +671,7 @@ export function DeviceSearch({
       {showDraftPrompt && step === 0 && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border border-primary/30 bg-primary/5 p-4">
           <p className="text-sm">
-            <strong>Reprendre votre dossier ?</strong> Votre progression a été sauvegardée.
+            <strong>{t("wizard.draft.resume.title")}</strong> {t("wizard.draft.resume.text")}
           </p>
           <div className="flex gap-3">
             <Button
@@ -587,7 +681,7 @@ export function DeviceSearch({
                 setShowDraftPrompt(false);
               }}
             >
-              Reprendre
+              {t("wizard.draft.resume")}
             </Button>
             <Button
               size="sm"
@@ -597,7 +691,7 @@ export function DeviceSearch({
                 setShowDraftPrompt(false);
               }}
             >
-              Recommencer
+              {t("wizard.draft.restart")}
             </Button>
           </div>
         </div>
@@ -618,14 +712,14 @@ export function DeviceSearch({
                 onClick={() => setStep((s) => s - 1)}
                 className="mb-6 flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-primary"
               >
-                <ChevronLeft className="size-3" /> Retour
+                <ChevronLeft className="size-3" /> {t("wizard.back")}
               </button>
             )}
 
             {/* 01 — Type d'appareil */}
             {step === 0 && (
               <>
-                <span className="at-eyebrow mb-3 block">01. Quel type d'appareil ?</span>
+                <span className="at-eyebrow mb-3 block">{t("wizard.step0.title")}</span>
                 <CategoryPicker
                   onSelect={(c) => {
                     setCategory(c);
@@ -643,7 +737,9 @@ export function DeviceSearch({
             {/* 02 — Marque */}
             {step === 1 && (
               <>
-                <span className="at-eyebrow mb-3 block">02. Marque · {t(category ?? "")}</span>
+                <span className="at-eyebrow mb-3 block">
+                  {t("wizard.step1.title")} · {t(category ?? "")}
+                </span>
                 <div className="flex flex-wrap gap-2">
                   {brandsOfCategory.map((b) => (
                     <button
@@ -664,9 +760,9 @@ export function DeviceSearch({
                   ))}
                 </div>
                 <p className="mt-6 text-xs text-muted-foreground">
-                  Marque absente ?{" "}
+                  {t("wizard.brand.missing")}{" "}
                   <Link to="/$locale/devis" params={{ locale }} className="text-primary underline">
-                    Demander un devis
+                    {t("wizard.requestQuote")}
                   </Link>
                 </p>
               </>
@@ -676,7 +772,7 @@ export function DeviceSearch({
             {step === 2 && (
               <>
                 <span className="at-eyebrow mb-3 block">
-                  03. Série · {brand ? brandName(brand) : ""}
+                  {t("wizard.step2.title")} · {brand ? brandName(brand) : ""}
                 </span>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {seriesOfBrand.map((s) => (
@@ -695,7 +791,10 @@ export function DeviceSearch({
                       <span>
                         <span className="block text-sm font-bold tracking-tight">{s.name}</span>
                         <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                          {s.from} – {s.to} · {s.count} modèle{s.count > 1 ? "s" : ""}
+                          {s.from} – {s.to} ·{" "}
+                          {t(s.count > 1 ? "wizard.models.plural" : "wizard.models.single", [
+                            s.count,
+                          ])}
                         </span>
                       </span>
                       <ChevronLeft className="size-3 rotate-180 text-primary" />
@@ -703,13 +802,13 @@ export function DeviceSearch({
                   ))}
                   {seriesOfBrand.length === 0 && (
                     <p className="text-xs text-muted-foreground">
-                      Modèles sur demande —{" "}
+                      {t("wizard.models.onrequest")}{" "}
                       <Link
                         to="/$locale/devis"
                         params={{ locale }}
                         className="text-primary underline"
                       >
-                        demander un devis
+                        {t("wizard.requestQuote")}
                       </Link>
                     </p>
                   )}
@@ -721,7 +820,7 @@ export function DeviceSearch({
             {step === 3 && (
               <>
                 <span className="at-eyebrow mb-3 block">
-                  04. Famille de modèles · {brand ? brandName(brand) : ""}{" "}
+                  {t("wizard.step3.title")} · {brand ? brandName(brand) : ""}{" "}
                   {series ? `· ${series}` : ""}
                 </span>
                 <div className="grid gap-2 sm:grid-cols-2">
@@ -740,7 +839,10 @@ export function DeviceSearch({
                       <span>
                         <span className="block text-sm font-bold tracking-tight">{f.name}</span>
                         <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                          {f.from} – {f.to} · {f.count} modèle{f.count > 1 ? "s" : ""}
+                          {f.from} – {f.to} ·{" "}
+                          {t(f.count > 1 ? "wizard.models.plural" : "wizard.models.single", [
+                            f.count,
+                          ])}
                         </span>
                       </span>
                       <ChevronLeft className="size-3 rotate-180 text-primary" />
@@ -754,8 +856,8 @@ export function DeviceSearch({
             {step === 4 && (
               <>
                 <span className="at-eyebrow mb-3 block">
-                  05. Modèle · {brand ? brandName(brand) : ""} {series ? `· ${series}` : ""}{" "}
-                  {family ? `· ${family}` : ""}
+                  {t("wizard.step4.title")} · {brand ? brandName(brand) : ""}{" "}
+                  {series ? `· ${series}` : ""} {family ? `· ${family}` : ""}
                 </span>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {models.map((d) => {
@@ -785,13 +887,13 @@ export function DeviceSearch({
                   })}
                   {models.length === 0 && (
                     <p className="text-xs text-muted-foreground">
-                      Modèles sur demande —{" "}
+                      {t("wizard.models.onrequest")}{" "}
                       <Link
                         to="/$locale/devis"
                         params={{ locale }}
                         className="text-primary underline"
                       >
-                        demander un devis
+                        {t("wizard.requestQuote")}
                       </Link>
                     </p>
                   )}
@@ -802,10 +904,10 @@ export function DeviceSearch({
             {/* 06 — Pannes multi-sélection + description */}
             {step === 5 && device && (
               <>
-                <span className="at-eyebrow mb-3 block">06. Pannes constatées · {device.name}</span>
-                <p className="mb-4 text-xs text-muted-foreground">
-                  Sélectionnez une ou plusieurs pannes, puis décrivez le problème.
-                </p>
+                <span className="at-eyebrow mb-3 block">
+                  {t("wizard.step5.title")} · {device.name}
+                </span>
+                <p className="mb-4 text-xs text-muted-foreground">{t("wizard.faults.hint")}</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {device.faults.map((flt) => {
                     const on = faults.includes(flt.slug);
@@ -842,28 +944,30 @@ export function DeviceSearch({
                 </div>
 
                 <label htmlFor="at-desc" className="at-eyebrow mt-6 mb-2 block">
-                  Description de la panne
+                  {t("wizard.description.label")}
                 </label>
                 <textarea
                   id="at-desc"
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Ex : l'écran s'allume mais le tactile ne répond plus depuis une chute."
+                  placeholder={t("wizard.description.placeholder")}
                   className="w-full rounded-sm border border-border bg-background p-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 />
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
                   <p className="font-mono text-xs uppercase text-muted-foreground">
-                    {faults.length} panne(s) ·{" "}
+                    {t("wizard.fault.count", [faults.length])} ·{" "}
                     <span className="text-primary">
-                      {total > 0 ? `Estimation ${formatFcfa(total)}` : "Diagnostic gratuit"}
+                      {total > 0
+                        ? t("wizard.estimate", [formatFcfa(total)])
+                        : t("wizard.free.diagnosis")}
                     </span>
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Button asChild variant="technical" size="sm">
                       <Link to="/$locale/appareil/$slug" params={{ locale, slug: device.slug }}>
-                        Voir la fiche
+                        {t("wizard.view.product")}
                       </Link>
                     </Button>
                     <Button
@@ -872,7 +976,7 @@ export function DeviceSearch({
                       disabled={faults.length === 0 && description.trim().length === 0}
                       onClick={() => setStep(6)}
                     >
-                      Choisir un créneau <ArrowRight className="size-3.5" />
+                      {t("wizard.choose.slot")} <ArrowRight className="size-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -882,24 +986,21 @@ export function DeviceSearch({
             {/* 07 — Date & heure du rendez-vous */}
             {step === 6 && device && (
               <>
-                <span className="at-eyebrow mb-3 block">07. Date & heure du rendez-vous</span>
-                <p className="mb-4 text-xs text-muted-foreground">
-                  Choisissez un mode de dépôt, un jour puis une heure. Seuls les créneaux à venir,
-                  réellement disponibles pour ce mode, sont affichés.
-                </p>
+                <span className="at-eyebrow mb-3 block">{t("wizard.step6.title")}</span>
+                <p className="mb-4 text-xs text-muted-foreground">{t("wizard.step6.hint")}</p>
 
                 <div className="mb-2 flex items-center gap-2">
                   <Truck className="size-4 text-primary" strokeWidth={1.5} />
                   <span className="font-mono text-[10px] uppercase tracking-wider">
-                    Mode de dépôt
+                    {t("wizard.deposit.mode")}
                   </span>
                 </div>
                 <div
                   role="radiogroup"
-                  aria-label="Mode de dépôt"
+                  aria-label={t("wizard.deposit.mode")}
                   className="mb-6 grid gap-2 sm:grid-cols-2"
                 >
-                  {DEPOSIT_OPTIONS.map((o) => {
+                  {DEPOSIT_OPTIONS.map((o, i) => {
                     const on = mode === o.value;
                     return (
                       <button
@@ -907,6 +1008,9 @@ export function DeviceSearch({
                         type="button"
                         role="radio"
                         aria-checked={on}
+                        tabIndex={depositRadio.tabIndexFor(i)}
+                        data-radio-index={i}
+                        onKeyDown={depositRadio.handleKeyDown}
                         onClick={() => {
                           setMode(o.value);
                           setDate(null);
@@ -928,7 +1032,9 @@ export function DeviceSearch({
                           {on && <span className="size-2 rounded-full bg-primary" />}
                         </span>
                         <span>
-                          <span className="block text-sm font-bold tracking-tight">{o.label}</span>
+                          <span className="block text-sm font-bold tracking-tight">
+                            {t(o.label)}
+                          </span>
                           <span className="text-xs text-muted-foreground">{o.hint}</span>
                         </span>
                       </button>
@@ -937,7 +1043,7 @@ export function DeviceSearch({
                 </div>
                 {mode === "domicile" && (
                   <p className="-mt-4 mb-6 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {DOMICILE_HOURS_LABEL}
+                    {t("wizard.domicile.hours")}
                   </p>
                 )}
 
@@ -947,16 +1053,16 @@ export function DeviceSearch({
                     id="ds-day-label"
                     className="font-mono text-[10px] uppercase tracking-wider"
                   >
-                    Jour
+                    {t("wizard.day")}
                   </span>
                 </div>
                 {availability.isLoading ? (
                   <p role="status" className="text-xs text-muted-foreground">
-                    Chargement des disponibilités…
+                    {t("wizard.availability.loading")}
                   </p>
                 ) : dateKeys.length === 0 ? (
                   <p role="status" className="text-xs text-muted-foreground">
-                    Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.
+                    {t("wizard.availability.empty")}
                   </p>
                 ) : (
                   <div
@@ -964,7 +1070,7 @@ export function DeviceSearch({
                     aria-labelledby="ds-day-label"
                     className="flex flex-nowrap gap-2 overflow-x-auto pb-1"
                   >
-                    {dateKeys.map((d) => {
+                    {dateKeys.map((d, i) => {
                       const on = date === d;
                       const dt = new Date(`${d}T12:00:00`);
                       return (
@@ -973,6 +1079,9 @@ export function DeviceSearch({
                           type="button"
                           role="radio"
                           aria-checked={on}
+                          tabIndex={dayRadio.tabIndexFor(i)}
+                          data-radio-index={i}
+                          onKeyDown={dayRadio.handleKeyDown}
                           onClick={() => {
                             setDate(d);
                             setHour(null);
@@ -985,13 +1094,13 @@ export function DeviceSearch({
                           }`}
                         >
                           <span className="block font-mono text-[10px] uppercase">
-                            {dt.toLocaleDateString("fr-FR", { weekday: "short" })}
+                            {dt.toLocaleDateString(locale, { weekday: "short" })}
                           </span>
                           <span className="block text-lg font-bold leading-tight">
                             {dt.getDate()}
                           </span>
                           <span className="block font-mono text-[10px] uppercase">
-                            {dt.toLocaleDateString("fr-FR", { month: "short" })}
+                            {dt.toLocaleDateString(locale, { month: "short" })}
                           </span>
                         </button>
                       );
@@ -1013,10 +1122,10 @@ export function DeviceSearch({
                     >
                       <span>
                         <span className="block text-sm font-bold tracking-tight">
-                          Venez maintenant
+                          {t("wizard.come.now")}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          Déposez l'appareil aujourd'hui sans créneau horaire — priorité boutique.
+                          {t("wizard.come.now.hint")}
                         </span>
                       </span>
                       <Zap className="size-5 shrink-0 text-primary" strokeWidth={1.5} />
@@ -1024,45 +1133,46 @@ export function DeviceSearch({
                   )}
                 {comeNow && (
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border border-primary bg-primary/10 p-4">
-                    <p className="text-sm font-bold">
-                      Venir maintenant — dépôt immédiat aujourd'hui
-                    </p>
+                    <p className="text-sm font-bold">{t("wizard.come.now.immediate")}</p>
                     <button
                       type="button"
                       onClick={() => setComeNow(false)}
                       className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground underline hover:text-primary"
                     >
-                      Annuler
+                      {t("wizard.cancel")}
                     </button>
                   </div>
                 )}
 
                 <div className="mt-6 mb-2 flex items-center gap-2">
                   <Clock className="size-4 text-primary" strokeWidth={1.5} />
-                  <span className="font-mono text-[10px] uppercase tracking-wider">Heure</span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider">
+                    {t("wizard.hour")}
+                  </span>
                 </div>
                 {!date ? (
-                  <p className="text-xs text-muted-foreground">Sélectionnez d'abord un jour.</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("wizard.hour.select.day.first")}
+                  </p>
                 ) : comeNow ? (
                   <p className="text-xs text-muted-foreground">
-                    Vous passez directement en boutique aujourd'hui ({OPEN_NOW_LABEL}). Votre
-                    dossier sera préparé à l'avance.
+                    {t("wizard.come.now.opennow", [t("wizard.opennow.label")])}
                   </p>
                 ) : availableHours.length === 0 ? (
                   <p className="text-xs text-muted-foreground">
-                    Plus aucune heure libre ce jour-là — choisissez un autre jour
+                    {t("wizard.hour.none.left")}
                     {mode === "boutique" && isOpenNow() && date === toIsoDate(new Date())
-                      ? " ou venez maintenant"
+                      ? t("wizard.hour.none.comeNow")
                       : ""}
                     .
                   </p>
                 ) : (
                   <div
                     role="radiogroup"
-                    aria-label="Heure du rendez-vous"
+                    aria-label={t("wizard.hour.aria")}
                     className="grid grid-cols-3 gap-2 sm:grid-cols-4"
                   >
-                    {availableHours.map((h) => {
+                    {availableHours.map((h, i) => {
                       const on = hour === h;
                       const taken = availability.isHourTaken(date, h);
                       return (
@@ -1071,8 +1181,11 @@ export function DeviceSearch({
                           type="button"
                           role="radio"
                           aria-checked={on}
+                          tabIndex={hourRadio.tabIndexFor(i)}
+                          data-radio-index={i}
+                          onKeyDown={hourRadio.handleKeyDown}
                           disabled={taken}
-                          title={taken ? "Déjà réservé" : undefined}
+                          title={taken ? t("wizard.hour.taken") : undefined}
                           onClick={() => {
                             setHour(h);
                             setComeNow(false);
@@ -1095,17 +1208,19 @@ export function DeviceSearch({
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
                   <p className="font-mono text-xs uppercase text-muted-foreground">
                     {comeNow
-                      ? "Aujourd'hui · Venir maintenant"
+                      ? t("wizard.slot.today")
                       : date && hour
-                        ? `${new Date(`${date}T12:00:00`).toLocaleDateString("fr-FR", {
+                        ? `${new Date(`${date}T12:00:00`).toLocaleDateString(locale, {
                             weekday: "long",
                             day: "2-digit",
                             month: "long",
                           })} · ${hour}`
-                        : "Aucun créneau sélectionné"}{" "}
+                        : t("wizard.slot.none")}{" "}
                     ·{" "}
                     <span className="text-primary">
-                      {total > 0 ? `Estimation ${formatFcfa(total)}` : "Diagnostic gratuit"}
+                      {total > 0
+                        ? t("wizard.estimate", [formatFcfa(total)])
+                        : t("wizard.free.diagnosis")}
                     </span>
                   </p>
                   <Button
@@ -1114,7 +1229,7 @@ export function DeviceSearch({
                     disabled={!date || (!hour && !comeNow)}
                     onClick={() => setStep(7)}
                   >
-                    {comeNow ? "Venir maintenant" : "Réserver ce créneau"}{" "}
+                    {comeNow ? t("wizard.come.now") : t("wizard.slot.book")}{" "}
                     <ArrowRight className="size-3.5" />
                   </Button>
                 </div>
@@ -1129,11 +1244,11 @@ export function DeviceSearch({
                   onClick={() => setStep(6)}
                   className="mb-4 flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-primary"
                 >
-                  <ChevronLeft className="size-3" /> Créneau
+                  <ChevronLeft className="size-3" /> {t(STEPS[6] ?? "")}
                 </button>
                 <ContactForm
                   defaultValues={contact}
-                  submitLabel="Voir le récapitulatif"
+                  submitLabel={t("wizard.summary.see")}
                   onValid={(c) => {
                     setContact(c);
                     setStep(8);
@@ -1153,7 +1268,10 @@ export function DeviceSearch({
                   onConfirm={() => void confirmReservation()}
                 />
                 <div className="mt-14">
-                  <SectionHeader eyebrow="Après la réservation" title="Ce qui se passe ensuite" />
+                  <SectionHeader
+                    eyebrow={t("wizard.after.eyebrow")}
+                    title={t("wizard.after.title")}
+                  />
                   <ProcessSteps />
                 </div>
               </>
@@ -1167,21 +1285,25 @@ export function DeviceSearch({
               >
                 <div className="flex flex-wrap items-start gap-6">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">Dossier {ref} créé.</p>
+                    <p className="text-sm font-bold">
+                      {t("wizard.success.created", [ref as string])}
+                    </p>
                     {trackingCode && (
                       <p className="mt-2">
-                        <span className="at-eyebrow mb-1 block">Code de suivi</span>
+                        <span className="at-eyebrow mb-1 block">
+                          {t("wizard.success.tracking.code")}
+                        </span>
                         <span className="inline-block rounded-sm border border-primary/50 bg-primary/10 px-3 py-1 font-mono text-sm font-bold tracking-[0.2em] text-primary">
                           {trackingCode}
                         </span>
                       </p>
                     )}
                     <p className="mt-3 text-sm text-muted-foreground">
-                      Conservez ce numéro et ce code. Suivez l'avancement dans votre{" "}
+                      {t("wizard.success.hint")}{" "}
                       <Link to="/mon-compte" className="text-primary underline">
-                        espace client
-                      </Link>{" "}
-                      ou sur la page{" "}
+                        {t("wizard.success.account")}
+                      </Link>
+                      {t("wizard.success.or")}{" "}
                       <Link
                         to="/$locale/suivi"
                         params={{ locale }}
@@ -1191,28 +1313,26 @@ export function DeviceSearch({
                         }}
                         className="text-primary underline"
                       >
-                        Suivi
+                        {t("nav.suivi")}
                       </Link>
-                      . Pour un nouveau dossier, reprenez l'assistant ci-dessus.
+                      {t("wizard.success.restart")}
                     </p>
                   </div>
                   <QrCode
-                    value={`https://allotechno.africa/suivi?ref=${ref}${trackingCode ? `&code=${trackingCode}` : ""}`}
-                    label={`Suivi du dossier ${ref}`}
-                    caption="QR code de suivi du dossier"
+                    value={`${window.location.origin}/${locale}/suivi?ref=${ref}${trackingCode ? `&code=${trackingCode}` : ""}`}
+                    label={t("wizard.success.qr.label", [ref as string])}
+                    caption={t("wizard.success.qr.caption")}
                   />
                 </div>
                 <div className="mt-6 border-t border-success/30 pt-4">
-                  <p className="mb-3 text-sm font-semibold">Photos de l'appareil (facultatif)</p>
-                  <p className="mb-3 text-xs text-muted-foreground">
-                    Envoyez une ou plusieurs photos pour accélérer le diagnostic.
-                  </p>
+                  <p className="mb-3 text-sm font-semibold">{t("wizard.photos.title")}</p>
+                  <p className="mb-3 text-xs text-muted-foreground">{t("wizard.photos.hint")}</p>
                   <label
                     htmlFor="photo-upload"
                     className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
                   >
                     <ImagePlus className="size-4" />
-                    Ajouter des photos
+                    {t("wizard.photos.add")}
                   </label>
                   <input
                     id="photo-upload"
@@ -1234,7 +1354,7 @@ export function DeviceSearch({
                         >
                           <img
                             src={previewUrls[i]}
-                            alt={`Photo ${i + 1}`}
+                            alt={t("wizard.photos.alt", [i + 1])}
                             className="size-full object-cover"
                           />
                           <button
@@ -1279,14 +1399,14 @@ export function DeviceSearch({
                               if (!res.ok) throw new Error(`Upload ${res.status}`);
                               ok.push(prepared.path);
                             } catch {
-                              toast.error(`Impossible d'envoyer « ${file.name} »`);
+                              toast.error(t("wizard.photos.upload.error.file", [file.name]));
                             }
                           }
                           setPhotoUrls(ok);
                           setPhotos([]);
-                          toast.success(`${ok.length} photo(s) envoyée(s)`);
+                          toast.success(t("wizard.photos.upload.success", [ok.length]));
                         } catch {
-                          toast.error("Erreur lors de l'envoi des photos");
+                          toast.error(t("wizard.photos.upload.error"));
                         } finally {
                           setUploading(false);
                         }
@@ -1297,12 +1417,14 @@ export function DeviceSearch({
                       ) : (
                         <ImagePlus className="mr-2 size-4" />
                       )}
-                      {uploading ? "Envoi…" : `Envoyer ${photos.length} photo(s)`}
+                      {uploading
+                        ? t("wizard.photos.uploading")
+                        : t("wizard.photos.send", [photos.length])}
                     </Button>
                   )}
                   {photoUrls.length > 0 && (
                     <p className="mt-2 text-xs text-success">
-                      ✓ {photoUrls.length} photo(s) envoyée(s) avec succès.
+                      {t("wizard.photos.sent.success", [photoUrls.length])}
                     </p>
                   )}
                 </div>

@@ -2,13 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, brandName, formatFcfa } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
 import { searchDevices } from "@/lib/catalog-search";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
+import { localeSeo } from "@/lib/seo";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/$locale/catalogue")({
   },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale);
+    const suffix = "/catalogue";
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "catalogue.meta.title", [DEVICES.length]) },
@@ -42,9 +45,9 @@ export const Route = createFileRoute("/$locale/catalogue")({
           property: "og:description",
           content: translate(locale, "catalogue.meta.ogDescription"),
         },
-        { property: "og:url", content: "/$locale/catalogue" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/$locale/catalogue") }],
+      links: [...seo.links],
     };
   },
   component: Catalogue,

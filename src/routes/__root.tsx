@@ -21,7 +21,7 @@ import { CartProvider } from "@/components/shop/cart";
 import { supabase } from "@/integrations/supabase/client";
 
 // La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
-// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargÃ©e
+// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargée
 // juste avant/sur le premier besoin (voir RootComponent).
 const SearchModal = lazy(() =>
   import("@/components/site/SearchModal").then((m) => ({ default: m.SearchModal })),
@@ -34,7 +34,7 @@ function NotFoundComponent() {
         <h1 className="at-display text-7xl">404</h1>
         <h2 className="mt-4 text-xl font-bold tracking-tight">Page introuvable</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Cette page n'existe pas ou a Ã©tÃ© dÃ©placÃ©e.
+          Cette page n'existe pas ou a été déplacée.
         </p>
         <div className="mt-6">
           <Link
@@ -68,7 +68,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
           >
-            RÃ©essayer
+            Réessayer
           </button>
           <a
             href="/"
@@ -87,16 +87,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AllÃ´ Techno â€” RÃ©paration d'appareils Ã  Abomey-Calavi" },
+      { title: "Allô Techno — Réparation d'appareils à Abomey-Calavi" },
       {
         name: "description",
         content:
-          "RÃ©paration de smartphones, tablettes, MacBook, iMac, consoles et montres connectÃ©es Ã  Abomey-Calavi, BÃ©nin.",
+          "Réparation de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi, Bénin.",
       },
-      { property: "og:site_name", content: "AllÃ´ Techno" },
+      { property: "og:site_name", content: "Allô Techno" },
       { property: "og:type", content: "website" },
-      { property: "og:locale", content: "fr_BJ" },
-      { property: "og:url", content: COMPANY.url },
       { property: "og:image", content: `${COMPANY.url}/og-image.png` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `${COMPANY.url}/og-image.png` },
@@ -119,13 +117,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "LocalBusiness",
           name: COMPANY.name,
           description:
-            "Atelier de rÃ©paration de smartphones, tablettes, ordinateurs, consoles et montres connectÃ©es.",
+            "Atelier de réparation de smartphones, tablettes, ordinateurs, consoles et montres connectées.",
           telephone: COMPANY.phone,
           email: COMPANY.email,
           priceRange: "3.500 - 195.000 FCFA",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Quartier ZogbadjÃ¨, Rue de l'UniversitÃ©",
+            streetAddress: "Quartier Zogbadjè, Rue de l'Université",
             addressLocality: COMPANY.city,
             addressCountry: "BJ",
           },

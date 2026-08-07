@@ -46,10 +46,11 @@ export function ProcessSteps() {
 export function Stars({ n }: { n: number }) {
   const { t } = useI18n();
   return (
-    <div className="flex gap-0.5" aria-label={t("blocks.stars", [n])}>
+    <div className="flex gap-0.5" role="img" aria-label={t("blocks.stars", [n])}>
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
+          aria-hidden="true"
           className={`size-3.5 ${i < n ? "fill-primary text-primary" : "text-muted-foreground/40"}`}
         />
       ))}

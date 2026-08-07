@@ -2,12 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BadgeCheck, Clock, Home, ShieldCheck, Store, Wallet } from "lucide-react";
 import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
-import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, devicesOfBrand } from "@/data/catalog";
+import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/reparations/")({
   validateSearch: (
@@ -44,6 +45,8 @@ export const Route = createFileRoute("/$locale/reparations/")({
   },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale);
+    const suffix = "/reparations";
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: translate(locale, "reparations.meta.title") },
@@ -56,9 +59,9 @@ export const Route = createFileRoute("/$locale/reparations/")({
           property: "og:description",
           content: translate(locale, "reparations.meta.ogDescription"),
         },
-        { property: "og:url", content: "/reparations" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl("/reparations") }],
+      links: [...seo.links],
     };
   },
   component: Reparations,

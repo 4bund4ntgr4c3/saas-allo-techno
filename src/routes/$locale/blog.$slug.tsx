@@ -1,13 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
-import { POSTS, absoluteUrl } from "@/data/catalog";
+import { POSTS } from "@/data/catalog";
 import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/blog";
 import type { Locale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/blog/$slug")({
   head: ({ params }) => {
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
         ],
       };
     }
+    const suffix = `/blog/${params.slug}`;
+    const seo = localeSeo(locale, suffix);
     return {
       meta: [
         { title: `${post.title} — Allô Techno` },
@@ -28,10 +31,10 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/blog/${params.slug}` },
         { name: "twitter:card", content: "summary_large_image" },
+        ...seo.meta,
       ],
-      links: [{ rel: "canonical", href: absoluteUrl(`/blog/${params.slug}`) }],
+      links: [...seo.links],
       scripts: [
         {
           type: "application/ld+json",

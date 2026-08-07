@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
-import { absoluteUrl } from "@/data/catalog/company";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -32,9 +31,9 @@ export const Route = createFileRoute("/_authenticated/mon-compte")({
         content: "Suivez vos réservations de réparation en temps réel.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: absoluteUrl("/mon-compte") }],
   }),
   component: Dashboard,
 });

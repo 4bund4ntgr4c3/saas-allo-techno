@@ -5,7 +5,9 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
+import { useI18n } from "@/lib/i18n/context";
 import { contactSchema, type ContactInput } from "@/lib/reservation-schema";
+import "@/lib/i18n/segments/reservation";
 
 type Props = {
   defaultValues: Partial<ContactInput>;
@@ -76,6 +78,7 @@ function RadioChips({
  */
 export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
   const { user } = useSession();
+  const { t } = useI18n();
   const {
     register,
     setValue,
@@ -118,17 +121,14 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
 
   return (
     <form noValidate onSubmit={handleSubmit(onValid)} className="border border-border bg-card p-8">
-      <span className="at-eyebrow mb-3 block">08. Vos coordonnées</span>
-      <h2 className="at-display text-2xl">Votre dossier</h2>
-      <p className="mt-3 text-sm text-muted-foreground">
-        Ces informations servent à confirmer le rendez-vous (WhatsApp / e-mail) et à préparer votre
-        dossier.
-      </p>
+      <span className="at-eyebrow mb-3 block">{t("wizard.contact.eyebrow")}</span>
+      <h2 className="at-display text-2xl">{t("wizard.contact.title")}</h2>
+      <p className="mt-3 text-sm text-muted-foreground">{t("wizard.contact.hint")}</p>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="cf-nom" className="at-eyebrow mb-2 block">
-            Nom complet *
+            {t("wizard.contact.nom")}
           </label>
           <input
             id="cf-nom"
@@ -142,7 +142,7 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
         </div>
         <div>
           <label htmlFor="cf-telephone" className="at-eyebrow mb-2 block">
-            Téléphone / WhatsApp *
+            {t("wizard.contact.telephone")}
           </label>
           <input
             id="cf-telephone"
@@ -158,7 +158,7 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
         </div>
         <div className="md:col-span-2">
           <label htmlFor="cf-email" className="at-eyebrow mb-2 block">
-            E-mail (recommandé — confirmation écrite)
+            {t("wizard.contact.email")}
           </label>
           <input
             id="cf-email"
@@ -174,7 +174,7 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
         <div className="md:col-span-2">
           <RadioChips
             name="paiement"
-            legend="Paiement souhaité *"
+            legend={t("wizard.contact.payment")}
             value={watch("paiement") ?? ""}
             register={register}
             error={errors.paiement?.message}
@@ -182,14 +182,14 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
               { value: "mtn", label: "MTN Mobile Money" },
               { value: "moov", label: "Moov Money" },
               { value: "celtiis", label: "Celtiis" },
-              { value: "especes", label: "Espèces" },
+              { value: "especes", label: t("wizard.contact.payment.cash") },
             ]}
           />
         </div>
 
         <div className="md:col-span-2">
           <label htmlFor="cf-message" className="at-eyebrow mb-2 block">
-            Précisions (optionnel)
+            {t("wizard.contact.precision")}
           </label>
           <textarea
             id="cf-message"

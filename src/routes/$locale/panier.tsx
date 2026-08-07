@@ -26,6 +26,7 @@ export const Route = createFileRoute("/$locale/panier")({
           property: "og:description",
           content: translate(locale, "panier.meta.og.description"),
         },
+        { name: "robots", content: "noindex, nofollow" },
       ],
     };
   },

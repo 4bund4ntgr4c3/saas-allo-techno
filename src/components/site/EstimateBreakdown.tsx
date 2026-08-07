@@ -21,19 +21,15 @@ type Props = {
  * garantie. Affichée en permanence dans l'assistant et recalculée à chaque
  * changement de panne sélectionnée.
  */
-export function EstimateBreakdown({
-  estimate,
-  title = "Devis en direct",
-  subtitle = "Mis à jour instantanément",
-}: Props) {
+export function EstimateBreakdown({ estimate, title, subtitle }: Props) {
   const { t } = useI18n();
   const total = estimate.total;
 
   return (
     <div className="border border-border bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-5 py-4">
-        <span className="at-eyebrow">{title}</span>
-        {subtitle && (
+        <span className="at-eyebrow">{title ?? t("wizard.estimate.title")}</span>
+        {subtitle !== undefined && subtitle !== null && (
           <span className="font-mono text-[10px] uppercase text-muted-foreground">{subtitle}</span>
         )}
       </div>
@@ -61,15 +57,15 @@ export function EstimateBreakdown({
       </ul>
 
       <div className="flex items-center justify-between gap-4 border-t border-border px-5 py-4">
-        <span className="text-sm font-bold uppercase tracking-tight">Total estimé</span>
+        <span className="text-sm font-bold uppercase tracking-tight">
+          {t("wizard.estimate.total")}
+        </span>
         <span className="font-mono text-lg font-bold text-primary">
-          {total > 0 ? formatFcfa(total) : "Diagnostic gratuit"}
+          {total > 0 ? formatFcfa(total) : t("wizard.estimate.free")}
         </span>
       </div>
 
-      <p className="px-5 pb-4 text-[11px] text-muted-foreground">
-        Estimation indicative — le devis définitif est confirmé après diagnostic en atelier.
-      </p>
+      <p className="px-5 pb-4 text-[11px] text-muted-foreground">{t("wizard.estimate.note")}</p>
     </div>
   );
 }

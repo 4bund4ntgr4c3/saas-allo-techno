@@ -31,6 +31,10 @@ type Item = {
   keywords: string;
   icon: LucideIcon;
   target: Target;
+  labelKey?: string;
+  labelArgs?: (string | number)[];
+  hintKey?: string;
+  badgeKey?: string;
 };
 
 const PAGES: Omit<Item, "icon">[] = [
@@ -40,6 +44,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Prise de rendez-vous atelier",
     keywords: "reserver rendez-vous booking rdv slot creneau",
     target: { to: "/reservation" },
+    labelKey: "search.page.reservation",
+    hintKey: "search.page.reservation.hint",
   },
   {
     id: "page-reparations",
@@ -47,6 +53,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Diagnostic en ligne",
     keywords: "diagnostic reparer panne atelier",
     target: { to: "/reparations" },
+    labelKey: "nav.reparations",
+    hintKey: "search.page.reparations.hint",
   },
   {
     id: "page-catalogue",
@@ -54,6 +62,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Tous les modèles, recherche et filtres",
     keywords: "tous les appareils modeles liste",
     target: { to: "/catalogue" },
+    labelKey: "search.page.catalogue",
+    hintKey: "search.page.catalogue.hint",
   },
   {
     id: "page-suivi",
@@ -61,6 +71,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "État de votre dossier",
     keywords: "suivre commande statut dossier ticket",
     target: { to: "/suivi" },
+    labelKey: "search.page.suivi",
+    hintKey: "search.page.suivi.hint",
   },
   {
     id: "page-tarifs",
@@ -68,6 +80,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Prix des réparations",
     keywords: "prix cout combien",
     target: { to: "/tarifs" },
+    labelKey: "nav.tarifs",
+    hintKey: "search.page.tarifs.hint",
   },
   {
     id: "page-devis",
@@ -75,13 +89,17 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Estimation sans engagement",
     keywords: "estimation devis prix",
     target: { to: "/devis" },
+    labelKey: "nav.devis",
+    hintKey: "search.page.devis.hint",
   },
   {
     id: "page-reprise",
     label: "Reprise",
-    hint: "Nous rachetons votre appareil",
+    hint: "Nous rachètons votre appareil",
     keywords: "revente vendre acheter occasion",
     target: { to: "/reprise" },
+    labelKey: "nav.reprise",
+    hintKey: "search.page.reprise.hint",
   },
   {
     id: "page-garantie",
@@ -89,6 +107,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Nos garanties atelier",
     keywords: "garantie sav",
     target: { to: "/garantie" },
+    labelKey: "nav.garantie",
+    hintKey: "search.page.garantie.hint",
   },
   {
     id: "page-boutique",
@@ -96,6 +116,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Accessoires et pièces détachées",
     keywords: "acheter accessoire coque chargeur",
     target: { to: "/boutique" },
+    labelKey: "nav.boutique",
+    hintKey: "search.page.boutique.hint",
   },
   {
     id: "page-blog",
@@ -103,6 +125,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Guides et astuces",
     keywords: "articles guides conseils",
     target: { to: "/blog" },
+    labelKey: "nav.blog",
+    hintKey: "search.page.blog.hint",
   },
   {
     id: "page-faq",
@@ -110,6 +134,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Questions fréquentes",
     keywords: "questions reponses aide",
     target: { to: "/faq" },
+    labelKey: "nav.faq",
+    hintKey: "search.page.faq.hint",
   },
   {
     id: "page-avis",
@@ -117,6 +143,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Témoignages de nos clients",
     keywords: "avis temoignages notes",
     target: { to: "/avis" },
+    labelKey: "nav.avis",
+    hintKey: "search.page.avis.hint",
   },
   {
     id: "page-entreprises",
@@ -124,6 +152,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Prestations professionnelles",
     keywords: "pro entreprise bureau partenariat",
     target: { to: "/entreprises" },
+    labelKey: "nav.entreprises",
+    hintKey: "search.page.entreprises.hint",
   },
   {
     id: "page-contact",
@@ -131,6 +161,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Atelier Abomey-Calavi",
     keywords: "adresse telephone whatsapp contact",
     target: { to: "/contact" },
+    labelKey: "nav.contact",
+    hintKey: "search.page.contact.hint",
   },
   {
     id: "page-panier",
@@ -138,6 +170,8 @@ const PAGES: Omit<Item, "icon">[] = [
     hint: "Votre commande boutique",
     keywords: "commande panier checkout",
     target: { to: "/panier" },
+    labelKey: "nav.panier",
+    hintKey: "search.page.panier.hint",
   },
 ];
 
@@ -150,7 +184,15 @@ export function SearchModal() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
+
+  const labelOf = (item: Item) => (item.labelKey ? t(item.labelKey, item.labelArgs) : item.label);
+  const hintOf = (item: Item) =>
+    item.badgeKey
+      ? `${t(item.badgeKey)} · ${item.hint}`
+      : item.hintKey
+        ? t(item.hintKey)
+        : item.hint;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -181,11 +223,14 @@ export function SearchModal() {
     const categories: Item[] = q
       ? CATEGORIES.filter(match).map((c) => ({
           id: `cat-${c}`,
-          label: `Réparer un ${c.toLowerCase()}`,
-          hint: "Commencer un diagnostic",
+          label: c,
+          hint: c,
           keywords: c,
           icon: HelpCircle,
           target: { to: "/reparations", search: { categorie: c } },
+          labelKey: "search.category.repair",
+          labelArgs: [c.toLowerCase()],
+          hintKey: "search.category.hint",
         }))
       : [];
 
@@ -230,7 +275,8 @@ export function SearchModal() {
           .map((a) => ({
             id: `acc-${a.slug}`,
             label: a.name,
-            hint: `Boutique · ${a.category}`,
+            hint: a.category,
+            badgeKey: "search.badge.shop",
             keywords: `${a.name} ${a.category}`,
             icon: Package,
             target: { to: `/boutique/${a.slug}` },
@@ -243,7 +289,8 @@ export function SearchModal() {
           .map((p) => ({
             id: `post-${p.slug}`,
             label: p.title,
-            hint: `Blog · ${p.category} · ${p.date}`,
+            hint: `${p.category} · ${p.date}`,
+            badgeKey: "search.badge.blog",
             keywords: `${p.title} ${p.excerpt} ${p.category}`,
             icon: Newspaper,
             target: { to: `/blog/${p.slug}` },
@@ -256,7 +303,8 @@ export function SearchModal() {
           .map((f, i) => ({
             id: `faq-${i}`,
             label: f.q,
-            hint: `FAQ · ${f.cat}`,
+            hint: f.cat,
+            badgeKey: "search.badge.faq",
             keywords: `${f.q} ${f.a} ${f.cat}`,
             icon: HelpCircle,
             target: { to: "/faq" },
@@ -272,17 +320,17 @@ export function SearchModal() {
     setOpen(false);
     setQuery("");
     navigate({
-      to: item.target.to as never,
+      to: `/${locale}${item.target.to}` as never,
       search: (item.target.search ?? {}) as never,
     });
   };
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <DialogTitle className="sr-only">Recherche sur le site</DialogTitle>
+      <DialogTitle className="sr-only">{t("search.dialog.title")}</DialogTitle>
       <Command shouldFilter={false}>
         <div className="flex items-center justify-between border-b py-3 pl-4 pr-12">
-          <span className="at-eyebrow">Recherche Allô Techno</span>
+          <span className="at-eyebrow">{t("search.title")}</span>
           <span className="flex items-center gap-1.5">
             <kbd className="rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
               Ctrl
@@ -293,47 +341,48 @@ export function SearchModal() {
           </span>
         </div>
         <CommandInput
-          placeholder="Rechercher un appareil, une marque, un article…"
+          aria-label={t("search.aria.label")}
+          placeholder={t("search.placeholder")}
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
           {total === 0 && (
             <div className="flex flex-col items-center gap-1 py-10 text-center">
-              <span className="at-eyebrow">Aucun résultat</span>
+              <span className="at-eyebrow">{t("search.empty.title")}</span>
               <span className="text-sm text-muted-foreground">
-                Rien trouvé pour « {query} » — essayez « iPhone », « écran », « batterie »…
+                {t("search.empty.text", [query])}
               </span>
             </div>
           )}
           {groups.pages.length > 0 && (
-            <CommandGroup heading="Pages" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.pages")} className={GROUP_CLASS}>
               {groups.pages.map((p) => (
                 <CommandItem key={p.id} value={p.id} onSelect={() => go(p)}>
                   <p.icon />
-                  <span>{p.label}</span>
+                  <span>{labelOf(p)}</span>
                   <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
-                    {p.hint}
+                    {hintOf(p)}
                   </span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
           {groups.categories.length > 0 && (
-            <CommandGroup heading="Diagnostic" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.diagnostic")} className={GROUP_CLASS}>
               {groups.categories.map((c) => (
                 <CommandItem key={c.id} value={c.id} onSelect={() => go(c)}>
                   <c.icon />
-                  <span>{t(c.label)}</span>
+                  <span>{labelOf(c)}</span>
                   <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
-                    {c.hint}
+                    {hintOf(c)}
                   </span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
           {groups.brands.length > 0 && (
-            <CommandGroup heading="Marques" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.brands")} className={GROUP_CLASS}>
               {groups.brands.map((b) => (
                 <CommandItem key={b.id} value={b.id} onSelect={() => go(b)}>
                   <b.icon />
@@ -346,7 +395,7 @@ export function SearchModal() {
             </CommandGroup>
           )}
           {groups.devices.length > 0 && (
-            <CommandGroup heading="Appareils" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.devices")} className={GROUP_CLASS}>
               {groups.devices.map((d) => (
                 <CommandItem key={d.id} value={d.id} onSelect={() => go(d)}>
                   <d.icon />
@@ -359,39 +408,39 @@ export function SearchModal() {
             </CommandGroup>
           )}
           {groups.accessories.length > 0 && (
-            <CommandGroup heading="Boutique" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.shop")} className={GROUP_CLASS}>
               {groups.accessories.map((a) => (
                 <CommandItem key={a.id} value={a.id} onSelect={() => go(a)}>
                   <a.icon />
                   <span>{a.label}</span>
                   <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
-                    {a.hint}
+                    {hintOf(a)}
                   </span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
           {groups.posts.length > 0 && (
-            <CommandGroup heading="Blog" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.blog")} className={GROUP_CLASS}>
               {groups.posts.map((p) => (
                 <CommandItem key={p.id} value={p.id} onSelect={() => go(p)}>
                   <p.icon />
                   <span className="truncate">{p.label}</span>
                   <span className="ml-auto shrink-0 pl-4 text-xs text-muted-foreground">
-                    {p.hint}
+                    {hintOf(p)}
                   </span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
           {groups.faq.length > 0 && (
-            <CommandGroup heading="FAQ" className={GROUP_CLASS}>
+            <CommandGroup heading={t("search.group.faq")} className={GROUP_CLASS}>
               {groups.faq.map((f) => (
                 <CommandItem key={f.id} value={f.id} onSelect={() => go(f)}>
                   <f.icon />
-                  <span className="truncate">{t(f.label)}</span>
+                  <span className="truncate">{labelOf(f)}</span>
                   <span className="ml-auto shrink-0 pl-4 text-xs text-muted-foreground">
-                    {f.hint}
+                    {hintOf(f)}
                   </span>
                 </CommandItem>
               ))}
@@ -399,21 +448,21 @@ export function SearchModal() {
           )}
         </CommandList>
         <div className="flex items-center justify-between gap-4 border-t bg-muted/40 px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          <span>
-            {total} résultat{total > 1 ? "s" : ""}
+          <span role="status">
+            {t(total > 1 ? "search.count.plural" : "search.count.single", [total])}
           </span>
           <span className="flex items-center gap-3">
             <span className="flex items-center gap-1.5">
               <kbd className="rounded-sm border border-border px-1.5 py-0.5">↑↓</kbd>
-              naviguer
+              {t("search.kbd.navigate")}
             </span>
             <span className="flex items-center gap-1.5">
               <kbd className="rounded-sm border border-border px-1.5 py-0.5">⏎</kbd>
-              ouvrir
+              {t("search.kbd.open")}
             </span>
             <span className="flex items-center gap-1.5">
               <kbd className="rounded-sm border border-border px-1.5 py-0.5">esc</kbd>
-              fermer
+              {t("search.kbd.close")}
             </span>
           </span>
         </div>

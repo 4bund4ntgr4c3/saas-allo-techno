@@ -282,7 +282,7 @@ export const setInventory = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inventorySchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!isStaff(supabaseAdmin)) throw new Error("Action non autorisée");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
     if (!rateLimit("inventory-write", 20))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     const { error } = await supabaseAdmin

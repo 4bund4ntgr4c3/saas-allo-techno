@@ -5,18 +5,18 @@ import { Button } from "@/components/ui/button";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
 import { useI18n } from "@/lib/i18n/context";
 import { computeEstimate } from "@/lib/estimate";
-import { PERIOD_LABEL, formatDateFr, type ReservationInput } from "@/lib/reservation-schema";
+import { formatDateFr, type ReservationInput } from "@/lib/reservation-schema";
 
 const MODE_LABEL: Record<string, string> = {
-  boutique: "Dépôt en boutique — Zogbadjè, Abomey-Calavi",
-  domicile: "Enlèvement à domicile",
+  boutique: "wizard.summary.mode.shop",
+  domicile: "wizard.mode.domicile",
 };
 
 const PAY_LABEL: Record<string, string> = {
   mtn: "MTN Mobile Money",
   moov: "Moov Money",
   celtiis: "Celtiis",
-  especes: "Espèces",
+  especes: "wizard.summary.payment.cash",
 };
 
 /** Retrouve les pannes catalogue citées dans le texte libre pour estimer le coût. */
@@ -57,26 +57,44 @@ export function ReservationSummary({
   const estimate = computeEstimate(faults);
 
   const rows = [
-    { icon: Cpu, label: "Type d'appareil", value: device?.category ?? "Autre appareil" },
-    { icon: Tag, label: "Marque", value: device ? brandName(device.brand) : "À préciser" },
-    { icon: Smartphone, label: "Modèle", value: device?.name ?? values.appareil },
-    { icon: MapPin, label: "Mode de dépôt", value: MODE_LABEL[values.mode] ?? values.mode },
-    { icon: Wallet, label: "Paiement", value: PAY_LABEL[values.paiement] ?? values.paiement },
+    {
+      icon: Cpu,
+      label: "wizard.summary.type",
+      value: device?.category ? t(device.category) : t("wizard.summary.other"),
+    },
+    {
+      icon: Tag,
+      label: "wizard.summary.brand",
+      value: device ? brandName(device.brand) : t("wizard.summary.tbd"),
+    },
+    {
+      icon: Smartphone,
+      label: "wizard.summary.model",
+      value: device?.name ?? values.appareil,
+    },
+    {
+      icon: MapPin,
+      label: "wizard.summary.deposit",
+      value: t(MODE_LABEL[values.mode] ?? values.mode),
+    },
+    {
+      icon: Wallet,
+      label: "wizard.summary.payment",
+      value: t(PAY_LABEL[values.paiement] ?? values.paiement),
+    },
   ];
 
   return (
     <div className="border border-border bg-card p-8">
-      <span className="at-eyebrow mb-3 block">Récapitulatif avant validation</span>
+      <span className="at-eyebrow mb-3 block">{t("wizard.summary.eyebrow")}</span>
       <h2
         ref={headingRef}
         tabIndex={-1}
         className="at-display text-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
       >
-        Vérifiez votre rendez-vous
+        {t("wizard.summary.title")}
       </h2>
-      <p className="mt-3 text-sm text-muted-foreground">
-        Rien n'est encore enregistré. Contrôlez les informations puis confirmez.
-      </p>
+      <p className="mt-3 text-sm text-muted-foreground">{t("wizard.summary.hint")}</p>
 
       {/* Créneau mis en avant */}
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-primary/40 bg-primary/5 p-5">
@@ -84,17 +102,17 @@ export function ReservationSummary({
           <CalendarClock className="size-6 shrink-0 text-primary" strokeWidth={1.5} />
           <span>
             <span className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-              Rendez-vous
+              {t("wizard.summary.appointment")}
             </span>
             <span className="block text-lg font-bold">
               {immediate && !values.heure
-                ? `${formatDateFr(values.date)} · Venir maintenant — dépôt immédiat`
-                : `${formatDateFr(values.date)} · ${values.heure ? values.heure : PERIOD_LABEL[values.creneau]}`}
+                ? `${formatDateFr(values.date)} · ${t("wizard.summary.immediate")}`
+                : `${formatDateFr(values.date)} · ${values.heure ? values.heure : t("wizard.period." + values.creneau)}`}
             </span>
           </span>
         </span>
         <span className="font-mono text-2xl font-bold text-primary">
-          {estimate.total > 0 ? formatFcfa(estimate.total) : "Diagnostic gratuit"}
+          {estimate.total > 0 ? formatFcfa(estimate.total) : t("wizard.free.diagnosis")}
         </span>
       </div>
 
@@ -116,7 +134,7 @@ export function ReservationSummary({
         {/* Pannes déclarées */}
         <div className="border border-border p-4">
           <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            Pannes déclarées
+            {t("wizard.summary.faults.title")}
           </p>
           {faults.length > 0 ? (
             <ul className="mt-3 space-y-2">
@@ -131,9 +149,7 @@ export function ReservationSummary({
               ))}
             </ul>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Aucune panne catalogue sélectionnée.
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{t("wizard.summary.faults.none")}</p>
           )}
           <p className="mt-3 border-t border-border pt-3 text-sm text-muted-foreground">
             {values.panne}
@@ -143,16 +159,16 @@ export function ReservationSummary({
         {/* Estimation détaillée */}
         <EstimateBreakdown
           estimate={estimate}
-          title="Estimation du devis"
-          subtitle={estimate.total > 0 ? "Pièces, main-d'œuvre et garantie" : null}
+          title={t("wizard.summary.estimate.title")}
+          subtitle={estimate.total > 0 ? t("wizard.summary.estimate.subtitle") : null}
         />
       </div>
 
       <div className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-3">
         {[
-          ["Client", values.nom],
-          ["Téléphone", values.telephone],
-          ["E-mail", values.email || "—"],
+          [t("wizard.summary.client"), values.nom],
+          [t("wizard.summary.phone"), values.telephone],
+          [t("wizard.summary.email"), values.email || "—"],
         ].map(([k, v]) => (
           <div key={k} className="bg-card p-4">
             <p className="font-mono text-[10px] uppercase text-muted-foreground">{k}</p>
@@ -163,16 +179,14 @@ export function ReservationSummary({
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
         <p className="font-mono text-xs uppercase text-muted-foreground">
-          Coût estimé ·{" "}
+          {t("wizard.summary.cost")} ·{" "}
           <span className="text-primary">
-            {estimate.total > 0
-              ? formatFcfa(estimate.total)
-              : "Diagnostic gratuit — devis après examen"}
+            {estimate.total > 0 ? formatFcfa(estimate.total) : t("wizard.summary.free.after.exam")}
           </span>
         </p>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="technical" size="sm" onClick={onEdit}>
-            <Pencil className="size-3.5" /> Modifier
+            <Pencil className="size-3.5" /> {t("wizard.summary.edit")}
           </Button>
           <Button
             type="button"
@@ -181,7 +195,7 @@ export function ReservationSummary({
             onClick={onConfirm}
             disabled={submitting}
           >
-            {submitting ? "Enregistrement…" : "Confirmer la réservation"}
+            {submitting ? t("wizard.summary.saving") : t("wizard.summary.confirm")}
           </Button>
         </div>
       </div>
