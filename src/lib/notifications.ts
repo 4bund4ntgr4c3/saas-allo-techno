@@ -234,6 +234,63 @@ export async function notifyReservationStatusChanged(r: ReservationEvent): Promi
   await sendWhatsApp(r.phone, waBody);
 }
 
+/** Changement du statut de livraison (dossier en enlèvement à domicile). */
+export async function notifyDeliveryStatusChanged(r: {
+  reference: string;
+  customer_name: string;
+  email: string | null;
+  phone: string;
+  device: string;
+  issue: string;
+  mode: string;
+  payment: string;
+  slot_date: string;
+  slot_period: Enums<"slot_period">;
+  slot_hour: string | null;
+  status: Enums<"reservation_status">;
+  delivery_status: string;
+  delivery_address: string | null;
+}): Promise<void> {
+  const label: Record<string, string> = {
+    a_planifier: "Livraison à planifier",
+    en_route: "En route vers vous",
+    livre: "Livré",
+  };
+  const statusLabel = label[r.delivery_status] ?? r.delivery_status;
+  const sujet = `Dossier ${r.reference} — ${statusLabel}`;
+  let waBody = [
+    `Bonjour ${r.customer_name}, voici le point sur la livraison de votre dossier ${r.reference} (${r.device}) : ${statusLabel}.`,
+    `Détails : ${trackingLink(r)}`,
+  ].join("\n");
+
+  if (r.delivery_status === "livre" && r.delivery_address) {
+    waBody += `\nVotre appareil a été livré à l'adresse : ${r.delivery_address}.`;
+  }
+  if (r.delivery_status === "en_route" && r.delivery_address) {
+    waBody += `\nLe livreur est en route vers : ${r.delivery_address}.`;
+  }
+
+  if (r.email) {
+    const addressBlocks =
+      r.delivery_status === "livre" && r.delivery_address
+        ? [
+            `<p style="font-size:14px">Votre appareil a été livré à l'adresse : <strong>${r.delivery_address}</strong>.</p>`,
+          ]
+        : r.delivery_status === "en_route" && r.delivery_address
+          ? [
+              `<p style="font-size:14px">Le livreur est en route vers : <strong>${r.delivery_address}</strong>.</p>`,
+            ]
+          : [];
+    const html = shell(sujet, [
+      `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, votre dossier a changé de statut de livraison :</p>`,
+      reservationSummary(r),
+      ...addressBlocks,
+    ]);
+    await sendEmail(r.email, sujet, html);
+  }
+  await sendWhatsApp(r.phone, waBody);
+}
+
 /** Reprogrammation du rendez-vous. */
 export async function notifyReservationRescheduled(r: ReservationEvent): Promise<void> {
   const sujet = `Dossier ${r.reference} — rendez-vous reprogrammé`;

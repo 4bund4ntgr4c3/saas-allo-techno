@@ -35,6 +35,7 @@ export function LeadForm({
   const [email, setEmail] = useState("");
   const [reference, setReference] = useState(defaultReference ?? "");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [pending, setPending] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -50,7 +51,9 @@ export function LeadForm({
     }
     setPending(true);
     try {
-      await submit({ data: { source, name, phone, email, reference, message } });
+      await submit({
+        data: { source, name, phone, email, reference, message, website },
+      });
       setSent(true);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Envoi impossible");
@@ -84,6 +87,17 @@ export function LeadForm({
     >
       <h2 className="text-xl font-semibold">{title}</h2>
       {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

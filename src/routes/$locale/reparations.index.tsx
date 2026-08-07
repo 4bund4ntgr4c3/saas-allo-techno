@@ -8,7 +8,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
-import { localeSeo } from "@/lib/seo";
+import "@/lib/i18n/segments/faq-seo";
+import { faqSchema, localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/reparations/")({
   validateSearch: (
@@ -47,6 +48,14 @@ export const Route = createFileRoute("/$locale/reparations/")({
     const locale = normalizeLocale((params as { locale?: unknown }).locale);
     const suffix = "/reparations";
     const seo = localeSeo(locale, suffix);
+    const faq = faqSchema([
+      { q: translate(locale, "faq.reparations.q1"), a: translate(locale, "faq.reparations.a1") },
+      { q: translate(locale, "faq.reparations.q2"), a: translate(locale, "faq.reparations.a2") },
+      { q: translate(locale, "faq.reparations.q3"), a: translate(locale, "faq.reparations.a3") },
+      { q: translate(locale, "faq.reparations.q4"), a: translate(locale, "faq.reparations.a4") },
+      { q: translate(locale, "faq.reparations.q5"), a: translate(locale, "faq.reparations.a5") },
+      { q: translate(locale, "faq.reparations.q6"), a: translate(locale, "faq.reparations.a6") },
+    ]);
     return {
       meta: [
         { title: translate(locale, "reparations.meta.title") },
@@ -62,6 +71,7 @@ export const Route = createFileRoute("/$locale/reparations/")({
         ...seo.meta,
       ],
       links: [...seo.links],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(faq) }],
     };
   },
   component: Reparations,

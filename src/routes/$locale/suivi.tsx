@@ -451,6 +451,25 @@ function StatusResult({
                   : t("suivi.payment.cash")}
           </p>
         </div>
+        {result.mode === "domicile" &&
+          result.delivery_status &&
+          result.delivery_status !== "non_applicable" && (
+            <div>
+              <span className="at-eyebrow">{t("suivi.delivery")}</span>
+              <p className="mt-1 text-sm">
+                {result.delivery_status === "a_planifier"
+                  ? t("suivi.delivery.a_planifier")
+                  : result.delivery_status === "en_route"
+                    ? t("suivi.delivery.en_route")
+                    : result.delivery_status === "livre"
+                      ? t("suivi.delivery.livre")
+                      : result.delivery_status}
+              </p>
+              {result.delivery_address ? (
+                <p className="mt-1 text-xs text-muted-foreground">{result.delivery_address}</p>
+              ) : null}
+            </div>
+          )}
       </div>
 
       <div className="mt-8 border-t border-border pt-8">

@@ -9,7 +9,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
-import { localeSeo } from "@/lib/seo";
+import "@/lib/i18n/segments/faq-seo";
+import { faqSchema, localeSeo } from "@/lib/seo";
 import {
   Select,
   SelectContent,
@@ -33,6 +34,11 @@ export const Route = createFileRoute("/$locale/catalogue")({
     const locale = normalizeLocale((params as { locale?: unknown }).locale);
     const suffix = "/catalogue";
     const seo = localeSeo(locale, suffix);
+    const faq = faqSchema([
+      { q: translate(locale, "faq.catalogue.q1"), a: translate(locale, "faq.catalogue.a1") },
+      { q: translate(locale, "faq.catalogue.q2"), a: translate(locale, "faq.catalogue.a2") },
+      { q: translate(locale, "faq.catalogue.q3"), a: translate(locale, "faq.catalogue.a3") },
+    ]);
     return {
       meta: [
         { title: translate(locale, "catalogue.meta.title", [DEVICES.length]) },
@@ -48,6 +54,7 @@ export const Route = createFileRoute("/$locale/catalogue")({
         ...seo.meta,
       ],
       links: [...seo.links],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(faq) }],
     };
   },
   component: Catalogue,

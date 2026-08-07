@@ -6,13 +6,20 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
-import { localeSeo } from "@/lib/seo";
+import { localeSeo, faqSchema } from "@/lib/seo";
 import "@/lib/i18n/segments/info";
+import "@/lib/i18n/segments/faq-seo";
 
 export const Route = createFileRoute("/$locale/tarifs")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     const seo = localeSeo(locale, "/tarifs");
+    const faq = faqSchema([
+      { q: translate(locale, "faq.tarifs.q1"), a: translate(locale, "faq.tarifs.a1") },
+      { q: translate(locale, "faq.tarifs.q2"), a: translate(locale, "faq.tarifs.a2") },
+      { q: translate(locale, "faq.tarifs.q3"), a: translate(locale, "faq.tarifs.a3") },
+      { q: translate(locale, "faq.tarifs.q4"), a: translate(locale, "faq.tarifs.a4") },
+    ]);
     return {
       meta: [
         { title: translate(locale, "tarifs.meta.title") },
@@ -22,6 +29,7 @@ export const Route = createFileRoute("/$locale/tarifs")({
         ...seo.meta,
       ],
       links: seo.links,
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(faq) }],
     };
   },
   component: Tarifs,

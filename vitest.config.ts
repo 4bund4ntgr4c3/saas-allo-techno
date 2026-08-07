@@ -13,5 +13,7 @@ export default defineConfig({
     pool: "forks",
     maxWorkers: 2,
     minWorkers: 1,
+    // Les specs Playwright (e2e/) ont leur propre runner : à ne pas collecter ici.
+    exclude: ["e2e/**", "**/node_modules/**"],
   },
 });

@@ -30,6 +30,8 @@ import { Route as LocaleSuiviRouteImport } from './routes/$locale/suivi'
 import { Route as LocaleTarifsRouteImport } from './routes/$locale/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
+import { Route as ApiFlutterwaveWebhookRouteImport } from './routes/api.flutterwave-webhook'
+import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
@@ -142,6 +144,16 @@ const AuthenticatedMonCompteRoute = AuthenticatedMonCompteRouteImport.update({
   path: '/mon-compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiFlutterwaveWebhookRoute = ApiFlutterwaveWebhookRouteImport.update({
+  id: '/api/flutterwave-webhook',
+  path: '/api/flutterwave-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthzRoute = ApiHealthzRouteImport.update({
+  id: '/api/healthz',
+  path: '/api/healthz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
   id: '/appareil/$slug',
   path: '/appareil/$slug',
@@ -198,6 +210,8 @@ export interface FileRoutesByFullPath {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
+  '/api/healthz': typeof ApiHealthzRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -226,6 +240,8 @@ export interface FileRoutesByTo {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
+  '/api/healthz': typeof ApiHealthzRoute
   '/$locale': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -257,6 +273,8 @@ export interface FileRoutesById {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
+  '/api/healthz': typeof ApiHealthzRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -288,6 +306,8 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
+    | '/api/flutterwave-webhook'
+    | '/api/healthz'
     | '/$locale/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -316,6 +336,8 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
+    | '/api/flutterwave-webhook'
+    | '/api/healthz'
     | '/$locale'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -346,6 +368,8 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
+    | '/api/flutterwave-webhook'
+    | '/api/healthz'
     | '/$locale/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -362,6 +386,8 @@ export interface RootRouteChildren {
   LocaleRoute: typeof LocaleRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiFlutterwaveWebhookRoute: typeof ApiFlutterwaveWebhookRoute
+  ApiHealthzRoute: typeof ApiHealthzRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -513,6 +539,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMonCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/flutterwave-webhook': {
+      id: '/api/flutterwave-webhook'
+      path: '/api/flutterwave-webhook'
+      fullPath: '/api/flutterwave-webhook'
+      preLoaderRoute: typeof ApiFlutterwaveWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/healthz': {
+      id: '/api/healthz'
+      path: '/api/healthz'
+      fullPath: '/api/healthz'
+      preLoaderRoute: typeof ApiHealthzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$locale/appareil/$slug': {
       id: '/$locale/appareil/$slug'
       path: '/appareil/$slug'
@@ -635,6 +675,8 @@ const rootRouteChildren: RootRouteChildren = {
   LocaleRoute: LocaleRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiFlutterwaveWebhookRoute: ApiFlutterwaveWebhookRoute,
+  ApiHealthzRoute: ApiHealthzRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

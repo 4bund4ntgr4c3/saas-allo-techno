@@ -38,3 +38,19 @@ export function localeSeo(locale: Locale, suffix: string) {
     ],
   };
 }
+
+/**
+ * Données structurées FAQPage (schema.org) pour les pages publiques.
+ * `questions` doit être localisé (fr ou en) selon la locale de la route.
+ */
+export function faqSchema(questions: { q: string; a: string }[]): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+}

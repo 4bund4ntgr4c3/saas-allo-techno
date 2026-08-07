@@ -46,6 +46,22 @@ const fr = {
   "panier.note": "Précisions (modèle d'appareil, couleur…)",
   "panier.saving": "Enregistrement…",
   "panier.submit": "Valider la commande — {0}",
+  "panier.redirect.title": "Redirection paiement sécurisé",
+  "panier.redirect.text":
+    "Commande {0} enregistrée. Vous allez être redirigé vers la page de paiement MTN MoMo / Moov Money / Celtiis.",
+  "panier.redirect.btn": "Ouvrir la page de paiement",
+  "panier.pay.onPickup": "Votre commande est enregistrée. Le paiement sera réglé à la remise.",
+  "panier.paid.title": "Paiement confirmé",
+  "panier.paid.text": "Merci {0}, votre paiement de {1} a bien été reçu pour la commande {2}.",
+  "panier.paid.badge": "Payée en ligne",
+  "panier.pending.title": "Paiement en cours de confirmation",
+  "panier.pending.text":
+    "Votre paiement est en cours de confirmation par l'opérateur. Cette page se met à jour automatiquement.",
+  "panier.pending.retry": "Vérifier à nouveau",
+  "panier.failed.title": "Paiement non confirmé",
+  "panier.failed.text":
+    "Nous n'avons pas confirmé le paiement de la commande {0}. Vous serez contacté au {1} pour finaliser la commande.",
+  "panier.redirecting": "Redirection paiement…",
 };
 
 const en = {
@@ -94,6 +110,22 @@ const en = {
   "panier.note": "Notes (device model, color…)",
   "panier.saving": "Saving…",
   "panier.submit": "Place order — {0}",
+  "panier.redirect.title": "Secure payment redirect",
+  "panier.redirect.text":
+    "Order {0} confirmed. You will be redirected to the MTN MoMo / Moov Money / Celtiis payment page.",
+  "panier.redirect.btn": "Open the payment page",
+  "panier.pay.onPickup": "Your order is confirmed. Payment will be settled on delivery.",
+  "panier.paid.title": "Payment confirmed",
+  "panier.paid.text": "Thank you {0}, your payment of {1} has been received for order {2}.",
+  "panier.paid.badge": "Paid online",
+  "panier.pending.title": "Payment being confirmed",
+  "panier.pending.text":
+    "Your payment is being confirmed by the operator. This page updates automatically.",
+  "panier.pending.retry": "Check again",
+  "panier.failed.title": "Payment not confirmed",
+  "panier.failed.text":
+    "We could not confirm the payment of order {0}. You will be contacted at {1} to finalize the order.",
+  "panier.redirecting": "Redirecting to payment…",
 };
 
 registerSegments({ fr, en });

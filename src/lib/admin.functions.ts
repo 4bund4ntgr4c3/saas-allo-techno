@@ -104,7 +104,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
     const { data: row } = await supabaseAdmin
       .from("reservations")
       .select(
-        "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
+        "reference, user_id, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
       )
       .eq("id", data.id)
       .maybeSingle();
@@ -112,6 +112,37 @@ export const setReservationStatus = createServerFn({ method: "POST" })
     if (row) {
       const { notifyReservationStatusChanged } = await import("@/lib/notifications");
       void notifyReservationStatusChanged(row);
+    }
+
+    if (data.status === "terminee" && row?.user_id) {
+      try {
+        await supabaseAdmin.rpc("add_loyalty_points", {
+          _user_id: row.user_id,
+          _delta: 100,
+          _reason: "repair_completed",
+          _reference: row.reference,
+        });
+      } catch (err) {
+        console.error("[loyalty] crédit réparation terminée échoué", err);
+      }
+
+      try {
+        const { data: profile } = await supabaseAdmin
+          .from("profiles")
+          .select("referred_by")
+          .eq("id", row.user_id)
+          .maybeSingle();
+        if (profile?.referred_by && profile.referred_by !== row.user_id) {
+          await supabaseAdmin.rpc("add_loyalty_points", {
+            _user_id: profile.referred_by,
+            _delta: 100,
+            _reason: "referral",
+            _reference: row.reference,
+          });
+        }
+      } catch (err) {
+        console.error("[loyalty] crédit parrain échoué", err);
+      }
     }
 
     return true;

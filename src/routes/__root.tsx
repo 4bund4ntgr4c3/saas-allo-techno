@@ -98,6 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: `${COMPANY.url}/og-image.png` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `${COMPANY.url}/og-image.png` },
+      { name: "theme-color", content: "#d83100" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Allô Techno" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -108,6 +112,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/icon-192.png" },
     ],
     scripts: [
       {
@@ -172,6 +178,19 @@ function RootComponent() {
     });
     return () => sub.subscription.unsubscribe();
   }, [router, queryClient]);
+
+  // PWA : enregistrement du service worker (uniquement en production).
+  useEffect(() => {
+    if (!("serviceWorker" in navigator) || !import.meta.env.PROD) return;
+    const register = async () => {
+      try {
+        await navigator.serviceWorker.register("/sw.js");
+      } catch (err) {
+        console.error("[pwa] enregistrement du service worker impossible", err);
+      }
+    };
+    void register();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

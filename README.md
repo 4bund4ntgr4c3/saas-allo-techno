@@ -8,9 +8,13 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - Pages de réparation par marque et fiches détaillées par appareil (pannes, tarifs, délais, garanties, pièces utilisées, FAQ).
 - Réservation en ligne avec disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
 - Suivi de réparation par numéro de dossier, avec historique des changements de statut.
-- Espace client (profil, réservations, annulation) et espace administrateur / technicien (gestion des statuts des dossiers).
+- Espace client (profil, réservations, annulation) et espace administrateur / technicien (gestion des statuts des dossiers, statistiques, export CSV).
+- Paiement en ligne Flutterwave (mobile money) pour la boutique, avec webhook de confirmation et repli en « paiement à la remise ».
+- Programme de fidélité : points gagnés par réparation terminée, code de parrainage et bonus de parrainage.
+- Suivi de la livraison pour les enlèvements à domicile (à planifier, en route, livré), visible côté client et administrable côté atelier.
 - Demande de devis, FAQ, blog, avis clients, garantie, offres entreprises (B2B), reprise d'appareils, boutique d'accessoires.
-- SEO par page (meta, Open Graph, sitemap).
+- SEO par page (meta, Open Graph, FAQPage, sitemap), PWA installable (manifeste + service worker) et honeypot anti-spam sur les formulaires.
+- Monitoring : endpoint `GET /api/healthz` pour les vérificateurs d'uptime.
 
 ## Stack technique
 
@@ -85,3 +89,34 @@ Les notifications sont optionnelles : sans clé, le site fonctionne normalement
 Canaux activés automatiquement : confirmation de réservation, changement de
 statut, reprogrammation du rendez-vous (client), alerte interne à l'équipe
 (nouveau dossier).
+
+### Paiement en ligne (Flutterwave — optionnel)
+
+Le paiement mobile money (MTN MoMo / Moov Money / Celtiis) est désactivé tant
+que les variables ne sont pas configurées : les commandes boutique passent
+alors en « paiement à la remise ».
+
+- `FLUTTERWAVE_SECRET_KEY` — clé API secrète Flutterwave.
+- `FLUTTERWAVE_WEBHOOK_SECRET_HASH` — valeur de l'entête `verif-hash` attendue
+  sur le webhook. Enregistrer l'URL `https://allotechno.africa/api/flutterwave-webhook`
+  comme Webhook URL dans le dashboard Flutterwave et y renseigner ce hash.
+
+Une migration Supabase (`supabase/migrations/20260808000000_payments.sql`) crée
+la table `payments` et le statut `payment_status` ; à appliquer avant d'activer
+le paiement en ligne.
+
+Deux autres migrations sont à appliquer pour les dernières fonctionnalités :
+
+- `supabase/migrations/20260808100000_loyalty.sql` — programme de fidélité :
+  colonnes `loyalty_points`, `referral_code`, `referred_by` sur `profiles`,
+  journal `loyalty_ledger` et fonctions `add_loyalty_points` /
+  `ensure_referral_code`.
+- `supabase/migrations/20260808200000_delivery.sql` — suivi de livraison :
+  enum `delivery_status`, colonnes `delivery_status` / `delivery_address` sur
+  `reservations` et fonction `set_delivery_status`.
+
+## Monitoring
+
+L'endpoint `GET /api/healthz` renvoie `{"status":"ok", …}` (code HTTP 200).
+Il peut être surveillé par un service d'uptime (UptimeRobot, Pingdom, Cloudflare
+Health Checks…) : point d'entrée `https://allotechno.africa/api/healthz`.

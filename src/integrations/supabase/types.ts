@@ -363,13 +363,61 @@ export type Database = {
         };
         Relationships: [];
       };
+      payments: {
+        Row: {
+          amount: number;
+          created_at: string;
+          currency: string;
+          id: string;
+          method: string;
+          reference: string;
+          source: string;
+          status: Database["public"]["Enums"]["payment_status"];
+          tx_id: string | null;
+          tx_ref: string | null;
+          updated_at: string;
+          webhook_payload: Json | null;
+        };
+        Insert: {
+          amount: number;
+          created_at?: string;
+          currency?: string;
+          id?: string;
+          method?: string;
+          reference: string;
+          source?: string;
+          status?: Database["public"]["Enums"]["payment_status"];
+          tx_id?: string | null;
+          tx_ref?: string | null;
+          updated_at?: string;
+          webhook_payload?: Json | null;
+        };
+        Update: {
+          amount?: number;
+          created_at?: string;
+          currency?: string;
+          id?: string;
+          method?: string;
+          reference?: string;
+          source?: string;
+          status?: Database["public"]["Enums"]["payment_status"];
+          tx_id?: string | null;
+          tx_ref?: string | null;
+          updated_at?: string;
+          webhook_payload?: Json | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;
           email: string | null;
           full_name: string | null;
           id: string;
+          loyalty_points: number;
           phone: string | null;
+          referral_code: string | null;
+          referred_by: string | null;
           updated_at: string;
         };
         Insert: {
@@ -377,7 +425,10 @@ export type Database = {
           email?: string | null;
           full_name?: string | null;
           id: string;
+          loyalty_points?: number;
           phone?: string | null;
+          referral_code?: string | null;
+          referred_by?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -385,10 +436,56 @@ export type Database = {
           email?: string | null;
           full_name?: string | null;
           id?: string;
+          loyalty_points?: number;
           phone?: string | null;
+          referral_code?: string | null;
+          referred_by?: string | null;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey";
+            columns: ["referred_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      loyalty_ledger: {
+        Row: {
+          created_at: string;
+          delta: number;
+          id: string;
+          reason: string;
+          reference: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          delta: number;
+          id?: string;
+          reason: string;
+          reference?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          delta?: number;
+          id?: string;
+          reason?: string;
+          reference?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_ledger_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       reservation_attachments: {
         Row: {
@@ -480,6 +577,8 @@ export type Database = {
         Row: {
           created_at: string;
           customer_name: string;
+          delivery_address: string | null;
+          delivery_status: Database["public"]["Enums"]["delivery_status"];
           device: string;
           email: string | null;
           estimated_delivery: string | null;
@@ -502,6 +601,8 @@ export type Database = {
         Insert: {
           created_at?: string;
           customer_name: string;
+          delivery_address?: string | null;
+          delivery_status?: Database["public"]["Enums"]["delivery_status"];
           device: string;
           email?: string | null;
           id?: string;
@@ -523,6 +624,8 @@ export type Database = {
         Update: {
           created_at?: string;
           customer_name?: string;
+          delivery_address?: string | null;
+          delivery_status?: Database["public"]["Enums"]["delivery_status"];
           device?: string;
           email?: string | null;
           estimated_delivery?: string | null;
@@ -630,6 +733,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_loyalty_points: {
+        Args: {
+          _user_id: string;
+          _delta: number;
+          _reason: string;
+          _reference: string;
+        };
+        Returns: undefined;
+      };
       booked_hours: {
         Args: { _from: string; _to: string; _mode?: string };
         Returns: {
@@ -641,6 +753,10 @@ export type Database = {
       decrement_inventory: {
         Args: { _slug: string; _qty: number };
         Returns: boolean;
+      };
+      ensure_referral_code: {
+        Args: { _user_id: string; _code: string };
+        Returns: string | null;
       };
       get_reservation_status: {
         Args: { _reference: string };
@@ -675,6 +791,10 @@ export type Database = {
       is_staff: { Args: { _user_id: string }; Returns: boolean };
       next_reservation_reference: { Args: never; Returns: string };
       next_shop_reference: { Args: never; Returns: string };
+      set_delivery_status: {
+        Args: { _reservation_id: string; _status: string; _address: string };
+        Returns: boolean;
+      };
       set_user_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _user_id: string };
         Returns: boolean;
@@ -704,9 +824,15 @@ export type Database = {
         };
         Returns: boolean;
       };
+      update_payment_status: {
+        Args: { _reference: string; _status: string; _tx_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       app_role: "admin" | "staff" | "technicien" | "user";
+      delivery_status: "non_applicable" | "a_planifier" | "en_route" | "livre";
+      payment_status: "pending" | "paid" | "failed" | "refunded";
       reservation_status:
         | "en_attente"
         | "confirmee"

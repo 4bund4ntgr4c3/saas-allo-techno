@@ -1,6 +1,6 @@
 import { useForm, type UseFormRegister } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,6 +79,7 @@ function RadioChips({
 export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
   const { user } = useSession();
   const { t } = useI18n();
+  const websiteRef = useRef<HTMLInputElement>(null);
   const {
     register,
     setValue,
@@ -120,10 +121,28 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
   };
 
   return (
-    <form noValidate onSubmit={handleSubmit(onValid)} className="border border-border bg-card p-8">
+    <form
+      noValidate
+      onSubmit={handleSubmit((data) => {
+        // Honeypot rempli : bot détecté, on ignore la soumission sans erreur.
+        if (websiteRef.current?.value) return;
+        onValid(data);
+      })}
+      className="border border-border bg-card p-8"
+    >
       <span className="at-eyebrow mb-3 block">{t("wizard.contact.eyebrow")}</span>
       <h2 className="at-display text-2xl">{t("wizard.contact.title")}</h2>
       <p className="mt-3 text-sm text-muted-foreground">{t("wizard.contact.hint")}</p>
+
+      <input
+        ref={websiteRef}
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+      />
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         <div>

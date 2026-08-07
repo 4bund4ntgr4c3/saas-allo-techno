@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CalendarClock, FileDown } from "lucide-react";
+import { CalendarClock, Copy, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { downloadInvoicePdf } from "@/lib/invoice";
+import { applyReferralCode, ensureReferralCode } from "@/lib/loyalty.functions";
 import { useI18n } from "@/lib/i18n/context";
 import {
   PERIOD_LABEL,
@@ -66,7 +68,7 @@ function Dashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, full_name, phone, email")
+        .select("id, full_name, phone, email, loyalty_points, referral_code, referred_by")
         .eq("id", user.id)
         .maybeSingle();
       if (error) throw error;
@@ -109,13 +111,76 @@ function Dashboard() {
     onError: () => toast.error("Mise à jour impossible"),
   });
 
+  const ensureCodeFn = useServerFn(ensureReferralCode);
+  const applyCodeFn = useServerFn(applyReferralCode);
+
+  const [referralInput, setReferralInput] = useState("");
+
+  const generateCode = useMutation({
+    mutationFn: () => ensureCodeFn(),
+    onSuccess: () => {
+      toast.success("Code de parrainage généré");
+      queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
+    },
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Génération impossible";
+      toast.error(message);
+    },
+  });
+
+  const applyCode = useMutation({
+    mutationFn: () => applyCodeFn({ data: { code: referralInput } }),
+    onSuccess: (res) => {
+      toast.success(`Code appliqué : +${res.points} points`);
+      setReferralInput("");
+      queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
+    },
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Code de parrainage invalide.";
+      toast.error(message);
+    },
+  });
+
+  const copyReferralLink = async () => {
+    const code = profile.data?.referral_code;
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/reservation?ref=${code}`);
+      toast.success("Lien de parrainage copié");
+    } catch {
+      toast.error("Copie impossible");
+    }
+  };
+
   const cancel = useMutation({
     mutationFn: async (id: string) => {
+      const { data: row, error: fetchError } = await supabase
+        .from("reservations")
+        .select(
+          "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
+        )
+        .eq("id", id)
+        .maybeSingle();
+      if (fetchError) throw fetchError;
+      if (!row) throw new Error("Réservation introuvable");
+
       const { error } = await supabase
         .from("reservations")
         .update({ status: "annulee" })
         .eq("id", id);
       if (error) throw error;
+
+      // Notification best-effort : ne doit jamais bloquer l'annulation de la réservation.
+      try {
+        const { notifyReservationStatusChanged } = await import("@/lib/notifications");
+        void notifyReservationStatusChanged({
+          ...row,
+          tracking_code: null,
+          status: "annulee",
+        });
+      } catch (err) {
+        console.error("[mon-compte] notification d'annulation échouée", err);
+      }
     },
     onSuccess: () => {
       toast.success("Réservation annulée");
@@ -285,6 +350,76 @@ function Dashboard() {
           </div>
 
           <aside className="space-y-8">
+            <div className="border border-border bg-surface p-8">
+              <h2 className="at-display mb-6 text-xl">Programme fidélité</h2>
+              <div className="space-y-6">
+                <div>
+                  <p className="at-display text-5xl font-bold text-primary">
+                    {profile.data?.loyalty_points ?? 0}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">points</p>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Gagnez 100 points par réparation terminée. Parrainez un proche : +100 points, et
+                  il reçoit +50 points à son inscription.
+                </p>
+                {profile.data?.referral_code ? (
+                  <div>
+                    <p className="at-eyebrow mb-2 block">Mon code de parrainage</p>
+                    <div className="flex items-center gap-3">
+                      <code className="rounded-sm border border-border bg-card px-3 py-2 font-mono text-sm">
+                        {profile.data.referral_code}
+                      </code>
+                      <Button variant="outline" size="sm" onClick={copyReferralLink}>
+                        <Copy className="size-3.5" />
+                        Copier
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={generateCode.isPending}
+                    onClick={() => generateCode.mutate()}
+                  >
+                    Générer mon code de parrainage
+                  </Button>
+                )}
+                {profile.data?.referred_by ? (
+                  <p className="text-sm text-muted-foreground">Vous avez déjà été parrainé.</p>
+                ) : (
+                  <form
+                    className="space-y-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (referralInput.trim()) applyCode.mutate();
+                    }}
+                  >
+                    <div>
+                      <label htmlFor="p-ref" className="at-eyebrow mb-2 block">
+                        Utiliser un code de parrainage
+                      </label>
+                      <input
+                        id="p-ref"
+                        className={field}
+                        placeholder="ALLO-XXXX"
+                        value={referralInput}
+                        onChange={(e) => setReferralInput(e.target.value.toUpperCase())}
+                      />
+                    </div>
+                    <Button
+                      variant="primaryBlock"
+                      className="w-full"
+                      type="submit"
+                      disabled={applyCode.isPending || !referralInput.trim()}
+                    >
+                      Appliquer le code
+                    </Button>
+                  </form>
+                )}
+              </div>
+            </div>
             <div className="border border-border bg-surface p-8">
               <h2 className="at-display mb-6 text-xl">Mes informations</h2>
               <div className="space-y-5">

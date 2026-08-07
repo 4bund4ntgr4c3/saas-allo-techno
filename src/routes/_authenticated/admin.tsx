@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   BarChart3,
@@ -13,6 +13,7 @@ import {
   LayoutGrid,
   FileText,
   Pencil,
+  PieChart,
   Plus,
   RadioTower,
   ShieldAlert,
@@ -28,6 +29,7 @@ import { Stars } from "@/components/site/Blocks";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import { setReservationStatus } from "@/lib/admin.functions";
+import { setDeliveryStatus } from "@/lib/delivery.functions";
 import { confirmOtp, disableOtp, enrollOtp, verifyOtpLogin } from "@/lib/otp.functions";
 import {
   deleteBlogPost,
@@ -42,6 +44,10 @@ import {
   downloadReservationsCsv,
   downloadReservationsPdf,
 } from "@/lib/invoice";
+import { StatsDashboard } from "@/components/admin/StatsDashboard";
+import { useI18n } from "@/lib/i18n/context";
+import { exportLeadsCsv, exportReservationsCsv } from "@/lib/export.functions";
+import "@/lib/i18n/segments/admin";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -98,19 +104,38 @@ const STATUS_TONE: Record<string, string> = {
   annulee: "border-destructive/50 text-destructive",
 };
 
+const DELIVERY_STATUS_LABEL: Record<Enums<"delivery_status">, string> = {
+  non_applicable: "Non applicable",
+  a_planifier: "À planifier",
+  en_route: "En route",
+  livre: "Livré",
+};
+
 const field =
   "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+
+/** Déclenche le téléchargement d'une chaîne CSV via un Blob. */
+function downloadCsv(csv: string, filename: string) {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function AdminPage() {
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const [filter, setFilter] = useState<Status | "toutes">("toutes");
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [view, setView] = useState<"liste" | "kanban">("liste");
   const [tab, setTab] = useState<
-    "dossiers" | "equipe" | "leads" | "analytics" | "securite" | "contenu"
+    "dossiers" | "equipe" | "leads" | "analytics" | "securite" | "contenu" | "stats"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -233,7 +258,7 @@ function AdminPage() {
       const { data, error } = await supabase
         .from("reservations")
         .select(
-          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, staff_notes, created_at",
+          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at",
         )
         .order("slot_date", { ascending: false })
         .limit(200);
@@ -262,6 +287,27 @@ function AdminPage() {
         toast.error(message);
       }
     },
+  });
+
+  const setDeliveryStatusFn = useServerFn(setDeliveryStatus);
+  const updateDelivery = useMutation({
+    mutationFn: async ({
+      reservationId,
+      status,
+      address,
+    }: {
+      reservationId: string;
+      status: Enums<"delivery_status">;
+      address?: string;
+    }) => {
+      await setDeliveryStatusFn({ data: { reservationId, status, address } });
+    },
+    onSuccess: () => {
+      toast.success("Statut de livraison mis à jour");
+      queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
+    },
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
   });
 
   // Flux temps réel : toute modification faite par un autre technicien remonte immédiatement.
@@ -451,6 +497,14 @@ function AdminPage() {
           Analytics
         </Button>
         <Button
+          variant={tab === "stats" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("stats")}
+        >
+          <PieChart className="mr-2 size-4" />
+          {t("admin.stats.tab")}
+        </Button>
+        <Button
           variant={tab === "securite" ? "technical" : "outline"}
           size="sm"
           onClick={() => setTab("securite")}
@@ -533,6 +587,11 @@ function AdminPage() {
           ) : (
             <>
               <div className="mb-6 flex flex-wrap items-center gap-3">
+                <CsvExportButton
+                  serverFn={exportReservationsCsv}
+                  filenamePrefix="dossiers"
+                  label={t("admin.export.dossiers")}
+                />
                 <Button
                   variant="outline"
                   size="sm"
@@ -638,6 +697,14 @@ function AdminPage() {
                         </span>
                       </div>
 
+                      {r.mode === "domicile" && !isTechnicien && (
+                        <DeliveryBlock
+                          r={r}
+                          pending={updateDelivery.isPending}
+                          onUpdate={(v) => updateDelivery.mutate(v)}
+                        />
+                      )}
+
                       {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
                     </li>
                   ))}
@@ -653,12 +720,79 @@ function AdminPage() {
       {tab === "analytics" && <AnalyticsSection />}
       {tab === "securite" && <SecuritySection />}
       {tab === "contenu" && <ContentSection />}
+      {tab === "stats" && <StatsDashboard />}
     </div>
   );
 }
 
 function StatusHistory({ reservationId }: { reservationId: string }) {
   return <StatusHistoryList reservationId={reservationId} />;
+}
+
+function DeliveryBlock({
+  r,
+  pending,
+  onUpdate,
+}: {
+  r: { id: string; delivery_status: Enums<"delivery_status">; delivery_address: string | null };
+  pending: boolean;
+  onUpdate: (v: {
+    reservationId: string;
+    status: Enums<"delivery_status">;
+    address?: string;
+  }) => void;
+}) {
+  const [address, setAddress] = useState(r.delivery_address ?? "");
+  return (
+    <div className="mt-4 border-t border-border pt-4">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-muted-foreground">Livraison :</span>
+        <select
+          className={`${field} max-w-44 py-1.5 text-xs`}
+          value={r.delivery_status}
+          disabled={pending}
+          onChange={(e) =>
+            onUpdate({
+              reservationId: r.id,
+              status: e.target.value as Enums<"delivery_status">,
+              ...(r.delivery_address ? { address: r.delivery_address } : {}),
+            })
+          }
+        >
+          {Object.entries(DELIVERY_STATUS_LABEL).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
+      {r.delivery_address ? (
+        <p className="mt-1 text-xs text-muted-foreground">{r.delivery_address}</p>
+      ) : r.delivery_status === "a_planifier" ? (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <input
+            className={`${field} max-w-64 py-1.5 text-xs`}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Adresse d'enlèvement / livraison"
+          />
+          <Button
+            size="sm"
+            disabled={pending || !address.trim()}
+            onClick={() =>
+              onUpdate({
+                reservationId: r.id,
+                status: r.delivery_status,
+                ...(address.trim() ? { address: address.trim() } : {}),
+              })
+            }
+          >
+            Enregistrer l'adresse
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 type KanbanRow = {
@@ -888,8 +1022,48 @@ const LEAD_STATUS_LABEL: Record<string, string> = {
   clos: "Clôturé",
 };
 
+/** Bouton « Exporter CSV » : appelle une server function et télécharge le résultat. */
+function CsvExportButton({
+  serverFn,
+  filenamePrefix,
+  label,
+}: {
+  serverFn: typeof exportReservationsCsv;
+  filenamePrefix: string;
+  label: string;
+}) {
+  const { t } = useI18n();
+  const fn = useServerFn(serverFn);
+  const [pending, setPending] = useState(false);
+
+  const run = async () => {
+    setPending(true);
+    try {
+      const res = await fn();
+      const date = new Date().toISOString().slice(0, 10);
+      downloadCsv(res.csv, `${filenamePrefix}-${date}.csv`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("admin.export.error"));
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <Button variant="outline" size="sm" disabled={pending} onClick={run}>
+      {pending ? (
+        <Loader2 className="mr-2 size-4 animate-spin" />
+      ) : (
+        <FileDown className="mr-2 size-4" />
+      )}
+      {label}
+    </Button>
+  );
+}
+
 function LeadsSection() {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const leads = useQuery({
     queryKey: ["leads"],
@@ -938,6 +1112,13 @@ function LeadsSection() {
       <p className="mt-1 text-sm text-muted-foreground">
         Devis, contacts et demandes d'assistance reçus via le site.
       </p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <CsvExportButton
+          serverFn={exportLeadsCsv}
+          filenamePrefix="leads"
+          label={t("admin.export.leads")}
+        />
+      </div>
       <ul className="mt-6 space-y-3">
         {rows.map((l) => (
           <li key={l.id} className="border border-border bg-card p-4">
@@ -1801,8 +1982,11 @@ function ReviewsAdmin() {
   );
 }
 
+const LOW_STOCK_THRESHOLD = 5;
+
 function StockAdmin() {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const stockQuery = useQuery({
     queryKey: ["admin-stock"],
     queryFn: async () => {
@@ -1819,6 +2003,19 @@ function StockAdmin() {
   const setFn = useServerFn(setInventory);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingSlug, setSavingSlug] = useState<string | null>(null);
+
+  const lowItems = useMemo(() => {
+    const map = stockQuery.data;
+    if (!map) return [];
+    return ACCESSORIES.map((a) => {
+      const quantity = map.get(a.slug);
+      return quantity !== undefined && quantity < LOW_STOCK_THRESHOLD
+        ? { slug: a.slug, name: a.name, quantity }
+        : null;
+    })
+      .filter((x): x is { slug: string; name: string; quantity: number } => x !== null)
+      .sort((a, b) => a.quantity - b.quantity);
+  }, [stockQuery.data]);
 
   const save = async (a: { slug: string; stock: number }) => {
     const value = Number(drafts[a.slug] ?? a.stock);
@@ -1845,6 +2042,26 @@ function StockAdmin() {
 
   return (
     <div className="overflow-x-auto">
+      {lowItems.length > 0 && (
+        <div className="mb-4 rounded-sm border border-destructive/40 bg-destructive/5 p-4">
+          <p className="flex items-center gap-2 text-sm font-semibold text-destructive">
+            <ShieldAlert className="size-4" />
+            {t("admin.stock.low.title")}
+          </p>
+          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+            {lowItems.map((item) => (
+              <li key={item.slug}>
+                {item.name} —{" "}
+                <span className="font-mono text-destructive">
+                  {item.quantity === 1
+                    ? t("admin.stock.low.remaining.one", [item.quantity])
+                    : t("admin.stock.low.remaining.other", [item.quantity])}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
@@ -1860,8 +2077,12 @@ function StockAdmin() {
             const real = stockQuery.data?.get(a.slug);
             const tracked = real !== undefined;
             const draft = drafts[a.slug];
+            const low = tracked && real < LOW_STOCK_THRESHOLD;
             return (
-              <tr key={a.slug} className="border-b border-border">
+              <tr
+                key={a.slug}
+                className={`border-b border-border ${low ? "bg-destructive/5" : ""}`}
+              >
                 <td className="px-4 py-2 font-mono text-xs uppercase">{a.slug}</td>
                 <td className="px-4 py-2">{a.name}</td>
                 <td className="px-4 py-2 font-mono">{formatFcfa(a.price)}</td>
@@ -1870,7 +2091,7 @@ function StockAdmin() {
                     <input
                       type="number"
                       min={0}
-                      className={`${field} w-28 py-1.5 text-sm`}
+                      className={`${field} w-28 py-1.5 text-sm ${low ? "text-destructive" : ""}`}
                       value={draft ?? String(tracked ? (real as number) : a.stock)}
                       onChange={(e) => setDrafts((d) => ({ ...d, [a.slug]: e.target.value }))}
                     />
@@ -1878,6 +2099,12 @@ function StockAdmin() {
                       <span className="font-mono text-[10px] uppercase text-muted-foreground">
                         suivi
                       </span>
+                    )}
+                    {low && (
+                      <span
+                        className="size-2 shrink-0 rounded-full bg-destructive"
+                        title="Stock faible"
+                      />
                     )}
                   </div>
                 </td>

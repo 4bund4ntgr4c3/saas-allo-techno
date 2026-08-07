@@ -15,6 +15,8 @@ const leadSchema = z.object({
   email: z.string().trim().email("E-mail invalide").max(180).optional().or(z.literal("")),
   reference: z.string().trim().max(30).optional().or(z.literal("")),
   message: z.string().trim().min(3, "Décrivez votre demande").max(2000),
+  // Honeypot anti-spam : invisible pour les humains, rempli par les bots.
+  website: z.string().trim().max(120).optional().or(z.literal("")),
 });
 
 /** Enregistre un lead (devis / contact / assistance suivi) et alerte l'équipe. */
@@ -22,6 +24,11 @@ export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => leadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Honeypot rempli : bot détecté, on répond « succès » sans rien enregistrer.
+    if (data.website) {
+      return true;
+    }
 
     if (!rateLimit("lead-submit", 3)) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");

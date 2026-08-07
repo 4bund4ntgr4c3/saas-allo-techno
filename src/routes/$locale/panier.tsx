@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Loader2, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,26 @@ import { MobileMoneyBar } from "@/components/site/Blocks";
 import { DELIVERY_OPTIONS, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { submitShopOrder } from "@/lib/shop.functions";
+import { getOrderPaymentStatus, initiateFlutterwavePayment } from "@/lib/payments.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/panier";
 import type { Locale } from "@/lib/i18n/locales";
 
+const PAYMENTS = ["MTN MoMo", "Moov Money", "Celtiis", "Espèces à la remise"] as const;
+const ONLINE_PAYMENTS = ["MTN MoMo", "Moov Money", "Celtiis"];
+
+type PaymentState = "onPickup" | "redirect" | "paid" | "pending" | "failed" | null;
+
+type Order = { ref: string; total: number; delivery: string; payment: string; name: string };
+
 export const Route = createFileRoute("/$locale/panier")({
+  validateSearch: (search: Record<string, unknown>): { ref?: string; status?: string } => {
+    const ref = typeof search["ref"] === "string" ? search["ref"] : undefined;
+    const status = typeof search["status"] === "string" ? search["status"] : undefined;
+    return { ...(ref ? { ref } : {}), ...(status ? { status } : {}) };
+  },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     return {
@@ -33,25 +46,66 @@ export const Route = createFileRoute("/$locale/panier")({
   component: Panier,
 });
 
-const PAYMENTS = ["MTN MoMo", "Moov Money", "Celtiis", "Espèces à la remise"] as const;
-
-type Order = { ref: string; total: number; delivery: string; payment: string; name: string };
-
 function Panier() {
   const cart = useCart();
   const { locale, t } = useI18n();
+  const search = Route.useSearch();
   const placeOrder = useServerFn(submitShopOrder);
+  const initPayment = useServerFn(initiateFlutterwavePayment);
+  const checkPayment = useServerFn(getOrderPaymentStatus);
   const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", note: "" });
   const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
   const [order, setOrder] = useState<Order | null>(null);
+  const [paymentState, setPaymentState] = useState<PaymentState>(null);
+  const [payLink, setPayLink] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   const option = DELIVERY_OPTIONS.find((o) => o.id === delivery) ?? DELIVERY_OPTIONS[0];
   const freeShipping = cart.subtotal >= FREE_DELIVERY_FROM;
   const shipping = freeShipping ? 0 : option.fee;
   const total = cart.subtotal + shipping;
+
+  // Retour de la page de paiement Flutterwave (status=redirect) : on restaure
+  // la commande depuis sessionStorage et on interroge le statut du paiement.
+  const restoreFromSearch = useCallback(async () => {
+    if (!search.ref || search.status !== "redirect") return;
+    let stored: Order | null = null;
+    try {
+      const raw = sessionStorage.getItem("at-order");
+      if (raw) stored = JSON.parse(raw) as Order;
+    } catch {
+      stored = null;
+    }
+    if (!stored) return;
+    setOrder(stored);
+    setPaymentState("pending");
+
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      try {
+        const res = await checkPayment({ data: { reference: search.ref } });
+        if (res.status === "paid") {
+          setPaymentState("paid");
+          toast.success(t("panier.paid.title"));
+          return;
+        }
+        if (res.status === "failed") {
+          setPaymentState("failed");
+          return;
+        }
+      } catch {
+        // réseau : on réessaie
+      }
+      await new Promise((r) => setTimeout(r, 4000));
+    }
+    setPaymentState("pending");
+  }, [search.ref, search.status, checkPayment, t]);
+
+  useEffect(() => {
+    void restoreFromSearch();
+  }, [restoreFromSearch]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,8 +137,46 @@ function Panier() {
           })),
         },
       });
-      setOrder({ ref: reference, total, delivery: option.label, payment, name: form.name.trim() });
+
+      const newOrder: Order = {
+        ref: reference,
+        total,
+        delivery: option.label,
+        payment,
+        name: form.name.trim(),
+      };
+      setOrder(newOrder);
       cart.clear();
+
+      if (ONLINE_PAYMENTS.includes(payment)) {
+        setRedirecting(true);
+        try {
+          sessionStorage.setItem("at-order", JSON.stringify(newOrder));
+          const res = await initPayment({
+            data: {
+              reference,
+              amount: total,
+              customer: {
+                email: form.email,
+                name: form.name.trim(),
+                phone: form.phone.trim(),
+              },
+            },
+          });
+          if (res.available && res.link) {
+            setPayLink(res.link);
+            setPaymentState("redirect");
+            window.location.href = res.link;
+            return;
+          }
+        } catch {
+          // échec d'initiation : on garde la commande, paiement à la remise
+        }
+        setRedirecting(false);
+        setPaymentState("onPickup");
+      } else {
+        setPaymentState("onPickup");
+      }
       toast.success(t("panier.confirmed.toast", [reference]));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("panier.error.submit"));
@@ -98,11 +190,69 @@ function Panier() {
       <section className="py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="border border-border bg-card p-8">
-            <CheckCircle2 className="size-8 text-primary" />
-            <h1 className="at-display mt-6 text-3xl">{t("panier.confirmed.title")}</h1>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {t("panier.confirmed.text", [order.name, COMPANY.whatsapp])}
-            </p>
+            {paymentState === "redirect" ? (
+              <>
+                <Loader2 className="size-8 animate-spin text-primary" />
+                <h1 className="at-display mt-6 text-3xl">{t("panier.redirect.title")}</h1>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("panier.redirect.text", [order.ref])}
+                </p>
+                {payLink && (
+                  <Button
+                    asChild
+                    variant="technical"
+                    className="mt-8"
+                    onClick={() => {
+                      window.location.href = payLink;
+                    }}
+                  >
+                    <a href={payLink}>{t("panier.redirect.btn")}</a>
+                  </Button>
+                )}
+              </>
+            ) : paymentState === "paid" ? (
+              <>
+                <CheckCircle2 className="size-8 text-primary" />
+                <h1 className="at-display mt-6 text-3xl">{t("panier.paid.title")}</h1>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("panier.paid.text", [order.name, formatFcfa(order.total), order.ref])}
+                </p>
+              </>
+            ) : paymentState === "pending" ? (
+              <>
+                <Loader2 className="size-8 animate-spin text-primary" />
+                <h1 className="at-display mt-6 text-3xl">{t("panier.pending.title")}</h1>
+                <p className="mt-3 text-sm text-muted-foreground">{t("panier.pending.text")}</p>
+                <Button
+                  variant="technical"
+                  className="mt-8"
+                  onClick={() => {
+                    void restoreFromSearch();
+                  }}
+                >
+                  {t("panier.pending.retry")}
+                </Button>
+              </>
+            ) : paymentState === "failed" ? (
+              <>
+                <CheckCircle2 className="size-8 text-primary" />
+                <h1 className="at-display mt-6 text-3xl">{t("panier.failed.title")}</h1>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("panier.failed.text", [order.ref, COMPANY.whatsapp])}
+                </p>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="size-8 text-primary" />
+                <h1 className="at-display mt-6 text-3xl">{t("panier.confirmed.title")}</h1>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("panier.confirmed.text", [order.name, COMPANY.whatsapp])}
+                </p>
+                {paymentState === "onPickup" && (
+                  <p className="mt-2 text-sm text-muted-foreground">{t("panier.pay.onPickup")}</p>
+                )}
+              </>
+            )}
             <dl className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
               <div className="bg-surface p-4">
                 <dt className="at-eyebrow">{t("panier.confirmed.orderRef")}</dt>
@@ -350,10 +500,10 @@ function Panier() {
                   className="mt-6 w-full"
                   disabled={submitting}
                 >
-                  {submitting ? (
+                  {submitting || redirecting ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      {t("panier.saving")}
+                      {redirecting ? t("panier.redirecting") : t("panier.saving")}
                     </>
                   ) : (
                     <>{t("panier.submit", [formatFcfa(total)])}</>
