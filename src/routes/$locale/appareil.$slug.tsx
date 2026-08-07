@@ -10,6 +10,11 @@ import {
   type Device,
 } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/appareil";
+import type { Locale } from "@/lib/i18n/locales";
 import {
   Accordion,
   AccordionContent,
@@ -17,7 +22,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export const Route = createFileRoute("/appareil/$slug")({
+export const Route = createFileRoute("/$locale/appareil/$slug")({
   loader: ({ params }): { device: Device; siblings: Device[] } => {
     const device = deviceBySlug(params.slug);
     if (!device) throw notFound();
@@ -27,30 +32,36 @@ export const Route = createFileRoute("/appareil/$slug")({
     };
   },
   head: ({ params, loaderData }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     if (!loaderData) {
       return {
         meta: [
-          { title: "Appareil introuvable — Allô Techno" },
+          { title: translate(locale, "appareil.meta.notfound.title") },
           { name: "robots", content: "noindex" },
         ],
       };
     }
     const d = loaderData.device;
     const min = Math.min(...d.faults.map((f) => f.price));
+    const faults = d.faults
+      .slice(0, 3)
+      .map((f) => translate(locale, f.label).toLowerCase())
+      .join(", ");
     return {
       meta: [
-        { title: `Réparation ${d.name} — tarifs & délais | Allô Techno` },
+        { title: translate(locale, "appareil.meta.title", [d.name]) },
         {
           name: "description",
-          content: `Réparation ${d.name} à Abomey-Calavi : ${d.faults
-            .slice(0, 3)
-            .map((f) => f.label.toLowerCase())
-            .join(", ")}. À partir de ${formatFcfa(min)}, garantie incluse.`,
+          content: translate(locale, "appareil.meta.description", [
+            d.name,
+            faults,
+            formatFcfa(min),
+          ]),
         },
-        { property: "og:title", content: `Réparation ${d.name} — Allô Techno` },
+        { property: "og:title", content: translate(locale, "appareil.meta.og.title", [d.name]) },
         {
           property: "og:description",
-          content: `${d.faults.length} pannes prises en charge, pièces certifiées, garantie jusqu'à 12 mois.`,
+          content: translate(locale, "appareil.meta.og.description", [d.faults.length]),
         },
         { property: "og:type", content: "product" },
         { property: "og:url", content: `/appareil/${params.slug}` },
@@ -62,12 +73,12 @@ export const Route = createFileRoute("/appareil/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Service",
-            serviceType: `Réparation ${d.name}`,
+            serviceType: translate(locale, "appareil.serviceType", [d.name]),
             provider: { "@type": "LocalBusiness", name: "Allô Techno" },
             areaServed: "Abomey-Calavi, Bénin",
             offers: d.faults.map((f) => ({
               "@type": "Offer",
-              name: f.label,
+              name: translate(locale, f.label),
               price: f.price,
               priceCurrency: "XOF",
             })),
@@ -82,19 +93,20 @@ export const Route = createFileRoute("/appareil/$slug")({
 function DevicePage() {
   const { device, siblings } = Route.useLoaderData() as { device: Device; siblings: Device[] };
   const min = Math.min(...device.faults.map((f) => f.price));
+  const { locale, t } = useI18n();
 
   return (
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <nav className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <Link to="/reparations" className="hover:text-primary">
-              Réparations
+            <Link to="/$locale/reparations" params={{ locale }} className="hover:text-primary">
+              {t("appareil.breadcrumb.reparations")}
             </Link>{" "}
             /{" "}
             <Link
-              to="/reparations/$brand"
-              params={{ brand: device.brand }}
+              to="/$locale/reparations/$brand"
+              params={{ locale, brand: device.brand }}
               className="hover:text-primary"
             >
               {brandName(device.brand)}
@@ -105,22 +117,28 @@ function DevicePage() {
             <div>
               <h1 className="at-display text-4xl md:text-6xl">{device.name}</h1>
               <p className="mt-4 font-mono text-xs uppercase text-muted-foreground">
-                {brandName(device.brand)} · {device.category} · {device.year}
+                {brandName(device.brand)} · {t(device.category)} · {device.year}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild variant="technical" size="lg">
-                <Link to="/reservation" search={{ device: device.slug }}>
-                  Réserver cette réparation
+                <Link
+                  to="/$locale/reservation"
+                  params={{ locale }}
+                  search={{ device: device.slug }}
+                >
+                  {t("appareil.reserve")}
                 </Link>
               </Button>
               <Button asChild variant="technicalOutline" size="lg">
-                <Link to="/devis">Devis instantané</Link>
+                <Link to="/$locale/devis" params={{ locale }}>
+                  {t("appareil.quote")}
+                </Link>
               </Button>
             </div>
           </div>
           <p className="mt-8 font-mono text-sm">
-            Interventions à partir de <span className="text-primary">{formatFcfa(min)}</span>
+            {t("appareil.from")} <span className="text-primary">{formatFcfa(min)}</span>
           </p>
         </div>
       </section>
@@ -129,32 +147,32 @@ function DevicePage() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
-            eyebrow="Pannes disponibles"
-            title="Tarifs, délais, garanties & pièces"
-            text="Prix indicatifs incluant la pièce et la main-d'œuvre. Devis ferme après diagnostic gratuit."
+            eyebrow={t("appareil.faults.eyebrow")}
+            title={t("appareil.faults.title")}
+            text={t("appareil.faults.text")}
           />
           <div className="overflow-hidden border border-border">
             <div className="hidden grid-cols-12 gap-4 border-b border-border bg-surface p-4 md:grid">
-              <span className="at-eyebrow col-span-5">Intervention</span>
-              <span className="at-eyebrow col-span-2">Délai</span>
-              <span className="at-eyebrow col-span-2">Garantie</span>
-              <span className="at-eyebrow col-span-2">Pièce</span>
-              <span className="at-eyebrow col-span-1 text-right">Prix</span>
+              <span className="at-eyebrow col-span-5">{t("appareil.col.intervention")}</span>
+              <span className="at-eyebrow col-span-2">{t("appareil.col.delay")}</span>
+              <span className="at-eyebrow col-span-2">{t("appareil.col.warranty")}</span>
+              <span className="at-eyebrow col-span-2">{t("appareil.col.part")}</span>
+              <span className="at-eyebrow col-span-1 text-right">{t("appareil.col.price")}</span>
             </div>
             {device.faults.map((f) => (
               <div
                 key={f.slug}
                 className="grid gap-2 border-b border-border p-5 transition-colors last:border-0 hover:bg-surface md:grid-cols-12 md:gap-4"
               >
-                <span className="font-bold md:col-span-5">{f.label}</span>
+                <span className="font-bold md:col-span-5">{t(f.label)}</span>
                 <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground md:col-span-2">
-                  <Clock className="size-3.5" /> {f.duration}
+                  <Clock className="size-3.5" /> {t(f.duration)}
                 </span>
                 <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground md:col-span-2">
-                  <ShieldCheck className="size-3.5" /> {f.warranty}
+                  <ShieldCheck className="size-3.5" /> {t(f.warranty)}
                 </span>
                 <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase text-muted-foreground md:col-span-2">
-                  <Package className="size-3.5 shrink-0" /> {f.part}
+                  <Package className="size-3.5 shrink-0" /> {t(f.part)}
                 </span>
                 <span className="font-mono text-sm font-medium text-primary md:col-span-1 md:text-right">
                   {formatFcfa(f.price)}
@@ -164,13 +182,10 @@ function DevicePage() {
           </div>
 
           <ul className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              "Diagnostic gratuit avant toute intervention",
-              "Facture PDF et garantie remises à la restitution",
-              "Paiement MTN MoMo, Moov Money, Celtiis ou espèces",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <Check className="mt-0.5 size-4 shrink-0 text-success" /> {t}
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Check className="mt-0.5 size-4 shrink-0 text-success" />{" "}
+                {t(`appareil.points.${["one", "two", "three"][i]}`)}
               </li>
             ))}
           </ul>
@@ -180,35 +195,26 @@ function DevicePage() {
       {/* FAQ appareil */}
       <section className="border-t border-border bg-surface py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <SectionHeader eyebrow="Questions fréquentes" title={`${device.name} — vos questions`} />
+          <SectionHeader
+            eyebrow={t("appareil.faq.eyebrow")}
+            title={t("appareil.faq.title", [device.name])}
+          />
           <Accordion type="single" collapsible className="border border-border bg-card">
             <AccordionItem value="1" className="px-6">
-              <AccordionTrigger>Mes données sont-elles conservées ?</AccordionTrigger>
-              <AccordionContent>
-                Un remplacement d'écran, de batterie ou de connecteur ne touche pas vos données.
-                Pour les interventions sur carte mère, une sauvegarde préalable est recommandée.
-              </AccordionContent>
+              <AccordionTrigger>{t("appareil.faq.q1")}</AccordionTrigger>
+              <AccordionContent>{t("appareil.faq.a1")}</AccordionContent>
             </AccordionItem>
             <AccordionItem value="2" className="px-6">
-              <AccordionTrigger>Quelles pièces utilisez-vous sur ce modèle ?</AccordionTrigger>
-              <AccordionContent>
-                La catégorie exacte est indiquée dans la colonne « Pièce » ci-dessus et rappelée sur
-                votre devis : service pack, grade A+ ou compatible selon la disponibilité.
-              </AccordionContent>
+              <AccordionTrigger>{t("appareil.faq.q2")}</AccordionTrigger>
+              <AccordionContent>{t("appareil.faq.a2")}</AccordionContent>
             </AccordionItem>
             <AccordionItem value="3" className="px-6">
-              <AccordionTrigger>Puis-je attendre sur place ?</AccordionTrigger>
-              <AccordionContent>
-                Oui pour les interventions de moins d'une heure. Un espace d'attente est disponible
-                à l'atelier d'Abomey-Calavi.
-              </AccordionContent>
+              <AccordionTrigger>{t("appareil.faq.q3")}</AccordionTrigger>
+              <AccordionContent>{t("appareil.faq.a3")}</AccordionContent>
             </AccordionItem>
             <AccordionItem value="4" className="px-6">
-              <AccordionTrigger>Que couvre la garantie ?</AccordionTrigger>
-              <AccordionContent>
-                Les défauts de pièce et de main-d'œuvre. Les chutes, l'oxydation et les
-                interventions par un tiers ne sont pas couvertes.
-              </AccordionContent>
+              <AccordionTrigger>{t("appareil.faq.q4")}</AccordionTrigger>
+              <AccordionContent>{t("appareil.faq.a4")}</AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
@@ -218,20 +224,23 @@ function DevicePage() {
         <section className="py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <SectionHeader
-              eyebrow="Même marque"
-              title={`Autres modèles ${brandName(device.brand)}`}
+              eyebrow={t("appareil.siblings.eyebrow")}
+              title={t("appareil.siblings.title", [brandName(device.brand)])}
             />
             <div className="grid gap-px border border-border bg-border md:grid-cols-3">
               {siblings.map((d) => (
                 <Link
                   key={d.slug}
-                  to="/appareil/$slug"
-                  params={{ slug: d.slug }}
+                  to="/$locale/appareil/$slug"
+                  params={{ locale, slug: d.slug }}
                   className="bg-card p-6 transition-colors hover:bg-surface"
                 >
                   <span className="font-bold">{d.name}</span>
                   <span className="mt-2 block font-mono text-[10px] uppercase text-muted-foreground">
-                    {d.category} · dès {formatFcfa(Math.min(...d.faults.map((x) => x.price)))}
+                    {t(d.category)} ·{" "}
+                    {t("appareil.siblings.from", [
+                      formatFcfa(Math.min(...d.faults.map((x) => x.price))),
+                    ])}
                   </span>
                 </Link>
               ))}

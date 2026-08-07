@@ -4,8 +4,12 @@ import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
 import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, devicesOfBrand } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/reparations";
 
-export const Route = createFileRoute("/reparations/")({
+export const Route = createFileRoute("/$locale/reparations/")({
   validateSearch: (
     s: Record<string, unknown>,
   ): {
@@ -38,41 +42,40 @@ export const Route = createFileRoute("/reparations/")({
     if (typeof heure === "string") result.heure = heure;
     return result;
   },
-  head: () => ({
-    meta: [
-      { title: "Réparations par marque & appareil — Allô Techno" },
-      {
-        name: "description",
-        content:
-          "Apple, Samsung, Xiaomi, Tecno, Infinix, Huawei, Pixel, Sony… Choisissez votre marque et découvrez les pannes prises en charge, tarifs et délais.",
-      },
-      { property: "og:title", content: "Réparations par marque — Allô Techno" },
-      {
-        property: "og:description",
-        content: "Toutes les marques et tous les types d'appareils réparés à Abomey-Calavi.",
-      },
-      { property: "og:url", content: "/reparations" },
-    ],
-    links: [{ rel: "canonical", href: absoluteUrl("/reparations") }],
-  }),
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale);
+    return {
+      meta: [
+        { title: translate(locale, "reparations.meta.title") },
+        {
+          name: "description",
+          content: translate(locale, "reparations.meta.description"),
+        },
+        { property: "og:title", content: translate(locale, "reparations.meta.ogTitle") },
+        {
+          property: "og:description",
+          content: translate(locale, "reparations.meta.ogDescription"),
+        },
+        { property: "og:url", content: "/reparations" },
+      ],
+      links: [{ rel: "canonical", href: absoluteUrl("/reparations") }],
+    };
+  },
   component: Reparations,
 });
 
 function Reparations() {
   const { categorie, device, panne, date, heure } = Route.useSearch();
+  const { locale, t } = useI18n();
   return (
     <>
       <section className="border-b border-border py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="max-w-3xl">
-            <span className="at-eyebrow mb-4 block">Prendre rendez-vous</span>
-            <h1 className="at-display text-4xl md:text-5xl">
-              Réparation en 5 étapes. Créneau et devis avant intervention.
-            </h1>
+            <span className="at-eyebrow mb-4 block">{t("reparations.index.eyebrow")}</span>
+            <h1 className="at-display text-4xl md:text-5xl">{t("reparations.index.title")}</h1>
             <p className="mt-6 max-w-xl text-muted-foreground">
-              Dites-nous quel appareil est en panne : nous affichons immédiatement les tarifs, le
-              délai et les créneaux disponibles à Abomey-Calavi. {DEVICES.length} modèles
-              référencés, {BRANDS.length} marques prises en charge.
+              {t("reparations.index.hero", [DEVICES.length, BRANDS.length])}
             </p>
           </div>
           <div className="mt-10">
@@ -86,10 +89,26 @@ function Reparations() {
           </div>
           <ul className="mt-10 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: Clock, t: "Réparation express", d: "La plupart des pannes en moins de 2 h" },
-              { icon: ShieldCheck, t: "Garantie 6 mois", d: "Pièces et main-d'œuvre incluses" },
-              { icon: Wallet, t: "Prix affiché", d: "Aucun frais surprise, diagnostic gratuit" },
-              { icon: BadgeCheck, t: "Techniciens certifiés", d: "Pièces d'origine ou premium" },
+              {
+                icon: Clock,
+                t: t("reparations.index.featureExpress.t"),
+                d: t("reparations.index.featureExpress.d"),
+              },
+              {
+                icon: ShieldCheck,
+                t: t("reparations.index.featureGarantee.t"),
+                d: t("reparations.index.featureGarantee.d"),
+              },
+              {
+                icon: Wallet,
+                t: t("reparations.index.featurePrice.t"),
+                d: t("reparations.index.featurePrice.d"),
+              },
+              {
+                icon: BadgeCheck,
+                t: t("reparations.index.featureCertified.t"),
+                d: t("reparations.index.featureCertified.d"),
+              },
             ].map((f) => (
               <li key={f.t} className="flex gap-3 bg-card p-4">
                 <f.icon className="mt-0.5 size-5 shrink-0 text-primary" strokeWidth={1.5} />
@@ -104,10 +123,10 @@ function Reparations() {
             {[
               {
                 icon: Store,
-                t: "En boutique",
-                d: "Zogbadjè, Abomey-Calavi — sans rendez-vous possible",
+                t: t("reparations.index.store.t"),
+                d: t("reparations.index.store.d"),
               },
-              { icon: Home, t: "À domicile", d: "Un technicien se déplace sur Cotonou & Calavi" },
+              { icon: Home, t: t("reparations.index.home.t"), d: t("reparations.index.home.d") },
             ].map((m) => (
               <div key={m.t} className="bg-card p-5">
                 <m.icon className="size-6 text-primary" strokeWidth={1.5} />
@@ -122,14 +141,15 @@ function Reparations() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
-            eyebrow="Marques"
-            title="Toutes les marques"
+            eyebrow={t("reparations.index.brandsEyebrow")}
+            title={t("reparations.index.brandsTitle")}
             right={
               <Link
-                to="/catalogue"
+                to="/$locale/catalogue"
+                params={{ locale }}
                 className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/80"
               >
-                Voir tout le catalogue →
+                {t("reparations.index.brandsLink")}
               </Link>
             }
           />
@@ -137,16 +157,16 @@ function Reparations() {
             {BRANDS.map((b) => (
               <Link
                 key={b.slug}
-                to="/reparations/$brand"
-                params={{ brand: b.slug }}
+                to="/$locale/reparations/$brand"
+                params={{ locale, brand: b.slug }}
                 className="group bg-card p-8 transition-colors hover:bg-surface"
               >
                 <h2 className="text-xl font-extrabold uppercase tracking-tight">{b.name}</h2>
                 <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">
-                  {b.tag}
+                  {t(b.tag)}
                 </p>
                 <p className="mt-6 font-mono text-xs text-primary">
-                  {devicesOfBrand(b.slug).length} modèle(s) référencé(s) →
+                  {t("reparations.index.brandCount", [devicesOfBrand(b.slug).length])}
                 </p>
               </Link>
             ))}
@@ -157,9 +177,9 @@ function Reparations() {
       <section className="border-t border-border bg-surface py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
-            eyebrow="Familles d'appareils"
-            title="Par type d'appareil"
-            text="Du smartphone d'entrée de gamme à l'iMac, en passant par les consoles et les montres connectées."
+            eyebrow={t("reparations.index.categoriesEyebrow")}
+            title={t("reparations.index.categoriesTitle")}
+            text={t("reparations.index.categoriesText")}
           />
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {CATEGORIES.map((c) => {
@@ -169,14 +189,14 @@ function Reparations() {
                 <div key={c} className="bg-card p-8">
                   <h3 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide">
                     {Icon && <Icon className="size-5 text-primary" strokeWidth={1.5} />}
-                    {c}
+                    {t(c)}
                   </h3>
                   <ul className="mt-4 space-y-2">
                     {list.map((d) => (
                       <li key={d.slug}>
                         <Link
-                          to="/appareil/$slug"
-                          params={{ slug: d.slug }}
+                          to="/$locale/appareil/$slug"
+                          params={{ locale, slug: d.slug }}
                           className="text-sm text-muted-foreground hover:text-primary"
                         >
                           {d.name}
@@ -184,7 +204,9 @@ function Reparations() {
                       </li>
                     ))}
                     {list.length === 0 && (
-                      <li className="text-sm text-muted-foreground">Sur devis</li>
+                      <li className="text-sm text-muted-foreground">
+                        {t("reparations.index.quote")}
+                      </li>
                     )}
                   </ul>
                 </div>

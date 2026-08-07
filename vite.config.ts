@@ -66,7 +66,7 @@ export default defineConfig(async ({ mode }) => {
       }),
       tailwindcss(),
       tsConfigPaths({ projects: ["./tsconfig.json"] }),
-      nitro({ defaultPreset: "cloudflare-module" }),
+      nitro({ defaultPreset: "cloudflare-module", compatibilityDate: "2026-08-01" }),
       viteReact(),
     ],
   };

@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/shop/cart";
 import { useSession } from "@/hooks/useSession";
 import { openSearch } from "@/lib/search-events";
+import { useI18n } from "@/lib/i18n/context";
+import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 
 const NAV = [
-  { to: "/reparations", label: "Réparations" },
-  { to: "/catalogue", label: "Catalogue" },
-  { to: "/tarifs", label: "Tarifs" },
-  { to: "/boutique", label: "Boutique" },
-  { to: "/suivi", label: "Suivi" },
-  { to: "/entreprises", label: "Entreprises" },
-  { to: "/blog", label: "Blog" },
+  { to: "/$locale/reparations", label: "nav.reparations" },
+  { to: "/$locale/catalogue", label: "nav.catalogue" },
+  { to: "/$locale/tarifs", label: "nav.tarifs" },
+  { to: "/$locale/boutique", label: "nav.boutique" },
+  { to: "/$locale/suivi", label: "nav.suivi" },
+  { to: "/$locale/entreprises", label: "nav.entreprises" },
+  { to: "/$locale/blog", label: "nav.blog" },
 ] as const;
 
 function ThemeToggle() {
@@ -50,9 +52,11 @@ function ThemeToggle() {
 
 function CartButton() {
   const { count } = useCart();
+  const { locale } = useI18n();
   return (
     <Link
-      to="/panier"
+      to="/$locale/panier"
+      params={{ locale }}
       aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
       className="relative grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
@@ -68,6 +72,7 @@ function CartButton() {
 
 export function Header() {
   const { user } = useSession();
+  const { t, locale } = useI18n();
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -76,23 +81,25 @@ export function Header() {
             Allô Techno
           </Link>
           <nav
-            aria-label="Navigation principale"
+            aria-label={t("header.desktop-nav")}
             className="hidden gap-6 text-sm font-medium text-muted-foreground lg:flex"
           >
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
+                params={{ locale }}
                 className="transition-colors hover:text-foreground"
                 activeProps={{ className: "text-foreground" }}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <div className="hidden flex-col items-end sm:flex">
             <span className="at-eyebrow">{COMPANY.city}</span>
             <a
@@ -104,7 +111,7 @@ export function Header() {
           </div>
           <button
             onClick={openSearch}
-            aria-label="Rechercher sur le site (Ctrl+K)"
+            aria-label={t("header.search")}
             className="grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
           >
             <Search className="size-4" />
@@ -112,34 +119,41 @@ export function Header() {
           <CartButton />
           <ThemeToggle />
           <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
-            <Link to={user ? "/mon-compte" : "/auth"}>{user ? "Mon compte" : "Connexion"}</Link>
+            <Link to={user ? "/mon-compte" : "/auth"}>
+              {user ? t("nav.mon-compte") : t("nav.connexion")}
+            </Link>
           </Button>
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
-            <Link to="/reservation">Réserver</Link>
+            <Link to="/$locale/reservation" params={{ locale }}>
+              {t("nav.reservation")}
+            </Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
               <button
-                aria-label="Ouvrir le menu"
+                aria-label={t("header.open-menu")}
                 className="grid size-11 place-items-center rounded-sm border border-border lg:hidden"
               >
                 <Menu className="size-4" />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
-              <SheetTitle className="at-display text-lg">Menu</SheetTitle>
-              <nav className="mt-6 flex flex-col gap-1" aria-label="Navigation mobile">
+              <SheetTitle className="at-display text-lg">{t("header.menu")}</SheetTitle>
+              <nav className="mt-6 flex flex-col gap-1" aria-label={t("header.mobile-nav")}>
                 {[
                   ...NAV,
-                  { to: "/panier", label: "Panier" },
-                  { to: "/reservation", label: "Réserver" },
-                  { to: user ? "/mon-compte" : "/auth", label: user ? "Mon compte" : "Connexion" },
-                  { to: "/devis", label: "Devis instantané" },
-                  { to: "/garantie", label: "Garantie" },
-                  { to: "/reprise", label: "Reprise" },
-                  { to: "/avis", label: "Avis clients" },
-                  { to: "/faq", label: "FAQ" },
-                  { to: "/contact", label: "Contact" },
+                  { to: "/panier", label: t("nav.panier") },
+                  { to: "/reservation", label: t("nav.reservation") },
+                  {
+                    to: user ? "/mon-compte" : "/auth",
+                    label: user ? t("nav.mon-compte") : t("nav.connexion"),
+                  },
+                  { to: "/devis", label: t("nav.devis") },
+                  { to: "/garantie", label: t("nav.garantie") },
+                  { to: "/reprise", label: t("nav.reprise") },
+                  { to: "/avis", label: t("nav.avis") },
+                  { to: "/faq", label: t("nav.faq") },
+                  { to: "/contact", label: t("nav.contact") },
                 ].map((i) => (
                   <Link
                     key={i.to}

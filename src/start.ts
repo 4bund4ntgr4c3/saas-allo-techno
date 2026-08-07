@@ -1,7 +1,27 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 
 import { renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+import { buildContentSecurityPolicy } from "./lib/security-headers";
+
+function generateNonce(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes))
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replace(/=+$/, "");
+}
+
+// Génère un nonce unique par requête, le diffuse au reste de la requête via le
+// contexte (le router le lit dans src/router.tsx pour taguer les scripts), et
+// pose la CSP stricte correspondante sur la réponse.
+const cspMiddleware = createMiddleware().server(async ({ next }) => {
+  const nonce = generateNonce();
+  setResponseHeader("content-security-policy", buildContentSecurityPolicy(nonce));
+  return next({ context: { nonce } });
+});
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -27,5 +47,5 @@ const csrfMiddleware = createCsrfMiddleware({
 
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [errorMiddleware, csrfMiddleware],
+  requestMiddleware: [errorMiddleware, cspMiddleware, csrfMiddleware],
 }));

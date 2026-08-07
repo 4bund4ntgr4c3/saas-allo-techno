@@ -1,5 +1,6 @@
 import { ClipboardCheck, Cpu, ShieldCheck, Wrench } from "lucide-react";
 import { formatFcfa } from "@/data/catalog";
+import { useI18n } from "@/lib/i18n/context";
 import type { Estimate } from "@/lib/estimate";
 
 const LINE_ICON: Record<string, typeof Cpu> = {
@@ -25,6 +26,7 @@ export function EstimateBreakdown({
   title = "Devis en direct",
   subtitle = "Mis à jour instantanément",
 }: Props) {
+  const { t } = useI18n();
   const total = estimate.total;
 
   return (
@@ -44,7 +46,7 @@ export function EstimateBreakdown({
               <span className="flex items-start gap-2.5">
                 <Icon className="mt-0.5 size-4 shrink-0 text-primary" strokeWidth={1.5} />
                 <span>
-                  <span className="block text-sm font-semibold">{line.label}</span>
+                  <span className="block text-sm font-semibold">{t(line.label)}</span>
                   <span className="block font-mono text-[10px] uppercase text-muted-foreground">
                     {line.detail}
                   </span>

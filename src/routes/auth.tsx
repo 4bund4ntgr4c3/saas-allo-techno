@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { absoluteUrl } from "@/data/catalog";
+import { useI18n } from "@/lib/i18n/context";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -34,6 +35,7 @@ const field =
 function AuthPage() {
   const navigate = useNavigate();
   const router = useRouter();
+  const { locale } = useI18n();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -212,7 +214,7 @@ function AuthPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Vous pouvez aussi{" "}
-          <Link to="/reservation" className="text-primary underline">
+          <Link to="/$locale/reservation" params={{ locale }} className="text-primary underline">
             réserver sans compte
           </Link>
           .

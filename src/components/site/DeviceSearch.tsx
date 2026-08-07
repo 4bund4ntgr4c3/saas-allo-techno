@@ -32,6 +32,7 @@ import { QrCode } from "@/components/site/QrCode";
 import { ReservationSummary } from "@/components/site/ReservationSummary";
 import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
+import { useI18n } from "@/lib/i18n/context";
 import { createReservation } from "@/lib/reservations.functions";
 import { getDevicePhotoUpload } from "@/lib/photos.functions";
 import { trackWizardEvent } from "@/lib/analytics";
@@ -141,6 +142,7 @@ export function DeviceSearch({
   initialDate?: string | null;
   initialHeure?: string | null;
 }) {
+  const { locale, t } = useI18n();
   const submit = useServerFn(createReservation);
   const getPhotoUpload = useServerFn(getDevicePhotoUpload);
   const [step, setStep] = useState(initialCategory ? 1 : 0);
@@ -528,7 +530,7 @@ export function DeviceSearch({
                 >
                   <span className="font-bold">{s.name}</span>
                   <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                    {brandName(s.brand)} · {s.category}
+                    {brandName(s.brand)} · {t(s.category)}
                   </span>
                 </button>
               </li>
@@ -563,7 +565,7 @@ export function DeviceSearch({
                   }`}
                 >
                   <span>0{i + 1}</span>
-                  {label}
+                  {t(label)}
                   {done && <Check className="size-3" />}
                 </button>
               </li>
@@ -607,7 +609,7 @@ export function DeviceSearch({
             ref={stepContentRef}
             tabIndex={-1}
             role="region"
-            aria-label={STEPS[step]}
+            aria-label={t(STEPS[step] ?? "")}
             className="focus:outline-none"
           >
             {step > 0 && (
@@ -641,7 +643,7 @@ export function DeviceSearch({
             {/* 02 — Marque */}
             {step === 1 && (
               <>
-                <span className="at-eyebrow mb-3 block">02. Marque · {category}</span>
+                <span className="at-eyebrow mb-3 block">02. Marque · {t(category ?? "")}</span>
                 <div className="flex flex-wrap gap-2">
                   {brandsOfCategory.map((b) => (
                     <button
@@ -663,7 +665,7 @@ export function DeviceSearch({
                 </div>
                 <p className="mt-6 text-xs text-muted-foreground">
                   Marque absente ?{" "}
-                  <Link to="/devis" className="text-primary underline">
+                  <Link to="/$locale/devis" params={{ locale }} className="text-primary underline">
                     Demander un devis
                   </Link>
                 </p>
@@ -702,7 +704,11 @@ export function DeviceSearch({
                   {seriesOfBrand.length === 0 && (
                     <p className="text-xs text-muted-foreground">
                       Modèles sur demande —{" "}
-                      <Link to="/devis" className="text-primary underline">
+                      <Link
+                        to="/$locale/devis"
+                        params={{ locale }}
+                        className="text-primary underline"
+                      >
                         demander un devis
                       </Link>
                     </p>
@@ -771,7 +777,7 @@ export function DeviceSearch({
                         <span>
                           <span className="block text-sm font-bold tracking-tight">{d.name}</span>
                           <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                            {d.year} · {d.faults.length} pannes
+                            {d.year} · {d.faults.length} {t("pannes")}
                           </span>
                         </span>
                       </button>
@@ -780,7 +786,11 @@ export function DeviceSearch({
                   {models.length === 0 && (
                     <p className="text-xs text-muted-foreground">
                       Modèles sur demande —{" "}
-                      <Link to="/devis" className="text-primary underline">
+                      <Link
+                        to="/$locale/devis"
+                        params={{ locale }}
+                        className="text-primary underline"
+                      >
                         demander un devis
                       </Link>
                     </p>
@@ -821,7 +831,7 @@ export function DeviceSearch({
                           >
                             {on && <Check className="size-3" />}
                           </span>
-                          {flt.label}
+                          {t(flt.label)}
                         </span>
                         <span className="font-mono text-xs text-primary">
                           {formatFcfa(flt.price)}
@@ -852,7 +862,7 @@ export function DeviceSearch({
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Button asChild variant="technical" size="sm">
-                      <Link to="/appareil/$slug" params={{ slug: device.slug }}>
+                      <Link to="/$locale/appareil/$slug" params={{ locale, slug: device.slug }}>
                         Voir la fiche
                       </Link>
                     </Button>
@@ -1173,7 +1183,8 @@ export function DeviceSearch({
                       </Link>{" "}
                       ou sur la page{" "}
                       <Link
-                        to="/suivi"
+                        to="/$locale/suivi"
+                        params={{ locale }}
                         search={{
                           ...(ref ? { ref } : {}),
                           ...(trackingCode ? { code: trackingCode } : {}),

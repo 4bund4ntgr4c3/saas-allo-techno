@@ -10,35 +10,42 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LocaleRouteImport } from './routes/$locale'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AvisRouteImport } from './routes/avis'
-import { Route as CatalogueRouteImport } from './routes/catalogue'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DevisRouteImport } from './routes/devis'
-import { Route as EntreprisesRouteImport } from './routes/entreprises'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as GarantieRouteImport } from './routes/garantie'
-import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
-import { Route as PanierRouteImport } from './routes/panier'
-import { Route as RepriseRouteImport } from './routes/reprise'
-import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SuiviRouteImport } from './routes/suivi'
-import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAvisRouteImport } from './routes/$locale/avis'
+import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
+import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
+import { Route as LocaleDevisRouteImport } from './routes/$locale/devis'
+import { Route as LocaleEntreprisesRouteImport } from './routes/$locale/entreprises'
+import { Route as LocaleFaqRouteImport } from './routes/$locale/faq'
+import { Route as LocaleGarantieRouteImport } from './routes/$locale/garantie'
+import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
+import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
+import { Route as LocaleRepriseRouteImport } from './routes/$locale/reprise'
+import { Route as LocaleReservationRouteImport } from './routes/$locale/reservation'
+import { Route as LocaleSuiviRouteImport } from './routes/$locale/suivi'
+import { Route as LocaleTarifsRouteImport } from './routes/$locale/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
-import { Route as AppareilSlugRouteImport } from './routes/appareil.$slug'
-import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
-import { Route as BoutiqueSlugRouteImport } from './routes/boutique.$slug'
-import { Route as ReparationsIndexRouteImport } from './routes/reparations.index'
-import { Route as ReparationsBrandRouteImport } from './routes/reparations.$brand'
+import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
+import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
+import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
+import { Route as LocaleBoutiqueIndexRouteImport } from './routes/$locale/boutique.index'
+import { Route as LocaleBoutiqueSlugRouteImport } from './routes/$locale/boutique.$slug'
+import { Route as LocaleReparationsIndexRouteImport } from './routes/$locale/reparations.index'
+import { Route as LocaleReparationsBrandRouteImport } from './routes/$locale/reparations.$brand'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocaleRoute = LocaleRouteImport.update({
+  id: '/$locale',
+  path: '/$locale',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -50,75 +57,80 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AvisRoute = AvisRouteImport.update({
-  id: '/avis',
-  path: '/avis',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CatalogueRoute = CatalogueRouteImport.update({
-  id: '/catalogue',
-  path: '/catalogue',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevisRoute = DevisRouteImport.update({
-  id: '/devis',
-  path: '/devis',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EntreprisesRoute = EntreprisesRouteImport.update({
-  id: '/entreprises',
-  path: '/entreprises',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GarantieRoute = GarantieRouteImport.update({
-  id: '/garantie',
-  path: '/garantie',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
-  id: '/mentions-legales',
-  path: '/mentions-legales',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PanierRoute = PanierRouteImport.update({
-  id: '/panier',
-  path: '/panier',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RepriseRoute = RepriseRouteImport.update({
-  id: '/reprise',
-  path: '/reprise',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReservationRoute = ReservationRouteImport.update({
-  id: '/reservation',
-  path: '/reservation',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SuiviRoute = SuiviRouteImport.update({
+const LocaleIndexRoute = LocaleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleAvisRoute = LocaleAvisRouteImport.update({
+  id: '/avis',
+  path: '/avis',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleCatalogueRoute = LocaleCatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleContactRoute = LocaleContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleDevisRoute = LocaleDevisRouteImport.update({
+  id: '/devis',
+  path: '/devis',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleEntreprisesRoute = LocaleEntreprisesRouteImport.update({
+  id: '/entreprises',
+  path: '/entreprises',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleFaqRoute = LocaleFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleGarantieRoute = LocaleGarantieRouteImport.update({
+  id: '/garantie',
+  path: '/garantie',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleMentionsLegalesRoute = LocaleMentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocalePanierRoute = LocalePanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleRepriseRoute = LocaleRepriseRouteImport.update({
+  id: '/reprise',
+  path: '/reprise',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleReservationRoute = LocaleReservationRouteImport.update({
+  id: '/reservation',
+  path: '/reservation',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleSuiviRoute = LocaleSuiviRouteImport.update({
   id: '/suivi',
   path: '/suivi',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const TarifsRoute = TarifsRouteImport.update({
+const LocaleTarifsRoute = LocaleTarifsRouteImport.update({
   id: '/tarifs',
   path: '/tarifs',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
@@ -130,235 +142,226 @@ const AuthenticatedMonCompteRoute = AuthenticatedMonCompteRouteImport.update({
   path: '/mon-compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AppareilSlugRoute = AppareilSlugRouteImport.update({
+const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
   id: '/appareil/$slug',
   path: '/appareil/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({
+const LocaleBlogIndexRoute = LocaleBlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
+const LocaleBlogSlugRoute = LocaleBlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const BoutiqueIndexRoute = BoutiqueIndexRouteImport.update({
+const LocaleBoutiqueIndexRoute = LocaleBoutiqueIndexRouteImport.update({
   id: '/boutique/',
   path: '/boutique/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const BoutiqueSlugRoute = BoutiqueSlugRouteImport.update({
+const LocaleBoutiqueSlugRoute = LocaleBoutiqueSlugRouteImport.update({
   id: '/boutique/$slug',
   path: '/boutique/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const ReparationsIndexRoute = ReparationsIndexRouteImport.update({
+const LocaleReparationsIndexRoute = LocaleReparationsIndexRouteImport.update({
   id: '/reparations/',
   path: '/reparations/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const ReparationsBrandRoute = ReparationsBrandRouteImport.update({
+const LocaleReparationsBrandRoute = LocaleReparationsBrandRouteImport.update({
   id: '/reparations/$brand',
   path: '/reparations/$brand',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LocaleRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$locale': typeof LocaleRouteWithChildren
   '/auth': typeof AuthRoute
-  '/avis': typeof AvisRoute
-  '/catalogue': typeof CatalogueRoute
-  '/contact': typeof ContactRoute
-  '/devis': typeof DevisRoute
-  '/entreprises': typeof EntreprisesRoute
-  '/faq': typeof FaqRoute
-  '/garantie': typeof GarantieRoute
-  '/mentions-legales': typeof MentionsLegalesRoute
-  '/panier': typeof PanierRoute
-  '/reprise': typeof RepriseRoute
-  '/reservation': typeof ReservationRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/suivi': typeof SuiviRoute
-  '/tarifs': typeof TarifsRoute
+  '/$locale/avis': typeof LocaleAvisRoute
+  '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/entreprises': typeof LocaleEntreprisesRoute
+  '/$locale/faq': typeof LocaleFaqRoute
+  '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/reprise': typeof LocaleRepriseRoute
+  '/$locale/reservation': typeof LocaleReservationRoute
+  '/$locale/suivi': typeof LocaleSuiviRoute
+  '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
-  '/appareil/$slug': typeof AppareilSlugRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/boutique/$slug': typeof BoutiqueSlugRoute
-  '/reparations/$brand': typeof ReparationsBrandRoute
-  '/blog/': typeof BlogIndexRoute
-  '/boutique/': typeof BoutiqueIndexRoute
-  '/reparations/': typeof ReparationsIndexRoute
+  '/$locale/': typeof LocaleIndexRoute
+  '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
+  '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
+  '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/blog/': typeof LocaleBlogIndexRoute
+  '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
+  '/$locale/reparations/': typeof LocaleReparationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/avis': typeof AvisRoute
-  '/catalogue': typeof CatalogueRoute
-  '/contact': typeof ContactRoute
-  '/devis': typeof DevisRoute
-  '/entreprises': typeof EntreprisesRoute
-  '/faq': typeof FaqRoute
-  '/garantie': typeof GarantieRoute
-  '/mentions-legales': typeof MentionsLegalesRoute
-  '/panier': typeof PanierRoute
-  '/reprise': typeof RepriseRoute
-  '/reservation': typeof ReservationRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/suivi': typeof SuiviRoute
-  '/tarifs': typeof TarifsRoute
+  '/$locale/avis': typeof LocaleAvisRoute
+  '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/entreprises': typeof LocaleEntreprisesRoute
+  '/$locale/faq': typeof LocaleFaqRoute
+  '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/reprise': typeof LocaleRepriseRoute
+  '/$locale/reservation': typeof LocaleReservationRoute
+  '/$locale/suivi': typeof LocaleSuiviRoute
+  '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
-  '/appareil/$slug': typeof AppareilSlugRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/boutique/$slug': typeof BoutiqueSlugRoute
-  '/reparations/$brand': typeof ReparationsBrandRoute
-  '/blog': typeof BlogIndexRoute
-  '/boutique': typeof BoutiqueIndexRoute
-  '/reparations': typeof ReparationsIndexRoute
+  '/$locale': typeof LocaleIndexRoute
+  '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
+  '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
+  '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/blog': typeof LocaleBlogIndexRoute
+  '/$locale/boutique': typeof LocaleBoutiqueIndexRoute
+  '/$locale/reparations': typeof LocaleReparationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$locale': typeof LocaleRouteWithChildren
   '/auth': typeof AuthRoute
-  '/avis': typeof AvisRoute
-  '/catalogue': typeof CatalogueRoute
-  '/contact': typeof ContactRoute
-  '/devis': typeof DevisRoute
-  '/entreprises': typeof EntreprisesRoute
-  '/faq': typeof FaqRoute
-  '/garantie': typeof GarantieRoute
-  '/mentions-legales': typeof MentionsLegalesRoute
-  '/panier': typeof PanierRoute
-  '/reprise': typeof RepriseRoute
-  '/reservation': typeof ReservationRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/suivi': typeof SuiviRoute
-  '/tarifs': typeof TarifsRoute
+  '/$locale/avis': typeof LocaleAvisRoute
+  '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/entreprises': typeof LocaleEntreprisesRoute
+  '/$locale/faq': typeof LocaleFaqRoute
+  '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/reprise': typeof LocaleRepriseRoute
+  '/$locale/reservation': typeof LocaleReservationRoute
+  '/$locale/suivi': typeof LocaleSuiviRoute
+  '/$locale/tarifs': typeof LocaleTarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
-  '/appareil/$slug': typeof AppareilSlugRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/boutique/$slug': typeof BoutiqueSlugRoute
-  '/reparations/$brand': typeof ReparationsBrandRoute
-  '/blog/': typeof BlogIndexRoute
-  '/boutique/': typeof BoutiqueIndexRoute
-  '/reparations/': typeof ReparationsIndexRoute
+  '/$locale/': typeof LocaleIndexRoute
+  '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
+  '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
+  '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/blog/': typeof LocaleBlogIndexRoute
+  '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
+  '/$locale/reparations/': typeof LocaleReparationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$locale'
     | '/auth'
-    | '/avis'
-    | '/catalogue'
-    | '/contact'
-    | '/devis'
-    | '/entreprises'
-    | '/faq'
-    | '/garantie'
-    | '/mentions-legales'
-    | '/panier'
-    | '/reprise'
-    | '/reservation'
     | '/sitemap.xml'
-    | '/suivi'
-    | '/tarifs'
+    | '/$locale/avis'
+    | '/$locale/catalogue'
+    | '/$locale/contact'
+    | '/$locale/devis'
+    | '/$locale/entreprises'
+    | '/$locale/faq'
+    | '/$locale/garantie'
+    | '/$locale/mentions-legales'
+    | '/$locale/panier'
+    | '/$locale/reprise'
+    | '/$locale/reservation'
+    | '/$locale/suivi'
+    | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
-    | '/appareil/$slug'
-    | '/blog/$slug'
-    | '/boutique/$slug'
-    | '/reparations/$brand'
-    | '/blog/'
-    | '/boutique/'
-    | '/reparations/'
+    | '/$locale/'
+    | '/$locale/appareil/$slug'
+    | '/$locale/blog/$slug'
+    | '/$locale/boutique/$slug'
+    | '/$locale/reparations/$brand'
+    | '/$locale/blog/'
+    | '/$locale/boutique/'
+    | '/$locale/reparations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/avis'
-    | '/catalogue'
-    | '/contact'
-    | '/devis'
-    | '/entreprises'
-    | '/faq'
-    | '/garantie'
-    | '/mentions-legales'
-    | '/panier'
-    | '/reprise'
-    | '/reservation'
     | '/sitemap.xml'
-    | '/suivi'
-    | '/tarifs'
+    | '/$locale/avis'
+    | '/$locale/catalogue'
+    | '/$locale/contact'
+    | '/$locale/devis'
+    | '/$locale/entreprises'
+    | '/$locale/faq'
+    | '/$locale/garantie'
+    | '/$locale/mentions-legales'
+    | '/$locale/panier'
+    | '/$locale/reprise'
+    | '/$locale/reservation'
+    | '/$locale/suivi'
+    | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
-    | '/appareil/$slug'
-    | '/blog/$slug'
-    | '/boutique/$slug'
-    | '/reparations/$brand'
-    | '/blog'
-    | '/boutique'
-    | '/reparations'
+    | '/$locale'
+    | '/$locale/appareil/$slug'
+    | '/$locale/blog/$slug'
+    | '/$locale/boutique/$slug'
+    | '/$locale/reparations/$brand'
+    | '/$locale/blog'
+    | '/$locale/boutique'
+    | '/$locale/reparations'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/$locale'
     | '/auth'
-    | '/avis'
-    | '/catalogue'
-    | '/contact'
-    | '/devis'
-    | '/entreprises'
-    | '/faq'
-    | '/garantie'
-    | '/mentions-legales'
-    | '/panier'
-    | '/reprise'
-    | '/reservation'
     | '/sitemap.xml'
-    | '/suivi'
-    | '/tarifs'
+    | '/$locale/avis'
+    | '/$locale/catalogue'
+    | '/$locale/contact'
+    | '/$locale/devis'
+    | '/$locale/entreprises'
+    | '/$locale/faq'
+    | '/$locale/garantie'
+    | '/$locale/mentions-legales'
+    | '/$locale/panier'
+    | '/$locale/reprise'
+    | '/$locale/reservation'
+    | '/$locale/suivi'
+    | '/$locale/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
-    | '/appareil/$slug'
-    | '/blog/$slug'
-    | '/boutique/$slug'
-    | '/reparations/$brand'
-    | '/blog/'
-    | '/boutique/'
-    | '/reparations/'
+    | '/$locale/'
+    | '/$locale/appareil/$slug'
+    | '/$locale/blog/$slug'
+    | '/$locale/boutique/$slug'
+    | '/$locale/reparations/$brand'
+    | '/$locale/blog/'
+    | '/$locale/boutique/'
+    | '/$locale/reparations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LocaleRoute: typeof LocaleRouteWithChildren
   AuthRoute: typeof AuthRoute
-  AvisRoute: typeof AvisRoute
-  CatalogueRoute: typeof CatalogueRoute
-  ContactRoute: typeof ContactRoute
-  DevisRoute: typeof DevisRoute
-  EntreprisesRoute: typeof EntreprisesRoute
-  FaqRoute: typeof FaqRoute
-  GarantieRoute: typeof GarantieRoute
-  MentionsLegalesRoute: typeof MentionsLegalesRoute
-  PanierRoute: typeof PanierRoute
-  RepriseRoute: typeof RepriseRoute
-  ReservationRoute: typeof ReservationRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SuiviRoute: typeof SuiviRoute
-  TarifsRoute: typeof TarifsRoute
-  AppareilSlugRoute: typeof AppareilSlugRoute
-  BlogSlugRoute: typeof BlogSlugRoute
-  BoutiqueSlugRoute: typeof BoutiqueSlugRoute
-  ReparationsBrandRoute: typeof ReparationsBrandRoute
-  BlogIndexRoute: typeof BlogIndexRoute
-  BoutiqueIndexRoute: typeof BoutiqueIndexRoute
-  ReparationsIndexRoute: typeof ReparationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -368,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$locale': {
+      id: '/$locale'
+      path: '/$locale'
+      fullPath: '/$locale'
+      preLoaderRoute: typeof LocaleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -384,83 +394,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/avis': {
-      id: '/avis'
-      path: '/avis'
-      fullPath: '/avis'
-      preLoaderRoute: typeof AvisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/catalogue': {
-      id: '/catalogue'
-      path: '/catalogue'
-      fullPath: '/catalogue'
-      preLoaderRoute: typeof CatalogueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/devis': {
-      id: '/devis'
-      path: '/devis'
-      fullPath: '/devis'
-      preLoaderRoute: typeof DevisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/entreprises': {
-      id: '/entreprises'
-      path: '/entreprises'
-      fullPath: '/entreprises'
-      preLoaderRoute: typeof EntreprisesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/garantie': {
-      id: '/garantie'
-      path: '/garantie'
-      fullPath: '/garantie'
-      preLoaderRoute: typeof GarantieRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentions-legales': {
-      id: '/mentions-legales'
-      path: '/mentions-legales'
-      fullPath: '/mentions-legales'
-      preLoaderRoute: typeof MentionsLegalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/panier': {
-      id: '/panier'
-      path: '/panier'
-      fullPath: '/panier'
-      preLoaderRoute: typeof PanierRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reprise': {
-      id: '/reprise'
-      path: '/reprise'
-      fullPath: '/reprise'
-      preLoaderRoute: typeof RepriseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reservation': {
-      id: '/reservation'
-      path: '/reservation'
-      fullPath: '/reservation'
-      preLoaderRoute: typeof ReservationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -468,19 +401,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/suivi': {
-      id: '/suivi'
-      path: '/suivi'
-      fullPath: '/suivi'
-      preLoaderRoute: typeof SuiviRouteImport
-      parentRoute: typeof rootRouteImport
+    '/$locale/': {
+      id: '/$locale/'
+      path: '/'
+      fullPath: '/$locale/'
+      preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/tarifs': {
-      id: '/tarifs'
+    '/$locale/avis': {
+      id: '/$locale/avis'
+      path: '/avis'
+      fullPath: '/$locale/avis'
+      preLoaderRoute: typeof LocaleAvisRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/catalogue': {
+      id: '/$locale/catalogue'
+      path: '/catalogue'
+      fullPath: '/$locale/catalogue'
+      preLoaderRoute: typeof LocaleCatalogueRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/contact': {
+      id: '/$locale/contact'
+      path: '/contact'
+      fullPath: '/$locale/contact'
+      preLoaderRoute: typeof LocaleContactRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/devis': {
+      id: '/$locale/devis'
+      path: '/devis'
+      fullPath: '/$locale/devis'
+      preLoaderRoute: typeof LocaleDevisRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/entreprises': {
+      id: '/$locale/entreprises'
+      path: '/entreprises'
+      fullPath: '/$locale/entreprises'
+      preLoaderRoute: typeof LocaleEntreprisesRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/faq': {
+      id: '/$locale/faq'
+      path: '/faq'
+      fullPath: '/$locale/faq'
+      preLoaderRoute: typeof LocaleFaqRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/garantie': {
+      id: '/$locale/garantie'
+      path: '/garantie'
+      fullPath: '/$locale/garantie'
+      preLoaderRoute: typeof LocaleGarantieRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/mentions-legales': {
+      id: '/$locale/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/$locale/mentions-legales'
+      preLoaderRoute: typeof LocaleMentionsLegalesRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/panier': {
+      id: '/$locale/panier'
+      path: '/panier'
+      fullPath: '/$locale/panier'
+      preLoaderRoute: typeof LocalePanierRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/reprise': {
+      id: '/$locale/reprise'
+      path: '/reprise'
+      fullPath: '/$locale/reprise'
+      preLoaderRoute: typeof LocaleRepriseRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/reservation': {
+      id: '/$locale/reservation'
+      path: '/reservation'
+      fullPath: '/$locale/reservation'
+      preLoaderRoute: typeof LocaleReservationRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/suivi': {
+      id: '/$locale/suivi'
+      path: '/suivi'
+      fullPath: '/$locale/suivi'
+      preLoaderRoute: typeof LocaleSuiviRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/tarifs': {
+      id: '/$locale/tarifs'
       path: '/tarifs'
-      fullPath: '/tarifs'
-      preLoaderRoute: typeof TarifsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/tarifs'
+      preLoaderRoute: typeof LocaleTarifsRouteImport
+      parentRoute: typeof LocaleRoute
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -496,54 +513,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMonCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/appareil/$slug': {
-      id: '/appareil/$slug'
+    '/$locale/appareil/$slug': {
+      id: '/$locale/appareil/$slug'
       path: '/appareil/$slug'
-      fullPath: '/appareil/$slug'
-      preLoaderRoute: typeof AppareilSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/appareil/$slug'
+      preLoaderRoute: typeof LocaleAppareilSlugRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/blog/': {
-      id: '/blog/'
+    '/$locale/blog/': {
+      id: '/$locale/blog/'
       path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof BlogIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/blog/'
+      preLoaderRoute: typeof LocaleBlogIndexRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
+    '/$locale/blog/$slug': {
+      id: '/$locale/blog/$slug'
       path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/blog/$slug'
+      preLoaderRoute: typeof LocaleBlogSlugRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/boutique/': {
-      id: '/boutique/'
+    '/$locale/boutique/': {
+      id: '/$locale/boutique/'
       path: '/boutique'
-      fullPath: '/boutique/'
-      preLoaderRoute: typeof BoutiqueIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/boutique/'
+      preLoaderRoute: typeof LocaleBoutiqueIndexRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/boutique/$slug': {
-      id: '/boutique/$slug'
+    '/$locale/boutique/$slug': {
+      id: '/$locale/boutique/$slug'
       path: '/boutique/$slug'
-      fullPath: '/boutique/$slug'
-      preLoaderRoute: typeof BoutiqueSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/boutique/$slug'
+      preLoaderRoute: typeof LocaleBoutiqueSlugRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/reparations/': {
-      id: '/reparations/'
+    '/$locale/reparations/': {
+      id: '/$locale/reparations/'
       path: '/reparations'
-      fullPath: '/reparations/'
-      preLoaderRoute: typeof ReparationsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/reparations/'
+      preLoaderRoute: typeof LocaleReparationsIndexRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/reparations/$brand': {
-      id: '/reparations/$brand'
+    '/$locale/reparations/$brand': {
+      id: '/$locale/reparations/$brand'
       path: '/reparations/$brand'
-      fullPath: '/reparations/$brand'
-      preLoaderRoute: typeof ReparationsBrandRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$locale/reparations/$brand'
+      preLoaderRoute: typeof LocaleReparationsBrandRouteImport
+      parentRoute: typeof LocaleRoute
     }
   }
 }
@@ -561,31 +578,63 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface LocaleRouteChildren {
+  LocaleAvisRoute: typeof LocaleAvisRoute
+  LocaleCatalogueRoute: typeof LocaleCatalogueRoute
+  LocaleContactRoute: typeof LocaleContactRoute
+  LocaleDevisRoute: typeof LocaleDevisRoute
+  LocaleEntreprisesRoute: typeof LocaleEntreprisesRoute
+  LocaleFaqRoute: typeof LocaleFaqRoute
+  LocaleGarantieRoute: typeof LocaleGarantieRoute
+  LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
+  LocalePanierRoute: typeof LocalePanierRoute
+  LocaleRepriseRoute: typeof LocaleRepriseRoute
+  LocaleReservationRoute: typeof LocaleReservationRoute
+  LocaleSuiviRoute: typeof LocaleSuiviRoute
+  LocaleTarifsRoute: typeof LocaleTarifsRoute
+  LocaleIndexRoute: typeof LocaleIndexRoute
+  LocaleAppareilSlugRoute: typeof LocaleAppareilSlugRoute
+  LocaleBlogSlugRoute: typeof LocaleBlogSlugRoute
+  LocaleBoutiqueSlugRoute: typeof LocaleBoutiqueSlugRoute
+  LocaleReparationsBrandRoute: typeof LocaleReparationsBrandRoute
+  LocaleBlogIndexRoute: typeof LocaleBlogIndexRoute
+  LocaleBoutiqueIndexRoute: typeof LocaleBoutiqueIndexRoute
+  LocaleReparationsIndexRoute: typeof LocaleReparationsIndexRoute
+}
+
+const LocaleRouteChildren: LocaleRouteChildren = {
+  LocaleAvisRoute: LocaleAvisRoute,
+  LocaleCatalogueRoute: LocaleCatalogueRoute,
+  LocaleContactRoute: LocaleContactRoute,
+  LocaleDevisRoute: LocaleDevisRoute,
+  LocaleEntreprisesRoute: LocaleEntreprisesRoute,
+  LocaleFaqRoute: LocaleFaqRoute,
+  LocaleGarantieRoute: LocaleGarantieRoute,
+  LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
+  LocalePanierRoute: LocalePanierRoute,
+  LocaleRepriseRoute: LocaleRepriseRoute,
+  LocaleReservationRoute: LocaleReservationRoute,
+  LocaleSuiviRoute: LocaleSuiviRoute,
+  LocaleTarifsRoute: LocaleTarifsRoute,
+  LocaleIndexRoute: LocaleIndexRoute,
+  LocaleAppareilSlugRoute: LocaleAppareilSlugRoute,
+  LocaleBlogSlugRoute: LocaleBlogSlugRoute,
+  LocaleBoutiqueSlugRoute: LocaleBoutiqueSlugRoute,
+  LocaleReparationsBrandRoute: LocaleReparationsBrandRoute,
+  LocaleBlogIndexRoute: LocaleBlogIndexRoute,
+  LocaleBoutiqueIndexRoute: LocaleBoutiqueIndexRoute,
+  LocaleReparationsIndexRoute: LocaleReparationsIndexRoute,
+}
+
+const LocaleRouteWithChildren =
+  LocaleRoute._addFileChildren(LocaleRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LocaleRoute: LocaleRouteWithChildren,
   AuthRoute: AuthRoute,
-  AvisRoute: AvisRoute,
-  CatalogueRoute: CatalogueRoute,
-  ContactRoute: ContactRoute,
-  DevisRoute: DevisRoute,
-  EntreprisesRoute: EntreprisesRoute,
-  FaqRoute: FaqRoute,
-  GarantieRoute: GarantieRoute,
-  MentionsLegalesRoute: MentionsLegalesRoute,
-  PanierRoute: PanierRoute,
-  RepriseRoute: RepriseRoute,
-  ReservationRoute: ReservationRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SuiviRoute: SuiviRoute,
-  TarifsRoute: TarifsRoute,
-  AppareilSlugRoute: AppareilSlugRoute,
-  BlogSlugRoute: BlogSlugRoute,
-  BoutiqueSlugRoute: BoutiqueSlugRoute,
-  ReparationsBrandRoute: ReparationsBrandRoute,
-  BlogIndexRoute: BlogIndexRoute,
-  BoutiqueIndexRoute: BoutiqueIndexRoute,
-  ReparationsIndexRoute: ReparationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

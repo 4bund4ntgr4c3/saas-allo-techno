@@ -5,6 +5,10 @@ import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { BRANDS, CATEGORIES, DEVICES, absoluteUrl, brandName, formatFcfa } from "@/data/catalog";
 import { searchDevices } from "@/lib/catalog-search";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/reparations";
 import {
   Select,
   SelectContent,
@@ -13,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const Route = createFileRoute("/catalogue")({
+export const Route = createFileRoute("/$locale/catalogue")({
   validateSearch: (
     s: Record<string, unknown>,
   ): { q?: string; marque?: string; categorie?: string; serie?: string } => {
@@ -24,22 +28,25 @@ export const Route = createFileRoute("/catalogue")({
     if (typeof s["serie"] === "string") result.serie = s["serie"];
     return result;
   },
-  head: () => ({
-    meta: [
-      { title: `Catalogue complet — ${DEVICES.length} appareils référencés | Allô Techno` },
-      {
-        name: "description",
-        content: `Catalogue des ${DEVICES.length} appareils réparés par Allô Techno à Abomey-Calavi : smartphones, tablettes, ordinateurs, consoles, montres. Recherche et filtres par marque, type et série.`,
-      },
-      { property: "og:title", content: "Catalogue des appareils — Allô Techno" },
-      {
-        property: "og:description",
-        content: "Tous les modèles référencés, avec tarifs de réparation.",
-      },
-      { property: "og:url", content: "/catalogue" },
-    ],
-    links: [{ rel: "canonical", href: absoluteUrl("/catalogue") }],
-  }),
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale);
+    return {
+      meta: [
+        { title: translate(locale, "catalogue.meta.title", [DEVICES.length]) },
+        {
+          name: "description",
+          content: translate(locale, "catalogue.meta.description", [DEVICES.length]),
+        },
+        { property: "og:title", content: translate(locale, "catalogue.meta.ogTitle") },
+        {
+          property: "og:description",
+          content: translate(locale, "catalogue.meta.ogDescription"),
+        },
+        { property: "og:url", content: "/$locale/catalogue" },
+      ],
+      links: [{ rel: "canonical", href: absoluteUrl("/$locale/catalogue") }],
+    };
+  },
   component: Catalogue,
 });
 
@@ -53,6 +60,7 @@ const chip = (active: boolean) =>
 function Catalogue() {
   const { q, marque, categorie, serie } = Route.useSearch();
   const navigate = useNavigate();
+  const { locale, t } = useI18n();
 
   const set = (patch: {
     q?: string;
@@ -65,7 +73,7 @@ function Catalogue() {
     if (patch.marque !== undefined && patch.marque) next.marque = patch.marque;
     if (patch.categorie !== undefined && patch.categorie) next.categorie = patch.categorie;
     if (patch.serie !== undefined && patch.serie) next.serie = patch.serie;
-    navigate({ to: "/catalogue", search: next, replace: true });
+    navigate({ to: "/$locale/catalogue", params: { locale }, search: next, replace: true });
   };
 
   const results = useMemo(() => {
@@ -89,14 +97,9 @@ function Catalogue() {
     <>
       <section className="border-b border-border py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">Catalogue · {DEVICES.length} appareils</span>
-          <h1 className="at-display text-4xl md:text-5xl">
-            Tous les appareils, une seule grille de tarifs.
-          </h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
-            Recherchez un modèle, filtrez par marque, type d'appareil ou génération. Chaque fiche
-            affiche les pannes prises en charge, le tarif ferme et le délai de réparation.
-          </p>
+          <span className="at-eyebrow mb-4 block">{t("catalogue.eyebrow", [DEVICES.length])}</span>
+          <h1 className="at-display text-4xl md:text-5xl">{t("catalogue.title")}</h1>
+          <p className="mt-6 max-w-xl text-muted-foreground">{t("catalogue.intro")}</p>
         </div>
       </section>
 
@@ -108,15 +111,15 @@ function Catalogue() {
               <input
                 value={q ?? ""}
                 onChange={(e) => set({ q: e.target.value })}
-                placeholder="Rechercher : « iPhone 17 », « ecran », « galaxy s25 »…"
+                placeholder={t("catalogue.searchPlaceholder")}
                 className="h-11 w-full border border-border bg-background pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-                aria-label="Rechercher un appareil"
+                aria-label={t("catalogue.searchAria")}
               />
             </label>
             <div className="flex flex-wrap items-center gap-2">
               <Select value={marque ?? ""} onValueChange={(v) => set({ marque: v || null })}>
                 <SelectTrigger className="h-11 w-full border-border bg-background font-mono text-[10px] font-bold uppercase tracking-wider md:w-48">
-                  <SelectValue placeholder="Toutes les marques" />
+                  <SelectValue placeholder={t("catalogue.allBrands")} />
                 </SelectTrigger>
                 <SelectContent>
                   {BRANDS.map((b) => (
@@ -134,28 +137,28 @@ function Catalogue() {
                   onClick={() => set({ q: "", marque: null, categorie: null, serie: null })}
                 >
                   <X className="size-3.5" />
-                  Réinitialiser
+                  {t("catalogue.reset")}
                 </Button>
               )}
             </div>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="at-eyebrow mr-2">Type</span>
+            <span className="at-eyebrow mr-2">{t("catalogue.type")}</span>
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 className={chip(categorie === c)}
                 onClick={() => set({ categorie: categorie === c ? null : c })}
               >
-                {c}
+                {t(c)}
               </button>
             ))}
           </div>
 
           {seriesOptions.length > 1 && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="at-eyebrow mr-2">Génération</span>
+              <span className="at-eyebrow mr-2">{t("catalogue.generation")}</span>
               {seriesOptions.map((s) => (
                 <button
                   key={s}
@@ -174,9 +177,10 @@ function Catalogue() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-8 flex items-baseline justify-between gap-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              {results.length} / {DEVICES.length} appareil{results.length > 1 ? "s" : ""}
+              {results.length} / {DEVICES.length}{" "}
+              {results.length > 1 ? t("catalogue.appareils") : t("catalogue.appareil")}
             </p>
-            {q && <p className="text-xs text-muted-foreground">Recherche : « {q} »</p>}
+            {q && <p className="text-xs text-muted-foreground">{t("catalogue.searchInfo", [q])}</p>}
           </div>
 
           {results.length > 0 ? (
@@ -184,8 +188,8 @@ function Catalogue() {
               {results.map((d) => (
                 <Link
                   key={d.slug}
-                  to="/appareil/$slug"
-                  params={{ slug: d.slug }}
+                  to="/$locale/appareil/$slug"
+                  params={{ locale, slug: d.slug }}
                   className="group bg-card p-6 transition-colors hover:bg-surface"
                 >
                   <div className="flex items-baseline justify-between gap-4">
@@ -193,7 +197,7 @@ function Catalogue() {
                       {d.name}
                     </h2>
                     <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                      {d.category} · {d.year}
+                      {t(d.category)} · {d.year}
                     </span>
                   </div>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -202,7 +206,7 @@ function Catalogue() {
                   <ul className="mt-4 space-y-1">
                     {d.faults.slice(0, 3).map((f) => (
                       <li key={f.slug} className="flex justify-between gap-4 text-sm">
-                        <span className="text-muted-foreground">{f.label}</span>
+                        <span className="text-muted-foreground">{t(f.label)}</span>
                         <span className="font-mono text-xs text-primary">
                           {formatFcfa(f.price)}
                         </span>
@@ -210,24 +214,24 @@ function Catalogue() {
                     ))}
                   </ul>
                   <p className="mt-4 font-mono text-[10px] uppercase text-primary">
-                    {d.faults.length} pannes prises en charge →
+                    {t("catalogue.pannes", [d.faults.length])}
                   </p>
                 </Link>
               ))}
             </div>
           ) : (
             <div className="border border-border bg-card p-12 text-center">
-              <SectionHeader eyebrow="Aucun résultat" title="Aucun appareil ne correspond" />
-              <p className="-mt-6 text-sm text-muted-foreground">
-                Essayez un autre terme, ou réinitialisez les filtres pour voir l'ensemble du
-                catalogue.
-              </p>
+              <SectionHeader
+                eyebrow={t("catalogue.noResultEyebrow")}
+                title={t("catalogue.noResultTitle")}
+              />
+              <p className="-mt-6 text-sm text-muted-foreground">{t("catalogue.noResultText")}</p>
               <Button
                 variant="technical"
                 className="mt-8"
                 onClick={() => set({ q: "", marque: null, categorie: null, serie: null })}
               >
-                Voir tout le catalogue
+                {t("catalogue.noResultCta")}
               </Button>
             </div>
           )}

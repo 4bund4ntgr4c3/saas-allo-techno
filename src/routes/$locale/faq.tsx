@@ -2,42 +2,43 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { FAQ } from "@/data/catalog";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import type { Locale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/info";
 
-export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: [
-      { title: "Questions fréquentes — Allô Techno Abomey-Calavi" },
-      {
-        name: "description",
-        content:
-          "Délais, garanties, paiement Mobile Money, données personnelles, suivi de dossier : toutes les réponses sur la réparation chez Allô Techno.",
-      },
-      { property: "og:title", content: "FAQ réparation — Allô Techno" },
-      {
-        property: "og:description",
-        content: "Les réponses aux questions les plus posées par nos clients au Bénin.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({
-            "@type": "Question",
-            name: f.q,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: f.a,
-            },
-          })),
-        }),
-      },
-    ],
-  }),
+export const Route = createFileRoute("/$locale/faq")({
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    return {
+      meta: [
+        { title: translate(locale, "faq.meta.title") },
+        { name: "description", content: translate(locale, "faq.meta.description") },
+        { property: "og:title", content: translate(locale, "faq.og.title") },
+        { property: "og:description", content: translate(locale, "faq.og.description") },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQ.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: f.a,
+              },
+            })),
+          }),
+        },
+      ],
+    };
+  },
   component: Faq,
 });
 
@@ -46,6 +47,7 @@ const CATS = ["Toutes", ...Array.from(new Set(FAQ.map((f) => f.cat)))];
 function Faq() {
   const [cat, setCat] = useState("Toutes");
   const [q, setQ] = useState("");
+  const { t } = useI18n();
 
   const items = FAQ.filter(
     (f) =>
@@ -57,12 +59,9 @@ function Faq() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">Aide</span>
-          <h1 className="at-display text-4xl md:text-6xl">Questions fréquentes</h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
-            Délais, garanties, paiement, confidentialité des données : l'essentiel avant de confier
-            votre appareil.
-          </p>
+          <span className="at-eyebrow mb-4 block">{t("faq.eyebrow")}</span>
+          <h1 className="at-display text-4xl md:text-6xl">{t("faq.title")}</h1>
+          <p className="mt-6 max-w-xl text-muted-foreground">{t("faq.intro")}</p>
         </div>
       </section>
 
@@ -71,8 +70,8 @@ function Faq() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Rechercher une question…"
-            aria-label="Rechercher dans la FAQ"
+            placeholder={t("faq.searchPlaceholder")}
+            aria-label={t("faq.searchAria")}
             className="h-11 w-full rounded-sm border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none"
           />
           <div className="mt-4 flex flex-wrap gap-2">
@@ -86,7 +85,7 @@ function Faq() {
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {c}
+                {c === "Toutes" ? t("faq.all") : c}
               </button>
             ))}
           </div>
@@ -95,15 +94,13 @@ function Faq() {
             {items.map((f) => (
               <details key={f.q} className="group p-6">
                 <summary className="cursor-pointer list-none text-sm font-bold tracking-tight marker:hidden">
-                  {f.q}
+                  {t(f.q)}
                 </summary>
-                <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
+                <p className="mt-3 text-sm text-muted-foreground">{t(f.a)}</p>
               </details>
             ))}
             {items.length === 0 && (
-              <p className="p-8 text-center text-sm text-muted-foreground">
-                Aucune question ne correspond à votre recherche.
-              </p>
+              <p className="p-8 text-center text-sm text-muted-foreground">{t("faq.noResult")}</p>
             )}
           </div>
         </div>
@@ -112,9 +109,9 @@ function Faq() {
       <section className="border-t border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
-            eyebrow="Encore une question ?"
-            title="Notre atelier répond en moins de 15 minutes"
-            text="Appelez-nous, écrivez sur WhatsApp ou passez directement à Zogbadjè pendant les heures d'ouverture."
+            eyebrow={t("faq.cta.eyebrow")}
+            title={t("faq.cta.title")}
+            text={t("faq.cta.text")}
           />
         </div>
       </section>

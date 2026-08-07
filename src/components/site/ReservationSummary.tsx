@@ -3,6 +3,7 @@ import { type Ref } from "react";
 import { brandName, deviceBySlug, formatFcfa } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
+import { useI18n } from "@/lib/i18n/context";
 import { computeEstimate } from "@/lib/estimate";
 import { PERIOD_LABEL, formatDateFr, type ReservationInput } from "@/lib/reservation-schema";
 
@@ -50,6 +51,7 @@ export function ReservationSummary({
   immediate,
   headingRef,
 }: Props) {
+  const { t } = useI18n();
   const device = deviceBySlug(values.appareil);
   const faults = matchedFaults(values.appareil, values.panne);
   const estimate = computeEstimate(faults);
@@ -102,7 +104,7 @@ export function ReservationSummary({
             <r.icon className="mt-0.5 size-4 shrink-0 text-primary" strokeWidth={1.5} />
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                {r.label}
+                {t(r.label)}
               </dt>
               <dd className="text-sm font-bold tracking-tight">{r.value}</dd>
             </div>
@@ -122,7 +124,7 @@ export function ReservationSummary({
                 <li key={f.slug} className="flex items-center justify-between gap-4 text-sm">
                   <span className="flex items-center gap-2 font-semibold">
                     <Check className="size-3.5 text-primary" />
-                    {f.label}
+                    {t(f.label)}
                   </span>
                   <span className="font-mono text-xs text-primary">{formatFcfa(f.price)}</span>
                 </li>

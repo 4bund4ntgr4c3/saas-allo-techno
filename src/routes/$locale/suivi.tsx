@@ -27,59 +27,78 @@ import {
   type ReservationStatus,
   type TimelineEntry,
 } from "@/lib/suivi.functions";
-import {
-  formatDateFr,
-  PERIOD_LABEL,
-  STATUS_LABEL,
-  type DepositMode,
-} from "@/lib/reservation-schema";
+import { formatDateFr, type DepositMode } from "@/lib/reservation-schema";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/suivi";
+import type { Locale } from "@/lib/i18n/locales";
 
-export const Route = createFileRoute("/suivi")({
+export const Route = createFileRoute("/$locale/suivi")({
   validateSearch: (search: Record<string, unknown>): { ref?: string; code?: string } => {
     const ref = typeof search["ref"] === "string" ? search["ref"] : undefined;
     const code = typeof search["code"] === "string" ? search["code"] : undefined;
     return { ...(ref ? { ref } : {}), ...(code ? { code } : {}) };
   },
 
-  head: () => ({
-    meta: [
-      { title: "Suivi de réparation — Allô Techno Abomey-Calavi" },
-      {
-        name: "description",
-        content:
-          "Suivez l'avancement de votre réparation en temps réel avec votre numéro de dossier Allô Techno.",
-      },
-      { property: "og:title", content: "Suivi de réparation — Allô Techno" },
-      {
-        property: "og:description",
-        content: "Entrez votre référence de dossier pour connaître le statut de votre réparation.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "/suivi" },
-    ],
-    links: [{ rel: "canonical", href: absoluteUrl("/suivi") }],
-  }),
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    return {
+      meta: [
+        { title: translate(locale, "suivi.meta.title") },
+        { name: "description", content: translate(locale, "suivi.meta.description") },
+        { property: "og:title", content: translate(locale, "suivi.meta.og.title") },
+        {
+          property: "og:description",
+          content: translate(locale, "suivi.meta.og.description"),
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:url", content: "/$locale/suivi" },
+      ],
+      links: [{ rel: "canonical", href: absoluteUrl("/$locale/suivi") }],
+    };
+  },
   component: Suivi,
 });
 
 const MILESTONES = [
-  { key: "en_attente", label: "Reçu", detail: "Dossier reçu à l'atelier", icon: Package },
+  {
+    key: "en_attente",
+    label: "suivi.milestone.en_attente.label",
+    detail: "suivi.milestone.en_attente.detail",
+    icon: Package,
+  },
   {
     key: "confirmee",
-    label: "Diagnostic",
-    detail: "Panne identifiée et devis validé",
+    label: "suivi.milestone.confirmee.label",
+    detail: "suivi.milestone.confirmee.detail",
     icon: ScanSearch,
   },
-  { key: "pieces", label: "Pièces", detail: "Pièces commandées et remplacées", icon: Boxes },
-  { key: "en_cours", label: "Réparation", detail: "Réparation en cours en atelier", icon: Wrench },
+  {
+    key: "pieces",
+    label: "suivi.milestone.pieces.label",
+    detail: "suivi.milestone.pieces.detail",
+    icon: Boxes,
+  },
+  {
+    key: "en_cours",
+    label: "suivi.milestone.en_cours.label",
+    detail: "suivi.milestone.en_cours.detail",
+    icon: Wrench,
+  },
   {
     key: "pret",
-    label: "Prêt",
-    detail: "Votre appareil est prêt à être récupéré",
+    label: "suivi.milestone.pret.label",
+    detail: "suivi.milestone.pret.detail",
     icon: CheckCircle2,
   },
-  { key: "livre", label: "Livré", detail: "Appareil remis au client", icon: Truck },
+  {
+    key: "livre",
+    label: "suivi.milestone.livre.label",
+    detail: "suivi.milestone.livre.detail",
+    icon: Truck,
+  },
 ] as const;
 
 // `terminee` (ancien parcours) est assimilé à « Prêt ».
@@ -93,9 +112,27 @@ const MILESTONE_INDEX: Record<string, number> = {
   terminee: 4,
 };
 
+type TranslateFn = (key: string, params?: (string | number)[]) => string;
+
+function statusLabel(t: TranslateFn, status: string | null | undefined): string {
+  if (!status) return "";
+  const label: Record<string, string> = {
+    en_attente: t("suivi.status.en_attente"),
+    confirmee: t("suivi.status.confirmee"),
+    pieces: t("suivi.status.pieces"),
+    en_cours: t("suivi.status.en_cours"),
+    pret: t("suivi.status.pret"),
+    livre: t("suivi.status.livre"),
+    terminee: t("suivi.status.terminee"),
+    annulee: t("suivi.status.annulee"),
+  };
+  return label[status] ?? status;
+}
+
 function Suivi() {
   const { ref, code } = Route.useSearch();
   const router = useRouter();
+  const { locale, t } = useI18n();
   const [reference, setReference] = useState(ref ?? "");
   const [codeInput, setCodeInput] = useState(code ?? "");
   const fetchTracking = useServerFn(getReservationTracking);
@@ -123,17 +160,18 @@ function Suivi() {
   const error = tracking.error
     ? tracking.error instanceof Error
       ? tracking.error.message
-      : "Erreur inattendue"
+      : t("suivi.error.unknown")
     : data && !data.found
-      ? "Dossier introuvable. Vérifiez la référence."
+      ? t("suivi.error.notfound")
       : !code
-        ? "Saisissez votre code de suivi pour consulter le dossier."
+        ? t("suivi.error.nocode")
         : null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     router.navigate({
-      to: "/suivi",
+      to: "/$locale/suivi",
+      params: { locale },
       search: { ref: reference.trim(), code: codeInput.trim() },
     });
   };
@@ -142,12 +180,9 @@ function Suivi() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">Suivi en ligne</span>
-          <h1 className="at-display text-4xl md:text-6xl">Où en est ma réparation ?</h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
-            Saisissez votre numéro de dossier pour connaître le statut de votre réparation en temps
-            réel.
-          </p>
+          <span className="at-eyebrow mb-4 block">{t("suivi.eyebrow")}</span>
+          <h1 className="at-display text-4xl md:text-6xl">{t("suivi.title")}</h1>
+          <p className="mt-6 max-w-xl text-muted-foreground">{t("suivi.intro")}</p>
         </div>
       </section>
 
@@ -155,7 +190,7 @@ function Suivi() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <form onSubmit={handleSubmit} className="border border-border bg-card p-8">
             <label htmlFor="ref" className="at-eyebrow mb-2 block">
-              Numéro de dossier
+              {t("suivi.ref.label")}
             </label>
             <div className="flex gap-3">
               <input
@@ -167,11 +202,11 @@ function Suivi() {
               />
               <Button type="submit" variant="technical" disabled={loading}>
                 <Search className="size-4" />
-                <span className="ml-2 hidden sm:inline">Vérifier</span>
+                <span className="ml-2 hidden sm:inline">{t("suivi.check")}</span>
               </Button>
             </div>
             <label htmlFor="code" className="at-eyebrow mt-5 mb-2 block">
-              Code de suivi
+              {t("suivi.code.label")}
             </label>
             <div className="flex gap-3">
               <input
@@ -183,10 +218,7 @@ function Suivi() {
                 className="h-11 flex-1 rounded-sm border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Le code de suivi vous a été communiqué à la réservation (e-mail, WhatsApp) et figure
-              sur votre reçu.
-            </p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("suivi.code.hint")}</p>
             {error && (
               <div className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
                 <AlertCircle className="size-4 shrink-0" />
@@ -198,7 +230,7 @@ function Suivi() {
                       onClick={() => void tracking.refetch()}
                       className="ml-2 text-destructive underline"
                     >
-                      Réessayer
+                      {t("action.ressayer")}
                     </button>
                   ) : null}
                 </div>
@@ -222,11 +254,11 @@ function Suivi() {
           <div className="mt-10">
             <LeadForm
               source="suivi"
-              title="Besoin d'aide sur un dossier ?"
-              description="Indiquez votre numéro de dossier : l'équipe vous répond par téléphone ou WhatsApp."
+              title={t("suivi.help.title")}
+              description={t("suivi.help.description")}
               showReference={false}
               defaultReference={ref ?? ""}
-              successText="Demande enregistrée. Nous vous rappelons rapidement."
+              successText={t("suivi.help.success")}
             />
           </div>
         </div>
@@ -253,12 +285,16 @@ function StatusResult({
   code: string;
 }) {
   const queryClient = useQueryClient();
+  const { locale, t } = useI18n();
   const [rescheduling, setRescheduling] = useState(false);
   const statusIndex = MILESTONE_INDEX[result.status] ?? -1;
   const isCancelled = result.status === "annulee";
   const activeIndex = isCancelled ? -1 : statusIndex >= 0 ? statusIndex : 0;
   const reschedulable =
     !isCancelled && (result.status === "en_attente" || result.status === "confirmee");
+
+  const periodText =
+    result.slot_period === "matin" ? t("suivi.period.matin") : t("suivi.period.apresmidi");
 
   const milestoneDates = new Map<string, string>();
   for (const e of timeline) {
@@ -271,20 +307,22 @@ function StatusResult({
     <div className="mt-8 border border-border bg-card p-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <span className="at-eyebrow">Dossier {result.reference}</span>
+          <span className="at-eyebrow">
+            {t("suivi.dossier")} {result.reference}
+          </span>
           <h2 className="at-display mt-2 text-2xl">
-            {STATUS_LABEL[result.status] ?? "Statut inconnu"}
+            {statusLabel(t, result.status) ?? t("suivi.status.unknown")}
           </h2>
         </div>
         <div className="sm:text-right">
-          <p className="text-sm text-muted-foreground">Rendez-vous</p>
+          <p className="text-sm text-muted-foreground">{t("suivi.appointment")}</p>
           <p className="font-medium">
-            {formatDateFr(result.slot_date)} · {PERIOD_LABEL[result.slot_period]}
-            {result.slot_hour ? ` à ${result.slot_hour}` : ""}
+            {formatDateFr(result.slot_date)} · {periodText}
+            {result.slot_hour ? t("suivi.at", [result.slot_hour]) : ""}
           </p>
           <p className="mt-2 flex items-center justify-start gap-2 font-mono text-[10px] uppercase text-muted-foreground sm:justify-end">
             <RadioTower className={`size-3 ${live ? "animate-pulse text-primary" : ""}`} />
-            Actualisé à{" "}
+            {t("suivi.updated")}{" "}
             {new Date(updatedAt).toLocaleTimeString("fr-FR", {
               hour: "2-digit",
               minute: "2-digit",
@@ -294,26 +332,23 @@ function StatusResult({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
-        <p className="max-w-sm text-sm text-muted-foreground">
-          Gardez ce code sous la main : scannez-le depuis votre téléphone pour retrouver le dossier
-          à tout moment.
-        </p>
+        <p className="max-w-sm text-sm text-muted-foreground">{t("suivi.qr.hint")}</p>
         <div className="flex flex-wrap items-center gap-6">
           <Button variant="outline" size="sm" onClick={() => downloadInvoicePdf(result)}>
             <FileDown className="mr-2 size-4" />
-            Télécharger le reçu (PDF)
+            {t("suivi.invoice")}
           </Button>
           <QrCode
             value={`https://allotechno.africa/suivi?ref=${result.reference}&code=${code}`}
-            label={`Dossier ${result.reference}`}
-            caption="QR code de suivi du dossier"
+            label={`${t("suivi.dossier")} ${result.reference}`}
+            caption={t("suivi.qr.caption")}
           />
         </div>
       </div>
 
       {!isCancelled && (
         <div className="mt-10">
-          <span className="at-eyebrow">Avancement de la réparation</span>
+          <span className="at-eyebrow">{t("suivi.progress")}</span>
           <ol className="mt-6">
             {MILESTONES.map((milestone, i) => {
               const Icon = milestone.icon;
@@ -348,13 +383,13 @@ function StatusResult({
                           done || current ? "text-foreground" : "text-muted-foreground"
                         }`}
                       >
-                        {milestone.label}
+                        {t(milestone.label)}
                       </p>
-                      <p className="mt-0.5 text-sm text-muted-foreground">{milestone.detail}</p>
+                      <p className="mt-0.5 text-sm text-muted-foreground">{t(milestone.detail)}</p>
                     </div>
                     {current ? (
                       <span className="rounded-full border border-primary/50 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary">
-                        En cours
+                        {t("suivi.inProgress")}
                       </span>
                     ) : reachedAt ? (
                       <time className="font-mono text-[10px] uppercase text-muted-foreground">
@@ -379,30 +414,28 @@ function StatusResult({
 
       {isCancelled && (
         <div className="mt-8 border border-destructive/30 bg-destructive/10 p-6 text-center">
-          <p className="text-lg font-bold text-destructive">Dossier annulé</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Ce dossier a été annulé. Contactez-nous pour plus d'informations.
-          </p>
+          <p className="text-lg font-bold text-destructive">{t("suivi.cancelled")}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t("suivi.cancelled.text")}</p>
         </div>
       )}
 
       <div className="mt-8 grid gap-4 border-t border-border pt-8 md:grid-cols-2">
         <div>
-          <span className="at-eyebrow">Appareil</span>
+          <span className="at-eyebrow">{t("suivi.category.device")}</span>
           <p className="mt-1 text-sm">{result.device}</p>
         </div>
         <div>
-          <span className="at-eyebrow">Panne signalée</span>
+          <span className="at-eyebrow">{t("suivi.category.issue")}</span>
           <p className="mt-1 text-sm">{result.issue}</p>
         </div>
         <div>
-          <span className="at-eyebrow">Mode de dépôt</span>
+          <span className="at-eyebrow">{t("suivi.category.mode")}</span>
           <p className="mt-1 text-sm">
-            {result.mode === "domicile" ? "Enlèvement à domicile" : "Dépôt en boutique"}
+            {result.mode === "domicile" ? t("suivi.mode.home") : t("suivi.mode.shop")}
           </p>
         </div>
         <div>
-          <span className="at-eyebrow">Paiement</span>
+          <span className="at-eyebrow">{t("suivi.category.payment")}</span>
           <p className="mt-1 text-sm">
             {result.payment === "mtn"
               ? "MTN Mobile Money"
@@ -410,13 +443,13 @@ function StatusResult({
                 ? "Moov Money"
                 : result.payment === "celtiis"
                   ? "Celtiis"
-                  : "Espèces"}
+                  : t("suivi.payment.cash")}
           </p>
         </div>
       </div>
 
       <div className="mt-8 border-t border-border pt-8">
-        <span className="at-eyebrow">Journal de l'atelier</span>
+        <span className="at-eyebrow">{t("suivi.journal")}</span>
         <TimelineFeed entries={timeline} />
       </div>
 
@@ -424,11 +457,13 @@ function StatusResult({
         {reschedulable && (
           <Button variant="outline" onClick={() => setRescheduling((v) => !v)}>
             <CalendarClock className="size-3.5" />
-            {rescheduling ? "Masquer" : "Reprogrammer le rendez-vous"}
+            {rescheduling ? t("suivi.hide") : t("suivi.reschedule")}
           </Button>
         )}
         <Button asChild variant="technicalOutline">
-          <Link to="/reservation">Nouvelle réservation</Link>
+          <Link to="/$locale/reservation" params={{ locale }}>
+            {t("suivi.new")}
+          </Link>
         </Button>
       </div>
 
@@ -449,12 +484,9 @@ function StatusResult({
 }
 
 function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
+  const { t } = useI18n();
   if (entries.length === 0) {
-    return (
-      <p className="mt-3 text-sm text-muted-foreground">
-        Aucun événement enregistré pour l'instant.
-      </p>
-    );
+    return <p className="mt-3 text-sm text-muted-foreground">{t("suivi.timeline.empty")}</p>;
   }
 
   return (
@@ -468,8 +500,8 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
           />
           <p className="text-sm font-semibold">
             {e.old_status
-              ? `${STATUS_LABEL[e.old_status]} → ${STATUS_LABEL[e.new_status]}`
-              : `Dossier créé — ${STATUS_LABEL[e.new_status]}`}
+              ? `${statusLabel(t, e.old_status)} → ${statusLabel(t, e.new_status)}`
+              : t("suivi.timeline.created", [statusLabel(t, e.new_status)])}
           </p>
           <p className="font-mono text-[10px] uppercase text-muted-foreground">
             {new Date(e.created_at).toLocaleString("fr-FR", {
@@ -487,10 +519,11 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
 }
 
 function SuiviSkeleton() {
+  const { t } = useI18n();
   return (
     <div
       aria-busy="true"
-      aria-label="Chargement du dossier"
+      aria-label={t("suivi.loading")}
       className="mt-8 space-y-6 border border-border bg-card p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-4">

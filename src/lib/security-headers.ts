@@ -1,40 +1,48 @@
 const SUPABASE_URL = process.env["SUPABASE_URL"] ?? "";
 const SUPABASE_ORIGIN = SUPABASE_URL ? new URL(SUPABASE_URL).origin : "";
 
-// La SSR de TanStack Start injecte des scripts inline (JSON-LD + hydration
-// `$tsr`), qu'on ne peut pas couvrir avec des hashes/nonces sans une importante
-// re-architecture. On garde donc `script-src 'unsafe-inline'` mais on durcit
-// tout le reste. Toute politique ajoutée ici doit rester cohérente avec le
-// rendu réel (voir src/routes/__root.tsx et contact.tsx pour l'iframe OSM).
+// En-têtes statiques, indépendants de la requête. Le CSP n'est PAS dans cette
+// liste : il est strict et dépend d'un nonce généré par requête (voir
+// buildContentSecurityPolicy + le middleware CSP dans src/start.ts), et il est
+// posé par la middle pour rester cohérent avec le nonce taggé sur les scripts.
 export const SECURITY_HEADERS: Record<string, string> = {
   // Force HTTPS sur tout le domaine
   "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
-  // Empêche le site d'être embarqué dans un <iframe> (clickjacking)
+  // Empêche le site d'être enclavé dans une <iframe> (clickjacking). La
+  // directive frame-ancestors du CSP renforce ceci de manière explicite.
   "x-frame-options": "DENY",
-  "frame-ancestors": "'none'", // via CSP ci-dessous, redondant mais explicite
   // Ne jamais laisser le navigateur deviner le MIME (XSS par type confusion)
   "x-content-type-options": "nosniff",
   // Réduit les données envoyées dans le Referer (sorties vers l'extérieur)
   "referrer-policy": "strict-origin-when-cross-origin",
   // Restreint les API navigateur exposées aux pages
   "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
-  // Les styles inline sont requis par le runtime Tailwind + la feuille Google Fonts
-  "content-security-policy": [
+};
+
+// CSP stricte, construite par requête avec un nonce unique. `script-src`
+// n'utilise plus 'unsafe-inline' : chaque script inline/d'a occurrence porté
+// par TanStack Start reçoit automatiquement l'attribut nonce (voir
+// router.options.ssr.nonce), et les scripts « loader » sont autorisés par
+// 'strict-dynamic'. `style-src 'unsafe-inline'` reste nécessaire pour le
+// runtime Tailwind et la feuille Google Fonts.
+export function buildContentSecurityPolicy(nonce: string): string {
+  return [
     "default-src 'self'",
     `connect-src 'self' ${SUPABASE_ORIGIN} https://api.supabase.co`,
     `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com`,
     "font-src 'self' data: https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    // scripts inline exigés par la SSR TanStack (JSON-LD + hydration)
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    `script-src 'self' 'strict-dynamic' 'nonce-${nonce}' 'unsafe-eval'`,
     // Carte OpenStreetMap embarquée sur /contact
     "frame-src 'self' https://www.openstreetmap.org",
+    // Empêche d'embarquer le site dans une <iframe> externe
+    "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "upgrade-insecure-requests",
-  ].join("; "),
-};
+  ].join("; ");
+}
 
 export function applySecurityHeaders(headers: Headers): void {
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {

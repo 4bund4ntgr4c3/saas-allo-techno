@@ -35,6 +35,90 @@ export type Database = {
         };
         Relationships: [];
       };
+      blog_posts: {
+        Row: {
+          body: string;
+          category: string;
+          date: string;
+          excerpt: string;
+          id: string;
+          locale: string;
+          reading_time: string;
+          slug: string;
+          title: string;
+        };
+        Insert: {
+          body?: string;
+          category?: string;
+          date: string;
+          excerpt: string;
+          id?: string;
+          locale?: string;
+          reading_time?: string;
+          slug: string;
+          title: string;
+        };
+        Update: {
+          body?: string;
+          category?: string;
+          date?: string;
+          excerpt?: string;
+          id?: string;
+          locale?: string;
+          reading_time?: string;
+          slug?: string;
+          title?: string;
+        };
+        Relationships: [];
+      };
+      inventory: {
+        Row: {
+          quantity: number;
+          slug: string;
+          updated_at: string;
+        };
+        Insert: {
+          quantity?: number;
+          slug: string;
+          updated_at?: string;
+        };
+        Update: {
+          quantity?: number;
+          slug?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      reviews: {
+        Row: {
+          city: string;
+          created_at: string;
+          device: string;
+          id: string;
+          name: string;
+          rating: number;
+          text: string;
+        };
+        Insert: {
+          city?: string;
+          created_at?: string;
+          device?: string;
+          id?: string;
+          name: string;
+          rating: number;
+          text: string;
+        };
+        Update: {
+          city?: string;
+          created_at?: string;
+          device?: string;
+          id?: string;
+          name?: string;
+          rating?: number;
+          text?: string;
+        };
+        Relationships: [];
+      };
       analytics_events: {
         Row: {
           brand: string | null;
@@ -554,6 +638,10 @@ export type Database = {
         }[];
       };
       claim_first_admin: { Args: never; Returns: boolean };
+      decrement_inventory: {
+        Args: { _slug: string; _qty: number };
+        Returns: boolean;
+      };
       get_reservation_status: {
         Args: { _reference: string };
         Returns: {

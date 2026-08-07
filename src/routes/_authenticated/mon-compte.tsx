@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { absoluteUrl } from "@/data/catalog/company";
 import { downloadInvoicePdf } from "@/lib/invoice";
+import { useI18n } from "@/lib/i18n/context";
 import {
   PERIOD_LABEL,
   STATUS_LABEL,
@@ -55,6 +56,7 @@ const STATUS_TONE: Record<string, string> = {
 function Dashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { locale } = useI18n();
   const { user } = Route.useRouteContext();
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
@@ -144,7 +146,9 @@ function Dashboard() {
           </div>
           <div className="flex gap-3">
             <Button asChild variant="technical" size="sm">
-              <Link to="/reservation">Nouvelle réservation</Link>
+              <Link to="/$locale/reservation" params={{ locale }}>
+                Nouvelle réservation
+              </Link>
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link to="/admin">Administration</Link>
@@ -174,7 +178,9 @@ function Dashboard() {
                   Réservez un créneau et retrouvez ici l'avancement de votre réparation.
                 </p>
                 <Button asChild variant="primaryBlock" size="lg" className="mt-6">
-                  <Link to="/reservation">Réserver une réparation</Link>
+                  <Link to="/$locale/reservation" params={{ locale }}>
+                    Réserver une réparation
+                  </Link>
                 </Button>
               </div>
             )}

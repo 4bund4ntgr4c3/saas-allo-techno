@@ -1,7 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/reservation";
+import type { Locale } from "@/lib/i18n/locales";
 
-export const Route = createFileRoute("/reservation")({
+export const Route = createFileRoute("/$locale/reservation")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { device?: string; panne?: string; date?: string; creneau?: string; heure?: string } => ({
@@ -12,16 +17,15 @@ export const Route = createFileRoute("/reservation")({
     ...(typeof search["heure"] === "string" ? { heure: search["heure"] as string } : {}),
   }),
 
-  head: () => ({
-    meta: [
-      { title: "Réserver une réparation — Allô Techno Abomey-Calavi" },
-      {
-        name: "description",
-        content:
-          "Réservez votre créneau de réparation à Abomey-Calavi : disponibilités en temps réel, dépôt en boutique ou enlèvement à domicile.",
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    return {
+      meta: [
+        { title: translate(locale, "reservation.meta.title") },
+        { name: "description", content: translate(locale, "reservation.meta.description") },
+      ],
+    };
+  },
   component: ReservationRedirect,
 });
 
@@ -33,10 +37,11 @@ export const Route = createFileRoute("/reservation")({
 function ReservationRedirect() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const { locale } = useI18n();
 
   useEffect(() => {
-    navigate({ to: "/reparations", search, replace: true });
-  }, [navigate, search]);
+    navigate({ to: "/$locale/reparations", params: { locale }, search, replace: true });
+  }, [navigate, search, locale]);
 
   return null;
 }

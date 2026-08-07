@@ -13,6 +13,7 @@ const shopOrderSchema = z.object({
   lines: z
     .array(
       z.object({
+        slug: z.string().trim().min(1),
         label: z.string().trim().min(1).max(200),
         qty: z.number().int().positive(),
         price: z.number().nonnegative(),
@@ -37,6 +38,19 @@ export const submitShopOrder = createServerFn({ method: "POST" })
       throw new Error("La commande n'a pas pu être enregistrée. Réessayez.");
     }
     const reference = refData as string;
+
+    // Réserver le stock avant de créer la commande. En cas d'échec (table
+    // non migrée, stock insuffisant), on annule la commande côté client.
+    const { reserveInventory } = await import("@/lib/content.functions");
+    for (const line of data.lines) {
+      const ok = await reserveInventory(supabaseAdmin, line.slug, line.qty);
+      if (!ok) {
+        console.warn(`[shop] stock refused for ${line.slug} ×${line.qty}`);
+        throw new Error(
+          `Stock insuffisant ou indisponible pour « ${line.label} ». Réessayez plus tard ou contactez-nous.`,
+        );
+      }
+    }
 
     const detail = data.lines
       .map((l) => `• ${l.qty} × ${l.label} — ${l.price.toLocaleString("fr-FR")} FCFA`)

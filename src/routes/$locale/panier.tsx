@@ -8,23 +8,27 @@ import { MobileMoneyBar } from "@/components/site/Blocks";
 import { DELIVERY_OPTIONS, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { submitShopOrder } from "@/lib/shop.functions";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/panier";
+import type { Locale } from "@/lib/i18n/locales";
 
-export const Route = createFileRoute("/panier")({
-  head: () => ({
-    meta: [
-      { title: "Panier & commande d'accessoires — Allô Techno" },
-      {
-        name: "description",
-        content:
-          "Validez votre commande d'accessoires : retrait en boutique à Abomey-Calavi ou livraison, paiement MTN MoMo, Moov Money ou espèces.",
-      },
-      { property: "og:title", content: "Panier — Allô Techno" },
-      {
-        property: "og:description",
-        content: "Commande d'accessoires avec retrait ou livraison au Bénin.",
-      },
-    ],
-  }),
+export const Route = createFileRoute("/$locale/panier")({
+  head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    return {
+      meta: [
+        { title: translate(locale, "panier.meta.title") },
+        { name: "description", content: translate(locale, "panier.meta.description") },
+        { property: "og:title", content: translate(locale, "panier.meta.og.title") },
+        {
+          property: "og:description",
+          content: translate(locale, "panier.meta.og.description"),
+        },
+      ],
+    };
+  },
   component: Panier,
 });
 
@@ -34,6 +38,7 @@ type Order = { ref: string; total: number; delivery: string; payment: string; na
 
 function Panier() {
   const cart = useCart();
+  const { locale, t } = useI18n();
   const placeOrder = useServerFn(submitShopOrder);
   const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
@@ -50,10 +55,10 @@ function Panier() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: { name?: string; phone?: string; address?: string } = {};
-    if (form.name.trim().length < 3) next.name = "Indiquez votre nom complet.";
-    if (!/^[+0-9\s]{8,}$/.test(form.phone.trim())) next.phone = "Numéro de téléphone invalide.";
+    if (form.name.trim().length < 3) next.name = t("panier.error.name");
+    if (!/^[+0-9\s]{8,}$/.test(form.phone.trim())) next.phone = t("panier.error.phone");
     if (option.id !== "retrait" && form.address.trim().length < 6)
-      next.address = "Précisez l'adresse de livraison.";
+      next.address = t("panier.error.address");
     setErrors(next);
     if (Object.keys(next).length > 0) return;
     if (submitting) return;
@@ -70,6 +75,7 @@ function Panier() {
           payment,
           total,
           lines: cart.items.map((i) => ({
+            slug: i.accessory.slug,
             label: i.accessory.name,
             qty: i.qty,
             price: i.accessory.price,
@@ -78,9 +84,9 @@ function Panier() {
       });
       setOrder({ ref: reference, total, delivery: option.label, payment, name: form.name.trim() });
       cart.clear();
-      toast.success(`Commande ${reference} enregistrée`);
+      toast.success(t("panier.confirmed.toast", [reference]));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Commande impossible, réessayez.");
+      toast.error(err instanceof Error ? err.message : t("panier.error.submit"));
     } finally {
       setSubmitting(false);
     }
@@ -92,35 +98,36 @@ function Panier() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="border border-border bg-card p-8">
             <CheckCircle2 className="size-8 text-primary" />
-            <h1 className="at-display mt-6 text-3xl">Commande enregistrée</h1>
+            <h1 className="at-display mt-6 text-3xl">{t("panier.confirmed.title")}</h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              Merci {order.name}. Un conseiller vous confirme la disponibilité par WhatsApp au{" "}
-              {COMPANY.whatsapp} dans les 30 minutes ouvrées.
+              {t("panier.confirmed.text", [order.name, COMPANY.whatsapp])}
             </p>
             <dl className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
               <div className="bg-surface p-4">
-                <dt className="at-eyebrow">Numéro de commande</dt>
+                <dt className="at-eyebrow">{t("panier.confirmed.orderRef")}</dt>
                 <dd className="mt-1 font-mono text-sm">{order.ref}</dd>
               </div>
               <div className="bg-surface p-4">
-                <dt className="at-eyebrow">Montant à régler</dt>
+                <dt className="at-eyebrow">{t("panier.confirmed.amount")}</dt>
                 <dd className="mt-1 font-mono text-sm">{formatFcfa(order.total)}</dd>
               </div>
               <div className="bg-surface p-4">
-                <dt className="at-eyebrow">Mode de réception</dt>
+                <dt className="at-eyebrow">{t("panier.confirmed.delivery")}</dt>
                 <dd className="mt-1 font-mono text-xs">{order.delivery}</dd>
               </div>
               <div className="bg-surface p-4">
-                <dt className="at-eyebrow">Paiement</dt>
+                <dt className="at-eyebrow">{t("panier.confirmed.payment")}</dt>
                 <dd className="mt-1 font-mono text-xs">{order.payment}</dd>
               </div>
             </dl>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild variant="technical">
-                <Link to="/boutique">Continuer mes achats</Link>
+                <Link to="/$locale/boutique" params={{ locale }}>
+                  {t("panier.continue")}
+                </Link>
               </Button>
               <Button asChild variant="technicalOutline">
-                <Link to="/">Retour à l'accueil</Link>
+                <Link to="/">{t("action.retour-accueil")}</Link>
               </Button>
             </div>
           </div>
@@ -132,17 +139,17 @@ function Panier() {
   return (
     <section className="py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <span className="at-eyebrow mb-4 block">Boutique</span>
-        <h1 className="at-display text-4xl md:text-5xl">Votre panier</h1>
+        <span className="at-eyebrow mb-4 block">{t("panier.shop")}</span>
+        <h1 className="at-display text-4xl md:text-5xl">{t("panier.title")}</h1>
 
         {cart.items.length === 0 ? (
           <div className="mt-10 border border-border bg-card p-10 text-center">
             <ShoppingBag className="mx-auto size-8 text-muted-foreground" />
-            <p className="mt-4 text-sm text-muted-foreground">
-              Votre panier est vide pour le moment.
-            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{t("panier.empty")}</p>
             <Button asChild variant="technical" className="mt-6">
-              <Link to="/boutique">Voir les accessoires</Link>
+              <Link to="/$locale/boutique" params={{ locale }}>
+                {t("panier.browse")}
+              </Link>
             </Button>
           </div>
         ) : (
@@ -154,20 +161,20 @@ function Panier() {
                     <span className="at-eyebrow">{accessory.category}</span>
                     <h2 className="mt-1 text-sm font-bold tracking-tight">
                       <Link
-                        to="/boutique/$slug"
-                        params={{ slug: accessory.slug }}
+                        to="/$locale/boutique/$slug"
+                        params={{ locale, slug: accessory.slug }}
                         className="hover:text-primary"
                       >
                         {accessory.name}
                       </Link>
                     </h2>
                     <div className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                      {formatFcfa(accessory.price)} l'unité
+                      {formatFcfa(accessory.price)} {t("panier.perUnit")}
                     </div>
                   </div>
                   <div className="flex items-center border border-border">
                     <button
-                      aria-label={`Diminuer ${accessory.name}`}
+                      aria-label={t("panier.decrease", [accessory.name])}
                       onClick={() => cart.setQty(accessory.slug, qty - 1)}
                       className="size-10 font-mono text-sm"
                     >
@@ -175,7 +182,7 @@ function Panier() {
                     </button>
                     <span className="w-9 text-center font-mono text-sm">{qty}</span>
                     <button
-                      aria-label={`Augmenter ${accessory.name}`}
+                      aria-label={t("panier.increase", [accessory.name])}
                       onClick={() => cart.setQty(accessory.slug, qty + 1)}
                       className="size-10 font-mono text-sm"
                     >
@@ -186,7 +193,7 @@ function Panier() {
                     {formatFcfa(accessory.price * qty)}
                   </div>
                   <button
-                    aria-label={`Retirer ${accessory.name}`}
+                    aria-label={t("panier.remove", [accessory.name])}
                     onClick={() => cart.remove(accessory.slug)}
                     className="grid size-10 place-items-center border border-border text-muted-foreground hover:text-destructive"
                   >
@@ -198,32 +205,32 @@ function Panier() {
 
             <form onSubmit={submit} className="space-y-px border border-border bg-border">
               <div className="bg-card p-6">
-                <h2 className="at-display text-xl">Récapitulatif</h2>
+                <h2 className="at-display text-xl">{t("panier.summary")}</h2>
                 <dl className="mt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Sous-total</dt>
+                    <dt className="text-muted-foreground">{t("panier.subtotal")}</dt>
                     <dd className="font-mono">{formatFcfa(cart.subtotal)}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Livraison ({option.eta})</dt>
+                    <dt className="text-muted-foreground">{t("panier.delivery", [option.eta])}</dt>
                     <dd className="font-mono">
-                      {shipping === 0 ? "Offerte" : formatFcfa(shipping)}
+                      {shipping === 0 ? t("panier.free") : formatFcfa(shipping)}
                     </dd>
                   </div>
                   <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
-                    <dt>Total</dt>
+                    <dt>{t("panier.total")}</dt>
                     <dd className="font-mono text-primary">{formatFcfa(total)}</dd>
                   </div>
                 </dl>
                 {!freeShipping && (
                   <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Livraison offerte dès {formatFcfa(FREE_DELIVERY_FROM)}
+                    {t("panier.freeDelivery", [formatFcfa(FREE_DELIVERY_FROM)])}
                   </p>
                 )}
               </div>
 
               <fieldset className="bg-card p-6">
-                <legend className="at-eyebrow mb-3">Mode de réception</legend>
+                <legend className="at-eyebrow mb-3">{t("panier.deliveryMethod")}</legend>
                 <div className="space-y-2">
                   {DELIVERY_OPTIONS.map((o) => (
                     <label key={o.id} className="flex items-center gap-3 text-sm">
@@ -237,7 +244,7 @@ function Panier() {
                       />
                       <span className="flex-1">{o.label}</span>
                       <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                        {o.fee === 0 ? "gratuit" : formatFcfa(o.fee)}
+                        {o.fee === 0 ? t("panier.freeShipping") : formatFcfa(o.fee)}
                       </span>
                     </label>
                   ))}
@@ -245,11 +252,11 @@ function Panier() {
               </fieldset>
 
               <div className="bg-card p-6">
-                <h3 className="at-eyebrow mb-3">Vos coordonnées</h3>
+                <h3 className="at-eyebrow mb-3">{t("panier.contact")}</h3>
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="name" className="mb-1 block text-xs font-semibold">
-                      Nom complet
+                      {t("panier.name")}
                     </label>
                     <input
                       id="name"
@@ -261,7 +268,7 @@ function Panier() {
                   </div>
                   <div>
                     <label htmlFor="phone" className="mb-1 block text-xs font-semibold">
-                      Téléphone / WhatsApp
+                      {t("panier.phone")}
                     </label>
                     <input
                       id="phone"
@@ -276,7 +283,10 @@ function Panier() {
                   </div>
                   <div>
                     <label htmlFor="email" className="mb-1 block text-xs font-semibold">
-                      E-mail <span className="font-normal text-muted-foreground">(facultatif)</span>
+                      {t("panier.email")}{" "}
+                      <span className="font-normal text-muted-foreground">
+                        {t("panier.emailOptional")}
+                      </span>
                     </label>
                     <input
                       id="email"
@@ -289,7 +299,7 @@ function Panier() {
                   {option.id !== "retrait" && (
                     <div>
                       <label htmlFor="address" className="mb-1 block text-xs font-semibold">
-                        Adresse de livraison
+                        {t("panier.address")}
                       </label>
                       <input
                         id="address"
@@ -304,7 +314,7 @@ function Panier() {
                   )}
                   <div>
                     <label htmlFor="payment" className="mb-1 block text-xs font-semibold">
-                      Moyen de paiement
+                      {t("panier.paymentMethod")}
                     </label>
                     <select
                       id="payment"
@@ -321,7 +331,7 @@ function Panier() {
                   </div>
                   <div>
                     <label htmlFor="note" className="mb-1 block text-xs font-semibold">
-                      Précisions (modèle d'appareil, couleur…)
+                      {t("panier.note")}
                     </label>
                     <textarea
                       id="note"
@@ -342,10 +352,10 @@ function Panier() {
                   {submitting ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      Enregistrement…
+                      {t("panier.saving")}
                     </>
                   ) : (
-                    <>Valider la commande — {formatFcfa(total)}</>
+                    <>{t("panier.submit", [formatFcfa(total)])}</>
                   )}
                 </Button>
               </div>

@@ -20,6 +20,7 @@ import {
 import { DialogTitle } from "@/components/ui/dialog";
 import { ACCESSORIES, BRANDS, CATEGORIES, DEVICES, FAQ, POSTS, brandName } from "@/data/catalog";
 import { SEARCH_OPEN_EVENT } from "@/lib/search-events";
+import { useI18n } from "@/lib/i18n/context";
 
 type Target = { to: string; search?: { categorie: string } };
 
@@ -149,6 +150,7 @@ export function SearchModal() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -322,7 +324,7 @@ export function SearchModal() {
               {groups.categories.map((c) => (
                 <CommandItem key={c.id} value={c.id} onSelect={() => go(c)}>
                   <c.icon />
-                  <span>{c.label}</span>
+                  <span>{t(c.label)}</span>
                   <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
                     {c.hint}
                   </span>
@@ -337,7 +339,7 @@ export function SearchModal() {
                   <b.icon />
                   <span>{b.label}</span>
                   <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
-                    {b.hint}
+                    {t(b.hint)}
                   </span>
                 </CommandItem>
               ))}
@@ -387,7 +389,7 @@ export function SearchModal() {
               {groups.faq.map((f) => (
                 <CommandItem key={f.id} value={f.id} onSelect={() => go(f)}>
                   <f.icon />
-                  <span className="truncate">{f.label}</span>
+                  <span className="truncate">{t(f.label)}</span>
                   <span className="ml-auto shrink-0 pl-4 text-xs text-muted-foreground">
                     {f.hint}
                   </span>

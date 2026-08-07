@@ -10,18 +10,33 @@ import {
   FileDown,
   KeyRound,
   MailPlus,
+  LayoutGrid,
+  FileText,
+  Pencil,
+  Plus,
   RadioTower,
   ShieldAlert,
   ShieldCheck,
+  Trash2,
   Users,
   Wrench,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { QrCode } from "@/components/site/QrCode";
+import { Stars } from "@/components/site/Blocks";
+import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import { setReservationStatus } from "@/lib/admin.functions";
 import { confirmOtp, disableOtp, enrollOtp, verifyOtpLogin } from "@/lib/otp.functions";
+import {
+  deleteBlogPost,
+  deleteReview,
+  setInventory,
+  upsertBlogPost,
+  upsertReview,
+  type BlogPost,
+} from "@/lib/content.functions";
 import {
   downloadInvoicePdf,
   downloadReservationsCsv,
@@ -93,9 +108,10 @@ function AdminPage() {
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [tab, setTab] = useState<"dossiers" | "equipe" | "leads" | "analytics" | "securite">(
-    "dossiers",
-  );
+  const [view, setView] = useState<"liste" | "kanban">("liste");
+  const [tab, setTab] = useState<
+    "dossiers" | "equipe" | "leads" | "analytics" | "securite" | "contenu"
+  >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
     Number(sessionStorage.getItem("at-otp-unlocked") ?? 0),
@@ -442,6 +458,14 @@ function AdminPage() {
           <ShieldCheck className="mr-2 size-4" />
           Sécurité
         </Button>
+        <Button
+          variant={tab === "contenu" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("contenu")}
+        >
+          <FileText className="mr-2 size-4" />
+          Contenu
+        </Button>
       </div>
 
       {tab === "dossiers" && (
@@ -494,115 +518,132 @@ function AdminPage() {
                 </select>
               </>
             )}
-          </div>
-
-          <div className="mb-6 flex flex-wrap items-center gap-3">
             <Button
               variant="outline"
               size="sm"
-              disabled={rows.length === 0}
-              onClick={() => downloadReservationsCsv(rows)}
+              onClick={() => setView(view === "liste" ? "kanban" : "liste")}
             >
-              <FileDown className="mr-2 size-4" />
-              Exporter CSV ({rows.length})
+              <LayoutGrid className="size-4" />
+              {view === "liste" ? "Vue Kanban" : "Vue liste"}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={rows.length === 0}
-              onClick={() => downloadReservationsPdf(rows)}
-            >
-              <FileDown className="mr-2 size-4" />
-              Exporter PDF ({rows.length})
-            </Button>
-            <span className="text-xs text-muted-foreground">
-              Export des dossiers affichés (filtres appliqués)
-            </span>
           </div>
 
-          {reservations.isLoading ? (
-            <p className="text-sm text-muted-foreground">Chargement des dossiers…</p>
-          ) : rows.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Aucun dossier ne correspond à ce filtre.
-            </p>
+          {view === "kanban" ? (
+            <KanbanBoard rows={rows} updateStatus={updateStatus.mutate} />
           ) : (
-            <ul className="space-y-4">
-              {rows.map((r) => (
-                <li key={r.id} className="rounded-sm border border-border bg-card p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
-                      <h2 className="text-lg font-semibold">
-                        {r.customer_name} — {r.device}
-                      </h2>
-                      <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
-                      </p>
-                    </div>
-                    <span
-                      className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
-                    >
-                      {STATUS_LABEL[r.status]}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => downloadInvoicePdf(r)}
-                      aria-label={`Reçu PDF du dossier ${r.reference}`}
-                    >
-                      <FileDown className="size-4" />
-                    </Button>
-                  </div>
+            <>
+              <div className="mb-6 flex flex-wrap items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={rows.length === 0}
+                  onClick={() => downloadReservationsCsv(rows)}
+                >
+                  <FileDown className="mr-2 size-4" />
+                  Exporter CSV ({rows.length})
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={rows.length === 0}
+                  onClick={() => downloadReservationsPdf(rows)}
+                >
+                  <FileDown className="mr-2 size-4" />
+                  Exporter PDF ({rows.length})
+                </Button>
+                <span className="text-xs text-muted-foreground">
+                  Export des dossiers affichés (filtres appliqués)
+                </span>
+              </div>
 
-                  <StageControls
-                    current={r.status}
-                    pending={updateStatus.isPending}
-                    onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
-                    historyOpen={openId === r.id}
-                    onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
-                  />
+              {reservations.isLoading ? (
+                <p className="text-sm text-muted-foreground">Chargement des dossiers…</p>
+              ) : rows.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  Aucun dossier ne correspond à ce filtre.
+                </p>
+              ) : (
+                <ul className="space-y-4">
+                  {rows.map((r) => (
+                    <li key={r.id} className="rounded-sm border border-border bg-card p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                          <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
+                          <h2 className="text-lg font-semibold">
+                            {r.customer_name} — {r.device}
+                          </h2>
+                          <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
+                        >
+                          {STATUS_LABEL[r.status]}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => downloadInvoicePdf(r)}
+                          aria-label={`Reçu PDF du dossier ${r.reference}`}
+                        >
+                          <FileDown className="size-4" />
+                        </Button>
+                      </div>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-                    <Wrench className="size-3.5 text-muted-foreground" />
-                    <span className="text-muted-foreground">Technicien :</span>
-                    {isTechnicien ? (
-                      <strong>
-                        {latestTechByReservation.get(r.id)?.technician_id === user.id
-                          ? "Vous"
-                          : "Non assigné à vous"}
-                      </strong>
-                    ) : (
-                      <select
-                        className={`${field} max-w-56 py-1.5 text-xs`}
-                        value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
-                        disabled={assignTech.isPending}
-                        onChange={(e) =>
-                          assignTech.mutate({ reservationId: r.id, technicianId: e.target.value })
-                        }
-                      >
-                        <option value="">Non assigné</option>
-                        {(technicians.data ?? []).map((t) => (
-                          <option key={t.id} value={t.id}>
-                            {t.full_name ?? "Technicien"}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                    <span className="text-muted-foreground">
-                      {latestTechByReservation.get(r.id)
-                        ? (technicianName.get(
-                            latestTechByReservation.get(r.id)?.technician_id ?? "",
-                          ) ?? "")
-                        : ""}
-                    </span>
-                  </div>
+                      <StageControls
+                        current={r.status}
+                        pending={updateStatus.isPending}
+                        onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
+                        historyOpen={openId === r.id}
+                        onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
+                      />
 
-                  {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
-                </li>
-              ))}
-            </ul>
+                      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                        <Wrench className="size-3.5 text-muted-foreground" />
+                        <span className="text-muted-foreground">Technicien :</span>
+                        {isTechnicien ? (
+                          <strong>
+                            {latestTechByReservation.get(r.id)?.technician_id === user.id
+                              ? "Vous"
+                              : "Non assigné à vous"}
+                          </strong>
+                        ) : (
+                          <select
+                            className={`${field} max-w-56 py-1.5 text-xs`}
+                            value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
+                            disabled={assignTech.isPending}
+                            onChange={(e) =>
+                              assignTech.mutate({
+                                reservationId: r.id,
+                                technicianId: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Non assigné</option>
+                            {(technicians.data ?? []).map((t) => (
+                              <option key={t.id} value={t.id}>
+                                {t.full_name ?? "Technicien"}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                        <span className="text-muted-foreground">
+                          {latestTechByReservation.get(r.id)
+                            ? (technicianName.get(
+                                latestTechByReservation.get(r.id)?.technician_id ?? "",
+                              ) ?? "")
+                            : ""}
+                        </span>
+                      </div>
+
+                      {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </>
       )}
@@ -611,12 +652,104 @@ function AdminPage() {
       {tab === "leads" && <LeadsSection />}
       {tab === "analytics" && <AnalyticsSection />}
       {tab === "securite" && <SecuritySection />}
+      {tab === "contenu" && <ContentSection />}
     </div>
   );
 }
 
 function StatusHistory({ reservationId }: { reservationId: string }) {
   return <StatusHistoryList reservationId={reservationId} />;
+}
+
+type KanbanRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  device: string;
+  phone: string;
+  slot_date: string;
+  slot_period: Enums<"slot_period">;
+  status: Status;
+};
+
+function KanbanBoard({
+  rows,
+  updateStatus,
+}: {
+  rows: KanbanRow[];
+  updateStatus: (v: { id: string; status: Status }) => void;
+}) {
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overCol, setOverCol] = useState<Status | null>(null);
+
+  return (
+    <div className="grid gap-px border border-border bg-border lg:grid-cols-4">
+      {STATUSES.map((status) => {
+        const columnRows = rows.filter((r) => r.status === status);
+        const active = overCol === status;
+        return (
+          <div
+            key={status}
+            onDragOver={(e) => {
+              e.preventDefault();
+              if (active) return;
+              setOverCol(status);
+            }}
+            onDragLeave={() => setOverCol((c) => (c === status ? null : c))}
+            onDrop={(e) => {
+              e.preventDefault();
+              setOverCol(null);
+              if (dragId) updateStatus({ id: dragId, status });
+              setDragId(null);
+            }}
+            className={`min-h-[18rem] bg-card p-3 transition-colors ${
+              active ? "bg-primary/5" : ""
+            }`}
+          >
+            <div className="mb-3 flex items-center justify-between px-1">
+              <span
+                className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[status] ?? ""}`}
+              >
+                {STATUS_LABEL[status]}
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">{columnRows.length}</span>
+            </div>
+            <div className="space-y-2">
+              {columnRows.map((r) => (
+                <button
+                  key={r.id}
+                  draggable
+                  onDragStart={() => setDragId(r.id)}
+                  onDragEnd={() => {
+                    setDragId(null);
+                    setOverCol(null);
+                  }}
+                  className="block w-full cursor-grab rounded-sm border border-border bg-surface p-3 text-left transition-shadow hover:shadow-md active:cursor-grabbing"
+                >
+                  <p className="font-mono text-[10px] text-muted-foreground">{r.reference}</p>
+                  <p className="mt-1 text-sm font-semibold leading-snug">
+                    {r.customer_name} — {r.device}
+                  </p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
+                  </p>
+                </button>
+              ))}
+              {columnRows.length === 0 && (
+                <p className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
+                  Aucun dossier
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+      <p className="bg-card p-3 text-xs text-muted-foreground sm:col-span-2 lg:col-span-4">
+        Glissez-déposez une carte dans une autre colonne pour changer son statut. Les changements
+        sont enregistrés immédiatement et notifiés à l'équipe.
+      </p>
+    </div>
+  );
 }
 
 function StageControls({
@@ -1181,6 +1314,588 @@ function AnalyticsSection() {
           </table>
         </div>
       </div>
+    </div>
+  );
+}
+
+const contentTabs = [
+  { id: "blog", label: "Articles" },
+  { id: "avis", label: "Avis clients" },
+  { id: "stock", label: "Stock boutique" },
+] as const;
+
+type ContentTab = (typeof contentTabs)[number]["id"];
+
+function ContentSection() {
+  const [sub, setSub] = useState<ContentTab>("blog");
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-2">
+        {contentTabs.map((t) => (
+          <Button
+            key={t.id}
+            variant={sub === t.id ? "technical" : "outline"}
+            size="sm"
+            onClick={() => setSub(t.id)}
+          >
+            {t.label}
+          </Button>
+        ))}
+      </div>
+      {sub === "blog" && <BlogAdmin />}
+      {sub === "avis" && <ReviewsAdmin />}
+      {sub === "stock" && <StockAdmin />}
+    </div>
+  );
+}
+
+function BlogAdmin() {
+  const queryClient = useQueryClient();
+  const [locale, setLocale] = useState<string>("fr");
+  const postsQuery = useQuery({
+    queryKey: ["admin-blog", locale],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("slug, title, excerpt, date, category, reading_time, body, locale")
+        .eq("locale", locale)
+        .order("date", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const [editing, setEditing] = useState<Partial<BlogPost> | null>(null);
+  const [form, setForm] = useState({
+    slug: "",
+    locale: "fr",
+    title: "",
+    excerpt: "",
+    date: "",
+    category: "Guides",
+    readingTime: "5 min",
+    bodyText: "",
+  });
+
+  const upsertFn = useServerFn(upsertBlogPost);
+  const deleteFn = useServerFn(deleteBlogPost);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const startEdit = (p: BlogPost) => {
+    setForm({
+      slug: p.slug,
+      locale: p.locale ?? "fr",
+      title: p.title,
+      excerpt: p.excerpt,
+      date: p.date,
+      category: p.category,
+      readingTime: p.readingTime,
+      bodyText: p.body.join("\n"),
+    });
+    setEditing(p);
+    setError(null);
+  };
+
+  const startNew = () => {
+    setForm({
+      slug: "",
+      locale,
+      title: "",
+      excerpt: "",
+      date: new Date().toISOString().slice(0, 10),
+      category: "Guides",
+      readingTime: "5 min",
+      bodyText: "",
+    });
+    setEditing(null);
+    setError(null);
+  };
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      await upsertFn({
+        data: {
+          slug: form.slug.trim(),
+          locale: form.locale.trim(),
+          title: form.title.trim(),
+          excerpt: form.excerpt.trim(),
+          date: form.date,
+          category: form.category.trim(),
+          readingTime: form.readingTime.trim(),
+          body: form.bodyText
+            .split("\n")
+            .map((s) => s.trim())
+            .filter(Boolean),
+        },
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-blog"] });
+      toast.success("Article enregistré");
+      setEditing(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const remove = async (slug: string) => {
+    try {
+      await deleteFn({ data: { slug, locale } });
+      queryClient.invalidateQueries({ queryKey: ["admin-blog"] });
+      toast.success("Article supprimé");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+    }
+  };
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="w-full" onClick={startNew}>
+            <Plus className="mr-2 size-4" />
+            Nouvel article
+          </Button>
+          <label className="sr-only" htmlFor="blog-locale">
+            Langue
+          </label>
+          <select
+            id="blog-locale"
+            className={`${field} w-24 py-2`}
+            value={locale}
+            onChange={(e) => {
+              setLocale(e.target.value);
+              setEditing(null);
+            }}
+          >
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+          </select>
+        </div>
+        {postsQuery.isLoading ? (
+          <p className="text-sm text-muted-foreground">Chargement…</p>
+        ) : (
+          (postsQuery.data ?? []).map((p) => (
+            <div key={p.slug} className="rounded-sm border border-border bg-card p-4">
+              <p className="text-xs font-semibold">{p.title}</p>
+              <p className="mt-1 font-mono text-[10px] uppercase text-muted-foreground">
+                {p.category} · {p.date}
+                {p.locale !== "fr" ? ` · ${p.locale.toUpperCase()}` : ""}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  variant="technicalOutline"
+                  size="sm"
+                  onClick={() =>
+                    startEdit({
+                      slug: p.slug,
+                      locale: p.locale ?? locale,
+                      title: p.title,
+                      excerpt: p.excerpt,
+                      date: p.date,
+                      category: p.category,
+                      readingTime: p.reading_time,
+                      body: parsePostBody(p.body),
+                    })
+                  }
+                >
+                  <Pencil className="size-3.5" /> Modifier
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => remove(p.slug)}
+                  className="text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {(editing || form.slug) && (
+        <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">
+              {editing ? "Modifier l'article" : "Nouvel article"}
+            </p>
+            <span className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Langue : {form.locale === "en" ? "English" : "Français"}
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="at-eyebrow mb-2 block">Titre</span>
+              <input
+                className={field}
+                value={form.title}
+                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="at-eyebrow mb-2 block">Slug</span>
+              <input
+                className={field}
+                value={form.slug}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    slug: e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]+/g, "-")
+                      .replace(/^-+|-+$/g, ""),
+                  }))
+                }
+                required
+                disabled={!!editing}
+              />
+            </label>
+          </div>
+          <label className="block">
+            <span className="at-eyebrow mb-2 block">Résumé</span>
+            <textarea
+              className={`${field} h-20`}
+              value={form.excerpt}
+              onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
+              required
+            />
+          </label>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <label className="block">
+              <span className="at-eyebrow mb-2 block">Date</span>
+              <input
+                type="date"
+                className={field}
+                value={form.date}
+                onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="at-eyebrow mb-2 block">Catégorie</span>
+              <input
+                className={field}
+                value={form.category}
+                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="at-eyebrow mb-2 block">Lecture</span>
+              <input
+                className={field}
+                value={form.readingTime}
+                onChange={(e) => setForm((f) => ({ ...f, readingTime: e.target.value }))}
+                placeholder="5 min"
+                required
+              />
+            </label>
+          </div>
+          <label className="block">
+            <span className="at-eyebrow mb-2 block">Contenu (un paragraphe par ligne)</span>
+            <textarea
+              className={`${field} h-56`}
+              value={form.bodyText}
+              onChange={(e) => setForm((f) => ({ ...f, bodyText: e.target.value }))}
+              required
+            />
+          </label>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <div className="flex flex-wrap gap-3">
+            <Button type="submit" variant="technical" disabled={saving}>
+              {saving ? "Enregistrement…" : editing ? "Enregistrer les modifications" : "Publier"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setEditing(null)}
+              disabled={saving}
+            >
+              Annuler
+            </Button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function parsePostBody(raw: string): string[] {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.filter((p): p is string => typeof p === "string");
+  } catch {
+    /* ignore */
+  }
+  return [];
+}
+
+function ReviewsAdmin() {
+  const queryClient = useQueryClient();
+  const reviewsQuery = useQuery({
+    queryKey: ["admin-reviews"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("id, name, city, rating, text, device, created_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const [form, setForm] = useState({ id: "", name: "", city: "", rating: 5, text: "", device: "" });
+  const upsertFn = useServerFn(upsertReview);
+  const deleteFn = useServerFn(deleteReview);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reset = () => setForm({ id: "", name: "", city: "", rating: 5, text: "", device: "" });
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      await upsertFn({
+        data: {
+          id: form.id || undefined,
+          name: form.name.trim(),
+          city: form.city.trim(),
+          rating: form.rating,
+          text: form.text.trim(),
+          device: form.device.trim(),
+        },
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
+      toast.success(form.id ? "Avis mis à jour" : "Avis ajouté");
+      reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      await deleteFn({ data: { id } });
+      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
+      toast.success("Avis supprimé");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+    }
+  };
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+      <div className="space-y-3">
+        {(reviewsQuery.data ?? []).map((r) => (
+          <div key={r.id} className="rounded-sm border border-border bg-card p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Stars n={r.rating} />
+                <p className="text-sm font-semibold">
+                  {r.name} — {r.city || "—"}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="technicalOutline"
+                  size="sm"
+                  onClick={() =>
+                    setForm({
+                      id: r.id,
+                      name: r.name,
+                      city: r.city ?? "",
+                      rating: r.rating,
+                      text: r.text,
+                      device: r.device ?? "",
+                    })
+                  }
+                >
+                  <Pencil className="size-3.5" /> Modifier
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive"
+                  onClick={() => remove(r.id)}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">« {r.text} »</p>
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5 h-fit">
+        <h3 className="text-sm font-semibold">{form.id ? "Modifier l'avis" : "Ajouter un avis"}</h3>
+        <label className="block">
+          <span className="at-eyebrow mb-2 block">Nom</span>
+          <input
+            className={field}
+            value={form.name}
+            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            required
+          />
+        </label>
+        <label className="block">
+          <span className="at-eyebrow mb-2 block">Ville</span>
+          <input
+            className={field}
+            value={form.city}
+            onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+          />
+        </label>
+        <label className="block">
+          <span className="at-eyebrow mb-2 block">Appareil</span>
+          <input
+            className={field}
+            value={form.device}
+            onChange={(e) => setForm((f) => ({ ...f, device: e.target.value }))}
+          />
+        </label>
+        <label className="block">
+          <span className="at-eyebrow mb-2 block">Note ({form.rating}/5)</span>
+          <input
+            type="range"
+            min={1}
+            max={5}
+            step={1}
+            className="w-full"
+            value={form.rating}
+            onChange={(e) => setForm((f) => ({ ...f, rating: Number(e.target.value) }))}
+          />
+        </label>
+        <label className="block">
+          <span className="at-eyebrow mb-2 block">Texte</span>
+          <textarea
+            className={`${field} h-24`}
+            value={form.text}
+            onChange={(e) => setForm((f) => ({ ...f, text: e.target.value }))}
+            required
+          />
+        </label>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+        <div className="flex flex-wrap gap-3">
+          <Button type="submit" variant="technical" disabled={saving}>
+            {saving ? "Enregistrement…" : form.id ? "Enregistrer" : "Ajouter"}
+          </Button>
+          {form.id && (
+            <Button type="button" variant="outline" onClick={reset} disabled={saving}>
+              Annuler
+            </Button>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function StockAdmin() {
+  const queryClient = useQueryClient();
+  const stockQuery = useQuery({
+    queryKey: ["admin-stock"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("inventory")
+        .select("slug, quantity, updated_at")
+        .order("slug");
+      if (error) throw error;
+      const map = new Map<string, number>();
+      for (const row of data ?? []) map.set(row.slug, row.quantity);
+      return map;
+    },
+  });
+  const setFn = useServerFn(setInventory);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [savingSlug, setSavingSlug] = useState<string | null>(null);
+
+  const save = async (a: { slug: string; stock: number }) => {
+    const value = Number(drafts[a.slug] ?? a.stock);
+    if (!Number.isFinite(value) || value < 0) {
+      toast.error("Quantité invalide");
+      return;
+    }
+    setSavingSlug(a.slug);
+    try {
+      await setFn({ data: { slug: a.slug, quantity: value } });
+      queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
+      setDrafts((d) => {
+        const next = { ...d };
+        delete next[a.slug];
+        return next;
+      });
+      toast.success(`${a.slug} : stock mis à jour`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Mise à jour impossible");
+    } finally {
+      setSavingSlug(null);
+    }
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
+            <th className="px-4 py-2">Référence</th>
+            <th className="px-4 py-2">Désignation</th>
+            <th className="px-4 py-2">Prix</th>
+            <th className="px-4 py-2">Stock</th>
+            <th className="px-4 py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {ACCESSORIES.map((a) => {
+            const real = stockQuery.data?.get(a.slug);
+            const tracked = real !== undefined;
+            const draft = drafts[a.slug];
+            return (
+              <tr key={a.slug} className="border-b border-border">
+                <td className="px-4 py-2 font-mono text-xs uppercase">{a.slug}</td>
+                <td className="px-4 py-2">{a.name}</td>
+                <td className="px-4 py-2 font-mono">{formatFcfa(a.price)}</td>
+                <td className="px-4 py-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      className={`${field} w-28 py-1.5 text-sm`}
+                      value={draft ?? String(tracked ? (real as number) : a.stock)}
+                      onChange={(e) => setDrafts((d) => ({ ...d, [a.slug]: e.target.value }))}
+                    />
+                    {tracked && (
+                      <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                        suivi
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-2">
+                  <Button
+                    variant="technical"
+                    size="sm"
+                    disabled={savingSlug === a.slug}
+                    onClick={() => save({ slug: a.slug, stock: real ?? a.stock })}
+                  >
+                    {savingSlug === a.slug ? "…" : "Mettre à jour"}
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

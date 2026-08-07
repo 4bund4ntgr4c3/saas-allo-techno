@@ -3,6 +3,7 @@ import { Star } from "lucide-react";
 import { REVIEWS, STEPS } from "@/data/catalog/static";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 
 export function SectionHeader({
   eyebrow,
@@ -28,13 +29,14 @@ export function SectionHeader({
 }
 
 export function ProcessSteps() {
+  const { t } = useI18n();
   return (
     <div className="grid gap-px border border-border bg-border md:grid-cols-3">
       {STEPS.map((s) => (
         <div key={s.n} className="bg-card p-8">
           <span className="font-mono text-4xl font-medium text-primary">{s.n}</span>
-          <h3 className="mt-6 text-lg font-bold tracking-tight">{s.title}</h3>
-          <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
+          <h3 className="mt-6 text-lg font-bold tracking-tight">{t(s.title)}</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{t(s.text)}</p>
         </div>
       ))}
     </div>
@@ -42,8 +44,9 @@ export function ProcessSteps() {
 }
 
 export function Stars({ n }: { n: number }) {
+  const { t } = useI18n();
   return (
-    <div className="flex gap-0.5" aria-label={`${n} étoiles sur 5`}>
+    <div className="flex gap-0.5" aria-label={t("blocks.stars", [n])}>
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
@@ -54,11 +57,17 @@ export function Stars({ n }: { n: number }) {
   );
 }
 
-export function ReviewsGrid({ limit = 6 }: { limit?: number }) {
+export function ReviewsGrid({
+  limit = 6,
+  reviews = REVIEWS,
+}: {
+  limit?: number;
+  reviews?: typeof REVIEWS;
+}) {
   return (
     <div className="grid gap-px border border-border bg-border md:grid-cols-3">
-      {REVIEWS.slice(0, limit).map((r) => (
-        <figure key={r.name} className="bg-card p-8">
+      {reviews.slice(0, limit).map((r, i) => (
+        <figure key={r.name + i} className="bg-card p-8">
           <Stars n={r.rating} />
           <blockquote className="mt-4 text-sm font-medium italic">« {r.text} »</blockquote>
           <figcaption className="mt-6 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -71,9 +80,10 @@ export function ReviewsGrid({ limit = 6 }: { limit?: number }) {
 }
 
 export function MobileMoneyBar() {
+  const { t } = useI18n();
   return (
     <div className="flex flex-wrap items-center gap-4 border border-border bg-surface p-4">
-      <span className="at-eyebrow">Paiements acceptés</span>
+      <span className="at-eyebrow">{t("blocks.money.payments")}</span>
       <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
         MTN MoMo
       </span>
@@ -84,29 +94,31 @@ export function MobileMoneyBar() {
         Celtiis
       </span>
       <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
-        Espèces
+        {t("blocks.money.cash")}
       </span>
       <span className="border border-border px-3 py-1 font-mono text-[10px] font-bold uppercase">
-        Virement B2B
+        {t("blocks.money.b2b")}
       </span>
     </div>
   );
 }
 
 export function CtaBand() {
+  const { locale, t } = useI18n();
   return (
-    <section className="border-y border-border bg-foreground py-16 text-background">
+    <section className="border-t border-border bg-foreground py-16 text-background">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 sm:px-6 md:flex-row md:items-center">
         <div>
-          <h2 className="at-display text-3xl">Un appareil en panne aujourd'hui ?</h2>
+          <h2 className="at-display text-3xl">{t("blocks.cta.title")}</h2>
           <p className="mt-3 max-w-lg text-sm text-background/70">
-            Diagnostic gratuit, devis en 15 minutes, réparation express à {COMPANY.city}. Enlèvement
-            gratuit dès {formatFcfa(50000)} de réparation.
+            {t("blocks.cta.text", [COMPANY.city, formatFcfa(50000)])}
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button asChild variant="primaryBlock" size="lg">
-            <Link to="/reservation">Réserver une réparation</Link>
+          <Button asChild variant="secondary" size="lg">
+            <Link to="/$locale/reservation" params={{ locale }}>
+              {t("blocks.cta.reserve")}
+            </Link>
           </Button>
           <Button
             asChild
@@ -114,7 +126,9 @@ export function CtaBand() {
             variant="technicalOutline"
             className="border-background/30 text-background hover:bg-background/10"
           >
-            <Link to="/devis">Devis instantané</Link>
+            <Link to="/$locale/devis" params={{ locale }}>
+              {t("blocks.cta.devis")}
+            </Link>
           </Button>
         </div>
       </div>
@@ -123,11 +137,12 @@ export function CtaBand() {
 }
 
 export function TrustStats() {
+  const { t } = useI18n();
   const stats = [
-    { v: "5 000+", l: "Appareils réparés" },
-    { v: "35 min", l: "Délai moyen smartphone" },
-    { v: "200+", l: "Pièces en stock" },
-    { v: "4,8/5", l: "Satisfaction client" },
+    { v: "5 000+", l: t("blocks.stats.repaired") },
+    { v: "35 min", l: t("blocks.stats.delay") },
+    { v: "200+", l: t("blocks.stats.parts") },
+    { v: "4,8/5", l: t("blocks.stats.satisfaction") },
   ];
   return (
     <div className="grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-4">

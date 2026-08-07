@@ -2,14 +2,21 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { POSTS, absoluteUrl } from "@/data/catalog";
+import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
+import { useI18n } from "@/lib/i18n/context";
+import { translate } from "@/lib/i18n/dictionaries";
+import { normalizeLocale } from "@/lib/i18n/locales";
+import "@/lib/i18n/segments/blog";
+import type { Locale } from "@/lib/i18n/locales";
 
-export const Route = createFileRoute("/blog/$slug")({
+export const Route = createFileRoute("/$locale/blog/$slug")({
   head: ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     const post = POSTS.find((p) => p.slug === params.slug);
     if (!post) {
       return {
         meta: [
-          { title: "Article introuvable — Allô Techno" },
+          { title: translate(locale, "blog.meta.notfound.title") },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -45,50 +52,62 @@ export const Route = createFileRoute("/blog/$slug")({
       ],
     };
   },
-  loader: ({ params }) => {
-    const post = POSTS.find((p) => p.slug === params.slug);
+  loader: async ({ params }) => {
+    const all = (await listBlogPosts({ data: { fallback: POSTS } })) as BlogPost[];
+    const post = all.find((p) => p.slug === params.slug);
     if (!post) throw notFound();
-    return { post };
+    return { post, others: all.filter((p) => p.slug !== post.slug).slice(0, 2) };
   },
-  errorComponent: ({ error }) => (
-    <div className="mx-auto max-w-3xl px-4 py-24 text-center" role="alert">
-      <h1 className="at-display text-3xl">Une erreur est survenue</h1>
-      <p className="mt-4 text-sm text-muted-foreground">{error.message}</p>
-    </div>
-  ),
-  notFoundComponent: () => (
-    <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-      <h1 className="at-display text-3xl">Article introuvable</h1>
-      <Link
-        to="/blog"
-        className="mt-6 inline-block border-b-2 border-primary pb-1 text-[10px] font-extrabold uppercase tracking-widest"
-      >
-        Retour au blog
-      </Link>
-    </div>
-  ),
+  errorComponent: BlogError,
+  notFoundComponent: PostNotFound,
   component: BlogPost,
 });
 
+function BlogError({ error }: { error: Error }) {
+  const { t } = useI18n();
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-24 text-center" role="alert">
+      <h1 className="at-display text-3xl">{t("blog.error")}</h1>
+      <p className="mt-4 text-sm text-muted-foreground">{error.message}</p>
+    </div>
+  );
+}
+
+function PostNotFound() {
+  const { locale, t } = useI18n();
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-24 text-center">
+      <h1 className="at-display text-3xl">{t("blog.notfound.title")}</h1>
+      <Link
+        to="/$locale/blog"
+        params={{ locale }}
+        className="mt-6 inline-block border-b-2 border-primary pb-1 text-[10px] font-extrabold uppercase tracking-widest"
+      >
+        {t("blog.notfound.back")}
+      </Link>
+    </div>
+  );
+}
+
 function BlogPost() {
-  const { slug } = Route.useParams();
-  const post = POSTS.find((p) => p.slug === slug)!;
-  const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 2);
+  const { post, others } = Route.useLoaderData() as { post: BlogPost; others: BlogPost[] };
+  const { locale, t } = useI18n();
 
   return (
     <>
       <article className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <Link
-            to="/blog"
+            to="/$locale/blog"
+            params={{ locale }}
             className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft className="size-3" /> Tous les articles
+            <ArrowLeft className="size-3" /> {t("blog.all")}
           </Link>
           <div className="mt-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             <span className="border border-border px-2 py-1 font-bold">{post.category}</span>
             <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString("fr-FR", {
+              {new Date(post.date).toLocaleDateString(locale, {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
@@ -110,13 +129,13 @@ function BlogPost() {
 
       <section className="py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-6 block">À lire aussi</span>
+          <span className="at-eyebrow mb-6 block">{t("blog.readalso")}</span>
           <div className="grid gap-px border border-border bg-border md:grid-cols-2">
             {others.map((p) => (
               <Link
                 key={p.slug}
-                to="/blog/$slug"
-                params={{ slug: p.slug }}
+                to="/$locale/blog/$slug"
+                params={{ locale, slug: p.slug }}
                 className="bg-card p-6 transition-colors hover:bg-surface"
               >
                 <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
