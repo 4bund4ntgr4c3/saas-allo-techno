@@ -299,6 +299,73 @@ export const POSTS: Post[] = [
       "Comptez 24 h en atelier. Après intervention, les températures redescendent en moyenne de 12 à 18 °C.",
     ],
   },
+  {
+    slug: "faire-sauvegarde-avant-reparation",
+    title: "Faire une bonne sauvegarde avant réparation : photos, WhatsApp, 2FA",
+    excerpt:
+      "Écran cassé, batterie fatiguée ? Vous pouvez déposer votre appareil avec sérénité : photos, WhatsApp, contacts au sec en 10 minutes, avant l'atelier.",
+    date: "2026-08-06",
+    category: "Guides",
+    readingTime: "5 min",
+    body: [
+      "Une réparation sur dix se conclut par un client qui réalise, au mauvais moment, qu'il n'a jamais sauvegardé son téléphone. Dix minutes suffisent pour éviter cette mauvaise surprise avant de déposer l'appareil.",
+      "Activez la sauvegarde automatique quelques heures avant le dépôt : photos sur Google Photos ou iCloud, contacts, SMS. La copie se fait d'abord sur le réseau Wi-Fi de la maison et se termine la nuit — vérifiez simplement qu'elle affiche zéro erreur.",
+      "WhatsApp mérite une attention particulière : Paramètres > Réglages > Chats > Sauvegarde. Gardez le « inclure les vidéos » quand vous voulez tout garder, et sachez qu'elle est liée à votre numéro de ligne, pas à l'appareil.",
+      "Notez les codes de double authentification (2FA) et les mots de passe par e-mail : ils sont souvent liés à l'ancien appareil. Un papier plié dans le portefeuille fait très bien le travail — et évite de verrouiller un compte au moment du transfert.",
+      "Enfin, sachez-le : chez Allô Techno, les écrans comme les batteries ne touchent jamais vos données. Mais avant une intervention sur carte mère ou un transfert, la copie vous protège. Pas préparé avant de venir ? Nous le faisons avec vous à l'accueil, avant toute intervention.",
+    ],
+  },
+  {
+    slug: "transferer-donnees-vers-nouveau-telephone",
+    title: "Changer de téléphone : transférer ses données sans rien perdre",
+    excerpt:
+      "Android ou iPhone, photos, WhatsApp et contacts : le transfert sans casse quand on passe à un appareil neuf ou d'occasion, avant même de déposer l'ancien.",
+    date: "2026-08-02",
+    category: "Guides",
+    readingTime: "6 min",
+    body: [
+      "Nouveau téléphone, occasion repérée sur le marché, ou remplacement d'un écran massacré : quelle que soit la raison, une bonne préparation fait gagner une heure et éviter bien des tracas.",
+      "Premier geste : branchez les deux appareils sur le secteur et connectez-les au même Wi-Fi. Un transfert interrompu par une batterie déchargée est la première cause de photos perdues en route.",
+      "Sur Android, chaque marque a son outil : Smart Switch sur Samsung, l'assistant d'installation des Tecno, Infinix et Itel, ou encore Clone sur les marques chinoises. Tous déplacent les photos, les contacts et vos applications d'une seule fois.",
+      "Sur iPhone, la migration côté Apple (Démarrage rapide) fonctionne sans câble entre deux iPhones. Si vous changez d'univers — Android vers iPhone ou l'inverse — l'application « Passer à iOS » ou vos guides officiels transfèrent l'essentiel, WhatsApp compris.",
+      "La dernière étape oubliée : vérifiez que la carte SIM est bien lue et qu'un appel arrive sur le nouveau numéro, surtout si un écran cassé empêche encore d'utiliser l'ancien appareil.",
+      "Pas de prise de tête ? Notre atelier assure le clonage complet en une trentaine de minutes, données et applications comprises, pendant que vous attendez à l'abri.",
+    ],
+  },
+  {
+    slug: "verifier-sante-batterie-astuces",
+    title: "Vérifier la santé de sa batterie soi-même : nos astuces",
+    excerpt:
+      "Autonomie en chute, recharge qui traîne ? Apprenez à mesurer la santé réelle de sa batterie, avec le bon réflexe face aux coupures de courant du Bénin.",
+    date: "2026-07-22",
+    category: "Guides",
+    readingTime: "4 min",
+    body: [
+      "Votre téléphone s'éteint à 20 % ou met une nuit à se recharger ? La batterie vieillit sûrement — mais encore faut-il le mesurer avec des valeurs réelles plutôt qu'à vue de nez.",
+      "Sur iPhone, c'est intégré : Réglages > Batterie > Santé de la batterie. La capacité maximale s'affiche en pourcentage, et son évolution s'observe en douceur au fil des semaines.",
+      "Sur Android, la commande *#*#4636#*#* ouvre le menu de diagnostic sur la plupart des marques ; sinon, une application comme AccuBattery mesure la capacité réelle après quelques jours d'utilisation classique.",
+      "La règle d'atelier : quand la capacité passe sous 85 %, chaque déchargement compte double. Un redémarrage aléatoire ou un renflement du dos justifie un remplacement immédiat — la batterie gonflée est le seul danger vraiment sérieux.",
+      "Un mot sur les coupures de courant, si fréquentes au Bénin : une tension instable surcharge les cellules et fausse les mesures. Rebranchez après stabilisation du réseau, ou nourrissez le chargeur via un onduleur.",
+      "Notre banc de test mesure capacité réelle, résistance interne et nombre de cycles en deux minutes. Et si la batterie est encore saine, nous vous le disons franchement — parfois la panne vient du circuit de charge, pas de la cellule.",
+    ],
+  },
+  {
+    slug: "nettoyer-port-charge-harmattan",
+    title: "Port de charge bloqué par le harmattan : le nettoyage maison",
+    excerpt:
+      "Câble qui ne tient plus, charge en dents de scie ? La poussière sèche a encroûté le port USB. Voici le geste sûr avant de passer au connecteur neuf.",
+    date: "2026-07-14",
+    category: "Guides",
+    readingTime: "5 min",
+    body: [
+      "Pendant la saison sèche, la poussière fine du harmattan s'infiltre partout — et votre port de charge joue le rôle d'un entonnoir. Quelques semaines au fond d'une poche suffisent à compacter un tampon de poussière.",
+      "Premier symptôme : le câble ne s'enfonce plus et la charge s'interrompt au moindre mouvement. Dans neuf cas sur dix, il n'y a aucune panne électronique — juste un connecteur encrassé.",
+      "Ce qu'il ne faut jamais faire : souffler directement dans le port (l'humidité colle la poussière encore plus) ni y enfoncer un trombone ou une épingle métallique — un court-circuit sur le connecteur de charge est une des pannes les plus coûteuses.",
+      "La méthode douce : câble débranché et appareil éteint, passez une brosse en nylon très fine ou un cure-dent en bois le long d'un côté du port, sans forcer. Terminez par un léger coup d'air comprimé (type souffle pour clavier) si vous en possédez un.",
+      "Si le port reste colmaté ou trop encrassé, confiez-le-nous : désencastrage par air, nettoyage, contrôle et test de charge — comptez 20 minutes pour sauver le connecteur.",
+      "En prévention : une coque avec cache-port, le téléphone rangé hors des poches poussiéreuses en saison sèche, et un passage à l'atelier en début d'harmattan pour un dépoussiérage préventif.",
+    ],
+  },
 ];
 
 export const FAQ: { q: string; a: string; cat: string }[] = [

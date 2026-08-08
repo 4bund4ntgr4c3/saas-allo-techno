@@ -19,13 +19,17 @@ import { Route as LocaleAvisRouteImport } from './routes/$locale/avis'
 import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
 import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
 import { Route as LocaleDevisRouteImport } from './routes/$locale/devis'
+import { Route as LocaleEngagementsRouteImport } from './routes/$locale/engagements'
 import { Route as LocaleEntreprisesRouteImport } from './routes/$locale/entreprises'
 import { Route as LocaleFaqRouteImport } from './routes/$locale/faq'
 import { Route as LocaleGarantieRouteImport } from './routes/$locale/garantie'
+import { Route as LocaleGuidesRouteImport } from './routes/$locale/guides'
 import { Route as LocaleMagasinsRouteImport } from './routes/$locale/magasins'
 import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
 import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
 import { Route as LocalePromotionsRouteImport } from './routes/$locale/promotions'
+import { Route as LocaleReclamationRouteImport } from './routes/$locale/reclamation'
+import { Route as LocaleReconditionnesRouteImport } from './routes/$locale/reconditionnes'
 import { Route as LocaleRepriseRouteImport } from './routes/$locale/reprise'
 import { Route as LocaleReservationRouteImport } from './routes/$locale/reservation'
 import { Route as LocaleServicesRouteImport } from './routes/$locale/services'
@@ -92,6 +96,11 @@ const LocaleDevisRoute = LocaleDevisRouteImport.update({
   path: '/devis',
   getParentRoute: () => LocaleRoute,
 } as any)
+const LocaleEngagementsRoute = LocaleEngagementsRouteImport.update({
+  id: '/engagements',
+  path: '/engagements',
+  getParentRoute: () => LocaleRoute,
+} as any)
 const LocaleEntreprisesRoute = LocaleEntreprisesRouteImport.update({
   id: '/entreprises',
   path: '/entreprises',
@@ -105,6 +114,11 @@ const LocaleFaqRoute = LocaleFaqRouteImport.update({
 const LocaleGarantieRoute = LocaleGarantieRouteImport.update({
   id: '/garantie',
   path: '/garantie',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleGuidesRoute = LocaleGuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleMagasinsRoute = LocaleMagasinsRouteImport.update({
@@ -125,6 +139,16 @@ const LocalePanierRoute = LocalePanierRouteImport.update({
 const LocalePromotionsRoute = LocalePromotionsRouteImport.update({
   id: '/promotions',
   path: '/promotions',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleReclamationRoute = LocaleReclamationRouteImport.update({
+  id: '/reclamation',
+  path: '/reclamation',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleReconditionnesRoute = LocaleReconditionnesRouteImport.update({
+  id: '/reconditionnes',
+  path: '/reconditionnes',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleRepriseRoute = LocaleRepriseRouteImport.update({
@@ -217,13 +241,17 @@ export interface FileRoutesByFullPath {
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
+  '/$locale/reclamation': typeof LocaleReclamationRoute
+  '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
   '/$locale/reprise': typeof LocaleRepriseRoute
   '/$locale/reservation': typeof LocaleReservationRoute
   '/$locale/services': typeof LocaleServicesRoute
@@ -250,13 +278,17 @@ export interface FileRoutesByTo {
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
+  '/$locale/reclamation': typeof LocaleReclamationRoute
+  '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
   '/$locale/reprise': typeof LocaleRepriseRoute
   '/$locale/reservation': typeof LocaleReservationRoute
   '/$locale/services': typeof LocaleServicesRoute
@@ -286,13 +318,17 @@ export interface FileRoutesById {
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
+  '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
+  '/$locale/reclamation': typeof LocaleReclamationRoute
+  '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
   '/$locale/reprise': typeof LocaleRepriseRoute
   '/$locale/reservation': typeof LocaleReservationRoute
   '/$locale/services': typeof LocaleServicesRoute
@@ -322,13 +358,17 @@ export interface FileRouteTypes {
     | '/$locale/catalogue'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
     | '/$locale/garantie'
+    | '/$locale/guides'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
     | '/$locale/promotions'
+    | '/$locale/reclamation'
+    | '/$locale/reconditionnes'
     | '/$locale/reprise'
     | '/$locale/reservation'
     | '/$locale/services'
@@ -355,13 +395,17 @@ export interface FileRouteTypes {
     | '/$locale/catalogue'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
     | '/$locale/garantie'
+    | '/$locale/guides'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
     | '/$locale/promotions'
+    | '/$locale/reclamation'
+    | '/$locale/reconditionnes'
     | '/$locale/reprise'
     | '/$locale/reservation'
     | '/$locale/services'
@@ -390,13 +434,17 @@ export interface FileRouteTypes {
     | '/$locale/catalogue'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
     | '/$locale/garantie'
+    | '/$locale/guides'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
     | '/$locale/promotions'
+    | '/$locale/reclamation'
+    | '/$locale/reconditionnes'
     | '/$locale/reprise'
     | '/$locale/reservation'
     | '/$locale/services'
@@ -498,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleDevisRouteImport
       parentRoute: typeof LocaleRoute
     }
+    '/$locale/engagements': {
+      id: '/$locale/engagements'
+      path: '/engagements'
+      fullPath: '/$locale/engagements'
+      preLoaderRoute: typeof LocaleEngagementsRouteImport
+      parentRoute: typeof LocaleRoute
+    }
     '/$locale/entreprises': {
       id: '/$locale/entreprises'
       path: '/entreprises'
@@ -517,6 +572,13 @@ declare module '@tanstack/react-router' {
       path: '/garantie'
       fullPath: '/$locale/garantie'
       preLoaderRoute: typeof LocaleGarantieRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/guides': {
+      id: '/$locale/guides'
+      path: '/guides'
+      fullPath: '/$locale/guides'
+      preLoaderRoute: typeof LocaleGuidesRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/magasins': {
@@ -545,6 +607,20 @@ declare module '@tanstack/react-router' {
       path: '/promotions'
       fullPath: '/$locale/promotions'
       preLoaderRoute: typeof LocalePromotionsRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/reclamation': {
+      id: '/$locale/reclamation'
+      path: '/reclamation'
+      fullPath: '/$locale/reclamation'
+      preLoaderRoute: typeof LocaleReclamationRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/reconditionnes': {
+      id: '/$locale/reconditionnes'
+      path: '/reconditionnes'
+      fullPath: '/$locale/reconditionnes'
+      preLoaderRoute: typeof LocaleReconditionnesRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/reprise': {
@@ -680,13 +756,17 @@ interface LocaleRouteChildren {
   LocaleCatalogueRoute: typeof LocaleCatalogueRoute
   LocaleContactRoute: typeof LocaleContactRoute
   LocaleDevisRoute: typeof LocaleDevisRoute
+  LocaleEngagementsRoute: typeof LocaleEngagementsRoute
   LocaleEntreprisesRoute: typeof LocaleEntreprisesRoute
   LocaleFaqRoute: typeof LocaleFaqRoute
   LocaleGarantieRoute: typeof LocaleGarantieRoute
+  LocaleGuidesRoute: typeof LocaleGuidesRoute
   LocaleMagasinsRoute: typeof LocaleMagasinsRoute
   LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
   LocalePanierRoute: typeof LocalePanierRoute
   LocalePromotionsRoute: typeof LocalePromotionsRoute
+  LocaleReclamationRoute: typeof LocaleReclamationRoute
+  LocaleReconditionnesRoute: typeof LocaleReconditionnesRoute
   LocaleRepriseRoute: typeof LocaleRepriseRoute
   LocaleReservationRoute: typeof LocaleReservationRoute
   LocaleServicesRoute: typeof LocaleServicesRoute
@@ -707,13 +787,17 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleCatalogueRoute: LocaleCatalogueRoute,
   LocaleContactRoute: LocaleContactRoute,
   LocaleDevisRoute: LocaleDevisRoute,
+  LocaleEngagementsRoute: LocaleEngagementsRoute,
   LocaleEntreprisesRoute: LocaleEntreprisesRoute,
   LocaleFaqRoute: LocaleFaqRoute,
   LocaleGarantieRoute: LocaleGarantieRoute,
+  LocaleGuidesRoute: LocaleGuidesRoute,
   LocaleMagasinsRoute: LocaleMagasinsRoute,
   LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
   LocalePanierRoute: LocalePanierRoute,
   LocalePromotionsRoute: LocalePromotionsRoute,
+  LocaleReclamationRoute: LocaleReclamationRoute,
+  LocaleReconditionnesRoute: LocaleReconditionnesRoute,
   LocaleRepriseRoute: LocaleRepriseRoute,
   LocaleReservationRoute: LocaleReservationRoute,
   LocaleServicesRoute: LocaleServicesRoute,

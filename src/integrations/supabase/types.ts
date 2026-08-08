@@ -785,6 +785,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      warranty_claims: {
+        Row: {
+          created_at: string;
+          device: string | null;
+          email: string | null;
+          id: string;
+          message: string;
+          name: string;
+          phone: string;
+          reference: string;
+          reservation_reference: string | null;
+          staff_note: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          device?: string | null;
+          email?: string | null;
+          id?: string;
+          message: string;
+          name: string;
+          phone: string;
+          reference: string;
+          reservation_reference?: string | null;
+          staff_note?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          device?: string | null;
+          email?: string | null;
+          id?: string;
+          message?: string;
+          name?: string;
+          phone?: string;
+          reference?: string;
+          reservation_reference?: string | null;
+          staff_note?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -846,6 +891,7 @@ export type Database = {
         Returns: boolean;
       };
       is_staff: { Args: { _user_id: string }; Returns: boolean };
+      next_claim_reference: { Args: never; Returns: string };
       next_reservation_reference: { Args: never; Returns: string };
       next_shop_reference: { Args: never; Returns: string };
       respond_to_quote: {

@@ -7,6 +7,10 @@ export type Accessory = {
   category: string;
   price: number;
   stock: number;
+  /** Champs enrichis optionnels utilisés par la page reconditionnés. */
+  grade?: string;
+  gb?: string;
+  warranty?: string;
 };
 
 export const ACCESSORIES: Accessory[] = [
@@ -94,6 +98,88 @@ export const ACCESSORIES: Accessory[] = [
     price: 5000,
     stock: 37,
   },
+
+  // Téléphones reconditionnés — au catalogue boutique, catégorie dédiée.
+  {
+    slug: "reco-iphone-12-128",
+    name: "iPhone 12 128 Go reconditionné",
+    category: "Reconditionnés",
+    price: 180000,
+    stock: 4,
+    gb: "128 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-iphone-11-64",
+    name: "iPhone 11 64 Go reconditionné",
+    category: "Reconditionnés",
+    price: 145000,
+    stock: 5,
+    gb: "64 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-galaxy-a54-5g",
+    name: "Samsung Galaxy A54 5G reconditionné",
+    category: "Reconditionnés",
+    price: 155000,
+    stock: 6,
+    gb: "128 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-galaxy-a34",
+    name: "Samsung Galaxy A34 reconditionné",
+    category: "Reconditionnés",
+    price: 120000,
+    stock: 7,
+    gb: "128 Go",
+    grade: "A+",
+    warranty: "6 mois",
+  },
+  {
+    slug: "reco-redmi-note-12",
+    name: "Redmi Note 12 reconditionné",
+    category: "Reconditionnés",
+    price: 95000,
+    stock: 8,
+    gb: "128 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-tecno-camon-20",
+    name: "Tecno Camon 20 reconditionné",
+    category: "Reconditionnés",
+    price: 82000,
+    stock: 6,
+    gb: "128 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-infinix-hot-40",
+    name: "Infinix Hot 40 reconditionné",
+    category: "Reconditionnés",
+    price: 70000,
+    stock: 9,
+    gb: "128 Go",
+    grade: "B",
+    warranty: "3 mois",
+  },
+  {
+    slug: "reco-iphone-se-2022",
+    name: "iPhone SE 2022 reconditionné",
+    category: "Reconditionnés",
+    price: 130000,
+    stock: 4,
+    gb: "64 Go",
+    grade: "A",
+    warranty: "3 mois",
+  },
 ];
 
 export const ACCESSORY_CATEGORIES = [
@@ -104,4 +190,5 @@ export const ACCESSORY_CATEGORIES = [
   "Batteries",
   "Écouteurs",
   "Accessoires",
+  "Reconditionnés",
 ];

@@ -54,7 +54,14 @@ const fr: Record<string, string> = {
   "Réparation drift DualSense": "Réparation drift DualSense",
   "Réparation drift Joy-Con": "Réparation drift Joy-Con",
   "Réparation drift manette DualSense": "Réparation drift manette DualSense",
+  "Réparation drift manette DualShock": "Réparation drift manette DualShock",
+  "Réparation RROD (anneau rouge)": "Réparation RROD (anneau rouge)",
+  "Lecteur DVD": "Lecteur DVD",
+  "Écran LCD complet": "Écran LCD complet",
+  "Batterie 4310 mAh": "Batterie 4310 mAh",
+  "Nettoyage + pâte thermique": "Nettoyage + pâte thermique",
   "Upgrade SSD NVMe 1 To": "Upgrade SSD NVMe 1 To",
+  "Upgrade SSD SATA 1 To": "Upgrade SSD SATA 1 To",
 
   // Parts
   "Écran compatible": "Écran compatible",
@@ -78,6 +85,9 @@ const fr: Record<string, string> = {
   "Dalle + vitre tactile": "Dalle + vitre tactile",
   "Mécanisme charnière": "Mécanisme charnière",
   "SSD NVMe Gen4": "SSD NVMe Gen4",
+  "Pâte thermique premium": "Pâte thermique premium",
+  "Kit X-clamp + pâte thermique": "Kit X-clamp + pâte thermique",
+  'SSD SATA 2,5"': 'SSD SATA 2,5"',
 
   // Durations
   "30 min": "30 min",
@@ -198,7 +208,14 @@ const enOverrides: Record<string, string> = {
   "Réparation drift DualSense": "DualSense drift repair",
   "Réparation drift Joy-Con": "Joy-Con drift repair",
   "Réparation drift manette DualSense": "DualSense controller drift repair",
+  "Réparation drift manette DualShock": "DualShock controller drift repair",
+  "Réparation RROD (anneau rouge)": "RROD repair (Red Ring of Death)",
+  "Lecteur DVD": "DVD drive",
+  "Écran LCD complet": "Full LCD screen",
+  "Batterie 4310 mAh": "4310 mAh battery",
+  "Nettoyage + pâte thermique": "Cleaning + thermal paste",
   "Upgrade SSD NVMe 1 To": "NVMe 1 TB SSD upgrade",
+  "Upgrade SSD SATA 1 To": "SATA 1 TB SSD upgrade",
 
   "Écran compatible": "Compatible screen",
   "Écran compatible grade A": "Grade A compatible screen",
@@ -221,6 +238,9 @@ const enOverrides: Record<string, string> = {
   "Dalle + vitre tactile": "Panel + touch glass",
   "Mécanisme charnière": "Hinge mechanism",
   "SSD NVMe Gen4": "NVMe Gen4 SSD",
+  "Pâte thermique premium": "Premium thermal paste",
+  "Kit X-clamp + pâte thermique": "X-clamp kit + thermal paste",
+  'SSD SATA 2,5"': '2.5" SATA SSD',
 
   "30 min": "30 min",
   "35 min": "35 min",

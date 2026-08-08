@@ -28,6 +28,10 @@ const fr: Dictionary = {
   "nav.avis": "Avis clients",
   "nav.faq": "FAQ",
   "nav.contact": "Contact",
+  "nav.engagements": "Engagements",
+  "nav.guides": "Guides & conseils",
+  "nav.reclamation": "Réclamation",
+  "nav.reconditionnes": "Reconditionnés",
 
   // Actions / liens génériques
   "action.explorer": "Explorer",
@@ -234,6 +238,10 @@ const en: Dictionary = {
   "nav.avis": "Reviews",
   "nav.faq": "FAQ",
   "nav.contact": "Contact",
+  "nav.engagements": "Commitments",
+  "nav.guides": "Guides & tips",
+  "nav.reclamation": "Warranty claim",
+  "nav.reconditionnes": "Refurbished",
 
   // Actions
   "action.explorer": "Explore",

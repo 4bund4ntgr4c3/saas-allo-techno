@@ -99,6 +99,42 @@ const SPECIFICS: Record<string, Partial<BrandLocal>> = {
       },
     ],
   },
+  microsoft: {
+    intro:
+      "Xbox 360, One et Series X|S : HDMI en micro-soudure, lecteur capricieux, RROD des premières Xbox 360 et ventilation encrassée. Notre atelier d'Abomey-Calavi traite chaque génération avec pièces d'origine ou compatibles certifiées.",
+    pannes: [
+      {
+        title: "RROD (anneau rouge)",
+        text: "Réparation du défaut de refroidissement des premières Xbox 360 : kit X-clamp, refusion et pâte thermique premium.",
+      },
+      {
+        title: "Lecteur DVD ou Blu-ray qui ne lit plus",
+        text: "Remplacement du bloc optique et mise à niveau de la lentille.",
+      },
+      {
+        title: "HDMI sans image",
+        text: "Micro-soudure du port HDMI en atelier, sans changement de carte mère.",
+      },
+    ],
+  },
+  nintendo: {
+    intro:
+      "Switch et Switch 2 : drift des Joy-Con, écran cassé, batterie fatiguée et port de charge USB-C endommagé. Nous réparons les consoles Nintendo à Abomey-Calavi avec des pièces compatibles et une garantie écrite.",
+    pannes: [
+      {
+        title: "Drift des Joy-Con",
+        text: "Remplacement des joysticks, calibrage et test complet des deux manettes.",
+      },
+      {
+        title: "Écran Switch cassé",
+        text: "Dalle LCD et vitre tactile remplacées, assemblage propre sous lame chauffée.",
+      },
+      {
+        title: "Batterie ou connecteur de charge",
+        text: "Remplacement de la batterie 4310 mAh ou du port USB-C de charge.",
+      },
+    ],
+  },
 };
 
 const genericPannes = (b: Brand) => [

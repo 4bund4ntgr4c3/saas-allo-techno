@@ -155,6 +155,10 @@ export function Header() {
                   { to: "/garantie", label: t("nav.garantie") },
                   { to: "/reprise", label: t("nav.reprise") },
                   { to: "/avis", label: t("nav.avis") },
+                  { to: "/guides", label: t("nav.guides") },
+                  { to: "/reconditionnes", label: t("nav.reconditionnes") },
+                  { to: "/reclamation", label: t("nav.reclamation") },
+                  { to: "/engagements", label: t("nav.engagements") },
                   { to: "/faq", label: t("nav.faq") },
                   { to: "/contact", label: t("nav.contact") },
                 ].map((i) => (

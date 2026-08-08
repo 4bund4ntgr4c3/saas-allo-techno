@@ -108,6 +108,10 @@ export function Footer() {
                 { to: "/magasins", label: t("nav.magasins") },
                 { to: "/reprise", label: t("footer.reprise-appareils") },
                 { to: "/garantie", label: t("footer.garanties") },
+                { to: "/reconditionnes", label: t("nav.reconditionnes") },
+                { to: "/guides", label: t("nav.guides") },
+                { to: "/reclamation", label: t("nav.reclamation") },
+                { to: "/engagements", label: t("nav.engagements") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link

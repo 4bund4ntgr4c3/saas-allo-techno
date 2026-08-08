@@ -205,6 +205,7 @@ export async function notifyStaffNewLead(lead: {
     contact: "Message de contact",
     suivi: "Demande d'assistance (suivi)",
     boutique: "Commande boutique",
+    reclamation: "Réclamation de garantie",
   };
   const label = sourceLabel[lead.source] ?? "Nouveau lead";
   const sujet = `${label} — ${lead.name ?? "Anonyme"}`;
@@ -385,5 +386,60 @@ export async function notifyPhotoAdded(r: PhotoEvent): Promise<void> {
       `Bonjour ${r.customer_name}, une photo de l'étape « ${label} » vient d'être ajoutée à votre dossier ${r.reference} (${r.device}).`,
       `Suivez l'avancement : ${link}`,
     ].join("\n"),
+  );
+}
+
+const CLAIM_STATUS_LABEL: Record<string, string> = {
+  nouveau: "Nouvelle",
+  en_cours: "En cours de traitement",
+  acceptee: "Acceptée",
+  refuse: "Refusée",
+  cloturee: "Clôturée",
+};
+
+/** Alerte interne : nouvelle réclamation de garantie soumise via le site. */
+export async function notifyClaimCreated(c: {
+  reference: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  device: string | null;
+  message: string;
+}): Promise<void> {
+  const sujet = `Réclamation ${c.reference} — ${c.name}`;
+  const cordonnees = [
+    `<li>Nom : ${c.name}</li>`,
+    `<li>Téléphone : ${c.phone}</li>`,
+    c.email ? `<li>E-mail : ${c.email}</li>` : "",
+    c.device ? `<li>Appareil : ${c.device}</li>` : "",
+  ]
+    .filter(Boolean)
+    .join("");
+  const html = shell(sujet, [
+    `<p style="font-size:14px">Une nouvelle réclamation de garantie vient d'être soumise.</p>`,
+    cordonnees ? `<ul style="margin:8px 0;font-size:13px;color:#374151">${cordonnees}</ul>` : "",
+    `<p style="font-size:14px">Message : <em>${c.message}</em></p>`,
+  ]);
+  await sendEmail(COMPANY.email, sujet, html);
+  await sendWhatsApp(
+    COMPANY.whatsapp,
+    `Nouvelle réclamation ${c.reference} — ${c.name}${c.device ? ` (${c.device})` : ""} : ${c.message}`,
+  );
+}
+
+/** Changement de statut d'une réclamation : le client est tenu informé (WhatsApp). */
+export async function notifyClaimStatus({
+  phone,
+  reference,
+  status,
+}: {
+  phone: string;
+  reference: string;
+  status: string;
+}): Promise<void> {
+  const statusLabel = CLAIM_STATUS_LABEL[status] ?? status;
+  await sendWhatsApp(
+    phone,
+    `Bonjour, votre réclamation de garantie ${reference} est maintenant : ${statusLabel}. L'atelier Allô Techno vous recontacte par WhatsApp pour la suite.`,
   );
 }

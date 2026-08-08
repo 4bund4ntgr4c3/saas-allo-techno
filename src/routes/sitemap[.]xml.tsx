@@ -18,6 +18,10 @@ const STATIC_PATHS = [
   "/suivi",
   "/reservation",
   "/mentions-legales",
+  "/engagements",
+  "/guides",
+  "/reclamation",
+  "/reconditionnes",
 ];
 
 const LOCALES: Locale[] = ["fr", "en"];
