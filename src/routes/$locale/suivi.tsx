@@ -36,6 +36,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import { trackPlausibleEvent } from "@/lib/analytics";
 import "@/lib/i18n/segments/suivi";
+import "@/lib/i18n/segments/reservation";
 import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
 
@@ -568,7 +569,11 @@ function StatusResult({
         {result.warranty_months > 0 && (
           <div className="md:col-span-2">
             <span className="at-eyebrow">{t("suivi.warranty.label")}</span>
-            <p className="mt-1 text-sm">{t("suivi.warranty", [result.warranty_months])}</p>
+            <p className="mt-1 text-sm">
+              {result.warranty_months >= 12
+                ? t("reservation.warranty.extended")
+                : t("reservation.warranty.standard")}
+            </p>
           </div>
         )}
       </div>

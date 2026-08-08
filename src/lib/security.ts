@@ -68,6 +68,15 @@ export async function verifyTrackingCode(
 // Limiteur de débit (fenêtre glissante en mémoire).
 // Sur Cloudflare Workers, la mémoire est partagée par isolat : la limite n'est
 // donc pas globale, mais elle suffit à ralentir l'énumération côté API.
+//
+// TODO: Pour une persistance entre les déploiements, utiliser Cloudflare KV :
+// 1. Créer un namespace KV via `wrangler kv:namespace create RATE_LIMIT`
+// 2. Ajouter la binding dans wrangler.jsonc :
+//    "kv_namespaces": [
+//      { "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }
+//    ]
+// 3. Implémenter la logique KV dans rateLimit() avec TTL de 60 secondes
+// 4. En développement, fallback sur la Map en mémoire
 // ---------------------------------------------------------------------------
 
 const WINDOW_MS = 60_000;
@@ -126,4 +135,31 @@ export function getRateLimitStats(): {
     blockedBuckets: blocked,
     buckets: allBuckets.sort((a, b) => b.count - a.count).slice(0, 50),
   };
+}
+
+/**
+ * Retourne l'état actuel des buckets de limite de débit pour le tableau de bord admin.
+ * Utile pour montrer les tentatives de requêtes en temps réel.
+ */
+export function getRateLimitBuckets(): Array<{
+  key: string;
+  count: number;
+  resetIn: number;
+  isBlocked: boolean;
+}> {
+  const now = Date.now();
+  const result: Array<{ key: string; count: number; resetIn: number; isBlocked: boolean }> = [];
+
+  for (const [key, bucket] of buckets.entries()) {
+    if (now > bucket.resetAt) continue;
+    const resetIn = Math.ceil((bucket.resetAt - now) / 1000);
+    result.push({
+      key,
+      count: bucket.count,
+      resetIn,
+      isBlocked: bucket.count >= 10,
+    });
+  }
+
+  return result.sort((a, b) => b.count - a.count).slice(0, 100);
 }

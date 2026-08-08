@@ -9,6 +9,7 @@ import { useSession } from "@/hooks/useSession";
 import { openSearch } from "@/lib/search-events";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
+import { PushNotificationToggle } from "@/components/site/PushNotificationToggle";
 
 const NAV = [
   { to: "/$locale/reparations", label: "nav.reparations" },
@@ -119,6 +120,7 @@ export function Header() {
           >
             <Search className="size-4" />
           </button>
+          <PushNotificationToggle />
           <CartButton />
           <ThemeToggle />
           <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">

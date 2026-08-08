@@ -5,6 +5,7 @@ import { z } from "zod";
 import { reservationInputSchema } from "./reservation-schema";
 import { generateTrackingCode, hashTrackingCode, rateLimit } from "./security";
 import type { TablesInsert } from "@/integrations/supabase/types";
+import { trackMetric } from "@/lib/monitoring";
 
 // Schéma local : reservationInputSchema (partagé) + attribution optionnelle.
 const createReservationSchema = reservationInputSchema.extend({
@@ -83,6 +84,8 @@ export const createReservation = createServerFn({ method: "POST" })
       await import("@/lib/notifications");
     void notifyReservationCreated({ ...row, tracking_code: trackingCode });
     void notifyStaffNewReservation(row);
+
+    trackMetric("reservation_created", { reference: row.reference });
 
     return { ...row, tracking_code: trackingCode };
   });

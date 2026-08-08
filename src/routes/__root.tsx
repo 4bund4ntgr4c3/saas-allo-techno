@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, Suspense, lazy, type ReactNode } from "react";
-import { I18nProvider } from "@/lib/i18n/context";
+import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
 
 import appCss from "../styles.css?url";
@@ -21,6 +21,7 @@ import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 
 // La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
 // pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargée
@@ -54,30 +55,49 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { t } = useI18n();
+
+  const isAuthError =
+    error.message.toLowerCase().includes("auth") || error.message.toLowerCase().includes("session");
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="at-display text-2xl">Cette page n'a pas pu se charger</h1>
+        <h1 className="at-display text-2xl">
+          {isAuthError ? t("auth.session.expired") : "Cette page n'a pas pu se charger"}
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Une erreur est survenue. Vous pouvez réessayer ou revenir à l'accueil.
+          {isAuthError
+            ? "Vous allez être redirigé vers la page de connexion."
+            : "Une erreur est survenue. Vous pouvez réessayer ou revenir à l'accueil."}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
-          >
-            Réessayer
-          </button>
-          <a
-            href="/"
-            className="rounded-sm border border-border px-5 py-3 text-sm font-bold uppercase tracking-widest"
-          >
-            Accueil
-          </a>
+          {isAuthError ? (
+            <a
+              href="/auth"
+              className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
+            >
+              {t("nav.connexion")}
+            </a>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  router.invalidate();
+                  reset();
+                }}
+                className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
+              >
+                Réessayer
+              </button>
+              <a
+                href="/"
+                className="rounded-sm border border-border px-5 py-3 text-sm font-bold uppercase tracking-widest"
+              >
+                Accueil
+              </a>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -217,6 +237,7 @@ function RootComponent() {
           <Toaster />
           <PwaInstallBanner />
           <OfflineIndicator />
+          <AuthErrorHandler />
         </I18nProvider>
       </CartProvider>
     </QueryClientProvider>

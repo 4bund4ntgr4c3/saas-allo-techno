@@ -11,6 +11,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { COMPANY } from "@/data/catalog/company";
 import { rateLimit } from "@/lib/security";
 import { createLogger } from "@/lib/logger";
+import { trackMetric } from "@/lib/monitoring";
 
 const logger = createLogger("reviews");
 
@@ -444,6 +445,8 @@ export const submitReview = createServerFn({ method: "POST" })
       .single();
 
     if (markError) logger.error("invite mark used failed", markError as Error);
+
+    trackMetric("review_submitted", { reservationId: invite.reservation_id });
 
     return { ok: true };
   });

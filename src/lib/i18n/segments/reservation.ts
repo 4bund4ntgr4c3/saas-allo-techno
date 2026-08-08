@@ -201,6 +201,18 @@ const fr = {
   "wizard.summary.edit": "Modifier",
   "wizard.summary.saving": "Enregistrement…",
   "wizard.summary.confirm": "Confirmer la réservation",
+
+  // Paiement — acompte / total
+  "reservation.pay.deposit": "Payer l'acompte (50 %)",
+  "reservation.pay.full": "Payer le total",
+  "reservation.pay.deposit.note":
+    "L'acompte lance la réparation. Le solde sera à régler à la récupération.",
+  "reservation.pay.deposit.amount": "Acompte : {0} FCFA",
+
+  // Garantie
+  "reservation.warranty.standard": "Garantie standard (6 mois)",
+  "reservation.warranty.extended": "Garantie étendue (12 mois)",
+  "reservation.warranty.extended.price": "+{0} FCFA",
 };
 
 const en = {
@@ -402,6 +414,17 @@ const en = {
   "wizard.summary.edit": "Edit",
   "wizard.summary.saving": "Saving…",
   "wizard.summary.confirm": "Confirm booking",
+
+  // Payment — deposit / full
+  "reservation.pay.deposit": "Pay deposit (50%)",
+  "reservation.pay.full": "Pay full amount",
+  "reservation.pay.deposit.note": "The deposit starts the repair. Balance due at pickup.",
+  "reservation.pay.deposit.amount": "Deposit: {0} FCFA",
+
+  // Warranty
+  "reservation.warranty.standard": "Standard warranty (6 months)",
+  "reservation.warranty.extended": "Extended warranty (12 months)",
+  "reservation.warranty.extended.price": "+{0} FCFA",
 };
 
 registerSegments({ fr, en });

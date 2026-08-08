@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Wallet } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle2, Gift, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
+import { useSession } from "@/hooks/useSession";
 import "@/lib/i18n/segments/suivi";
+import "@/lib/i18n/segments/reservation";
+import "@/lib/i18n/segments/loyalty";
 import {
   getReservationPaymentStatus,
   initiateFedaPayReservationPayment,
   initiateKkiapayReservationPayment,
   initiateReservationPayment,
 } from "@/lib/payments.functions";
+import { calculateLoyaltyDiscount } from "@/lib/loyalty.functions";
 
 const FLUTTERWAVE_METHODS = ["MTN MoMo", "Moov Money", "Celtiis"] as const;
 type FlutterwaveMethod = (typeof FLUTTERWAVE_METHODS)[number];
@@ -31,6 +35,10 @@ const PROVIDERS: { key: PayProvider; label: string }[] = [
  * checkout dans un nouvel onglet, puis sondage du statut du paiement (toutes
  * les 4 s, ~10 essais). Prop `userId` (espace client) : notifies et invalide
  * la liste des réservations à la confirmation.
+ *
+ * Supports two payment modes:
+ *   - "full" — paiement intégral du devis
+ *   - "deposit" — acompte de 50 % (solde à régler à la récupération)
  */
 export function ReservationPayBlock({
   reference,
@@ -55,7 +63,25 @@ export function ReservationPayBlock({
     "idle",
   );
   const [error, setError] = useState<string | null>(null);
+  const [paymentType, setPaymentType] = useState<"deposit" | "full">("full");
+  const [useLoyalty, setUseLoyalty] = useState(false);
   const busy = phase === "redirecting" || phase === "pending";
+
+  // Loyalty discount
+  const { user } = useSession();
+  const calcDiscountFn = useServerFn(calculateLoyaltyDiscount);
+  const loyaltyQuery = useQuery({
+    queryKey: ["loyalty-discount", user?.id, amount],
+    enabled: Boolean(user?.id) && amount > 0,
+    queryFn: async () => {
+      if (!user?.id) return { discountAmount: 0, pointsUsed: 0, newBalance: 0 };
+      return calcDiscountFn({ data: { userId: user.id, quoteAmount: amount } });
+    },
+  });
+  const loyaltyDiscount = useLoyalty ? (loyaltyQuery.data?.discountAmount ?? 0) : 0;
+  const effectiveAmount = Math.max(0, amount - loyaltyDiscount);
+  const depositAmount = Math.ceil(effectiveAmount * 0.5);
+  const payAmount = paymentType === "deposit" ? depositAmount : effectiveAmount;
 
   const finish = (status: "paid" | "failed") => {
     setPhase(status);
@@ -120,15 +146,84 @@ export function ReservationPayBlock({
 
   const payLabel =
     provider === "flutterwave"
-      ? t("suivi.pay.button", [formatFcfa(amount)])
+      ? t("suivi.pay.button", [formatFcfa(payAmount)])
       : provider === "fedapay"
-        ? t("suivi.pay.fedapay", [formatFcfa(amount)])
-        : t("suivi.pay.kkiapay", [formatFcfa(amount)]);
+        ? t("suivi.pay.fedapay", [formatFcfa(payAmount)])
+        : t("suivi.pay.kkiapay", [formatFcfa(payAmount)]);
 
   return (
     <div className="mt-6 border border-border bg-surface p-4">
       <span className="at-eyebrow">{t("suivi.pay.title")}</span>
       <p className="mt-2 text-xs text-muted-foreground">{t("suivi.pay.intro")}</p>
+
+      {loyaltyQuery.data && loyaltyQuery.data.pointsUsed > 0 && (
+        <label className="mt-4 flex items-center gap-3 rounded-sm border border-border bg-background p-3 text-sm cursor-pointer hover:border-primary/50 transition-colors">
+          <input
+            type="checkbox"
+            checked={useLoyalty}
+            disabled={busy}
+            onChange={(e) => setUseLoyalty(e.target.checked)}
+            className="size-4 accent-primary"
+          />
+          <Gift className="size-4 text-primary shrink-0" />
+          <span className="flex-1">
+            <span className="font-medium">{t("loyalty.use")}</span>
+            <span className="ml-2 text-xs text-muted-foreground">
+              {t("loyalty.use.balance", [
+                String(loyaltyQuery.data.pointsUsed),
+                String(loyaltyQuery.data.discountAmount),
+              ])}
+            </span>
+          </span>
+        </label>
+      )}
+      {useLoyalty && loyaltyDiscount > 0 && (
+        <p className="mt-2 text-xs font-medium text-success">
+          {t("loyalty.use.applied", [String(loyaltyDiscount)])}
+        </p>
+      )}
+
+      <div
+        className="mt-4 flex flex-wrap items-center gap-2"
+        role="group"
+        aria-label="Mode de paiement"
+      >
+        <button
+          type="button"
+          disabled={busy}
+          aria-pressed={paymentType === "deposit"}
+          onClick={() => setPaymentType("deposit")}
+          className={`rounded-sm border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide outline-none focus:border-primary ${
+            paymentType === "deposit"
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-background text-muted-foreground hover:border-primary/50"
+          }`}
+        >
+          {t("reservation.pay.deposit")}
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          aria-pressed={paymentType === "full"}
+          onClick={() => setPaymentType("full")}
+          className={`rounded-sm border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide outline-none focus:border-primary ${
+            paymentType === "full"
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-background text-muted-foreground hover:border-primary/50"
+          }`}
+        >
+          {t("reservation.pay.full")}
+        </button>
+      </div>
+
+      {paymentType === "deposit" && (
+        <p className="mt-3 text-xs text-muted-foreground">{t("reservation.pay.deposit.note")}</p>
+      )}
+      {paymentType === "deposit" && (
+        <p className="mt-1 text-xs font-medium text-primary">
+          {t("reservation.pay.deposit.amount", [formatFcfa(depositAmount)])}
+        </p>
+      )}
 
       <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Prestataire">
         {PROVIDERS.map((p) => (

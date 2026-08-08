@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
+import { trackMetric } from "@/lib/monitoring";
 
 const sendQuoteSchema = z.object({
   reservationId: z.string().uuid(),
@@ -88,6 +89,8 @@ export const sendQuote = createServerFn({ method: "POST" })
       });
     }
 
+    trackMetric("quote_sent", { reservationId: data.reservationId, amount: data.amount });
+
     return { ok: true };
   });
 
@@ -116,6 +119,8 @@ export const decideOnQuote = createServerFn({ method: "POST" })
     if (!ok) {
       throw new Error("Ce devis n'est plus valide ou a déjà été traité.");
     }
+
+    trackMetric(data.approve ? "quote_approved" : "quote_declined", { token: data.token });
 
     return { ok: true };
   });

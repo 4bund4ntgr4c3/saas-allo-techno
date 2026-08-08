@@ -251,3 +251,86 @@ export const applyReferralCode = createServerFn({ method: "POST" })
 
     return { ok: true, points: 50 };
   });
+
+// ---------------------------------------------------------------------------
+// Fidélité utilisable — calcul et application de la réduction
+// ---------------------------------------------------------------------------
+
+/** Règle de conversion : 100 pts = 500 FCFA. */
+const POINT_VALUE = 5; // 1 pt = 5 FCFA
+const MAX_DISCOUNT_RATIO = 0.3; // max 30 % du montant du devis
+
+/**
+ * Calcule la réduction fidélité applicable pour un montant de devis donné.
+ * Retourne les points utilisables, le montant de la réduction et le nouveau solde.
+ */
+export const calculateLoyaltyDiscount = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!rateLimit("loyalty-discount-calc", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("loyalty_points")
+      .eq("id", data.userId)
+      .maybeSingle();
+
+    const currentPoints = profile?.loyalty_points ?? 0;
+    if (currentPoints < 100) {
+      return { discountAmount: 0, pointsUsed: 0, newBalance: currentPoints };
+    }
+
+    // Points utilisables : tous les points, mais on ne dépasse pas 30 % du devis.
+    const maxDiscount = Math.floor(data.quoteAmount * MAX_DISCOUNT_RATIO);
+    const rawDiscount = currentPoints * POINT_VALUE;
+    const discountAmount = Math.min(rawDiscount, maxDiscount, data.quoteAmount);
+    const pointsUsed = Math.ceil(discountAmount / POINT_VALUE);
+
+    return {
+      discountAmount,
+      pointsUsed,
+      newBalance: currentPoints - pointsUsed,
+    };
+  });
+
+/**
+ * Applique la réduction fidélité : déduit les points du solde de l'utilisateur
+ * et retourne le montant de la réduction.
+ */
+export const applyLoyaltyDiscount = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!rateLimit("loyalty-discount-apply", 10)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const calc = await calculateLoyaltyDiscount({
+      data: { userId: data.userId, quoteAmount: data.quoteAmount },
+    });
+    if (calc.pointsUsed <= 0) {
+      return { discountAmount: 0, pointsUsed: 0, newBalance: calc.newBalance };
+    }
+
+    // Déduit les points via le RPC existant (delta négatif)
+    const { error } = await supabaseAdmin.rpc("add_loyalty_points", {
+      _user_id: data.userId,
+      _delta: -calc.pointsUsed,
+      _reason: "discount",
+      _reference: "",
+    });
+
+    if (error) {
+      logger.error("loyalty discount deduction failed", error as Error);
+      throw new Error("Impossible d'appliquer la réduction fidélité.");
+    }
+
+    return {
+      discountAmount: calc.discountAmount,
+      pointsUsed: calc.pointsUsed,
+      newBalance: calc.newBalance,
+    };
+  });

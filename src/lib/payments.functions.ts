@@ -14,6 +14,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
 import { createLogger } from "@/lib/logger";
+import { trackMetric } from "@/lib/monitoring";
 
 const logger = createLogger("payments");
 
@@ -159,6 +160,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (existing?.tx_ref && existing.status === "paid") {
+      trackMetric("payment_processed", { reference: data.reference, source: "boutique" });
       return { available: true as const, link: null as string | null, paid: true as const };
     }
 
@@ -176,7 +178,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
     });
 
     if (!link) {
-      // Échec d'initiation : on garde la commande, paiement à la remise.
+      trackMetric("payment_failed", { reference: data.reference, source: "boutique" });
       return { available: false } as const;
     }
 
@@ -284,6 +286,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (existing?.tx_ref && existing.status === "paid") {
+      trackMetric("payment_processed", { reference: data.reference, source: "reservation" });
       return {
         ok: true as const,
         url: null as string | null,
@@ -307,8 +310,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
     });
 
     if (!link) {
-      // Échec d'initiation : le dossier reste en l'état, le client peut
-      // régler à la remise ou réessayer plus tard.
+      trackMetric("payment_failed", { reference: data.reference, source: "reservation" });
       return {
         ok: false as const,
         error:

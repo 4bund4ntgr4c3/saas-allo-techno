@@ -97,6 +97,7 @@ import {
   type CatalogPhoto,
 } from "@/lib/catalog.functions";
 import { getSecurityStats } from "@/lib/security.functions";
+import { getMetrics } from "@/lib/monitoring.functions";
 import {
   createReturn,
   listReturns,
@@ -113,6 +114,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import "@/lib/i18n/segments/admin";
+import "@/lib/i18n/segments/reservation";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -1256,6 +1258,7 @@ function QuotePanel({
   created_at: string;
 }) {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const getQuoteFn = useServerFn(getReservationQuote);
   const sendQuoteFn = useServerFn(sendQuote);
   const [amount, setAmount] = useState("");
@@ -1273,8 +1276,10 @@ function QuotePanel({
       if (!Number.isFinite(parsed) || parsed < 0 || parsed > 50_000_000) {
         throw new Error("Montant invalide (0 à 50 000 000 FCFA).");
       }
+      // Garantie étendue (+15 %) — le warranty sélecteur gère déjà 0/6/12
+      const finalAmount = warranty === 12 ? Math.round(parsed * 1.15) : Math.round(parsed);
       await sendQuoteFn({
-        data: { reservationId, amount: Math.round(parsed), warrantyMonths: warranty },
+        data: { reservationId, amount: finalAmount, warrantyMonths: warranty },
       });
     },
     onSuccess: () => {
@@ -1300,7 +1305,10 @@ function QuotePanel({
         )}
         {quote.data && quote.data.warranty_months > 0 && (
           <span className="text-muted-foreground">
-            · garantie {quote.data.warranty_months} mois
+            ·{" "}
+            {quote.data.warranty_months >= 12
+              ? t("reservation.warranty.extended")
+              : t("reservation.warranty.standard")}
           </span>
         )}
       </div>
@@ -1332,13 +1340,12 @@ function QuotePanel({
           </label>
           <select
             id={`quote-warranty-${reservationId}`}
-            className={`${field} max-w-36 py-1.5 text-xs`}
+            className={`${field} max-w-48 py-1.5 text-xs`}
             value={warranty}
             onChange={(e) => setWarranty(Number(e.target.value))}
           >
-            <option value={0}>Standard</option>
-            <option value={6}>6 mois</option>
-            <option value={12}>12 mois</option>
+            <option value={0}>{t("reservation.warranty.standard")}</option>
+            <option value={12}>{t("reservation.warranty.extended")}</option>
           </select>
         </div>
         <Button
@@ -1979,6 +1986,8 @@ function SecuritySection() {
 
       <RateLimitPanel />
 
+      <MetricsPanel />
+
       {enrolling ? (
         <div className="mt-6 space-y-5 border border-border bg-card p-6">
           <p className="text-sm">
@@ -2116,6 +2125,64 @@ function RateLimitPanel() {
           )}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+const METRIC_LABEL: Record<string, string> = {
+  reservation_created: "Réservation créée",
+  reservation_completed: "Réservation terminée",
+  payment_processed: "Paiement traité",
+  payment_failed: "Paiement échoué",
+  review_submitted: "Avis soumis",
+  lead_created: "Lead créé",
+  quote_sent: "Devis envoyé",
+  quote_approved: "Devis approuvé",
+  quote_declined: "Devis refusé",
+};
+
+function MetricsPanel() {
+  const getMetricsFn = useServerFn(getMetrics);
+  const metrics = useQuery({
+    queryKey: ["metrics-summary"],
+    queryFn: () => getMetricsFn(),
+    refetchInterval: 30_000,
+  });
+
+  return (
+    <div className="mt-6 rounded-sm border border-border bg-card p-5">
+      <h3 className="text-sm font-semibold">Métriques en temps réel</h3>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Événements trackés depuis le dernier redémarrage de l'isolat.
+      </p>
+      {metrics.isLoading ? (
+        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+      ) : metrics.data && metrics.data.length > 0 ? (
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
+                <th className="px-3 py-2">Événement</th>
+                <th className="px-3 py-2 text-right">Nombre</th>
+              </tr>
+            </thead>
+            <tbody>
+              {metrics.data.map((m) => (
+                <tr key={m.name} className="border-b border-border last:border-b-0">
+                  <td className="px-3 py-2">
+                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      {METRIC_LABEL[m.name] ?? m.name}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-right font-mono">{m.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-muted-foreground">Aucune métrique enregistrée.</p>
+      )}
     </div>
   );
 }

@@ -1,16 +1,24 @@
 ﻿{
-  // Configuration Cloudflare Workers â€” fusionnÃ©e par nitro dans .output/server/wrangler.json au build.
+  // Configuration Cloudflare Workers — fusionnée par nitro dans .output/server/wrangler.json au build.
   // NE PAS mettre de secrets ici (service role, pepper, Resend, WhatsApp) : utiliser `wrangler secret put`.
   "name": "saas-allo-techno",
-  // Variables non secrÃ¨tes, accessibles via process.env cÃ´tÃ© serveur
+  // Variables non secrètes, accessibles via process.env côté serveur
   "vars": {
     "SUPABASE_URL": "https://fcxmecphvflmbqayyioj.supabase.co",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO",
   },
-  // Domaine de production â€” Ã  activer aprÃ¨s avoir ajoutÃ© la zone allotechno.africa
-  // dans le dashboard Cloudflare (Add a site) + configurÃ© les DNS.
+  // Domaine de production — à activer après avoir ajouté la zone allotechno.africa
+  // dans le dashboard Cloudflare (Add a site) + configuré les DNS.
   // "routes": [
   //   { "pattern": "allotechno.africa", "custom_domain": true },
   //   { "pattern": "www.allotechno.africa", "custom_domain": true }
   // ]
+  //
+  // TODO: Pour activer la persistance du rate limiting avec Cloudflare KV :
+  // 1. Créer un namespace KV : wrangler kv:namespace create RATE_LIMIT
+  // 2. Ajouter cette configuration (remplacer VOTRE_NAMESPACE_ID par l'ID obtenu) :
+  // "kv_namespaces": [
+  //   { "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }
+  // ]
+  // 3. Le code dans src/lib/security.ts utilisera automatiquement KV si disponible
 }

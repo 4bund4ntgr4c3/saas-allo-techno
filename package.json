@@ -12,6 +12,7 @@
     "deploy:dev": "vite build --mode development && npx wrangler --cwd .output/server deploy",
     "deploy:preview": "npx wrangler --cwd .output/server dev",
     "deploy:logs": "npx wrangler --cwd .output/server tail",
+    "backup": "bash scripts/backup-supabase.sh",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
