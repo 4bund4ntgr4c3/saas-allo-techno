@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Clock, ShieldCheck } from "lucide-react";
+import { ArrowRight, Clock, Download, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { Button } from "@/components/ui/button";
@@ -9,6 +11,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
+import { submitLead } from "@/lib/leads.functions";
 import "@/lib/i18n/segments/info";
 
 export const Route = createFileRoute("/$locale/devis")({
@@ -33,6 +36,7 @@ function Devis() {
   const [deviceSlug, setDeviceSlug] = useState<string>("");
   const [faultSlug, setFaultSlug] = useState<string>("");
   const [sourceDetail, setSourceDetail] = useState<string | undefined>(undefined);
+  const [leadSent, setLeadSent] = useState(false);
   const { locale, t } = useI18n();
 
   // Attribution : ?src= ou ?utm_source= (ex. "quartier-zogbadje") transmis au
@@ -47,6 +51,30 @@ function Devis() {
   const devices = useMemo(() => (brand ? devicesOfBrand(brand) : []), [brand]);
   const device = useMemo(() => DEVICES.find((d) => d.slug === deviceSlug), [deviceSlug]);
   const fault = device?.faults.find((f) => f.slug === faultSlug);
+
+  const submitLeadFn = useServerFn(submitLead);
+
+  const handleDemandeDevis = async () => {
+    if (!device || !fault) return;
+    try {
+      await submitLeadFn({
+        data: {
+          source: "devis",
+          sourceDetail: sourceDetail ?? `estimation-${device.slug}-${fault.slug}`,
+          name: "",
+          phone: "",
+          email: "",
+          reference: "",
+          message: `${device.name} — ${t(fault.label)}\nEstimation : ${formatFcfa(fault.price)}`,
+          website: "",
+        },
+      });
+      setLeadSent(true);
+      toast.success(t("devis.lead.success"));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("devis.lead.error"));
+    }
+  };
 
   return (
     <>
@@ -72,6 +100,7 @@ function Devis() {
                   setBrand(e.target.value);
                   setDeviceSlug("");
                   setFaultSlug("");
+                  setLeadSent(false);
                 }}
                 className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
               >
@@ -95,6 +124,7 @@ function Devis() {
                 onChange={(e) => {
                   setDeviceSlug(e.target.value);
                   setFaultSlug("");
+                  setLeadSent(false);
                 }}
                 className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
               >
@@ -115,7 +145,10 @@ function Devis() {
                 id="fault"
                 value={faultSlug}
                 disabled={!device}
-                onChange={(e) => setFaultSlug(e.target.value)}
+                onChange={(e) => {
+                  setFaultSlug(e.target.value);
+                  setLeadSent(false);
+                }}
                 className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
               >
                 <option value="">{t("devis.select")}</option>
@@ -170,6 +203,16 @@ function Devis() {
                     {t("devis.allFaults")}
                   </Link>
                 </Button>
+                {!leadSent ? (
+                  <Button variant="secondary" size="lg" onClick={handleDemandeDevis}>
+                    <Download className="mr-2 size-4" />
+                    {t("devis.request")}
+                  </Button>
+                ) : (
+                  <span className="inline-flex items-center gap-2 rounded-sm border border-success/40 bg-success/10 px-4 py-2 text-sm font-medium text-success">
+                    {t("devis.lead.sent")}
+                  </span>
+                )}
               </div>
             </div>
           ) : (

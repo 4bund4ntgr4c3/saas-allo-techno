@@ -40,6 +40,10 @@ const fr = {
   "admin.stats.status.livre": "Livré",
   "admin.stats.status.terminee": "Terminée",
   "admin.stats.status.annulee": "Annulée",
+  "admin.stats.revenue_monthly.title": "Revenus mensuels (6 mois)",
+  "admin.stats.revenue_monthly.empty": "Aucun revenu sur la période.",
+  "admin.stats.status_distribution.title": "Répartition par statut",
+  "admin.stats.status_distribution.empty": "Aucune donnée de statut.",
   "admin.stats.day.0": "Dimanche",
   "admin.stats.day.1": "Lundi",
   "admin.stats.day.2": "Mardi",
@@ -52,6 +56,15 @@ const fr = {
   "admin.export.dossiers": "Exporter CSV",
   "admin.export.leads": "Exporter CSV",
   "admin.export.error": "Export impossible",
+
+  // Admin — Filtres avancés dossiers
+  "admin.filters.status": "Filtrer par statut",
+  "admin.filters.search": "Rechercher un dossier…",
+  "admin.filters.date_from": "Du",
+  "admin.filters.date_to": "Au",
+  "admin.filters.clear": "Effacer les filtres",
+  "admin.filters.all": "Tous les statuts",
+  "admin.filters.results": "{0} résultat(s)",
 
   // Admin — Stock
   "admin.stock.low.title": "Stock faible",
@@ -98,6 +111,10 @@ const en = {
   "admin.stats.status.livre": "Delivered",
   "admin.stats.status.terminee": "Completed",
   "admin.stats.status.annulee": "Cancelled",
+  "admin.stats.revenue_monthly.title": "Monthly revenue (6 months)",
+  "admin.stats.revenue_monthly.empty": "No revenue over the period.",
+  "admin.stats.status_distribution.title": "Status distribution",
+  "admin.stats.status_distribution.empty": "No status data.",
   "admin.stats.day.0": "Sunday",
   "admin.stats.day.1": "Monday",
   "admin.stats.day.2": "Tuesday",
@@ -110,6 +127,15 @@ const en = {
   "admin.export.dossiers": "Export CSV",
   "admin.export.leads": "Export CSV",
   "admin.export.error": "Export failed",
+
+  // Admin — Advanced filters (dossiers)
+  "admin.filters.status": "Filter by status",
+  "admin.filters.search": "Search a case…",
+  "admin.filters.date_from": "From",
+  "admin.filters.date_to": "To",
+  "admin.filters.clear": "Clear filters",
+  "admin.filters.all": "All statuses",
+  "admin.filters.results": "{0} result(s)",
 
   // Admin — Stock
   "admin.stock.low.title": "Low stock",

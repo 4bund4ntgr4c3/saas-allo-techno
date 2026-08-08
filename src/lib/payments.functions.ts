@@ -8,7 +8,10 @@
 // panier bascule sur un paiement « à la remise » sans bloquer la commande.
 
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
 
 const initiateSchema = z.object({
@@ -29,6 +32,16 @@ const reservationPaySchema = z.object({
   reference: z.string().trim().min(1).max(30),
   method: z.enum(["MTN MoMo", "Moov Money", "Celtiis"]),
 });
+
+async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const authHeader = getRequestHeader("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  if (!token) throw new Error("Non authentifié");
+  const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
+  const sub = claimsData?.claims?.sub;
+  if (typeof sub !== "string") throw new Error("Non authentifié");
+  return sub;
+}
 
 // `provider_tx_id` (id technique chez le prestataire : FedaPay / KKiaPay) a été
 // ajoutée par la migration 20260810000000 mais n'existe pas encore dans les
@@ -677,3 +690,79 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
       alreadyPaid: false as const,
     };
   });
+
+// ---------------------------------------------------------------------------
+// Historique paiements client connecté
+// ---------------------------------------------------------------------------
+
+export type CustomerPayment = {
+  id: string;
+  amount: number;
+  method: string;
+  status: string;
+  reference: string;
+  created_at: string;
+  device: string | null;
+};
+
+/** Liste les paiements de l'utilisateur connecté (via réservations liées). */
+export const listCustomerPayments = createServerFn({ method: "POST" }).handler(
+  async (): Promise<CustomerPayment[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("customer-payments-list", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("phone")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!profile?.phone) return [];
+
+    const { data: reservations, error: resError } = await supabaseAdmin
+      .from("reservations")
+      .select("reference, device")
+      .eq("user_id", userId)
+      .limit(200);
+
+    if (resError) {
+      console.error("[payments] customer reservations lookup failed", resError);
+      return [];
+    }
+
+    const references = (reservations ?? []).map((r) => r.reference).filter(Boolean);
+    if (references.length === 0) return [];
+
+    const deviceByRef = new Map<string, string>();
+    for (const r of reservations ?? []) {
+      if (r.reference && r.device) deviceByRef.set(r.reference, r.device);
+    }
+
+    const { data: payments, error: payError } = await supabaseAdmin
+      .from("payments")
+      .select("id, amount, method, status, reference, created_at")
+      .in("reference", references as string[])
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (payError) {
+      console.error("[payments] customer list failed", payError);
+      return [];
+    }
+
+    return (payments ?? []).map((p) => ({
+      id: p.id,
+      amount: p.amount,
+      method: p.method,
+      status: p.status,
+      reference: p.reference,
+      created_at: p.created_at,
+      device: deviceByRef.get(p.reference) ?? null,
+    }));
+  },
+);

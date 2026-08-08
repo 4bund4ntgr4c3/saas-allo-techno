@@ -94,6 +94,7 @@ import {
   type CatalogFault,
   type CatalogPhoto,
 } from "@/lib/catalog.functions";
+import { getSecurityStats } from "@/lib/security.functions";
 import {
   createReturn,
   listReturns,
@@ -207,6 +208,8 @@ function AdminPage() {
   const [filter, setFilter] = useState<Status | "toutes">("toutes");
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [query, setQuery] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [view, setView] = useState<"liste" | "kanban">("liste");
   const [tab, setTab] = useState<
@@ -526,12 +529,15 @@ function AdminPage() {
       !q ||
       r.reference.toLowerCase().includes(q) ||
       r.customer_name.toLowerCase().includes(q) ||
-      r.device.toLowerCase().includes(q);
+      r.device.toLowerCase().includes(q) ||
+      r.issue.toLowerCase().includes(q);
     const assignedTech = latestTechByReservation.get(r.id)?.technician_id ?? "";
     const matchTech =
       techFilter === "tous" ||
       (techFilter === "non-assigne" ? !assignedTech : assignedTech === techFilter);
-    return matchStatus && matchQuery && matchTech;
+    const matchDateFrom = !dateFrom || r.slot_date >= dateFrom;
+    const matchDateTo = !dateTo || r.slot_date <= dateTo;
+    return matchStatus && matchQuery && matchTech && matchDateFrom && matchDateTo;
   });
 
   return (
@@ -666,12 +672,12 @@ function AdminPage() {
             <input
               id="admin-search"
               className={field}
-              placeholder="Rechercher (référence, client, appareil)"
+              placeholder={t("admin.filters.search")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
             <label htmlFor="filter-status" className="sr-only">
-              Filtrer par statut
+              {t("admin.filters.status")}
             </label>
             <select
               id="filter-status"
@@ -679,7 +685,7 @@ function AdminPage() {
               value={filter}
               onChange={(e) => setFilter(e.target.value as Status | "toutes")}
             >
-              <option value="toutes">Tous les statuts</option>
+              <option value="toutes">{t("admin.filters.all")}</option>
               {STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {STATUS_LABEL[s]}
@@ -707,6 +713,30 @@ function AdminPage() {
                 </select>
               </>
             )}
+            <div className="flex items-center gap-2">
+              <label htmlFor="filter-date-from" className="sr-only">
+                {t("admin.filters.date_from")}
+              </label>
+              <input
+                id="filter-date-from"
+                type="date"
+                className={field}
+                placeholder={t("admin.filters.date_from")}
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+              />
+              <label htmlFor="filter-date-to" className="sr-only">
+                {t("admin.filters.date_to")}
+              </label>
+              <input
+                id="filter-date-to"
+                type="date"
+                className={field}
+                placeholder={t("admin.filters.date_to")}
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+              />
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -716,6 +746,27 @@ function AdminPage() {
               {view === "liste" ? "Vue Kanban" : "Vue liste"}
             </Button>
           </div>
+
+          {(filter !== "toutes" || query || dateFrom || dateTo || techFilter !== "tous") && (
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <span className="text-xs text-muted-foreground">
+                {t("admin.filters.results", [rows.length])}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setFilter("toutes");
+                  setQuery("");
+                  setDateFrom("");
+                  setDateTo("");
+                  setTechFilter("tous");
+                }}
+              >
+                {t("admin.filters.clear")}
+              </Button>
+            </div>
+          )}
 
           {view === "kanban" ? (
             <KanbanBoard rows={rows} updateStatus={updateStatus.mutate} />
@@ -1904,6 +1955,8 @@ function SecuritySection() {
         La double authentification (TOTP) protège l'accès à l'administration.
       </p>
 
+      <RateLimitPanel />
+
       {enrolling ? (
         <div className="mt-6 space-y-5 border border-border bg-card p-6">
           <p className="text-sm">
@@ -1977,6 +2030,70 @@ function SecuritySection() {
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+
+function RateLimitPanel() {
+  const getSecurityStatsFn = useServerFn(getSecurityStats);
+  const stats = useQuery({
+    queryKey: ["rate-limit-stats"],
+    queryFn: () => getSecurityStatsFn(),
+    refetchInterval: 15_000,
+  });
+
+  return (
+    <div className="mt-6 rounded-sm border border-border bg-card p-5">
+      <h3 className="text-sm font-semibold">Limiteur de débit</h3>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Surveillance des requêtes par IP et action (fenêtre de 60 secondes).
+      </p>
+      {stats.isLoading ? (
+        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+      ) : stats.data ? (
+        <div className="mt-4 space-y-4">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-sm border border-border p-3 text-center">
+              <p className="font-mono text-2xl font-bold">{stats.data.totalBuckets}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Buckets actifs</p>
+            </div>
+            <div className="rounded-sm border border-border p-3 text-center">
+              <p className="font-mono text-2xl font-bold">{stats.data.activeBuckets}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Dans la fenêtre</p>
+            </div>
+            <div className="rounded-sm border border-border p-3 text-center">
+              <p
+                className={`font-mono text-2xl font-bold ${stats.data.blockedBuckets > 0 ? "text-destructive" : ""}`}
+              >
+                {stats.data.blockedBuckets}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Proches du blocage</p>
+            </div>
+          </div>
+          {stats.data.buckets.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
+                    <th className="px-3 py-2">Clé</th>
+                    <th className="px-3 py-2 text-right">Requêtes</th>
+                    <th className="px-3 py-2 text-right">Expire dans</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.data.buckets.map((b) => (
+                    <tr key={b.key} className="border-b border-border last:border-b-0">
+                      <td className="px-3 py-2 font-mono">{b.key}</td>
+                      <td className="px-3 py-2 text-right font-mono">{b.count}</td>
+                      <td className="px-3 py-2 text-right text-muted-foreground">{b.resetIn}s</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

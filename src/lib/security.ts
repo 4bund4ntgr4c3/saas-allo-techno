@@ -99,3 +99,31 @@ export function rateLimit(key: string, max: number): boolean {
   bucket.count += 1;
   return true;
 }
+
+/** Statistiques des buckets de limite de débit (admin/debug). */
+export function getRateLimitStats(): {
+  totalBuckets: number;
+  activeBuckets: number;
+  blockedBuckets: number;
+  buckets: Array<{ key: string; count: number; resetIn: number }>;
+} {
+  const now = Date.now();
+  const allBuckets: Array<{ key: string; count: number; resetIn: number }> = [];
+  let active = 0;
+  let blocked = 0;
+
+  for (const [key, bucket] of buckets.entries()) {
+    if (now > bucket.resetAt) continue;
+    const resetIn = Math.ceil((bucket.resetAt - now) / 1000);
+    allBuckets.push({ key, count: bucket.count, resetIn });
+    active++;
+    if (bucket.count >= 10) blocked++;
+  }
+
+  return {
+    totalBuckets: buckets.size,
+    activeBuckets: active,
+    blockedBuckets: blocked,
+    buckets: allBuckets.sort((a, b) => b.count - a.count).slice(0, 50),
+  };
+}

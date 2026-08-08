@@ -6,6 +6,7 @@ const fr = {
   "mc.tab.fidelite": "Fidélité",
   "mc.tab.parrainer": "Parrainer",
   "mc.tab.avis": "Mes avis",
+  "mc.tab.paiements": "Mes paiements",
   "mc.tab.profil": "Profil",
 
   // Mon compte — en-tête
@@ -73,6 +74,17 @@ const fr = {
   "mc.reviews.hidden": "Masqué",
   "mc.reviews.stars": "{0} étoiles",
 
+  // Mon compte — paiements
+  "mc.payments.title": "Mes paiements",
+  "mc.payments.total": "Total payé : {0} FCFA",
+  "mc.payments.empty": "Aucun paiement enregistré pour le moment.",
+  "mc.payments.method": "Méthode",
+  "mc.payments.amount": "Montant",
+  "mc.payments.status.paid": "Payé",
+  "mc.payments.status.pending": "En attente",
+  "mc.payments.status.failed": "Échoué",
+  "mc.payments.status.refunded": "Remboursé",
+
   // Mon compte — profil
   "mc.profile.title": "Mes informations",
   "mc.profile.name": "Nom complet",
@@ -87,6 +99,7 @@ const en = {
   "mc.tab.fidelite": "Loyalty",
   "mc.tab.parrainer": "Refer",
   "mc.tab.avis": "My reviews",
+  "mc.tab.paiements": "My payments",
   "mc.tab.profil": "Profile",
 
   // My account — header
@@ -152,6 +165,17 @@ const en = {
   "mc.reviews.published": "Published",
   "mc.reviews.hidden": "Hidden",
   "mc.reviews.stars": "{0} stars",
+
+  // My account — payments
+  "mc.payments.title": "My payments",
+  "mc.payments.total": "Total paid: {0} FCFA",
+  "mc.payments.empty": "No payments recorded yet.",
+  "mc.payments.method": "Method",
+  "mc.payments.amount": "Amount",
+  "mc.payments.status.paid": "Paid",
+  "mc.payments.status.pending": "Pending",
+  "mc.payments.status.failed": "Failed",
+  "mc.payments.status.refunded": "Refunded",
 
   // My account — profile
   "mc.profile.title": "My information",

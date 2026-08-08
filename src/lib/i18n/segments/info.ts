@@ -69,6 +69,10 @@ const fr = {
   "devis.form.messagePlaceholder": "Ex. : iPhone 12 — l'écran ne répond plus après une chute…",
   "devis.form.success":
     "Votre demande est enregistrée. Nous vous rappelons sous 15 minutes ouvrées.",
+  "devis.request": "Demander un devis",
+  "devis.lead.success": "Demande de devis envoyée ! Nous vous recontacterons rapidement.",
+  "devis.lead.error": "Impossible d'envoyer la demande. Réessayez.",
+  "devis.lead.sent": "Demande envoyée",
 
   // Contact — meta
   "contact.meta.title": "Contact & atelier — Allô Techno Abomey-Calavi",
@@ -293,6 +297,10 @@ const en = {
   "devis.form.messagePlaceholder": "e.g. iPhone 12 — the screen stopped responding after a drop…",
   "devis.form.success":
     "Your request has been recorded. We will call you back within 15 working minutes.",
+  "devis.request": "Request a quote",
+  "devis.lead.success": "Quote request sent! We will contact you shortly.",
+  "devis.lead.error": "Failed to send request. Please try again.",
+  "devis.lead.sent": "Request sent",
 
   // Contact — contact
   "contact.meta.title": "Contact & workshop — Allô Techno Abomey-Calavi",

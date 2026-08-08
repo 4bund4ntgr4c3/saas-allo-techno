@@ -16,6 +16,7 @@ import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { supabase } from "@/integrations/supabase/client";
@@ -212,6 +213,7 @@ function RootComponent() {
             <SearchModal />
           </Suspense>
           <Toaster />
+          <PwaInstallBanner />
         </I18nProvider>
       </CartProvider>
     </QueryClientProvider>

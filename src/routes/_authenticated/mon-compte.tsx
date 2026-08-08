@@ -12,6 +12,7 @@ import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import { applyReferralCode, ensureReferralCode, getLoyaltySummary } from "@/lib/loyalty.functions";
 import { listCustomerReviews, type CustomerReview } from "@/lib/reviews.functions";
+import { listCustomerPayments, type CustomerPayment } from "@/lib/payments.functions";
 import { useI18n } from "@/lib/i18n/context";
 import "@/lib/i18n/segments/mon-compte";
 import {
@@ -68,6 +69,13 @@ const REVIEW_STATUS_LABEL: Record<string, { fr: string; en: string }> = {
   pending: { fr: "En attente de validation", en: "Awaiting validation" },
   published: { fr: "Publié", en: "Published" },
   hidden: { fr: "Masqué", en: "Hidden" },
+};
+
+const PAYMENT_STATUS_TONE: Record<string, string> = {
+  paid: "border-success/50 text-success",
+  pending: "border-amber-500/50 text-amber-500",
+  failed: "border-destructive/50 text-destructive",
+  refunded: "border-primary/50 text-primary",
 };
 
 function Dashboard() {
@@ -130,9 +138,18 @@ function Dashboard() {
     },
   });
 
+  const paymentsQuery = useQuery({
+    queryKey: ["customer-payments", user.id],
+    queryFn: async () => {
+      const result = await getCustomerPaymentsFn();
+      return result;
+    },
+  });
+
   const getLoyaltySummaryFn = useServerFn(getLoyaltySummary);
 
   const getCustomerReviewsFn = useServerFn(listCustomerReviews);
+  const getCustomerPaymentsFn = useServerFn(listCustomerPayments);
 
   const saveProfile = useMutation({
     mutationFn: async () => {
@@ -238,6 +255,7 @@ function Dashboard() {
   const active = rows.filter((r) => r.status !== "annulee" && r.status !== "terminee");
   const loyalty = loyaltyQuery.data;
   const reviews = (reviewsQuery.data ?? []) as CustomerReview[];
+  const payments = (paymentsQuery.data ?? []) as CustomerPayment[];
 
   return (
     <>
@@ -272,6 +290,7 @@ function Dashboard() {
               <TabsTrigger value="fidelite">{t("mc.tab.fidelite")}</TabsTrigger>
               <TabsTrigger value="parrainer">{t("mc.tab.parrainer")}</TabsTrigger>
               <TabsTrigger value="avis">{t("mc.tab.avis")}</TabsTrigger>
+              <TabsTrigger value="paiements">{t("mc.tab.paiements")}</TabsTrigger>
               <TabsTrigger value="profil">{t("mc.tab.profil")}</TabsTrigger>
             </TabsList>
 
@@ -683,6 +702,68 @@ function Dashboard() {
                     </li>
                   ))}
                 </ul>
+              )}
+            </TabsContent>
+
+            {/* ── ONGLET: Mes paiements ───────────────────────────────── */}
+            <TabsContent value="paiements">
+              <h2 className="at-display mb-2 text-2xl">{t("mc.payments.title")}</h2>
+              {paymentsQuery.isLoading ? (
+                <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+              ) : payments.length === 0 ? (
+                <div className="border border-border bg-card p-8">
+                  <p className="text-sm text-muted-foreground">{t("mc.payments.empty")}</p>
+                </div>
+              ) : (
+                <>
+                  <p className="mb-6 text-sm font-semibold">
+                    {t("mc.payments.total", [
+                      payments
+                        .filter((p) => p.status === "paid")
+                        .reduce((sum, p) => sum + p.amount, 0)
+                        .toLocaleString("fr-FR"),
+                    ])}
+                  </p>
+                  <ul className="space-y-4">
+                    {payments.map((p) => (
+                      <li key={p.id} className="border border-border bg-card p-6">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div>
+                            <p className="font-mono text-xs uppercase text-muted-foreground">
+                              {t("mc.dossiers.reference", [p.reference])}
+                            </p>
+                            {p.device && (
+                              <p className="mt-1 text-sm text-muted-foreground">{p.device}</p>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className={`rounded-sm border px-3 py-1 font-mono text-[10px] uppercase ${PAYMENT_STATUS_TONE[p.status] ?? "border-border"}`}
+                            >
+                              {t(`mc.payments.status.${p.status}`)}
+                            </span>
+                          </div>
+                        </div>
+                        <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
+                          <div>
+                            <dt className="at-eyebrow mb-1">{t("mc.payments.amount")}</dt>
+                            <dd className="font-semibold">
+                              {p.amount.toLocaleString("fr-FR")} FCFA
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="at-eyebrow mb-1">{t("mc.payments.method")}</dt>
+                            <dd>{p.method}</dd>
+                          </div>
+                          <div>
+                            <dt className="at-eyebrow mb-1">Date</dt>
+                            <dd>{formatDateFr(p.created_at)}</dd>
+                          </div>
+                        </dl>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </TabsContent>
 

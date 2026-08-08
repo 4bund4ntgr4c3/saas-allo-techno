@@ -598,31 +598,59 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
     return <p className="mt-3 text-sm text-muted-foreground">{t("suivi.timeline.empty")}</p>;
   }
 
+  const reversed = [...entries].reverse();
+
+  function formatDuration(ms: number): string {
+    const seconds = Math.floor(ms / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}min`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `${days}j`;
+  }
+
   return (
     <ol className="mt-4 space-y-4 border-l border-border pl-5">
-      {[...entries].reverse().map((e, i) => (
-        <li key={`${e.created_at}-${i}`} className="relative">
-          <span
-            className={`absolute -left-[27px] top-1 grid size-3 place-items-center rounded-full ${
-              i === 0 ? "bg-primary ring-4 ring-primary/20" : "bg-border"
-            }`}
-          />
-          <p className="text-sm font-semibold">
-            {e.old_status
-              ? `${statusLabel(t, e.old_status)} → ${statusLabel(t, e.new_status)}`
-              : t("suivi.timeline.created", [statusLabel(t, e.new_status)])}
-          </p>
-          <p className="font-mono text-[10px] uppercase text-muted-foreground">
-            {new Date(e.created_at).toLocaleString("fr-FR", {
-              day: "2-digit",
-              month: "short",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-          {e.note ? <p className="mt-1 text-sm text-muted-foreground">{e.note}</p> : null}
-        </li>
-      ))}
+      {reversed.map((e, i) => {
+        const prevEntry = i > 0 ? reversed[i - 1] : null;
+        const durationMs = prevEntry
+          ? new Date(e.created_at).getTime() - new Date(prevEntry.created_at).getTime()
+          : null;
+        const noteKey = e.new_status ? `suivi.timeline.note.${e.new_status}` : null;
+        return (
+          <li key={`${e.created_at}-${i}`} className="relative">
+            <span
+              className={`absolute -left-[27px] top-1 grid size-3 place-items-center rounded-full ${
+                i === 0 ? "bg-primary ring-4 ring-primary/20" : "bg-border"
+              }`}
+            />
+            <p className="text-sm font-semibold">
+              {e.old_status
+                ? `${statusLabel(t, e.old_status)} → ${statusLabel(t, e.new_status)}`
+                : t("suivi.timeline.created", [statusLabel(t, e.new_status)])}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <time className="font-mono text-[10px] uppercase text-muted-foreground">
+                {new Date(e.created_at).toLocaleString("fr-FR", {
+                  day: "2-digit",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </time>
+              {durationMs !== null && durationMs > 0 && (
+                <span className="text-[10px] text-muted-foreground">
+                  ({t("suivi.timeline.duration", [formatDuration(durationMs)])})
+                </span>
+              )}
+            </div>
+            {noteKey && <p className="mt-1 text-xs text-muted-foreground italic">{t(noteKey)}</p>}
+            {e.note ? <p className="mt-1 text-sm text-muted-foreground">{e.note}</p> : null}
+          </li>
+        );
+      })}
     </ol>
   );
 }

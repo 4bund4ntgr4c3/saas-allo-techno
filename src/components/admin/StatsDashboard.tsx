@@ -10,6 +10,13 @@ import { computeEstimate } from "@/lib/estimate";
 import { formatFcfa } from "@/data/catalog/company";
 import { BRANDS } from "@/data/catalog/static";
 import type { Enums } from "@/integrations/supabase/types";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { LineChart, Line, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis } from "recharts";
 import "@/lib/i18n/segments/admin";
 
 type Status = Enums<"reservation_status">;
@@ -48,6 +55,25 @@ const STATUS_ORDER: Status[] = [
 ];
 
 const PAYMENT_ORDER = ["mtn", "moov", "celtiis", "especes"] as const;
+
+const STATUS_COLORS: Record<Status, string> = {
+  en_attente: "#a1a1aa",
+  confirmee: "var(--color-primary, #f97316)",
+  pieces: "#f59e0b",
+  en_cours: "var(--color-primary, #f97316)",
+  pret: "#22c55e",
+  livre: "#22c55e",
+  terminee: "#10b981",
+  annulee: "#ef4444",
+};
+
+const REVENUE_MONTHLY_CONFIG = {
+  revenue: { label: "Revenus", color: "var(--primary)" },
+} satisfies ChartConfig;
+
+const STATUS_DISTRIBUTION_CONFIG: ChartConfig = Object.fromEntries(
+  STATUS_ORDER.map((status) => [status, { label: status, color: STATUS_COLORS[status] }]),
+);
 
 const PERIOD_ORDER: SlotPeriod[] = ["matin", "apres-midi"];
 
@@ -189,6 +215,20 @@ export function StatsDashboard() {
     },
   });
 
+  const paymentsQuery = useQuery({
+    queryKey: ["admin-stats-payments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payments")
+        .select("amount, status, created_at")
+        .gte("created_at", isoMonthsAgo(12))
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      return (data ?? []) as { amount: number; status: string; created_at: string }[];
+    },
+  });
+
   const nowIso = useMemo(() => new Date().toISOString(), []);
 
   const [repairRevenue, setRepairRevenue] = useState({ total: 0, matched: 0 });
@@ -231,6 +271,7 @@ export function StatsDashboard() {
   const stats = useMemo(() => {
     const reservations = reservationsQuery.data ?? [];
     const leads = leadsQuery.data ?? [];
+    const paymentsData = paymentsQuery.data ?? [];
 
     const brandCounts = new Map<string, number>();
     const funnel = new Map<Status, number>();
@@ -260,6 +301,40 @@ export function StatsDashboard() {
       if (total > 0) boutiqueRevenue += total;
       if (isSameMonth(l.created_at, nowIso)) boutiqueOrdersThisMonth += 1;
     }
+
+    // Monthly revenue from payments (last 6 months)
+    const monthlyRevenue = new Map<string, number>();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      monthlyRevenue.set(key, 0);
+    }
+    for (const p of paymentsData) {
+      if (p.status !== "success" && p.status !== "paid") continue;
+      const d = new Date(p.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      if (monthlyRevenue.has(key)) {
+        monthlyRevenue.set(key, (monthlyRevenue.get(key) ?? 0) + p.amount);
+      }
+    }
+    const monthlyRevenueData = [...monthlyRevenue.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([month, revenue]) => {
+        const parts = month.split("-");
+        const y = parts[0] ?? "";
+        const m = parts[1] ?? "";
+        const label = `${m}/${y.slice(2)}`;
+        return { month: label, revenue };
+      });
+
+    // Status distribution for pie chart
+    const statusDistribution = STATUS_ORDER.map((status) => ({
+      status,
+      name: status,
+      count: funnel.get(status) ?? 0,
+      fill: STATUS_COLORS[status],
+    })).filter((r) => r.count > 0);
 
     const brandRows = [...brandCounts.entries()]
       .sort((a, b) => b[1] - a[1])
@@ -294,10 +369,12 @@ export function StatsDashboard() {
       peak,
       peakMax,
       recent: reservations.slice(0, 10),
+      monthlyRevenueData,
+      statusDistribution,
     };
-  }, [reservationsQuery.data, leadsQuery.data, nowIso]);
+  }, [reservationsQuery.data, leadsQuery.data, paymentsQuery.data, nowIso]);
 
-  if (reservationsQuery.isLoading || leadsQuery.isLoading) {
+  if (reservationsQuery.isLoading || leadsQuery.isLoading || paymentsQuery.isLoading) {
     return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
   }
 
@@ -441,6 +518,94 @@ export function StatsDashboard() {
               />
             ))}
           </div>
+        </section>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="border border-border bg-card p-4">
+          <h3 className="mb-4 text-sm font-semibold">{t("admin.stats.revenue_monthly.title")}</h3>
+          {stats.monthlyRevenueData.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {t("admin.stats.revenue_monthly.empty")}
+            </p>
+          ) : (
+            <ChartContainer config={REVENUE_MONTHLY_CONFIG} className="aspect-auto h-64">
+              <LineChart data={stats.monthlyRevenueData}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={10} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={10}
+                  width={60}
+                  tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent formatter={(value) => formatFcfa(Number(value))} />}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="var(--color-revenue)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ChartContainer>
+          )}
+        </section>
+
+        <section className="border border-border bg-card p-4">
+          <h3 className="mb-4 text-sm font-semibold">
+            {t("admin.stats.status_distribution.title")}
+          </h3>
+          {stats.statusDistribution.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {t("admin.stats.status_distribution.empty")}
+            </p>
+          ) : (
+            <div className="flex items-center gap-6">
+              <div className="h-48 w-48 shrink-0">
+                <ChartContainer
+                  config={STATUS_DISTRIBUTION_CONFIG}
+                  className="aspect-square h-full w-full"
+                >
+                  <PieChart>
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                    <Pie
+                      data={stats.statusDistribution}
+                      dataKey="count"
+                      nameKey="status"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={20}
+                      outerRadius={40}
+                      strokeWidth={1}
+                    >
+                      {stats.statusDistribution.map((entry) => (
+                        <Cell key={entry.status} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ChartContainer>
+              </div>
+              <div className="flex-1 space-y-2">
+                {stats.statusDistribution.map((d) => (
+                  <div key={d.status} className="flex items-center gap-2 text-sm">
+                    <span
+                      className="h-3 w-3 shrink-0 rounded-sm"
+                      style={{ backgroundColor: d.fill }}
+                    />
+                    <span className="flex-1 truncate text-muted-foreground">
+                      {t(`admin.stats.status.${d.status}`)}
+                    </span>
+                    <span className="font-mono text-xs tabular-nums">{d.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
 
