@@ -58,19 +58,21 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
             if (!payment) {
               // Transaction inconnue (boutique non couvert ici, ou webhook
               // d'une transaction jamais enregistrée) : on accuse réception.
-              console.warn(
-                `[webhook] KKiaPay transaction ${providerTxId} sans ligne payments`,
-              );
+              console.warn(`[webhook] KKiaPay transaction ${providerTxId} sans ligne payments`);
             } else if (payment.status === "paid") {
               // Idempotence : la réservation est déjà marquée payée.
-              console.log(`[webhook] réservation ${payment.reference} déjà payée (${providerTxId})`);
+              console.log(
+                `[webhook] réservation ${payment.reference} déjà payée (${providerTxId})`,
+              );
             } else {
-              const nextStatus =
-                payload.isPaymentSucces === true
-                  ? "paid"
-                  : "failed";
+              const nextStatus = payload.isPaymentSucces === true ? "paid" : "failed";
 
-              if (nextStatus === "paid" && payment.amount !== null && payload.amount != null && payment.amount !== payload.amount) {
+              if (
+                nextStatus === "paid" &&
+                payment.amount !== null &&
+                payload.amount != null &&
+                payment.amount !== payload.amount
+              ) {
                 console.warn(
                   `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${payload.amount}`,
                 );
@@ -109,7 +111,9 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
                 }
               }
 
-              console.log(`[webhook] réservation ${payment.reference} ${nextStatus} (${providerTxId})`);
+              console.log(
+                `[webhook] réservation ${payment.reference} ${nextStatus} (${providerTxId})`,
+              );
             }
           }
         } catch (err) {

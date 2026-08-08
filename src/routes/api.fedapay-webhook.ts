@@ -24,9 +24,7 @@ export const Route = createFileRoute("/api/fedapay-webhook")({
 
         const match = /^t=(\d+),s=([0-9a-fA-F]{64})$/.exec(signatureHeader ?? "");
         const timestamp = match?.[1] ? Number(match[1]) : null;
-        const expected = createHmac("sha256", secret)
-          .update(rawBody, "utf8")
-          .digest("hex");
+        const expected = createHmac("sha256", secret).update(rawBody, "utf8").digest("hex");
         const received = match?.[2] ?? "";
         const sigOk =
           timestamp !== null &&
@@ -63,8 +61,7 @@ export const Route = createFileRoute("/api/fedapay-webhook")({
             console.log("[webhook] événement FedaPay sans id ignoré");
           } else {
             const isApproved = event === "transaction.approved";
-            const isRejected =
-              event === "transaction.declined" || event === "transaction.canceled";
+            const isRejected = event === "transaction.declined" || event === "transaction.canceled";
 
             if (isApproved || isRejected) {
               const nextStatus = isApproved ? "paid" : "failed";
@@ -88,9 +85,16 @@ export const Route = createFileRoute("/api/fedapay-webhook")({
                 );
               } else if (payment.status === "paid") {
                 // Idempotence : la réservation est déjà marquée payée.
-                console.log(`[webhook] réservation ${payment.reference} déjà payée (${providerTxId})`);
+                console.log(
+                  `[webhook] réservation ${payment.reference} déjà payée (${providerTxId})`,
+                );
               } else {
-                if (isApproved && payment.amount !== null && data?.amount != null && payment.amount !== data.amount) {
+                if (
+                  isApproved &&
+                  payment.amount !== null &&
+                  data?.amount != null &&
+                  payment.amount !== data.amount
+                ) {
                   console.warn(
                     `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${data.amount}`,
                   );
@@ -129,7 +133,9 @@ export const Route = createFileRoute("/api/fedapay-webhook")({
                   }
                 }
 
-                console.log(`[webhook] réservation ${payment.reference} ${nextStatus} (${providerTxId})`);
+                console.log(
+                  `[webhook] réservation ${payment.reference} ${nextStatus} (${providerTxId})`,
+                );
               }
             } else {
               console.log(`[webhook] événement FedaPay ignoré: ${event ?? "inconnu"}`);

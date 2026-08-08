@@ -165,11 +165,7 @@ export function ReservationPayBlock({
             ))}
           </select>
         )}
-        <Button
-          variant="technical"
-          disabled={busy || amount <= 0}
-          onClick={() => void pay()}
-        >
+        <Button variant="technical" disabled={busy || amount <= 0} onClick={() => void pay()}>
           <Wallet className="mr-2 size-4" />
           {phase === "redirecting" ? t("suivi.pay.redirecting") : payLabel}
         </Button>

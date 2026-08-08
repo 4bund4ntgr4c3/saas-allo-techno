@@ -2316,19 +2316,36 @@ function ReviewsAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select("id, name, city, rating, text, device, created_at")
+        .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
   });
-  const [form, setForm] = useState({ id: "", name: "", city: "", rating: 5, text: "", device: "" });
+  const [form, setForm] = useState({
+    id: "",
+    customer_name: "",
+    phone: "",
+    email: "",
+    rating: 5,
+    comment: "",
+    status: "published",
+  });
   const upsertFn = useServerFn(upsertReview);
   const deleteFn = useServerFn(deleteReview);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const reset = () => setForm({ id: "", name: "", city: "", rating: 5, text: "", device: "" });
+  const reset = () =>
+    setForm({
+      id: "",
+      customer_name: "",
+      phone: "",
+      email: "",
+      rating: 5,
+      comment: "",
+      status: "published",
+    });
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -2338,11 +2355,12 @@ function ReviewsAdmin() {
       await upsertFn({
         data: {
           id: form.id || undefined,
-          name: form.name.trim(),
-          city: form.city.trim(),
+          customer_name: form.customer_name.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim() || undefined,
           rating: form.rating,
-          text: form.text.trim(),
-          device: form.device.trim(),
+          comment: form.comment.trim(),
+          status: form.status,
         },
       });
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
@@ -2374,7 +2392,7 @@ function ReviewsAdmin() {
               <div className="flex items-center gap-2">
                 <Stars n={r.rating} />
                 <p className="text-sm font-semibold">
-                  {r.name} — {r.city || "—"}
+                  {r.customer_name} — {r.email || "—"}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -2384,11 +2402,12 @@ function ReviewsAdmin() {
                   onClick={() =>
                     setForm({
                       id: r.id,
-                      name: r.name,
-                      city: r.city ?? "",
+                      customer_name: r.customer_name,
+                      phone: r.phone ?? "",
+                      email: r.email ?? "",
                       rating: r.rating,
-                      text: r.text,
-                      device: r.device ?? "",
+                      comment: r.comment,
+                      status: r.status ?? "published",
                     })
                   }
                 >
@@ -2404,7 +2423,7 @@ function ReviewsAdmin() {
                 </Button>
               </div>
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">« {r.text} »</p>
+            <p className="mt-2 text-sm text-muted-foreground">« {r.comment} »</p>
           </div>
         ))}
       </div>
@@ -2415,25 +2434,27 @@ function ReviewsAdmin() {
           <span className="at-eyebrow mb-2 block">Nom</span>
           <input
             className={field}
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            value={form.customer_name}
+            onChange={(e) => setForm((f) => ({ ...f, customer_name: e.target.value }))}
             required
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Ville</span>
+          <span className="at-eyebrow mb-2 block">Téléphone</span>
           <input
             className={field}
-            value={form.city}
-            onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+            value={form.phone}
+            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+            required
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Appareil</span>
+          <span className="at-eyebrow mb-2 block">Email</span>
           <input
             className={field}
-            value={form.device}
-            onChange={(e) => setForm((f) => ({ ...f, device: e.target.value }))}
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
           />
         </label>
         <label className="block">
@@ -2449,11 +2470,11 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Texte</span>
+          <span className="at-eyebrow mb-2 block">Commentaire</span>
           <textarea
             className={`${field} h-24`}
-            value={form.text}
-            onChange={(e) => setForm((f) => ({ ...f, text: e.target.value }))}
+            value={form.comment}
+            onChange={(e) => setForm((f) => ({ ...f, comment: e.target.value }))}
             required
           />
         </label>

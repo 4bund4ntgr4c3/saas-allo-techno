@@ -631,7 +631,11 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
         redirectUrl = body.redirect_url ?? body.link ?? null;
         providerToken = body.token;
       } else {
-        console.error("[payments] KKiaPay init failed", res.status, JSON.stringify(body).slice(0, 300));
+        console.error(
+          "[payments] KKiaPay init failed",
+          res.status,
+          JSON.stringify(body).slice(0, 300),
+        );
       }
     } catch (err) {
       console.error("[payments] KKiaPay network error", err);

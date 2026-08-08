@@ -51,11 +51,13 @@ const postSchema = z.object({
 
 const reviewSchema = z.object({
   id: z.string().uuid().optional(),
-  name: z.string().trim().min(2, "Nom requis").max(80),
-  city: z.string().trim().max(100).optional().or(z.literal("")),
+  customer_name: z.string().trim().min(2, "Nom requis").max(80),
+  phone: z.string().trim().min(6, "Téléphone requis").max(30),
+  email: z.string().email().optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5),
-  text: z.string().trim().min(3, "Avis trop court").max(1000),
-  device: z.string().trim().max(120).optional().or(z.literal("")),
+  comment: z.string().trim().min(3, "Avis trop court").max(2000),
+  status: z.enum(["pending", "published", "hidden"]).optional(),
+  verified: z.boolean().optional(),
 });
 
 const inventorySchema = z.object({
@@ -106,11 +108,15 @@ type BlogPostRow = {
 };
 
 type ReviewRow = {
-  name: string;
-  city: string | null;
+  id: string;
+  customer_name: string;
+  phone: string;
+  email: string | null;
   rating: number;
-  text: string;
-  device: string | null;
+  comment: string;
+  status: string;
+  verified: boolean;
+  created_at: string;
 };
 
 /** Renvoie les articles de blog d'une langue donnée : ceux de la table si présents,
@@ -154,15 +160,15 @@ export const listReviews = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("reviews")
-      .select("name, city, rating, text, device")
+      .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
       .order("created_at", { ascending: false });
     if (error || !rows || rows.length === 0) return data.fallback ?? [];
     return (rows as ReviewRow[]).map((r) => ({
-      name: r.name,
-      city: r.city ?? "",
+      name: r.customer_name,
+      city: r.email ?? "",
       rating: r.rating,
-      text: r.text,
-      device: r.device ?? "",
+      text: r.comment,
+      device: "",
     }));
   });
 
@@ -222,11 +228,13 @@ export const upsertReview = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
 
     const payload = {
-      name: data.name,
-      city: data.city ?? "",
+      customer_name: data.customer_name,
+      phone: data.phone,
+      email: data.email || null,
       rating: data.rating,
-      text: data.text,
-      device: data.device ?? "",
+      comment: data.comment,
+      status: data.status ?? "published",
+      verified: data.verified ?? true,
     };
     if (data.id) {
       const { error } = await supabaseAdmin.from("reviews").update(payload).eq("id", data.id);
