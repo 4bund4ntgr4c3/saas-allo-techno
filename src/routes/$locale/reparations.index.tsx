@@ -21,6 +21,7 @@ export const Route = createFileRoute("/$locale/reparations/")({
     date?: string;
     creneau?: string;
     heure?: string;
+    src?: string;
   } => {
     const result: {
       categorie?: string;
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/$locale/reparations/")({
       date?: string;
       creneau?: string;
       heure?: string;
+      src?: string;
     } = {};
     const c = s["categorie"];
     if (typeof c === "string") result.categorie = c;
@@ -42,6 +44,8 @@ export const Route = createFileRoute("/$locale/reparations/")({
     if (typeof creneau === "string") result.creneau = creneau;
     const heure = s["heure"];
     if (typeof heure === "string") result.heure = heure;
+    const src = s["src"];
+    if (typeof src === "string") result.src = src;
     return result;
   },
   head: ({ params }) => {

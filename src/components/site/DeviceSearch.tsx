@@ -13,7 +13,7 @@ import {
   Truck,
   Zap,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
@@ -34,7 +34,7 @@ import { Button } from "@/components/ui/button";
 import { computeEstimate } from "@/lib/estimate";
 import { useI18n } from "@/lib/i18n/context";
 import { createReservation } from "@/lib/reservations.functions";
-import { getDevicePhotoUpload } from "@/lib/photos.functions";
+import { getDevicePhotoUpload, registerDeviceAttachment } from "@/lib/photos.functions";
 import { trackWizardEvent } from "@/lib/analytics";
 import {
   HOURS_BY_PERIOD,
@@ -57,10 +57,14 @@ const STEPS = [
   "wizard.step.modele",
   "wizard.step.panne",
   "wizard.step.creneau",
+  "wizard.step.photos",
   "wizard.step.coordonnees",
   "wizard.step.recapitulatif",
 ] as const;
 const DAYS_AHEAD = 10;
+
+/** Taille maximale d'une photo sélectionnée dans l'assistant (côté client). */
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
 const DEPOSIT_OPTIONS: { value: DepositMode; label: string; hint: string }[] = [
   {
@@ -170,11 +174,11 @@ function SelectionSummary({
 }
 
 /**
- * Assistant de diagnostic et de réservation en 9 étapes :
+ * Assistant de diagnostic et de réservation en 10 étapes :
  * type d'appareil (icône) → marque → série (ex : Galaxy A) → famille de modèles
  * (ex : A5x, affichée seulement quand elle regroupe plusieurs modèles) → modèle →
- * pannes (multi-sélection) → date & heure → coordonnées → récapitulatif.
- * Reprend l'ancienne page /reservation (qui redirige ici).
+ * pannes (multi-sélection) → date & heure → photos (optionnel) → coordonnées →
+ * récapitulatif. Reprend l'ancienne page /reservation (qui redirige ici).
  */
 export function DeviceSearch({
   initialCategory,
@@ -192,6 +196,7 @@ export function DeviceSearch({
   const { locale, t } = useI18n();
   const submit = useServerFn(createReservation);
   const getPhotoUpload = useServerFn(getDevicePhotoUpload);
+  const registerAttachment = useServerFn(registerDeviceAttachment);
   const [step, setStep] = useState(initialCategory ? 1 : 0);
   const [category, setCategory] = useState<string | null>(initialCategory ?? null);
   const [brand, setBrand] = useState<string | null>(null);
@@ -214,6 +219,15 @@ export function DeviceSearch({
   const [photos, setPhotos] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [srcParam, setSrcParam] = useState<string | null>(null);
+  const [restoredPhotoCount, setRestoredPhotoCount] = useState(0);
+  const [autoUploadStatus, setAutoUploadStatus] = useState<
+    "uploading" | "done" | "partial" | "failed" | null
+  >(null);
+  const [autoUploadCounts, setAutoUploadCounts] = useState<{ ok: number; failed: number }>({
+    ok: 0,
+    failed: 0,
+  });
 
   // URLs de prévisualisation des photos (évite les fuites mémoire)
   const previewUrls = useMemo(() => photos.map((f) => URL.createObjectURL(f)), [photos]);
@@ -234,7 +248,7 @@ export function DeviceSearch({
     }
   });
 
-  const saveDraft = () => {
+  const saveDraft = useCallback(() => {
     const draft = {
       step,
       category,
@@ -249,6 +263,8 @@ export function DeviceSearch({
       hour,
       comeNow,
       contact,
+      // Les fichiers ne sont jamais sérialisés : seul le compte est conservé.
+      photoCount: photos.length,
       timestamp: Date.now(),
     };
     try {
@@ -256,7 +272,22 @@ export function DeviceSearch({
     } catch {
       // Quota localStorage atteint (navigation privée, mode avion) : on ignore, le brouillon sera perdu.
     }
-  };
+  }, [
+    step,
+    category,
+    brand,
+    series,
+    family,
+    device,
+    faults,
+    description,
+    mode,
+    date,
+    hour,
+    comeNow,
+    contact,
+    photos.length,
+  ]);
 
   const restoreDraft = () => {
     try {
@@ -283,6 +314,9 @@ export function DeviceSearch({
       setHour(draft.hour);
       setComeNow(draft.comeNow);
       setContact(draft.contact);
+      // Les fichiers blobs ne sont pas persistables : on restaure seulement le compte.
+      setPhotos([]);
+      setRestoredPhotoCount(draft.photoCount ?? 0);
       localStorage.removeItem(DRAFT_KEY);
       return true;
     } catch {
@@ -291,6 +325,17 @@ export function DeviceSearch({
   };
 
   const clearDraft = () => localStorage.removeItem(DRAFT_KEY);
+
+  // Attribution : paramètre d'URL `src` (ex : ?src=quartier-zogbadje), lu au
+  // montage côté client (la route /reparations ne transmet pas ce paramètre).
+  useEffect(() => {
+    try {
+      const s = new URLSearchParams(window.location.search).get("src");
+      if (s) setSrcParam(s.trim().slice(0, 80) || null);
+    } catch {
+      // Lecture du navigateur impossible : on ignore l'attribution.
+    }
+  }, []);
 
   // Pré-remplissage depuis les paramètres d'URL (liens « Réserver » → /reservation
   // → redirection ici) : appareil, panne, date et heure déjà connus.
@@ -332,16 +377,16 @@ export function DeviceSearch({
       ...(brand ? { brand } : {}),
       ...(device?.name ? { device: device.name } : {}),
     });
-    if (step === 8) {
+    if (step === 9) {
       trackWizardEvent({
         event: "estimation_shown",
-        step: 8,
+        step: 9,
         ...(category ? { category } : {}),
         ...(brand ? { brand } : {}),
         ...(device?.name ? { device: device.name } : {}),
       });
     }
-  }, [step]);
+  }, [step, category, brand, device?.name]);
 
   const availability = useSlotAvailability(mode, DAYS_AHEAD);
   const { openDates } = availability;
@@ -362,21 +407,7 @@ export function DeviceSearch({
   // Auto-save draft on every change
   useEffect(() => {
     if (step > 0) saveDraft();
-  }, [
-    step,
-    category,
-    brand,
-    series,
-    family,
-    device,
-    faults,
-    description,
-    mode,
-    date,
-    hour,
-    comeNow,
-    contact,
-  ]);
+  }, [step, saveDraft]);
 
   // Temps réel : libère l'heure sélectionnée si elle est prise entre-temps.
   useEffect(() => {
@@ -407,25 +438,29 @@ export function DeviceSearch({
     }));
   }, [category, brand]);
 
-  const familiesOf = (seriesName: string) => {
-    const list = DEVICES.filter(
-      (d) => d.category === category && d.brand === brand && (d.series || "Autres") === seriesName,
-    );
-    const byFamily = new Map<string, { years: number[]; count: number }>();
-    for (const d of list) {
-      const f = familyOf(d.name);
-      const cur = byFamily.get(f) ?? { years: [], count: 0 };
-      cur.years.push(d.year);
-      cur.count++;
-      byFamily.set(f, cur);
-    }
-    return [...byFamily.entries()].map(([name, { years, count }]) => ({
-      name,
-      count,
-      from: Math.min(...years),
-      to: Math.max(...years),
-    }));
-  };
+  const familiesOf = useCallback(
+    (seriesName: string) => {
+      const list = DEVICES.filter(
+        (d) =>
+          d.category === category && d.brand === brand && (d.series || "Autres") === seriesName,
+      );
+      const byFamily = new Map<string, { years: number[]; count: number }>();
+      for (const d of list) {
+        const f = familyOf(d.name);
+        const cur = byFamily.get(f) ?? { years: [], count: 0 };
+        cur.years.push(d.year);
+        cur.count++;
+        byFamily.set(f, cur);
+      }
+      return [...byFamily.entries()].map(([name, { years, count }]) => ({
+        name,
+        count,
+        from: Math.min(...years),
+        to: Math.max(...years),
+      }));
+    },
+    [category, brand],
+  );
 
   const families = useMemo(() => familiesOf(series ?? ""), [familiesOf, series]);
 
@@ -522,6 +557,52 @@ export function DeviceSearch({
     };
   }, [contact, device, panneLabel, date, hour, mode]);
 
+  /**
+   * Upload des pièces jointes via l'URL signée (même mécanisme que le panneau
+   * de confirmation) : préparation → PUT → rattachement au dossier. Non bloquant.
+   */
+  const uploadSelectedPhotos = async (files: File[], reference: string, code: string) => {
+    let ok = 0;
+    let failed = 0;
+    for (const file of files) {
+      try {
+        const prepared = await getPhotoUpload({
+          data: {
+            reference,
+            code,
+            fileName: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+          },
+        });
+        const res = await fetch(prepared.signedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type,
+            "x-upsert": "false",
+          },
+          body: file,
+        });
+        if (!res.ok) throw new Error(`Upload ${res.status}`);
+        await registerAttachment({
+          data: {
+            reference,
+            code,
+            url: prepared.path,
+            kind: file.type.startsWith("video/") ? "video" : "photo",
+            stage: "appareil",
+          },
+        });
+        ok++;
+      } catch {
+        failed++;
+      }
+    }
+    // Seuls les fichiers réellement envoyés quittent la sélection (retry possible sinon).
+    setPhotos((prev) => prev.filter((f) => !files.includes(f)));
+    return { ok, failed };
+  };
+
   const confirmReservation = async () => {
     if (!device) return;
     if (!comeNow) {
@@ -543,22 +624,37 @@ export function DeviceSearch({
     }
     setSubmitting(true);
     try {
-      const row = await submit({ data: values });
+      const row = await submit({
+        data: { ...values, ...(srcParam ? { source: srcParam } : {}) },
+      });
       setRef(row.reference);
       setTrackingCode(row.tracking_code ?? null);
       clearDraft();
+      setRestoredPhotoCount(0);
       trackWizardEvent({
         event: "reservation_created",
-        step: 8,
+        step: 9,
         ...(category ? { category } : {}),
         ...(brand ? { brand } : {}),
         ...(device?.name ? { device: device.name } : {}),
+        ...(srcParam ? { source: srcParam } : {}),
       });
       toast.success(t("wizard.success.toast", [row.reference]), {
         description: values.email
           ? t("wizard.success.toast.email", [values.email, values.telephone])
           : t("wizard.success.toast.phone", [values.telephone]),
       });
+      // Envoi automatique (non bloquant) des photos sélectionnées à l'étape 8.
+      if (photos.length > 0) {
+        setAutoUploadStatus("uploading");
+        setAutoUploadCounts({ ok: 0, failed: 0 });
+        void uploadSelectedPhotos(photos, row.reference, row.tracking_code ?? "").then(
+          ({ ok, failed }) => {
+            setAutoUploadCounts({ ok, failed });
+            setAutoUploadStatus(failed === 0 ? "done" : ok > 0 ? "partial" : "failed");
+          },
+        );
+      }
       setDevice(null);
       setFaults([]);
       setDescription("");
@@ -1236,35 +1332,112 @@ export function DeviceSearch({
               </>
             )}
 
-            {/* 08 — Coordonnées */}
+            {/* 08 — Photos (optionnel) */}
             {step === 7 && device && (
+              <>
+                <span className="at-eyebrow mb-3 block">{t("wizard.step7.title")}</span>
+                <p className="mb-4 text-xs text-muted-foreground">{t("wizard.photos.optional")}</p>
+
+                <label
+                  htmlFor="wizard-photos"
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
+                >
+                  <ImagePlus className="size-4" />
+                  {t("wizard.photos.select")}
+                </label>
+                <input
+                  id="wizard-photos"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    e.target.value = "";
+                    if (files.some((f) => f.size > MAX_PHOTO_BYTES)) {
+                      toast.error(t("wizard.photos.max"));
+                      return;
+                    }
+                    setPhotos((prev) => [...prev, ...files].slice(0, 3));
+                  }}
+                />
+
+                {restoredPhotoCount > 0 && photos.length === 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    {t("wizard.photos.restored", [restoredPhotoCount])}
+                  </p>
+                )}
+
+                {photos.length > 0 && (
+                  <ul className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
+                    {photos.map((f, i) => (
+                      <li
+                        key={`${f.name}-${i}`}
+                        className="relative overflow-hidden rounded-sm border border-border bg-surface"
+                      >
+                        <img
+                          src={previewUrls[i]}
+                          alt={t("wizard.photos.alt", [i + 1])}
+                          className="aspect-square w-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          aria-label={t("wizard.photos.remove", [i + 1])}
+                          onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
+                          className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-destructive text-xs text-white"
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {photos.length > 0 && (
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {t("wizard.photos.count", [photos.length])}
+                  </p>
+                )}
+
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+                  <p className="font-mono text-xs uppercase text-muted-foreground">
+                    {t("wizard.photos.title")}
+                  </p>
+                  <Button variant="primaryBlock" size="sm" onClick={() => setStep(8)}>
+                    {t("wizard.photos.continue")} <ArrowRight className="size-3.5" />
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* 09 — Coordonnées */}
+            {step === 8 && device && (
               <>
                 <button
                   type="button"
-                  onClick={() => setStep(6)}
+                  onClick={() => setStep(7)}
                   className="mb-4 flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-primary"
                 >
-                  <ChevronLeft className="size-3" /> {t(STEPS[6] ?? "")}
+                  <ChevronLeft className="size-3" /> {t(STEPS[7] ?? "")}
                 </button>
                 <ContactForm
                   defaultValues={contact}
                   submitLabel={t("wizard.summary.see")}
                   onValid={(c) => {
                     setContact(c);
-                    setStep(8);
+                    setStep(9);
                   }}
                 />
               </>
             )}
 
-            {/* 09 — Récapitulatif */}
-            {step === 8 && device && (
+            {/* 10 — Récapitulatif */}
+            {step === 9 && device && (
               <>
                 <ReservationSummary
                   values={values}
                   immediate={comeNow}
                   submitting={submitting}
-                  onEdit={() => setStep(7)}
+                  onEdit={() => setStep(8)}
                   onConfirm={() => void confirmReservation()}
                 />
                 <div className="mt-14">
@@ -1372,7 +1545,7 @@ export function DeviceSearch({
                     <Button
                       size="sm"
                       className="mt-3"
-                      disabled={uploading || !trackingCode}
+                      disabled={uploading || autoUploadStatus === "uploading" || !trackingCode}
                       onClick={async () => {
                         setUploading(true);
                         try {
@@ -1426,6 +1599,20 @@ export function DeviceSearch({
                     <p className="mt-2 text-xs text-success">
                       {t("wizard.photos.sent.success", [photoUrls.length])}
                     </p>
+                  )}
+                  {autoUploadStatus === "uploading" && (
+                    <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                      <Loader2 className="size-3 animate-spin" />
+                      {t("wizard.photos.uploading")}
+                    </p>
+                  )}
+                  {autoUploadStatus === "done" && (
+                    <p className="mt-2 text-xs text-success">
+                      {t("wizard.photos.uploaded", [autoUploadCounts.ok])}
+                    </p>
+                  )}
+                  {(autoUploadStatus === "partial" || autoUploadStatus === "failed") && (
+                    <p className="mt-2 text-xs text-destructive">{t("wizard.photos.failed")}</p>
                   )}
                 </div>
               </div>

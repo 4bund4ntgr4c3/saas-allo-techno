@@ -20,7 +20,7 @@ const rescheduleSchema = z.object({
 });
 
 const RESERVATION_FIELDS =
-  "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, created_at, warranty_months";
+  "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, created_at, warranty_months, estimated_delivery, quote_status, quote_amount, payment_status";
 
 export type ReservationStatus = {
   reference: string;
@@ -39,6 +39,10 @@ export type ReservationStatus = {
   delivery_address: string | null;
   created_at: string;
   warranty_months: number;
+  estimated_delivery: string | null;
+  quote_status: string | null;
+  quote_amount: number | null;
+  payment_status: string | null;
 };
 
 export type TimelineEntry = {
@@ -47,6 +51,70 @@ export type TimelineEntry = {
   note: string | null;
   created_at: string;
 };
+
+export type SlaForecast = {
+  expectedDate: string;
+  remainingDays: number;
+  stage: string;
+};
+
+/** Durées typiques par étape (en jours) — SLA indicatif affiché au client. */
+const STAGE_DURATION_DAYS: Record<string, number> = {
+  en_attente: 0.04,
+  confirmee: 0.5,
+  pieces: 2,
+  en_cours: 2,
+  pret: 0.04,
+};
+
+const STAGE_ORDER = ["en_attente", "confirmee", "pieces", "en_cours", "pret"];
+
+const DAY_MS = 24 * 3600 * 1000;
+
+/**
+ * Prédit la date de restitution estimée d'un dossier : si
+ * reservations.estimated_delivery est renseigné (atelier), on le préfère ;
+ * sinon, somme des durées typiques des étapes restantes à partir du statut
+ * courant (le temps déjà écoulé dans l'étape courante est déduit via l'historique).
+ * Retourne null quand la prédiction n'a pas de sens (livré, terminé, annulé).
+ */
+export function computeSlaForecast(
+  status: string,
+  history: TimelineEntry[],
+  estimatedDelivery?: string | null,
+): SlaForecast | null {
+  if (status === "livre" || status === "terminee" || status === "annulee") return null;
+
+  if (estimatedDelivery) {
+    const remainingMs = new Date(`${estimatedDelivery}T12:00:00`).getTime() - Date.now();
+    return {
+      expectedDate: estimatedDelivery,
+      remainingDays: Math.max(0, Math.round(remainingMs / DAY_MS)),
+      stage: status,
+    };
+  }
+
+  const currentIndex = STAGE_ORDER.indexOf(status);
+  if (currentIndex === -1) return null;
+
+  let elapsedDays = 0;
+  const entered = [...history].reverse().find((e) => e.new_status === status);
+  if (entered?.created_at) {
+    elapsedDays = Math.max(0, (Date.now() - new Date(entered.created_at).getTime()) / DAY_MS);
+  }
+
+  let remainingDays = Math.max(0, (STAGE_DURATION_DAYS[status] ?? 0) - elapsedDays);
+  for (let i = currentIndex + 1; i < STAGE_ORDER.length; i++) {
+    remainingDays += STAGE_DURATION_DAYS[STAGE_ORDER[i]!] ?? 0;
+  }
+
+  const expected = new Date(Date.now() + remainingDays * DAY_MS);
+  return {
+    expectedDate: toIsoDate(expected),
+    remainingDays: Math.round(remainingDays * 100) / 100,
+    stage: status,
+  };
+}
 
 /** Masque les données personnelles d'une réservation (vue publique sans code). */
 function publicReservation(row: ReservationStatus): ReservationStatus {
@@ -186,7 +254,13 @@ export const getReservationTracking = createServerFn({ method: "POST" })
     async ({
       data,
     }): Promise<
-      { found: true; reservation: ReservationStatus; timeline: TimelineEntry[] } | { found: false }
+      | {
+          found: true;
+          reservation: ReservationStatus;
+          timeline: TimelineEntry[];
+          sla: SlaForecast | null;
+        }
+      | { found: false }
     > => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -217,12 +291,20 @@ export const getReservationTracking = createServerFn({ method: "POST" })
 
       if (timelineError) console.error("[suivi] timeline failed", timelineError);
 
+      const timelineRows = (timeline ?? []) as TimelineEntry[];
+      const sla = computeSlaForecast(
+        reservation.status,
+        timelineRows,
+        reservation.estimated_delivery,
+      );
+
       return {
         found: true,
         reservation: valid
           ? (reservation as ReservationStatus)
           : publicReservation(reservation as ReservationStatus),
-        timeline: (timeline ?? []) as TimelineEntry[],
+        timeline: timelineRows,
+        sla,
       };
     },
   );

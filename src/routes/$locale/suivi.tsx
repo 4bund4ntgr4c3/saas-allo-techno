@@ -13,6 +13,7 @@ import {
   ScanSearch,
   Search,
   Truck,
+  Wallet,
   Wrench,
 } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
@@ -20,14 +21,17 @@ import { LeadForm } from "@/components/site/LeadForm";
 import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { Button } from "@/components/ui/button";
-import { downloadInvoicePdf } from "@/lib/invoice";
+import { downloadInvoicePdf, downloadTimelinePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
   type ReservationStatus,
+  type SlaForecast,
   type TimelineEntry,
 } from "@/lib/suivi.functions";
 import { decideOnQuote, getQuoteStatus } from "@/lib/quote.functions";
 import { getReservationAttachments } from "@/lib/photos.functions";
+import { getReservationPaymentStatus, initiateReservationPayment } from "@/lib/payments.functions";
+import { formatFcfa } from "@/data/catalog/company";
 import { formatDateFr, type DepositMode } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -172,6 +176,7 @@ function Suivi() {
   const data = tracking.data;
   const result = data?.found ? data.reservation : null;
   const timeline = data?.found ? data.timeline : [];
+  const sla = data?.found ? data.sla : null;
   const error = tracking.error
     ? tracking.error instanceof Error
       ? tracking.error.message
@@ -266,6 +271,7 @@ function Suivi() {
             <StatusResult
               result={result}
               timeline={timeline}
+              sla={sla}
               live={tracking.isFetching}
               updatedAt={tracking.dataUpdatedAt}
               ref={ref ?? ""}
@@ -294,6 +300,7 @@ function Suivi() {
 function StatusResult({
   result,
   timeline,
+  sla,
   live,
   updatedAt,
   ref,
@@ -301,6 +308,7 @@ function StatusResult({
 }: {
   result: ReservationStatus;
   timeline: TimelineEntry[];
+  sla: SlaForecast | null;
   live: boolean;
   updatedAt: number;
   ref: string;
@@ -360,6 +368,14 @@ function StatusResult({
             <FileDown className="mr-2 size-4" />
             {t("suivi.invoice")}
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void downloadTimelinePdf({ ...result, history: timeline })}
+          >
+            <FileDown className="mr-2 size-4" />
+            {t("suivi.timelinePdf")}
+          </Button>
           <QrCode
             value={`${window.location.origin}/${locale}/suivi?ref=${result.reference}&code=${code}`}
             label={`${t("suivi.dossier")} ${result.reference}`}
@@ -368,9 +384,31 @@ function StatusResult({
         </div>
       </div>
 
+      {result.quote_status === "approved" && (result.quote_amount ?? 0) > 0 && (
+        <ReservationPayBlock
+          reference={result.reference}
+          amount={result.quote_amount ?? 0}
+          alreadyPaid={result.payment_status === "paid"}
+        />
+      )}
+
       {!isCancelled && (
         <div className="mt-10">
           <span className="at-eyebrow">{t("suivi.progress")}</span>
+
+          {sla?.expectedDate && (
+            <div className="mt-4 border border-primary/30 bg-primary/5 p-4">
+              <p className="text-sm">
+                <strong>{t("suivi.sla.expected", [formatDateFr(sla.expectedDate)])}</strong>
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {sla.remainingDays < 1
+                  ? t("suivi.sla.remaining.short")
+                  : t("suivi.sla.remaining", [Math.ceil(sla.remainingDays)])}
+              </p>
+            </div>
+          )}
+
           <ol className="mt-6">
             {MILESTONES.map((milestone, i) => {
               const Icon = milestone.icon;
@@ -681,6 +719,15 @@ function QuoteDecision({ token }: { token: string }) {
                 {decided.approve ? t("suivi.quote.approved") : t("suivi.quote.declined")}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">{t("suivi.quote.done")}</p>
+              {decided.approve && (quote.data?.quote.amount ?? 0) > 0 && (
+                <div className="text-left">
+                  <ReservationPayBlock
+                    reference={quote.data.quote.reference}
+                    amount={quote.data.quote.amount ?? 0}
+                    alreadyPaid={false}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <div className="mt-6 flex flex-wrap gap-3">
@@ -701,6 +748,108 @@ function QuoteDecision({ token }: { token: string }) {
             </div>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+function ReservationPayBlock({
+  reference,
+  amount,
+  alreadyPaid,
+}: {
+  reference: string;
+  amount: number;
+  alreadyPaid: boolean;
+}) {
+  const { t } = useI18n();
+  const initiate = useServerFn(initiateReservationPayment);
+  const fetchStatus = useServerFn(getReservationPaymentStatus);
+  const [method, setMethod] = useState<"MTN MoMo" | "Moov Money" | "Celtiis">("MTN MoMo");
+  const [state, setState] = useState<"idle" | "redirecting" | "pending" | "paid" | "failed">(
+    "idle",
+  );
+  const [error, setError] = useState<string | null>(null);
+
+  const pay = async () => {
+    setError(null);
+    setState("redirecting");
+    try {
+      const res = await initiate({ data: { reference, method } });
+      if (!res.ok) {
+        setState("failed");
+        setError(res.error || t("suivi.pay.error"));
+        return;
+      }
+      if (res.alreadyPaid) {
+        setState("paid");
+        return;
+      }
+      if (res.url) {
+        window.open(res.url, "_blank", "noopener");
+      }
+      setState("pending");
+      for (let i = 0; i < 10; i++) {
+        await new Promise((r) => setTimeout(r, 4000));
+        const s = await fetchStatus({ data: { reference } });
+        if (s.status === "paid") {
+          setState("paid");
+          return;
+        }
+        if (s.status === "failed") {
+          setState("failed");
+          return;
+        }
+      }
+      setState("failed");
+    } catch {
+      setState("failed");
+      setError(t("suivi.pay.error"));
+    }
+  };
+
+  if (alreadyPaid) {
+    return (
+      <div className="mt-6 flex items-center gap-2 border border-success/40 bg-success/10 p-4">
+        <CheckCircle2 className="size-4 shrink-0 text-success" />
+        <p className="text-sm font-semibold">{t("suivi.pay.paid")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 border border-border bg-surface p-4">
+      <span className="at-eyebrow">{t("suivi.pay.title")}</span>
+      <p className="mt-2 text-xs text-muted-foreground">{t("suivi.pay.intro")}</p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <select
+          aria-label={t("suivi.pay.method")}
+          value={method}
+          onChange={(e) => setMethod(e.target.value as "MTN MoMo" | "Moov Money" | "Celtiis")}
+          className="border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+        >
+          <option>MTN MoMo</option>
+          <option>Moov Money</option>
+          <option>Celtiis</option>
+        </select>
+        <Button
+          variant="technical"
+          disabled={state === "redirecting" || state === "pending"}
+          onClick={() => void pay()}
+        >
+          <Wallet className="mr-2 size-4" />
+          {state === "redirecting"
+            ? t("suivi.pay.redirecting")
+            : t("suivi.pay.button", [formatFcfa(amount)])}
+        </Button>
+      </div>
+      {state === "pending" && (
+        <p className="mt-3 text-xs text-muted-foreground">{t("suivi.pay.pending")}</p>
+      )}
+      {state === "failed" && (
+        <p role="alert" className="mt-3 text-xs text-destructive">
+          {error ?? t("suivi.pay.failed")}
+        </p>
       )}
     </div>
   );
@@ -727,24 +876,41 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
     <div className="mt-8 border-t border-border pt-8">
       <span className="at-eyebrow">{t("suivi.photos.title")}</span>
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {items.map((a) => (
-          <button
-            key={`${a.url}-${a.created_at}`}
-            type="button"
-            onClick={() => setZoom(a.url)}
-            className="group overflow-hidden rounded-sm border border-border bg-surface text-left"
-          >
-            <img
-              src={a.url}
-              alt={`${stageLabel(t, a.stage)} — ${t("suivi.dossier")} ${reference}`}
-              loading="lazy"
-              className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <span className="block px-2 py-1.5 text-[11px] text-muted-foreground">
-              {stageLabel(t, a.stage)}
-            </span>
-          </button>
-        ))}
+        {items.map((a) =>
+          a.kind === "video" ? (
+            <div
+              key={`${a.url}-${a.created_at}`}
+              className="overflow-hidden rounded-sm border border-border bg-surface"
+            >
+              <video
+                src={a.url}
+                controls
+                preload="metadata"
+                className="aspect-square w-full bg-black object-cover"
+              />
+              <span className="block px-2 py-1.5 text-[11px] text-muted-foreground">
+                {stageLabel(t, a.stage)}
+              </span>
+            </div>
+          ) : (
+            <button
+              key={`${a.url}-${a.created_at}`}
+              type="button"
+              onClick={() => setZoom(a.url)}
+              className="group overflow-hidden rounded-sm border border-border bg-surface text-left"
+            >
+              <img
+                src={a.url}
+                alt={`${stageLabel(t, a.stage)} — ${t("suivi.dossier")} ${reference}`}
+                loading="lazy"
+                className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <span className="block px-2 py-1.5 text-[11px] text-muted-foreground">
+                {stageLabel(t, a.stage)}
+              </span>
+            </button>
+          ),
+        )}
       </div>
 
       {zoom && (

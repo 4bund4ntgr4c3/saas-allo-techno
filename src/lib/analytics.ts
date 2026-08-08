@@ -25,6 +25,7 @@ export function trackWizardEvent(opts: {
   category?: string;
   brand?: string;
   device?: string;
+  source?: string;
 }) {
   void trackEvent({ data: { ...opts, session_id: session() } }).catch(() => {
     // best-effort : jamais bloquant

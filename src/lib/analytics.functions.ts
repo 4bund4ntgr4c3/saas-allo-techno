@@ -8,6 +8,7 @@ const trackSchema = z.object({
   category: z.string().trim().max(80).optional(),
   brand: z.string().trim().max(80).optional(),
   device: z.string().trim().max(160).optional(),
+  source: z.string().trim().max(80).optional(),
   session_id: z.string().trim().min(1).max(80),
 });
 
@@ -26,6 +27,7 @@ export const trackEvent = createServerFn({ method: "POST" })
       category: data.category ?? null,
       brand: data.brand ?? null,
       device: data.device ?? null,
+      source: data.source ?? null,
       session_id: data.session_id,
     });
     if (error) console.warn("[analytics] insert failed", error.message);

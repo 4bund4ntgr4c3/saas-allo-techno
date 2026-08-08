@@ -4,6 +4,7 @@ import { rateLimit } from "@/lib/security";
 
 const leadSchema = z.object({
   source: z.enum(["devis", "contact", "suivi"]),
+  sourceDetail: z.string().trim().max(80).optional().or(z.literal("")),
   name: z.string().trim().min(1, "Votre nom est requis").max(120),
   phone: z
     .string()
@@ -37,6 +38,7 @@ export const submitLead = createServerFn({ method: "POST" })
     const reference = data.reference || null;
     const { error } = await supabaseAdmin.from("leads").insert({
       source: data.source,
+      source_detail: data.sourceDetail || null,
       reference,
       name: data.name,
       phone: data.phone || null,

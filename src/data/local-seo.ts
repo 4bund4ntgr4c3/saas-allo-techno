@@ -12,6 +12,163 @@ export const QUARTIERS = [
   "Hêvié",
 ];
 
+/** Copie SEO localisée (fr/en) d'un quartier d'Abomey-Calavi. */
+export type QuartierLocalCopy = {
+  /** Paragraphe d'introduction avec mots-clés réparation (écran, batterie…). */
+  intro: string;
+  /** Repères locaux (carrefours, marchés, institutions) pour ancrer le contenu. */
+  landmarks: string;
+};
+
+export type QuartierInfo = {
+  slug: string;
+  name: string;
+  local: Record<"fr" | "en", QuartierLocalCopy>;
+};
+
+const QUARTIER_INFO_FR: Pick<QuartierInfo, "slug" | "name" | "local">[] = [
+  {
+    slug: "zogbadje",
+    name: "Zogbadjè",
+    local: {
+      fr: {
+        intro:
+          "À Zogbadjè, notre atelier est installé à deux pas de la voie pavée de l'Université. Écran de smartphone cassé, batterie fatiguée par la chaleur, port de charge encrassé : diagnostic gratuit, réparation le jour même et enlèvement à domicile dans tout le quartier.",
+        landmarks: "Voie pavée de l'Université, carrefour Zogbadjè, Champs de foire",
+      },
+      en: {
+        intro:
+          "In Zogbadjè, our workshop sits right next to the paved university road. Cracked smartphone screen, heat-worn battery, clogged charging port: free diagnosis, same-day repair and home pickup across the area.",
+        landmarks: "Paved University Road, Zogbadjè crossroads, Champs de foire",
+      },
+    },
+  },
+  {
+    slug: "godomey",
+    name: "Godomey",
+    local: {
+      fr: {
+        intro:
+          "Sur l'axe Godomey, entre Calavi et Cotonou, les téléphones s'abîment à force de circuler : écrans fêlés, connecteurs encrassés par la poussière de la route. Nous récupérons votre appareil à domicile ou en boutique, et la plupart des réparations sont terminées le jour même.",
+        landmarks: "Marché de Godomey, carrefour Godomey, route des Pêches",
+      },
+      en: {
+        intro:
+          "On the Godomey axis between Calavi and Cotonou, phones wear out from constant commuting: cracked screens, dust-clogged charging ports. We collect your device at home or in store, and most repairs are finished the same day.",
+        landmarks: "Godomey market, Godomey crossroads, route des Pêches",
+      },
+    },
+  },
+  {
+    slug: "akassato",
+    name: "Akassato",
+    local: {
+      fr: {
+        intro:
+          "À Akassato, carrefour stratégique de l'axe Calavi–Cotonou, nous prenons en charge écrans, batteries et connecteurs de charge de toutes les marques du marché béninois. Diagnostic gratuit, prix fermes avant intervention, garantie écrite sur chaque pièce.",
+        landmarks: "Carrefour Akassato, marché d'Akassato, axe RNIE2",
+      },
+      en: {
+        intro:
+          "In Akassato, a strategic junction on the Calavi–Cotonou axis, we handle screens, batteries and charging ports for every brand on the Beninese market. Free diagnosis, fixed prices before work starts, written warranty on every part.",
+        landmarks: "Akassato crossroads, Akassato market, RNIE2 road",
+      },
+    },
+  },
+  {
+    slug: "tankpe",
+    name: "Tankpè",
+    local: {
+      fr: {
+        intro:
+          "Tankpè, à la porte de l'Université d'Abomey-Calavi : étudiants et riverains nous confient leurs téléphones pour un écran brisé ou une batterie qui ne tient plus la journée. Réparation pendant que vous attendez et tarifs étudiants.",
+        landmarks: "Entrée de l'Université d'Abomey-Calavi, gare de Tankpè",
+      },
+      en: {
+        intro:
+          "Tankpè, at the gates of the University of Abomey-Calavi: students and residents trust us with their phones for cracked screens or batteries that die by midday. Repair while you wait and student pricing.",
+        landmarks: "University of Abomey-Calavi entrance, Tankpè station",
+      },
+    },
+  },
+  {
+    slug: "cocotomey",
+    name: "Cocotomey",
+    local: {
+      fr: {
+        intro:
+          "Quartier résidentiel aux portes de Cotonou, Cocotomey nous envoie chaque semaine des téléphones victimes de la chaleur et de l'humidité : batterie gonflée, écran qui se décolle, micro-soudure à refaire. Enlèvement le matin, restitution réparée et garantie le soir.",
+        landmarks: "Marché de Cocotomey, à 10 min de l'aéroport de Cotonou",
+      },
+      en: {
+        intro:
+          "A residential area at the gates of Cotonou, Cocotomey sends us phones hit by heat and humidity every week: swollen batteries, lifting screens, micro-soldering to redo. Pickup in the morning, repaired and guaranteed return in the evening.",
+        landmarks: "Cocotomey market, 10 min from Cotonou airport",
+      },
+    },
+  },
+  {
+    slug: "womey",
+    name: "Womey",
+    local: {
+      fr: {
+        intro:
+          "Au bord du lac Nokoué, à Womey, la moiteur ambiante use les téléphones : connecteurs oxydés, haut-parleurs étouffés, écrans qui jaunissent. Nos techniciens nettoient, désoxydent et remplacent les pièces fatiguées, souvent le jour même.",
+        landmarks: "Bord du lac Nokoué, école primaire de Womey",
+      },
+      en: {
+        intro:
+          "On the shores of Lake Nokoué in Womey, the ambient humidity wears phones down: oxidized connectors, muffled speakers, yellowing screens. Our technicians clean, deoxidize and replace tired parts, often the same day.",
+        landmarks: "Lake Nokoué shore, Womey primary school",
+      },
+    },
+  },
+  {
+    slug: "calavi-kpota",
+    name: "Calavi Kpota",
+    local: {
+      fr: {
+        intro:
+          "Cœur historique d'Abomey-Calavi, Calavi Kpota concentre commerces et ateliers. Écran, batterie, port de charge ou console en panne : déposez votre appareil le matin, récupérez-le réparé et garanti le soir même.",
+        landmarks: "Place de l'indépendance, gare de Calavi Kpota",
+      },
+      en: {
+        intro:
+          "The historic heart of Abomey-Calavi, Calavi Kpota is packed with shops and workshops. Screen, battery, charging port or console: drop your device off in the morning and pick it up repaired and guaranteed the same evening.",
+        landmarks: "Place de l'indépendance, Calavi Kpota station",
+      },
+    },
+  },
+  {
+    slug: "hevie",
+    name: "Hêvié",
+    local: {
+      fr: {
+        intro:
+          "Plus au nord, sur la route d'Allada, Hêvié est desservi par notre service d'enlèvement : un technicien vient chercher votre téléphone à domicile, la réparation (écran, batterie, désoxydation) est réalisée en atelier et l'appareil vous est rapporté sous 48 h.",
+        landmarks: "Route d'Allada, marché de Hêvié",
+      },
+      en: {
+        intro:
+          "Further north on the Allada road, Hêvié is covered by our pickup service: a technician collects your phone at home, the repair (screen, battery, deoxidation) is done in the workshop and the device is returned within 48 hours.",
+        landmarks: "Allada road, Hêvié market",
+      },
+    },
+  },
+];
+
+/** Données des 8 quartiers d'Abomey-Calavi (slug, nom, copie SEO fr/en). */
+export const QUARTIER_INFO: QuartierInfo[] = QUARTIER_INFO_FR;
+
+export const QUARTIER_SLUGS: string[] = QUARTIER_INFO.map((q) => q.slug);
+
+export const quartierBySlug = (slug: string): QuartierInfo | undefined =>
+  QUARTIER_INFO.find((q) => q.slug === slug);
+
+/** Copie SEO localisée d'un quartier (fr/en) ; undefined si slug inconnu. */
+export const quartierLocal = (slug: string): Record<"fr" | "en", QuartierLocalCopy> | undefined =>
+  quartierBySlug(slug)?.local;
+
 export type BrandLocal = {
   intro: string;
   pannes: { title: string; text: string }[];

@@ -1,11 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
+import { z } from "zod";
 
 import { reservationInputSchema } from "./reservation-schema";
 import { generateTrackingCode, hashTrackingCode, rateLimit } from "./security";
+import type { TablesInsert } from "@/integrations/supabase/types";
+
+// Schéma local : reservationInputSchema (partagé) + attribution optionnelle.
+const createReservationSchema = reservationInputSchema.extend({
+  source: z.string().trim().max(80).optional(),
+});
 
 export const createReservation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reservationInputSchema.parse(data))
+  .inputValidator((data: unknown) => createReservationSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -47,7 +54,8 @@ export const createReservation = createServerFn({ method: "POST" })
         slot_hour: data.heure ? data.heure : null,
         message: message ? message : null,
         tracking_code_hash: trackingCodeHash,
-      })
+        ...(data.source ? { source: data.source } : {}),
+      } as TablesInsert<"reservations">)
       .select(
         "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
       )

@@ -12,6 +12,7 @@ const label = "at-eyebrow mb-1 block";
 
 export function LeadForm({
   source,
+  sourceDetail,
   title,
   description,
   defaultReference,
@@ -21,6 +22,7 @@ export function LeadForm({
   successText,
 }: {
   source: "devis" | "contact" | "suivi";
+  sourceDetail?: string;
   title: string;
   description?: string;
   defaultReference?: string;
@@ -52,7 +54,7 @@ export function LeadForm({
     setPending(true);
     try {
       await submit({
-        data: { source, name, phone, email, reference, message, website },
+        data: { source, sourceDetail, name, phone, email, reference, message, website },
       });
       setSent(true);
     } catch (err) {

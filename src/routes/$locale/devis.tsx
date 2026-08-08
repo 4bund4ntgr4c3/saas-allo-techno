@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Clock, ShieldCheck } from "lucide-react";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
@@ -32,7 +32,17 @@ function Devis() {
   const [brand, setBrand] = useState<string>("");
   const [deviceSlug, setDeviceSlug] = useState<string>("");
   const [faultSlug, setFaultSlug] = useState<string>("");
+  const [sourceDetail, setSourceDetail] = useState<string | undefined>(undefined);
   const { locale, t } = useI18n();
+
+  // Attribution : ?src= ou ?utm_source= (ex. "quartier-zogbadje") transmis au
+  // formulaire pour tracer la provenance du lead. Lecture client uniquement.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get("src") ?? params.get("utm_source");
+    if (src) setSourceDetail(src.slice(0, 80));
+  }, []);
 
   const devices = useMemo(() => (brand ? devicesOfBrand(brand) : []), [brand]);
   const device = useMemo(() => DEVICES.find((d) => d.slug === deviceSlug), [deviceSlug]);
@@ -189,6 +199,7 @@ function Devis() {
             </Button>
             <LeadForm
               source="devis"
+              {...(sourceDetail ? { sourceDetail } : {})}
               title={t("devis.form.title")}
               messageLabel={t("devis.form.messageLabel")}
               messagePlaceholder={t("devis.form.messagePlaceholder")}

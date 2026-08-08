@@ -22,6 +22,7 @@ const STATIC_PATHS = [
   "/guides",
   "/reclamation",
   "/reconditionnes",
+  "/quartiers",
 ];
 
 const LOCALES: Locale[] = ["fr", "en"];
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async ({ request }) => {
         const { BRANDS, DEVICES, POSTS, ACCESSORIES } = await import("@/data/catalog");
+        const { QUARTIER_INFO } = await import("@/data/local-seo");
         const origin = new URL(request.url).origin;
 
         const paths = [
@@ -44,6 +46,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...DEVICES.map((d) => `/appareil/${d.slug}`),
           ...POSTS.map((p) => `/blog/${p.slug}`),
           ...ACCESSORIES.map((a) => `/boutique/${a.slug}`),
+          ...QUARTIER_INFO.map((q) => `/quartiers/${q.slug}`),
         ];
 
         const abs = (locale: Locale, u: string) => `${origin}/${locale}${u}`;

@@ -128,6 +128,7 @@ export type Database = {
           event: string;
           id: string;
           session_id: string | null;
+          source: string | null;
           step: number | null;
         };
         Insert: {
@@ -138,6 +139,7 @@ export type Database = {
           event: string;
           id?: string;
           session_id?: string | null;
+          source?: string | null;
           step?: number | null;
         };
         Update: {
@@ -148,6 +150,7 @@ export type Database = {
           event?: string;
           id?: string;
           session_id?: string | null;
+          source?: string | null;
           step?: number | null;
         };
         Relationships: [];
@@ -337,6 +340,7 @@ export type Database = {
           phone: string | null;
           reference: string | null;
           source: string;
+          source_detail: string | null;
           status: string;
         };
         Insert: {
@@ -348,6 +352,7 @@ export type Database = {
           phone?: string | null;
           reference?: string | null;
           source: string;
+          source_detail?: string | null;
           status?: string;
         };
         Update: {
@@ -359,6 +364,7 @@ export type Database = {
           phone?: string | null;
           reference?: string | null;
           source?: string;
+          source_detail?: string | null;
           status?: string;
         };
         Relationships: [];
@@ -634,12 +640,15 @@ export type Database = {
           slot_date: string;
           slot_hour: string | null;
           slot_period: Database["public"]["Enums"]["slot_period"];
+          source: string | null;
           staff_notes: string | null;
           status: Database["public"]["Enums"]["reservation_status"];
           tracking_code_hash: string | null;
           updated_at: string;
           user_id: string | null;
           warranty_months: number;
+          payment_ref: string | null;
+          payment_status: string;
         };
         Insert: {
           created_at?: string;
@@ -664,12 +673,15 @@ export type Database = {
           slot_date: string;
           slot_hour?: string | null;
           slot_period: Database["public"]["Enums"]["slot_period"];
+          source?: string | null;
           staff_notes?: string | null;
           status?: Database["public"]["Enums"]["reservation_status"];
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
           warranty_months?: number;
+          payment_ref?: string | null;
+          payment_status?: string;
         };
         Update: {
           created_at?: string;
@@ -695,12 +707,60 @@ export type Database = {
           slot_date?: string;
           slot_hour?: string | null;
           slot_period?: Database["public"]["Enums"]["slot_period"];
+          source?: string | null;
           staff_notes?: string | null;
           status?: Database["public"]["Enums"]["reservation_status"];
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
           warranty_months?: number;
+          payment_ref?: string | null;
+          payment_status?: string;
+        };
+        Relationships: [];
+      };
+      returns: {
+        Row: {
+          created_at: string;
+          customer_name: string;
+          email: string | null;
+          id: string;
+          item: string;
+          note: string | null;
+          order_reference: string | null;
+          phone: string;
+          reason: string;
+          reference: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          customer_name: string;
+          email?: string | null;
+          id?: string;
+          item: string;
+          note?: string | null;
+          order_reference?: string | null;
+          phone: string;
+          reason: string;
+          reference?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          customer_name?: string;
+          email?: string | null;
+          id?: string;
+          item?: string;
+          note?: string | null;
+          order_reference?: string | null;
+          phone?: string;
+          reason?: string;
+          reference?: string;
+          status?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -940,6 +1000,10 @@ export type Database = {
         Returns: boolean;
       };
       update_payment_status: {
+        Args: { _reference: string; _status: string; _tx_id: string };
+        Returns: undefined;
+      };
+      update_reservation_payment: {
         Args: { _reference: string; _status: string; _tx_id: string };
         Returns: undefined;
       };

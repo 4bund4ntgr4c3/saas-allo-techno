@@ -24,6 +24,13 @@ export type InvoiceRow = Pick<
   | "status"
 >;
 
+export type TimelineRow = {
+  old_status: string | null;
+  new_status: string;
+  note: string | null;
+  created_at: string;
+};
+
 async function invoiceEstimate(deviceName: string, issueLabel: string) {
   const { searchDevices } = await import("@/lib/catalog-search");
   const device = searchDevices(deviceName)[0]?.device;
@@ -131,6 +138,133 @@ export async function downloadInvoicePdf(r: InvoiceRow) {
   );
 
   doc.save(`allotechno-${r.reference}.pdf`);
+}
+
+/** Timeline PDF d'un dossier (suivi client) : dossier, estimation et journal. */
+export async function downloadTimelinePdf(
+  r: InvoiceRow & { warranty_months?: number; history: TimelineRow[] },
+) {
+  const { estimate, found } = await invoiceEstimate(r.device, r.issue);
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 18;
+
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, pageW, 30, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text(COMPANY.name, margin, 15);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(
+    [COMPANY.address, `Tél. ${COMPANY.phone} — ${COMPANY.email}`, COMPANY.city + ", Bénin"],
+    pageW - margin,
+    15,
+    { align: "right" },
+  );
+
+  doc.setTextColor(20, 20, 20);
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Timeline du dossier ${r.reference}`, margin, 44);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text(
+    `Édité le ${new Date().toLocaleDateString("fr-FR")} · ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+    margin,
+    50,
+  );
+
+  autoTable(doc, {
+    startY: 58,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Dossier", "Client", "Téléphone", "E-mail"]],
+    body: [[r.reference, r.customer_name, r.phone, r.email ?? "—"]],
+  });
+
+  autoTable(doc, {
+    startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 4,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Appareil", "Panne déclarée", "Statut", "Rendez-vous"]],
+    body: [
+      [
+        r.device,
+        r.issue,
+        STATUS_LABEL[r.status] ?? r.status,
+        `${formatDateFr(r.slot_date)} · ${PERIOD_LABEL[r.slot_period]}${r.slot_hour ? ` à ${r.slot_hour}` : ""}`,
+      ],
+    ],
+  });
+
+  autoTable(doc, {
+    startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6,
+    margin: { left: margin, right: margin },
+    theme: "striped",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Désignation", "Détail", "Montant (FCFA)"]],
+    body: found
+      ? [
+          ...estimate.lines.map((l) => [l.label, l.detail, formatFcfa(l.amount) ?? ""]),
+          ["", "TOTAL ESTIMATIF", formatFcfa(estimate.total) ?? ""],
+        ]
+      : [["Estimation", "Montant confirmé après diagnostic", "—"]],
+    footStyles: { fontStyle: "bold", fillColor: [241, 245, 249], textColor: [15, 23, 42] },
+    didParseCell: (data) => {
+      if (
+        found &&
+        data.section === "body" &&
+        data.column.index === 2 &&
+        data.row.index === estimate.lines.length
+      ) {
+        data.cell.styles.fontStyle = "bold";
+      }
+    },
+  });
+
+  const history = [...r.history].reverse();
+  autoTable(doc, {
+    startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Date", "Événement", "Note"]],
+    body:
+      history.length > 0
+        ? history.map((h) => [
+            new Date(h.created_at).toLocaleString("fr-FR", {
+              day: "2-digit",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            h.old_status
+              ? `${STATUS_LABEL[h.old_status] ?? h.old_status} → ${STATUS_LABEL[h.new_status] ?? h.new_status}`
+              : `Dossier créé — ${STATUS_LABEL[h.new_status] ?? h.new_status}`,
+            h.note ?? "",
+          ])
+        : [["—", "Aucun événement enregistré", ""]],
+  });
+
+  const noteY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  doc.setFontSize(8.5);
+  doc.setTextColor(90, 90, 90);
+  doc.text(
+    [
+      r.warranty_months && r.warranty_months > 0
+        ? `Garantie pièces & main-d'œuvre : ${r.warranty_months} mois.`
+        : "Garantie standard pièces & main-d'œuvre incluse.",
+      `Mode de paiement retenu : ${r.payment.toUpperCase()} · Suivi en ligne : ${COMPANY.url}/suivi?ref=${r.reference}`,
+    ],
+    margin,
+    noteY,
+  );
+
+  doc.save(`allotechno-timeline-${r.reference}.pdf`);
 }
 
 function todayLabel(): string {

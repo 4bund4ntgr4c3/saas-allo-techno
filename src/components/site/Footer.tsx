@@ -112,6 +112,7 @@ export function Footer() {
                 { to: "/guides", label: t("nav.guides") },
                 { to: "/reclamation", label: t("nav.reclamation") },
                 { to: "/engagements", label: t("nav.engagements") },
+                { to: "/quartiers", label: t("nav.quartiers") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link

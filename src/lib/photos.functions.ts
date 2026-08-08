@@ -5,9 +5,17 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit, verifyTrackingCode } from "@/lib/security";
 
-const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+const ALLOWED_IMAGE_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+]);
+const ALLOWED_VIDEO_MIME = new Set(["video/mp4", "video/webm"]);
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 25 * 1024 * 1024;
 
 const STAGES = ["diagnostic", "pieces", "since", "live", "repair"] as const;
 export type AttachmentStage = (typeof STAGES)[number];
@@ -50,10 +58,10 @@ async function requireStaffWithOtp(supabaseAdmin: SupabaseClient<Database>): Pro
 }
 
 function assertValidImage(fileName: string, contentType: string, fileSize: number) {
-  if (!ALLOWED_MIME.has(contentType)) {
+  if (!ALLOWED_IMAGE_MIME.has(contentType)) {
     throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
   }
-  if (fileSize > MAX_BYTES) {
+  if (fileSize > MAX_IMAGE_BYTES) {
     throw new Error("Photo trop lourde (5 Mo maximum).");
   }
   const ext = fileName.split(".").pop()?.toLowerCase() ?? "jpg";
@@ -61,6 +69,31 @@ function assertValidImage(fileName: string, contentType: string, fileSize: numbe
     throw new Error("Extension de fichier invalide.");
   }
   return ext;
+}
+
+/** Valide une photo OU une vidéo ; renvoie le type de média déduit du MIME. */
+function assertValidMedia(fileName: string, contentType: string, fileSize: number) {
+  const kind: "photo" | "video" = contentType.startsWith("video/") ? "video" : "photo";
+  if (kind === "video") {
+    if (!ALLOWED_VIDEO_MIME.has(contentType)) {
+      throw new Error("Format de vidéo non accepté (MP4, WebM).");
+    }
+    if (fileSize > MAX_VIDEO_BYTES) {
+      throw new Error("Vidéo trop lourde (25 Mo maximum).");
+    }
+  } else {
+    if (!ALLOWED_IMAGE_MIME.has(contentType)) {
+      throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
+    }
+    if (fileSize > MAX_IMAGE_BYTES) {
+      throw new Error("Photo trop lourde (5 Mo maximum).");
+    }
+  }
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? (kind === "video" ? "mp4" : "jpg");
+  if (!/^[a-z0-9]{1,10}$/.test(ext)) {
+    throw new Error("Extension de fichier invalide.");
+  }
+  return { ext, kind };
 }
 
 const photoUploadSchema = z.object({
@@ -72,14 +105,16 @@ const photoUploadSchema = z.object({
     .number()
     .int()
     .positive()
-    .max(MAX_BYTES + 1),
+    .max(MAX_VIDEO_BYTES + 1),
+  kind: z.enum(["photo", "video"]).optional(),
+  stage: z.string().trim().max(60).optional(),
 });
 
 /**
- * Prépare l'upload d'une photo d'appareil : vérifie le code de suivi (preuve de
- * propriété du dossier), le type MIME et la taille, puis renvoie une URL de
- * téléversement signée (bucket privé) + le chemin stocké.
- * Le client PUT la photo directement sur l'URL signée.
+ * Prépare l'upload d'une photo OU d'une vidéo d'appareil : vérifie le code de
+ * suivi (preuve de propriété du dossier), le type MIME et la taille, puis
+ * renvoie une URL de téléversement signée (bucket privé) + le chemin stocké.
+ * Le client PUT le fichier directement sur l'URL signée.
  */
 export const getDevicePhotoUpload = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => photoUploadSchema.parse(data))
@@ -90,12 +125,8 @@ export const getDevicePhotoUpload = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
-    if (!ALLOWED_MIME.has(data.contentType)) {
-      throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
-    }
-    if (data.fileSize > MAX_BYTES) {
-      throw new Error("Photo trop lourde (5 Mo maximum).");
-    }
+    const kind = data.kind ?? (data.contentType.startsWith("video/") ? "video" : "photo");
+    assertValidMedia(data.fileName, data.contentType, data.fileSize);
 
     const { data: row } = await supabaseAdmin
       .from("reservations")
@@ -107,7 +138,7 @@ export const getDevicePhotoUpload = createServerFn({ method: "POST" })
       throw new Error("Code de suivi invalide. Vérifiez le code reçu à la réservation.");
     }
 
-    const ext = data.fileName.split(".").pop()?.toLowerCase() ?? "jpg";
+    const ext = data.fileName.split(".").pop()?.toLowerCase() ?? (kind === "video" ? "mp4" : "jpg");
     const path = `uploads/${data.reference}/${crypto.randomUUID()}.${ext}`;
 
     const { data: signed, error } = await supabaseAdmin.storage
@@ -131,7 +162,7 @@ const staffPhotoUploadSchema = z.object({
     .number()
     .int()
     .positive()
-    .max(MAX_BYTES + 1),
+    .max(MAX_IMAGE_BYTES + 1),
 });
 
 /**
@@ -215,6 +246,53 @@ export const addStagePhoto = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const registerAttachmentSchema = z.object({
+  reference: z.string().trim().min(1, "Référence requise").max(20),
+  code: z.string().trim().min(1, "Code de suivi requis").max(20),
+  url: z.string().trim().min(1, "Chemin du fichier requis").max(500),
+  kind: z.enum(["photo", "video"]).optional(),
+  stage: z.string().trim().max(60).optional(),
+  caption: z.string().trim().max(300).optional(),
+});
+
+/**
+ * Rattache une pièce jointe (photo ou vidéo) au dossier, une fois l'upload via
+ * l'URL signée terminé. Vérifie le code de suivi secret (preuve de propriété).
+ */
+export const registerDeviceAttachment = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => registerAttachmentSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("register-attachment", 30)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const { data: row, error } = await supabaseAdmin
+      .from("reservations")
+      .select("id, tracking_code_hash")
+      .eq("reference", data.reference)
+      .maybeSingle();
+
+    if (error || !row || !(await verifyTrackingCode(data.code, row.tracking_code_hash))) {
+      throw new Error("Code de suivi invalide. Vérifiez le code reçu à la réservation.");
+    }
+
+    const { error: insertError } = await supabaseAdmin.from("reservation_attachments").insert({
+      reservation_id: row.id,
+      stage: data.stage ?? "appareil",
+      kind: data.kind ?? "photo",
+      url: data.url,
+      ...(data.caption ? { caption: data.caption } : {}),
+    });
+    if (insertError) {
+      console.error("[photos] register attachment failed", insertError);
+      throw new Error("La pièce jointe n'a pas pu être enregistrée. Réessayez.");
+    }
+
+    return { ok: true };
+  });
+
 const attachmentsLookupSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise"),
   code: z.string().trim().min(1, "Code de suivi requis").max(20),
@@ -223,13 +301,15 @@ const attachmentsLookupSchema = z.object({
 export type ReservationAttachment = {
   url: string;
   stage: string;
+  kind: "photo" | "video";
   caption: string | null;
   created_at: string;
 };
 
 /**
- * Photos de suivi du dossier (publiques) : vérifie le code de suivi secret puis
- * renvoie les images de chaque étape sous forme d'URLs publiques servables.
+ * Photos / vidéos de suivi du dossier (publiques) : vérifie le code de suivi
+ * secret puis renvoie les pièces jointes de chaque étape sous forme d'URLs
+ * publiques servables.
  */
 export const getReservationAttachments = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => attachmentsLookupSchema.parse(data))
@@ -259,9 +339,8 @@ export const getReservationAttachments = createServerFn({ method: "POST" })
 
       const { data: attachments, error: attachError } = await supabaseAdmin
         .from("reservation_attachments")
-        .select("url, stage, caption, created_at")
+        .select("url, stage, kind, caption, created_at")
         .eq("reservation_id", row.id)
-        .eq("kind", "photo")
         .order("created_at", { ascending: true });
 
       if (attachError) {
@@ -280,6 +359,7 @@ export const getReservationAttachments = createServerFn({ method: "POST" })
         photoList.push({
           url: signed.signedUrl,
           stage: a.stage,
+          kind: a.kind === "video" ? "video" : "photo",
           caption: a.caption,
           created_at: a.created_at,
         });

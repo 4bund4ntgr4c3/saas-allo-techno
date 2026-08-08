@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 /**
  * Webhook Flutterwave — notifications de transaction (charge.completed…).
- * Vérifie l'entête `verif-hash` puis marque la commande comme payée.
+ * Vérifie l'entête `verif-hash` puis marque la commande (boutique) ou la
+ * réservation (devis approuvé) comme payée / en échec.
  * Route API brute (pas une serverFn) : non bloquée par le CSRF middleware.
  */
 export const Route = createFileRoute("/api/flutterwave-webhook")({
@@ -44,46 +45,90 @@ export const Route = createFileRoute("/api/flutterwave-webhook")({
         const txId = data?.id != null ? String(data.id) : null;
 
         try {
-          if (event === "charge.completed" && data?.status === "successful" && txRef) {
+          if (
+            event === "charge.completed" &&
+            (data?.status === "successful" || data?.status === "failed") &&
+            txRef
+          ) {
             const reference = txRef.startsWith("AT-") ? txRef.slice(3) : txRef;
+            const nextStatus = data.status === "successful" ? "paid" : "failed";
 
             const { data: payment } = await supabaseAdmin
               .from("payments")
-              .select("status, amount, reference")
+              .select("status, amount, reference, source")
               .eq("tx_ref", txRef)
               .maybeSingle();
 
             if (payment && payment.status !== "paid") {
-              if (payment.amount !== data.amount) {
+              if (data.status === "successful" && payment.amount !== data.amount) {
                 console.warn(
                   `[webhook] montant incohérent pour ${reference}: attendu ${payment.amount}, reçu ${data.amount}`,
                 );
               }
 
-              const { error } = await supabaseAdmin.rpc("update_payment_status", {
-                _reference: payment.reference,
-                _status: "paid",
-                _tx_id: txId ?? "",
-              });
-              if (error) {
-                console.error("[webhook] update_payment_status failed", error);
-                return new Response("DB error", { status: 500 });
-              }
+              if (payment.source === "reservation") {
+                const { error } = await supabaseAdmin.rpc("update_reservation_payment", {
+                  _reference: payment.reference,
+                  _status: nextStatus,
+                  _tx_id: txId ?? "",
+                });
+                if (error) {
+                  console.error("[webhook] update_reservation_payment failed", error);
+                  return new Response("DB error", { status: 500 });
+                }
 
-              const { data: lead } = await supabaseAdmin
-                .from("leads")
-                .select("message")
-                .eq("reference", payment.reference)
-                .eq("source", "boutique")
-                .maybeSingle();
-              if (lead?.message && !lead.message.includes("Paiement : Payé")) {
-                await supabaseAdmin
-                  .from("leads")
-                  .update({ message: `${lead.message}\nPaiement : Payé (en ligne)` })
-                  .eq("reference", payment.reference);
-              }
+                if (nextStatus === "paid") {
+                  const { data: reservation } = await supabaseAdmin
+                    .from("reservations")
+                    .select(
+                      "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, quote_amount",
+                    )
+                    .eq("reference", payment.reference)
+                    .maybeSingle();
 
-              console.log(`[webhook] commande ${payment.reference} payée (${txId})`);
+                  if (reservation) {
+                    const { notifyReservationPaid } = await import("@/lib/notifications");
+                    void notifyReservationPaid({
+                      reference: reservation.reference,
+                      tracking_code: null,
+                      customer_name: reservation.customer_name,
+                      email: reservation.email,
+                      phone: reservation.phone,
+                      device: reservation.device,
+                      quote_amount: reservation.quote_amount ?? 0,
+                    });
+                  }
+                }
+
+                console.log(`[webhook] réservation ${payment.reference} ${nextStatus} (${txId})`);
+              } else {
+                const { error } = await supabaseAdmin.rpc("update_payment_status", {
+                  _reference: payment.reference,
+                  _status: nextStatus,
+                  _tx_id: txId ?? "",
+                });
+                if (error) {
+                  console.error("[webhook] update_payment_status failed", error);
+                  return new Response("DB error", { status: 500 });
+                }
+
+                if (nextStatus === "paid") {
+                  const { data: lead } = await supabaseAdmin
+                    .from("leads")
+                    .select("message")
+                    .eq("reference", payment.reference)
+                    .eq("source", "boutique")
+                    .maybeSingle();
+                  if (lead?.message && !lead.message.includes("Paiement : Payé")) {
+                    await supabaseAdmin
+                      .from("leads")
+                      .update({ message: `${lead.message}\nPaiement : Payé (en ligne)` })
+                      .eq("reference", payment.reference);
+                  }
+                }
+
+                console.log(`[webhook] commande ${payment.reference} ${nextStatus} (${txId})`);
+              }
             }
           } else {
             console.log(`[webhook] événement ignoré: ${event ?? "inconnu"}`);

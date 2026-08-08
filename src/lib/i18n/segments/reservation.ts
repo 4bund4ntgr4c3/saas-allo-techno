@@ -13,6 +13,7 @@ const fr = {
   "wizard.step.modele": "Modèle",
   "wizard.step.panne": "Panne",
   "wizard.step.creneau": "Créneau",
+  "wizard.step.photos": "Photos",
   "wizard.step.coordonnees": "Coordonnées",
   "wizard.step.recapitulatif": "Récapitulatif",
 
@@ -43,6 +44,7 @@ const fr = {
   "wizard.step4.title": "05. Modèle",
   "wizard.step5.title": "06. Pannes constatées",
   "wizard.step6.title": "07. Date & heure du rendez-vous",
+  "wizard.step7.title": "08. Photos de l'appareil (optionnel)",
 
   // Assistant de réservation — marque / série / modèle
   "wizard.brand.missing": "Marque absente ?",
@@ -116,7 +118,7 @@ const fr = {
   "wizard.after.title": "Ce qui se passe ensuite",
 
   // Assistant de réservation — formulaire coordonnées
-  "wizard.contact.eyebrow": "08. Vos coordonnées",
+  "wizard.contact.eyebrow": "09. Vos coordonnées",
   "wizard.contact.title": "Votre dossier",
   "wizard.contact.hint":
     "Ces informations servent à confirmer le rendez-vous (WhatsApp / e-mail) et à préparer votre dossier.",
@@ -145,12 +147,26 @@ const fr = {
   "wizard.photos.hint": "Envoyez une ou plusieurs photos pour accélérer le diagnostic.",
   "wizard.photos.add": "Ajouter des photos",
   "wizard.photos.alt": "Photo {0}",
+  "wizard.photos.remove": "Retirer la photo {0}",
   "wizard.photos.uploading": "Envoi…",
   "wizard.photos.send": "Envoyer {0} photo(s)",
   "wizard.photos.upload.success": "{0} photo(s) envoyée(s)",
   "wizard.photos.sent.success": "✓ {0} photo(s) envoyée(s) avec succès.",
   "wizard.photos.upload.error.file": "Impossible d'envoyer « {0} »",
   "wizard.photos.upload.error": "Erreur lors de l'envoi des photos",
+
+  // Assistant de réservation — étape photos
+  "wizard.photos.optional":
+    "Ajoutez jusqu'à 3 photos de l'appareil pour accélérer le diagnostic. Cette étape est facultative : vous pouvez continuer sans photo.",
+  "wizard.photos.select": "Sélectionner des photos",
+  "wizard.photos.max": "Chaque photo doit faire 5 Mo maximum (JPG, PNG, WebP, HEIC).",
+  "wizard.photos.count": "{0} photo(s) sélectionnée(s)",
+  "wizard.photos.uploaded": "{0} photo(s) envoyée(s) avec succès — visibles dans votre suivi.",
+  "wizard.photos.failed":
+    "Certaines photos n'ont pas pu être envoyées. La réservation est confirmée — vous pouvez réessayer ci-dessous.",
+  "wizard.photos.continue": "Continuer",
+  "wizard.photos.restored":
+    "Vous aviez sélectionné {0} photo(s) lors de votre dernière session — re-sélectionnez-les si besoin.",
 
   // Assistant de réservation — erreurs
   "wizard.error.no.slot": "Choisissez une date et une heure pour votre rendez-vous.",
@@ -200,6 +216,7 @@ const en = {
   "wizard.step.modele": "Model",
   "wizard.step.panne": "Fault",
   "wizard.step.creneau": "Slot",
+  "wizard.step.photos": "Photos",
   "wizard.step.coordonnees": "Details",
   "wizard.step.recapitulatif": "Summary",
 
@@ -230,6 +247,7 @@ const en = {
   "wizard.step4.title": "05. Model",
   "wizard.step5.title": "06. Reported faults",
   "wizard.step6.title": "07. Appointment date & time",
+  "wizard.step7.title": "08. Device photos (optional)",
 
   // Booking wizard — brand / series / model
   "wizard.brand.missing": "Brand missing?",
@@ -301,7 +319,7 @@ const en = {
   "wizard.after.title": "What happens next",
 
   // Booking wizard — contact form
-  "wizard.contact.eyebrow": "08. Your details",
+  "wizard.contact.eyebrow": "09. Your details",
   "wizard.contact.title": "Your case",
   "wizard.contact.hint":
     "This information is used to confirm the appointment (WhatsApp / email) and prepare your case.",
@@ -330,12 +348,26 @@ const en = {
   "wizard.photos.hint": "Send one or more photos to speed up the diagnosis.",
   "wizard.photos.add": "Add photos",
   "wizard.photos.alt": "Photo {0}",
+  "wizard.photos.remove": "Remove photo {0}",
   "wizard.photos.uploading": "Uploading…",
   "wizard.photos.send": "Send {0} photo(s)",
   "wizard.photos.upload.success": "{0} photo(s) sent",
   "wizard.photos.sent.success": "✓ {0} photo(s) sent successfully.",
   "wizard.photos.upload.error.file": "Could not upload « {0} »",
   "wizard.photos.upload.error": "An error occurred while sending the photos",
+
+  // Booking wizard — photos step
+  "wizard.photos.optional":
+    "Add up to 3 photos of the device to speed up the diagnosis. This step is optional: you can continue without photos.",
+  "wizard.photos.select": "Select photos",
+  "wizard.photos.max": "Each photo must be 5 MB max (JPG, PNG, WebP, HEIC).",
+  "wizard.photos.count": "{0} photo(s) selected",
+  "wizard.photos.uploaded": "{0} photo(s) sent successfully — visible in your tracking.",
+  "wizard.photos.failed":
+    "Some photos could not be sent. Your booking is confirmed — you can retry below.",
+  "wizard.photos.continue": "Continue",
+  "wizard.photos.restored":
+    "You had selected {0} photo(s) in your last session — re-select them if needed.",
 
   // Booking wizard — errors
   "wizard.error.no.slot": "Choose a date and time for your appointment.",

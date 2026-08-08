@@ -149,7 +149,7 @@ function reservationSummary(r: ReservationEvent): string {
   return lines.map((line) => `<p style="margin:4px 0;font-size:14px">${line}</p>`).join("");
 }
 
-function trackingLink(r: ReservationEvent): string {
+function trackingLink(r: { reference: string; tracking_code?: string | null }): string {
   return `${COMPANY.url}/fr/suivi?ref=${r.reference}${r.tracking_code ? `&code=${r.tracking_code}` : ""}`;
 }
 
@@ -176,6 +176,57 @@ export async function notifyReservationCreated(r: ReservationEvent): Promise<voi
     await sendEmail(r.email, sujet, html);
   }
   await sendWhatsApp(r.phone, waBody);
+}
+
+export type ReservationPaidEvent = {
+  reference: string;
+  tracking_code?: string | null;
+  customer_name: string;
+  email: string | null;
+  phone: string;
+  device: string;
+  quote_amount: number;
+};
+
+/**
+ * Confirmation de paiement en ligne d'un devis approuvé : e-mail + WhatsApp
+ * au client, puis alerte interne à l'atelier. Best-effort comme les autres
+ * notifications : les erreurs sont loggées, jamais propagées.
+ */
+export async function notifyReservationPaid(r: ReservationPaidEvent): Promise<void> {
+  const amount = `${r.quote_amount.toLocaleString("fr-FR")} FCFA`;
+  const sujet = `Dossier ${r.reference} — paiement reçu`;
+  const waBody = [
+    `Bonjour ${r.customer_name}, nous avons bien reçu votre paiement en ligne de ${amount} pour le dossier ${r.reference} (${r.device}).`,
+    `L'atelier s'occupe de votre appareil. Suivez l'avancement : ${trackingLink(r)}`,
+    `${COMPANY.name} — ${COMPANY.phone}`,
+  ].join("\n");
+
+  if (r.email) {
+    const html = shell(sujet, [
+      `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, nous avons bien reçu votre paiement en ligne :</p>`,
+      `<p style="font-size:20px;font-weight:700;margin:10px 0;color:#16a34a">${amount}</p>`,
+      `<p style="font-size:14px">Dossier <strong>${r.reference}</strong> — ${r.device}. L'atelier peut démarrer la réparation dès maintenant.</p>`,
+      `<p style="font-size:14px"><a href="${trackingLink(r)}">Suivre mon dossier</a></p>`,
+      `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
+    ]);
+    await sendEmail(r.email, sujet, html);
+  }
+  await sendWhatsApp(r.phone, waBody);
+
+  // Alerte interne : le règlement permet de lancer la réparation.
+  const staffSujet = `Paiement reçu ${r.reference} — ${amount}`;
+  const staffHtml = shell(staffSujet, [
+    `<p style="font-size:14px">Le client a réglé en ligne le devis approuvé de son dossier <strong>${r.reference}</strong>.</p>`,
+    `<p style="font-size:14px">Client : <strong>${r.customer_name}</strong> — ${r.phone}${r.email ? ` — ${r.email}` : ""}</p>`,
+    `<p style="font-size:14px">Appareil : ${r.device}</p>`,
+    `<p style="font-size:20px;font-weight:700;margin:10px 0;color:#16a34a">${amount}</p>`,
+  ]);
+  await sendEmail(COMPANY.email, staffSujet, staffHtml);
+  await sendWhatsApp(
+    COMPANY.whatsapp,
+    `Paiement en ligne reçu ${r.reference} — ${r.customer_name} : ${amount}.`,
+  );
 }
 
 /** Avertit l'équipe de l'arrivée d'un nouveau dossier (e-mail + WhatsApp interne). */

@@ -32,6 +32,7 @@ const fr: Dictionary = {
   "nav.guides": "Guides & conseils",
   "nav.reclamation": "Réclamation",
   "nav.reconditionnes": "Reconditionnés",
+  "nav.quartiers": "Quartiers",
 
   // Actions / liens génériques
   "action.explorer": "Explorer",
@@ -242,6 +243,7 @@ const en: Dictionary = {
   "nav.guides": "Guides & tips",
   "nav.reclamation": "Warranty claim",
   "nav.reconditionnes": "Refurbished",
+  "nav.quartiers": "Areas",
 
   // Actions
   "action.explorer": "Explore",
