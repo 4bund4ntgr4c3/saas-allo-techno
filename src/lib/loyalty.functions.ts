@@ -35,50 +35,126 @@ function generateReferralCode(): string {
   return code;
 }
 
-/** Récapitulatif fidélité de l'utilisateur connecté : points, code, parrain, historique. */
-export const getLoyaltySummary = createServerFn({ method: "POST" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  if (!rateLimit("loyalty-summary", 30)) {
-    throw new Error("Trop de demandes. Réessayez dans une minute.");
+export type LoyaltyTier = "bronze" | "argent" | "or";
+
+const TIER_THRESHOLDS: { tier: LoyaltyTier; min: number; label: string; advantages: string }[] = [
+  {
+    tier: "or",
+    min: 700,
+    label: "Or",
+    advantages: "5 % de réduction permanente, atelier prioritaire",
+  },
+  { tier: "argent", min: 300, label: "Argent", advantages: "3 % de réduction, diagnostic gratuit" },
+  {
+    tier: "bronze",
+    min: 0,
+    label: "Bronze",
+    advantages: "Bienvenue — gagnez des points à chaque réparation",
+  },
+];
+
+export function computeTier(points: number): {
+  tier: LoyaltyTier;
+  label: string;
+  advantages: string;
+  next: { tier: LoyaltyTier; label: string; min: number } | null;
+} {
+  for (const t of TIER_THRESHOLDS) {
+    if (points >= t.min) {
+      const idx = TIER_THRESHOLDS.indexOf(t);
+      const nextTier = idx > 0 ? TIER_THRESHOLDS[idx - 1] : null;
+      return {
+        tier: t.tier,
+        label: t.label,
+        advantages: t.advantages,
+        next: nextTier ? { tier: nextTier.tier, label: nextTier.label, min: nextTier.min } : null,
+      };
+    }
   }
-
-  const userId = await currentUserId(supabaseAdmin);
-
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("loyalty_points, referral_code, referred_by")
-    .eq("id", userId)
-    .maybeSingle();
-
-  const { data: ledger } = await supabaseAdmin
-    .from("loyalty_ledger")
-    .select("delta, reason, reference, created_at")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(50);
-
-  let referredBy: string | null = null;
-  if (profile?.referred_by) {
-    const { data: referrer } = await supabaseAdmin
-      .from("profiles")
-      .select("full_name")
-      .eq("id", profile.referred_by)
-      .maybeSingle();
-    referredBy = referrer?.full_name ?? null;
-  }
-
+  const bronze = TIER_THRESHOLDS.find((t) => t.tier === "bronze")!;
   return {
-    points: profile?.loyalty_points ?? 0,
-    referral_code: profile?.referral_code ?? null,
-    referred_by: referredBy,
-    ledger: (ledger ?? []).map((l) => ({
-      delta: l.delta,
-      reason: l.reason,
-      reference: l.reference,
-      created_at: l.created_at,
-    })),
+    tier: "bronze",
+    label: bronze.label,
+    advantages: bronze.advantages,
+    next: { tier: "argent", label: "Argent", min: 300 },
   };
-});
+}
+
+export type LoyaltySummary = {
+  points: number;
+  tier: {
+    tier: LoyaltyTier;
+    label: string;
+    advantages: string;
+    next: { tier: LoyaltyTier; label: string; min: number } | null;
+  };
+  referral_code: string | null;
+  referred_by: string | null;
+  referral_count: number;
+  referral_bonus_earned: number;
+  ledger: { delta: number; reason: string; reference: string | null; created_at: string }[];
+};
+
+/** Récapitulatif fidélité de l'utilisateur connecté : points, code, parrain, historique. */
+export const getLoyaltySummary = createServerFn({ method: "POST" }).handler(
+  async (): Promise<LoyaltySummary> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!rateLimit("loyalty-summary", 30)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("loyalty_points, referral_code, referred_by")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const { data: ledger } = await supabaseAdmin
+      .from("loyalty_ledger")
+      .select("delta, reason, reference, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    let referredBy: string | null = null;
+    if (profile?.referred_by) {
+      const { data: referrer } = await supabaseAdmin
+        .from("profiles")
+        .select("full_name")
+        .eq("id", profile.referred_by)
+        .maybeSingle();
+      referredBy = referrer?.full_name ?? null;
+    }
+
+    const { count: referralCount } = await supabaseAdmin
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("referred_by", userId);
+
+    const referralBonusEarned = (ledger ?? [])
+      .filter((l) => l.reason === "referral" && l.delta > 0)
+      .reduce((sum, l) => sum + l.delta, 0);
+
+    const points = profile?.loyalty_points ?? 0;
+
+    return {
+      points,
+      tier: computeTier(points),
+      referral_code: profile?.referral_code ?? null,
+      referred_by: referredBy,
+      referral_count: referralCount ?? 0,
+      referral_bonus_earned: referralBonusEarned,
+      ledger: (ledger ?? []).map((l) => ({
+        delta: l.delta,
+        reason: l.reason,
+        reference: l.reference,
+        created_at: l.created_at,
+      })),
+    };
+  },
+);
 
 /** Génère le code de parrainage de l'utilisateur (ou renvoie l'existant). */
 export const ensureReferralCode = createServerFn({ method: "POST" }).handler(async () => {

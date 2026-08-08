@@ -297,6 +297,74 @@ export const getReviewInvite = createServerFn({ method: "POST" })
   });
 
 // ---------------------------------------------------------------------------
+// Avis du client connecté (mes avis)
+// ---------------------------------------------------------------------------
+
+export type CustomerReview = {
+  id: string;
+  rating: number;
+  comment: string;
+  status: ReviewStatus;
+  verified: boolean;
+  created_at: string;
+  reference: string | null;
+  device: string | null;
+};
+
+export const listCustomerReviews = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => emptySchema.parse(data ?? {}))
+  .handler(async (): Promise<CustomerReview[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("customer-reviews-list", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("phone")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!profile?.phone) return [];
+
+    const { data, error } = await raw<{
+      id: string;
+      rating: number;
+      comment: string;
+      status: ReviewStatus;
+      verified: boolean;
+      created_at: string;
+      reservation: { reference: string; device: string } | null;
+    }>(supabaseAdmin)
+      .from("reviews")
+      .select(
+        "id, rating, comment, status, verified, created_at, reservation:reservations(reference, device)",
+      )
+      .eq("phone", profile.phone)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error("[reviews] customer list failed", error);
+      return [];
+    }
+
+    return (data ?? []).map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+      status: r.status,
+      verified: r.verified,
+      created_at: r.created_at,
+      reference: r.reservation?.reference ?? null,
+      device: r.reservation?.device ?? null,
+    }));
+  });
+
+// ---------------------------------------------------------------------------
 // Soumission d'un avis via le jeton (une seule fois par dossier)
 // ---------------------------------------------------------------------------
 
