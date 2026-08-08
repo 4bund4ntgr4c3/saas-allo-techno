@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   AlertCircle,
@@ -26,6 +26,8 @@ import {
   type ReservationStatus,
   type TimelineEntry,
 } from "@/lib/suivi.functions";
+import { decideOnQuote, getQuoteStatus } from "@/lib/quote.functions";
+import { getReservationAttachments } from "@/lib/photos.functions";
 import { formatDateFr, type DepositMode } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -35,10 +37,21 @@ import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/suivi")({
-  validateSearch: (search: Record<string, unknown>): { ref?: string; code?: string } => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    ref?: string;
+    code?: string;
+    token?: string;
+  } => {
     const ref = typeof search["ref"] === "string" ? search["ref"] : undefined;
     const code = typeof search["code"] === "string" ? search["code"] : undefined;
-    return { ...(ref ? { ref } : {}), ...(code ? { code } : {}) };
+    const token = typeof search["token"] === "string" ? search["token"] : undefined;
+    return {
+      ...(ref ? { ref } : {}),
+      ...(code ? { code } : {}),
+      ...(token ? { token } : {}),
+    };
   },
 
   head: ({ params }) => {
@@ -132,7 +145,7 @@ function statusLabel(t: TranslateFn, status: string | null | undefined): string 
 }
 
 function Suivi() {
-  const { ref, code } = Route.useSearch();
+  const { ref, code, token } = Route.useSearch();
   const router = useRouter();
   const { locale, t } = useI18n();
   const [reference, setReference] = useState(ref ?? "");
@@ -190,62 +203,66 @@ function Suivi() {
 
       <section className="py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <form onSubmit={handleSubmit} className="border border-border bg-card p-8">
-            <label htmlFor="ref" className="at-eyebrow mb-2 block">
-              {t("suivi.ref.label")}
-            </label>
-            <div className="flex gap-3">
-              <input
-                id="ref"
-                value={reference}
-                onChange={(e) => setReference(e.target.value)}
-                placeholder="AT-2026-0001"
-                className="h-11 flex-1 rounded-sm border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              />
-              <Button type="submit" variant="technical" disabled={loading}>
-                <Search className="size-4" />
-                <span className="ml-2 hidden sm:inline">{t("suivi.check")}</span>
-              </Button>
-            </div>
-            <label htmlFor="code" className="at-eyebrow mt-5 mb-2 block">
-              {t("suivi.code.label")}
-            </label>
-            <div className="flex gap-3">
-              <input
-                id="code"
-                value={codeInput}
-                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                placeholder="ex. K7M2Q9XW3B"
-                autoComplete="off"
-                className="h-11 flex-1 rounded-sm border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              />
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">{t("suivi.code.hint")}</p>
-            {error && (
-              <div
-                role="alert"
-                className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
-              >
-                <AlertCircle className="size-4 shrink-0" />
-                <div className="flex-1">
-                  {error}
-                  {tracking.error ? (
-                    <button
-                      type="button"
-                      onClick={() => void tracking.refetch()}
-                      className="ml-2 text-destructive underline"
-                    >
-                      {t("action.ressayer")}
-                    </button>
-                  ) : null}
-                </div>
+          {token ? (
+            <QuoteDecision token={token} />
+          ) : (
+            <form onSubmit={handleSubmit} className="border border-border bg-card p-8">
+              <label htmlFor="ref" className="at-eyebrow mb-2 block">
+                {t("suivi.ref.label")}
+              </label>
+              <div className="flex gap-3">
+                <input
+                  id="ref"
+                  value={reference}
+                  onChange={(e) => setReference(e.target.value)}
+                  placeholder="AT-2026-0001"
+                  className="h-11 flex-1 rounded-sm border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                />
+                <Button type="submit" variant="technical" disabled={loading}>
+                  <Search className="size-4" />
+                  <span className="ml-2 hidden sm:inline">{t("suivi.check")}</span>
+                </Button>
               </div>
-            )}
-          </form>
+              <label htmlFor="code" className="at-eyebrow mt-5 mb-2 block">
+                {t("suivi.code.label")}
+              </label>
+              <div className="flex gap-3">
+                <input
+                  id="code"
+                  value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                  placeholder="ex. K7M2Q9XW3B"
+                  autoComplete="off"
+                  className="h-11 flex-1 rounded-sm border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                />
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">{t("suivi.code.hint")}</p>
+              {error && (
+                <div
+                  role="alert"
+                  className="mt-4 flex items-start gap-3 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+                >
+                  <AlertCircle className="size-4 shrink-0" />
+                  <div className="flex-1">
+                    {error}
+                    {tracking.error ? (
+                      <button
+                        type="button"
+                        onClick={() => void tracking.refetch()}
+                        className="ml-2 text-destructive underline"
+                      >
+                        {t("action.ressayer")}
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              )}
+            </form>
+          )}
 
-          {loading && <SuiviSkeleton />}
+          {!token && loading && <SuiviSkeleton />}
 
-          {result && (
+          {!token && result && (
             <StatusResult
               result={result}
               timeline={timeline}
@@ -470,12 +487,20 @@ function StatusResult({
               ) : null}
             </div>
           )}
+        {result.warranty_months > 0 && (
+          <div className="md:col-span-2">
+            <span className="at-eyebrow">{t("suivi.warranty.label")}</span>
+            <p className="mt-1 text-sm">{t("suivi.warranty", [result.warranty_months])}</p>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 border-t border-border pt-8">
         <span className="at-eyebrow">{t("suivi.journal")}</span>
         <TimelineFeed entries={timeline} />
       </div>
+
+      {!isCancelled && <PhotosBlock reference={ref} code={code} />}
 
       <div className="mt-8 flex flex-wrap gap-3">
         {reschedulable && (
@@ -565,6 +590,174 @@ function SuiviSkeleton() {
           </li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+function stageLabel(t: TranslateFn, stage: string): string {
+  const known = `suivi.photos.stage.${stage}`;
+  const label = t(known);
+  return label === known ? stage : label;
+}
+
+function QuoteDecision({ token }: { token: string }) {
+  const { t } = useI18n();
+  const fetchQuote = useServerFn(getQuoteStatus);
+  const decide = useServerFn(decideOnQuote);
+  const [decided, setDecided] = useState<{ approve: boolean } | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const quote = useQuery({
+    queryKey: ["quote", token],
+    enabled: Boolean(token),
+    queryFn: () => fetchQuote({ data: { token } }),
+  });
+
+  const decision = useMutation({
+    mutationFn: async (approve: boolean) => {
+      setActionError(null);
+      await decide({ data: { token, approve } });
+      return approve;
+    },
+    onSuccess: (approve) => setDecided({ approve }),
+    onError: (err: unknown) =>
+      setActionError(err instanceof Error ? err.message : t("suivi.error.unknown")),
+  });
+
+  const loading = quote.isFetching && !quote.data;
+  const notFound = quote.data && !quote.data.found;
+
+  return (
+    <div className="border border-border bg-card p-8">
+      {loading && <p className="text-sm text-muted-foreground">{t("suivi.quote.loading")}</p>}
+
+      {!loading && (notFound || quote.error) && (
+        <div role="alert" className="text-sm text-destructive">
+          {t("suivi.quote.invalid")}
+        </div>
+      )}
+
+      {!loading && !notFound && !quote.error && quote.data?.found && (
+        <>
+          <span className="at-eyebrow">
+            {t("suivi.quote.eyebrow", [quote.data.quote.reference])}
+          </span>
+          <h2 className="at-display mt-2 text-2xl">{t("suivi.quote.title")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("suivi.quote.intro")}</p>
+
+          <dl className="mt-6 space-y-3 border-t border-border pt-6">
+            <div>
+              <dt className="text-xs text-muted-foreground">{t("suivi.quote.amount")}</dt>
+              <dd className="mt-1 text-2xl font-semibold">
+                {(quote.data.quote.amount ?? 0).toLocaleString("fr-FR")} FCFA
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">{t("suivi.category.device")}</dt>
+              <dd className="mt-1 text-sm">{quote.data.quote.device}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">{t("suivi.category.payment")}</dt>
+              <dd className="mt-1 text-sm">
+                {quote.data.quote.warranty_months > 0
+                  ? t("suivi.quote.warranty", [quote.data.quote.warranty_months])
+                  : t("suivi.quote.warranty.none")}
+              </dd>
+            </div>
+          </dl>
+
+          {actionError && (
+            <div
+              role="alert"
+              className="mt-6 border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+            >
+              {actionError}
+            </div>
+          )}
+
+          {decided ? (
+            <div className="mt-6 border border-success/40 bg-success/10 p-6 text-center">
+              <p className="text-lg font-bold">
+                {decided.approve ? t("suivi.quote.approved") : t("suivi.quote.declined")}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("suivi.quote.done")}</p>
+            </div>
+          ) : (
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button
+                disabled={decision.isPending}
+                onClick={() => decision.mutate(true)}
+                variant="technical"
+              >
+                {t("suivi.quote.approve")}
+              </Button>
+              <Button
+                disabled={decision.isPending}
+                onClick={() => decision.mutate(false)}
+                variant="outline"
+              >
+                {t("suivi.quote.decline")}
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function PhotosBlock({ reference, code }: { reference: string; code: string }) {
+  const { t } = useI18n();
+  const fetchAttachments = useServerFn(getReservationAttachments);
+  const [zoom, setZoom] = useState<string | null>(null);
+
+  const photos = useQuery({
+    queryKey: ["suivi-photos", reference, code],
+    enabled: Boolean(reference) && Boolean(code),
+    refetchInterval: 15_000,
+    queryFn: () => fetchAttachments({ data: { reference, code } }),
+  });
+
+  const items = photos.data?.found ? photos.data.attachments : [];
+
+  if (photos.isLoading && !photos.data) return null;
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-8 border-t border-border pt-8">
+      <span className="at-eyebrow">{t("suivi.photos.title")}</span>
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {items.map((a) => (
+          <button
+            key={`${a.url}-${a.created_at}`}
+            type="button"
+            onClick={() => setZoom(a.url)}
+            className="group overflow-hidden rounded-sm border border-border bg-surface text-left"
+          >
+            <img
+              src={a.url}
+              alt={`${stageLabel(t, a.stage)} — ${t("suivi.dossier")} ${reference}`}
+              loading="lazy"
+              className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <span className="block px-2 py-1.5 text-[11px] text-muted-foreground">
+              {stageLabel(t, a.stage)}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {zoom && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("suivi.photos.zoom")}
+          className="fixed inset-0 z-50 grid cursor-zoom-out place-items-center bg-black/80 p-4"
+          onClick={() => setZoom(null)}
+        >
+          <img src={zoom} alt="" className="max-h-[90vh] max-w-full rounded-sm object-contain" />
+        </div>
+      )}
     </div>
   );
 }

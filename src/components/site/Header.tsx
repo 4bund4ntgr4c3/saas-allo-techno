@@ -14,8 +14,11 @@ const NAV = [
   { to: "/$locale/reparations", label: "nav.reparations" },
   { to: "/$locale/catalogue", label: "nav.catalogue" },
   { to: "/$locale/tarifs", label: "nav.tarifs" },
+  { to: "/$locale/services", label: "nav.services" },
   { to: "/$locale/boutique", label: "nav.boutique" },
+  { to: "/$locale/promotions", label: "nav.promotions" },
   { to: "/$locale/suivi", label: "nav.suivi" },
+  { to: "/$locale/magasins", label: "nav.magasins" },
   { to: "/$locale/entreprises", label: "nav.entreprises" },
   { to: "/$locale/blog", label: "nav.blog" },
 ] as const;

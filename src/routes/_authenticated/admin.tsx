@@ -21,6 +21,8 @@ import {
   Trash2,
   Users,
   Wrench,
+  Banknote,
+  ImagePlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -28,9 +30,11 @@ import { QrCode } from "@/components/site/QrCode";
 import { Stars } from "@/components/site/Blocks";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
-import { setReservationStatus } from "@/lib/admin.functions";
+import { setReservationStatus, getReservationQuote } from "@/lib/admin.functions";
 import { setDeliveryStatus } from "@/lib/delivery.functions";
 import { confirmOtp, disableOtp, enrollOtp, verifyOtpLogin } from "@/lib/otp.functions";
+import { sendQuote } from "@/lib/quote.functions";
+import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
 import {
   deleteBlogPost,
   deleteReview,
@@ -109,6 +113,19 @@ const DELIVERY_STATUS_LABEL: Record<Enums<"delivery_status">, string> = {
   a_planifier: "À planifier",
   en_route: "En route",
   livre: "Livré",
+};
+
+const QUOTE_STATUS_LABEL: Record<string, string> = {
+  none: "Aucun devis",
+  sent: "Devis envoyé (en attente de validation)",
+  approved: "Devis approuvé",
+  declined: "Devis refusé",
+};
+
+const PHOTO_STAGE_LABEL: Record<string, string> = {
+  diagnostic: "Diagnostic",
+  pieces: "Pièces",
+  repair: "Réparation",
 };
 
 const field =
@@ -659,6 +676,9 @@ function AdminPage() {
                         onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
                       />
 
+                      {!isTechnicien && <QuotePanel reservationId={r.id} />}
+
+                      {!isTechnicien && <PhotoPanel reservationId={r.id} />}
                       <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
                         <Wrench className="size-3.5 text-muted-foreground" />
                         <span className="text-muted-foreground">Technicien :</span>
@@ -999,6 +1019,197 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+const PHOTO_STAGES = ["diagnostic", "pieces", "repair"] as const;
+
+/**
+ * Devis à valider par le client : l'atelier fixe le montant (FCFA) et la durée
+ * de garantie étendue, puis envoie la demande (e-mail + WhatsApp) au client.
+ */
+function QuotePanel({ reservationId }: { reservationId: string }) {
+  const queryClient = useQueryClient();
+  const getQuoteFn = useServerFn(getReservationQuote);
+  const sendQuoteFn = useServerFn(sendQuote);
+  const [amount, setAmount] = useState("");
+  const [warranty, setWarranty] = useState(0);
+
+  const quote = useQuery({
+    queryKey: ["reservation-quote", reservationId],
+    enabled: Boolean(reservationId),
+    queryFn: () => getQuoteFn({ data: { reservationId } }),
+  });
+
+  const send = useMutation({
+    mutationFn: async () => {
+      const parsed = Number(amount);
+      if (!Number.isFinite(parsed) || parsed < 0 || parsed > 50_000_000) {
+        throw new Error("Montant invalide (0 à 50 000 000 FCFA).");
+      }
+      await sendQuoteFn({
+        data: { reservationId, amount: Math.round(parsed), warrantyMonths: warranty },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Devis envoyé au client");
+      setAmount("");
+      queryClient.invalidateQueries({ queryKey: ["reservation-quote", reservationId] });
+    },
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Envoi du devis impossible"),
+  });
+
+  const status = quote.data?.quote_status ?? "none";
+  const sentAmount = quote.data?.quote_amount;
+
+  return (
+    <div className="mt-4 border-t border-border pt-4">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <Banknote className="size-3.5 text-muted-foreground" />
+        <span className="text-muted-foreground">Devis :</span>
+        <span className="font-medium">{QUOTE_STATUS_LABEL[status] ?? status}</span>
+        {sentAmount != null && (
+          <span className="font-mono text-muted-foreground">{formatFcfa(sentAmount)}</span>
+        )}
+        {quote.data && quote.data.warranty_months > 0 && (
+          <span className="text-muted-foreground">
+            · garantie {quote.data.warranty_months} mois
+          </span>
+        )}
+      </div>
+      <div className="mt-3 flex flex-wrap items-end gap-3">
+        <div>
+          <label
+            htmlFor={`quote-amount-${reservationId}`}
+            className="mb-1 block text-[11px] text-muted-foreground"
+          >
+            Montant (FCFA)
+          </label>
+          <input
+            id={`quote-amount-${reservationId}`}
+            type="number"
+            min={0}
+            step={500}
+            className={`${field} max-w-40 py-1.5 text-xs`}
+            placeholder="ex. 45000"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </div>
+        <div>
+          <label
+            htmlFor={`quote-warranty-${reservationId}`}
+            className="mb-1 block text-[11px] text-muted-foreground"
+          >
+            Garantie étendue
+          </label>
+          <select
+            id={`quote-warranty-${reservationId}`}
+            className={`${field} max-w-36 py-1.5 text-xs`}
+            value={warranty}
+            onChange={(e) => setWarranty(Number(e.target.value))}
+          >
+            <option value={0}>Standard</option>
+            <option value={6}>6 mois</option>
+            <option value={12}>12 mois</option>
+          </select>
+        </div>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={send.isPending || !amount.trim()}
+          onClick={() => send.mutate()}
+        >
+          {send.isPending ? "Envoi…" : "Envoyer le devis"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/** Photos de suivi par étape : l'atelier téléverse une photo puis la rattache au dossier. */
+function PhotoPanel({ reservationId }: { reservationId: string }) {
+  const getUpload = useServerFn(getStaffPhotoUpload);
+  const addPhoto = useServerFn(addStagePhoto);
+  const [busyStage, setBusyStage] = useState<string | null>(null);
+
+  const upload = useMutation({
+    mutationFn: async ({ stage, file }: { stage: string; file: File }) => {
+      setBusyStage(stage);
+      try {
+        const prepared = await getUpload({
+          data: {
+            reservationId,
+            stage: stage as "diagnostic" | "pieces" | "repair",
+            fileName: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+          },
+        });
+        const put = await fetch(prepared.signedUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type, "x-upsert": "false" },
+          body: file,
+        });
+        if (!put.ok) throw new Error(`Upload ${put.status}`);
+        await addPhoto({
+          data: {
+            reservationId,
+            stage: stage as "diagnostic" | "pieces" | "repair",
+            url: prepared.path,
+          },
+        });
+      } finally {
+        setBusyStage(null);
+      }
+    },
+    onSuccess: (_d, vars) => {
+      toast.success(`Photo « ${PHOTO_STAGE_LABEL[vars.stage] ?? vars.stage} » ajoutée au dossier`);
+    },
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Upload impossible";
+      if (message.includes("code d'authentification")) {
+        toast.error("Veuillez confirmer votre code d'authentification.");
+      } else {
+        toast.error(message);
+      }
+    },
+  });
+
+  return (
+    <div className="mt-4 border-t border-border pt-4">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <ImagePlus className="size-3.5 text-muted-foreground" />
+        <span className="text-muted-foreground">Photos de suivi :</span>
+      </div>
+      <div className="mt-2 flex flex-wrap gap-3">
+        {PHOTO_STAGES.map((stage) => (
+          <label
+            key={stage}
+            className="flex cursor-pointer items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-xs hover:bg-surface"
+          >
+            <span className="text-muted-foreground">{PHOTO_STAGE_LABEL[stage]}</span>
+            {busyStage === stage ? (
+              <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+            ) : (
+              <span className="text-primary underline">Ajouter</span>
+            )}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+              className="sr-only"
+              disabled={busyStage !== null}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) upload.mutate({ stage, file });
+                e.target.value = "";
+              }}
+            />
+          </label>
+        ))}
+      </div>
+    </div>
   );
 }
 

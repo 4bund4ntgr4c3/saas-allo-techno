@@ -151,3 +151,49 @@ export const setReservationStatus = createServerFn({ method: "POST" })
 export type SetStatusInput = z.infer<typeof setStatusSchema>;
 export type SetStatusResult = boolean;
 export type Status = Enums<"reservation_status">;
+
+const getReservationQuoteSchema = z.object({
+  reservationId: z.string().uuid(),
+});
+
+export type ReservationQuote = {
+  reference: string;
+  quote_amount: number | null;
+  quote_status: string;
+  quote_decided_at: string | null;
+  warranty_months: number;
+};
+
+/**
+ * Lecture du devis d'un dossier par le personnel (montant, statut, garantie).
+ * Permet au panneau devis de l'admin d'afficher et de rafraîchir l'état.
+ */
+export const getReservationQuote = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => getReservationQuoteSchema.parse(data))
+  .handler(async ({ data }): Promise<ReservationQuote | null> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("admin-quote", 30)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    const { data: staff, error: staffError } = await supabaseAdmin.rpc("is_staff", {
+      _user_id: userId,
+    });
+    if (staffError || !staff) throw new Error("Action non autorisée sur ce dossier");
+
+    const { data: row, error } = await supabaseAdmin
+      .from("reservations")
+      .select("reference, quote_amount, quote_status, quote_decided_at, warranty_months")
+      .eq("id", data.reservationId)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[admin] get reservation quote failed", error);
+      throw new Error("Impossible de lire le devis de ce dossier.");
+    }
+    if (!row) return null;
+
+    return row;
+  });

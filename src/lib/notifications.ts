@@ -34,6 +34,21 @@ export type ReservationEvent = {
   status: Enums<"reservation_status">;
 };
 
+export type QuoteEvent = ReservationEvent & {
+  token: string;
+  quote_amount: number;
+  warranty_months: number;
+};
+
+export type PhotoEvent = {
+  reference: string;
+  customer_name: string;
+  email: string | null;
+  phone: string;
+  device: string;
+  stage: string;
+};
+
 const RESEND_API_KEY = process.env["RESEND_API_KEY"];
 const RESEND_FROM =
   process.env["RESEND_FROM"] ?? `Allô Techno <noreply@${COMPANY.email.split("@")[1]}>`;
@@ -308,4 +323,67 @@ export async function notifyReservationRescheduled(r: ReservationEvent): Promise
     await sendEmail(r.email, sujet, html);
   }
   await sendWhatsApp(r.phone, waBody);
+}
+
+/** Envoi d'un devis à valider : le client approuve ou refuse via un lien secret. */
+export async function notifyQuoteSent(r: QuoteEvent): Promise<void> {
+  const sujet = `Dossier ${r.reference} — devis à valider`;
+  const amount = `${r.quote_amount.toLocaleString("fr-FR")} FCFA`;
+  const decisionUrl = `${COMPANY.url}/fr/suivi?token=${encodeURIComponent(r.token)}`;
+  const warrantyLine =
+    r.warranty_months > 0 ? `Garantie étendue de ${r.warranty_months} mois.` : null;
+
+  const waBody = [
+    `Bonjour ${r.customer_name}, le devis de votre dossier ${r.reference} (${r.device}) est prêt : ${amount}.`,
+    ...(warrantyLine ? [warrantyLine] : []),
+    `Validez ou refusez le devis ici : ${decisionUrl}`,
+    `${COMPANY.name} — ${COMPANY.phone}`,
+  ].join("\n");
+
+  if (r.email) {
+    const html = shell(sujet, [
+      `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, le devis pour votre ${r.device} (dossier ${r.reference}) est prêt :</p>`,
+      `<p style="font-size:20px;font-weight:700;margin:10px 0">${amount}</p>`,
+      ...(warrantyLine
+        ? [`<p style="font-size:14px;color:#374151">${warrantyLine}</p>`]
+        : [`<p style="font-size:14px;color:#374151">Garantie standard incluse.</p>`]),
+      `<p style="font-size:14px">Vous pouvez accepter ou refuser ce devis :</p>`,
+      `<p style="margin:18px 0">
+        <a href="${decisionUrl}" style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;margin-right:8px;font-weight:600">Approuver le devis</a>
+        <a href="${decisionUrl}" style="display:inline-block;background:#dc2626;color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:600">Refuser le devis</a>
+      </p>`,
+      `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
+    ]);
+    await sendEmail(r.email, sujet, html);
+  }
+  await sendWhatsApp(r.phone, waBody);
+}
+
+/** Avertit le client qu'une photo a été ajoutée à son dossier (best-effort). */
+export async function notifyPhotoAdded(r: PhotoEvent): Promise<void> {
+  const stageLabel: Record<string, string> = {
+    diagnostic: "diagnostic",
+    pieces: "commande de pièces",
+    since: "diagnostic",
+    live: "réparation en cours",
+    repair: "réparation en cours",
+  };
+  const label = stageLabel[r.stage] ?? "avancement";
+  const link = `${COMPANY.url}/fr/suivi?ref=${r.reference}`;
+  const sujet = `Dossier ${r.reference} — une photo a été ajoutée`;
+
+  if (r.email) {
+    const html = shell(sujet, [
+      `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, une photo de l'étape « ${label} » vient d'être ajoutée à votre dossier ${r.reference}.</p>`,
+      `<p style="font-size:14px"><a href="${link}">Consulter mon dossier</a></p>`,
+    ]);
+    await sendEmail(r.email, sujet, html);
+  }
+  await sendWhatsApp(
+    r.phone,
+    [
+      `Bonjour ${r.customer_name}, une photo de l'étape « ${label} » vient d'être ajoutée à votre dossier ${r.reference} (${r.device}).`,
+      `Suivez l'avancement : ${link}`,
+    ].join("\n"),
+  );
 }

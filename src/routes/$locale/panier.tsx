@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MobileMoneyBar } from "@/components/site/Blocks";
 import { DELIVERY_OPTIONS, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
-import { submitShopOrder } from "@/lib/shop.functions";
+import { submitShopOrder, validatePromoCode } from "@/lib/shop.functions";
 import { getOrderPaymentStatus, initiateFlutterwavePayment } from "@/lib/payments.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -53,6 +53,7 @@ function Panier() {
   const placeOrder = useServerFn(submitShopOrder);
   const initPayment = useServerFn(initiateFlutterwavePayment);
   const checkPayment = useServerFn(getOrderPaymentStatus);
+  const checkPromo = useServerFn(validatePromoCode);
   const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", note: "" });
@@ -62,11 +63,22 @@ function Panier() {
   const [payLink, setPayLink] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState<{
+    code: string;
+    percent: number;
+    label: string;
+    discount: number;
+  } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoChecking, setPromoChecking] = useState(false);
 
   const option = DELIVERY_OPTIONS.find((o) => o.id === delivery) ?? DELIVERY_OPTIONS[0];
   const freeShipping = cart.subtotal >= FREE_DELIVERY_FROM;
   const shipping = freeShipping ? 0 : option.fee;
   const total = cart.subtotal + shipping;
+  const promoDiscount = promoApplied?.discount ?? 0;
+  const discountTotal = Math.max(0, total - promoDiscount);
 
   // Retour de la page de paiement Flutterwave (status=redirect) : on restaure
   // la commande depuis sessionStorage et on interroge le statut du paiement.
@@ -107,6 +119,45 @@ function Panier() {
     void restoreFromSearch();
   }, [restoreFromSearch]);
 
+  const applyPromo = async () => {
+    const code = promoCode.trim();
+    if (!code) {
+      setPromoError(t("panier.promo.required"));
+      return;
+    }
+    if (promoChecking) return;
+    setPromoChecking(true);
+    setPromoError(null);
+    try {
+      const res = await checkPromo({ data: { code } });
+      if (res.valid) {
+        const discount = Math.floor((total * res.percent) / 100);
+        setPromoApplied({
+          code: code.toUpperCase(),
+          percent: res.percent,
+          label: res.label,
+          discount,
+        });
+        setPromoCode(code.toUpperCase());
+      } else {
+        setPromoApplied(null);
+        setPromoError(
+          res.reason ? t(`panier.promo.reason.${res.reason}`) : t("panier.promo.error"),
+        );
+      }
+    } catch {
+      setPromoError(t("panier.promo.error"));
+    } finally {
+      setPromoChecking(false);
+    }
+  };
+
+  const removePromo = () => {
+    setPromoApplied(null);
+    setPromoError(null);
+    setPromoCode("");
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: { name?: string; phone?: string; address?: string } = {};
@@ -120,7 +171,7 @@ function Panier() {
 
     setSubmitting(true);
     try {
-      const { reference } = await placeOrder({
+      const { reference, finalTotal } = await placeOrder({
         data: {
           name: form.name.trim(),
           phone: form.phone.trim(),
@@ -129,6 +180,7 @@ function Panier() {
           delivery: option.label,
           payment,
           total,
+          promoCode: promoApplied?.code ?? "",
           lines: cart.items.map((i) => ({
             slug: i.accessory.slug,
             label: i.accessory.name,
@@ -138,9 +190,10 @@ function Panier() {
         },
       });
 
+      const payTotal = typeof finalTotal === "number" ? finalTotal : discountTotal;
       const newOrder: Order = {
         ref: reference,
-        total,
+        total: payTotal,
         delivery: option.label,
         payment,
         name: form.name.trim(),
@@ -155,7 +208,7 @@ function Panier() {
           const res = await initPayment({
             data: {
               reference,
-              amount: total,
+              amount: payTotal,
               customer: {
                 email: form.email,
                 name: form.name.trim(),
@@ -368,9 +421,15 @@ function Panier() {
                       {shipping === 0 ? t("panier.free") : formatFcfa(shipping)}
                     </dd>
                   </div>
+                  {promoApplied && (
+                    <div className="flex justify-between text-primary">
+                      <dt>{t("panier.promo.discount", [promoApplied.code])}</dt>
+                      <dd className="font-mono">−{formatFcfa(promoDiscount)}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
                     <dt>{t("panier.total")}</dt>
-                    <dd className="font-mono text-primary">{formatFcfa(total)}</dd>
+                    <dd className="font-mono text-primary">{formatFcfa(discountTotal)}</dd>
                   </div>
                 </dl>
                 {!freeShipping && (
@@ -379,6 +438,50 @@ function Panier() {
                   </p>
                 )}
               </div>
+
+              <fieldset className="bg-card p-6">
+                <legend className="at-eyebrow mb-3">{t("panier.promo")}</legend>
+                {promoApplied ? (
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-primary">
+                      {t("panier.promo.applied", [promoApplied.label, promoApplied.code])}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={removePromo}
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground underline hover:text-destructive"
+                    >
+                      {t("panier.promo.remove")}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      placeholder={t("panier.promo.placeholder")}
+                      className="w-full border border-border bg-background px-3 py-2 text-sm uppercase outline-none focus:border-primary"
+                    />
+                    <Button
+                      type="button"
+                      variant="technicalOutline"
+                      size="sm"
+                      disabled={promoChecking}
+                      onClick={() => void applyPromo()}
+                    >
+                      {promoChecking ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          {t("panier.promo.checking")}
+                        </>
+                      ) : (
+                        t("panier.promo.apply")
+                      )}
+                    </Button>
+                  </div>
+                )}
+                {promoError && <p className="mt-2 text-xs text-destructive">{promoError}</p>}
+              </fieldset>
 
               <fieldset className="bg-card p-6">
                 <legend className="at-eyebrow mb-3">{t("panier.deliveryMethod")}</legend>
@@ -506,7 +609,7 @@ function Panier() {
                       {redirecting ? t("panier.redirecting") : t("panier.saving")}
                     </>
                   ) : (
-                    <>{t("panier.submit", [formatFcfa(total)])}</>
+                    <>{t("panier.submit", [formatFcfa(discountTotal)])}</>
                   )}
                 </Button>
               </div>

@@ -1,10 +1,67 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import { rateLimit, verifyTrackingCode } from "@/lib/security";
 
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 
 const MAX_BYTES = 5 * 1024 * 1024;
+
+const STAGES = ["diagnostic", "pieces", "since", "live", "repair"] as const;
+export type AttachmentStage = (typeof STAGES)[number];
+
+const OTP_WINDOW_MS = 24 * 3600 * 1000;
+
+async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const authHeader = getRequestHeader("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  let userId: string | null = null;
+  if (token) {
+    const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
+    const sub = claimsData?.claims?.sub;
+    userId = typeof sub === "string" ? sub : null;
+  }
+  if (!userId) throw new Error("Non authentifié");
+  return userId;
+}
+
+/** Exige une double authentification fraîche (< 24 h) pour les opérations staff. */
+async function requireFreshOtp(supabaseAdmin: SupabaseClient<Database>, userId: string) {
+  const { data: otp } = await supabaseAdmin
+    .from("admin_otp")
+    .select("enabled, verified_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (!otp?.enabled) return;
+  const verifiedAt = otp.verified_at ? new Date(otp.verified_at).getTime() : 0;
+  if (Date.now() - verifiedAt > OTP_WINDOW_MS) {
+    throw new Error("Sécurité : confirmez votre code d'authentification pour continuer.");
+  }
+}
+
+async function requireStaffWithOtp(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const userId = await currentUserId(supabaseAdmin);
+  await requireFreshOtp(supabaseAdmin, userId);
+  const { data: staff, error } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+  if (error || !staff) throw new Error("Action non autorisée");
+  return userId;
+}
+
+function assertValidImage(fileName: string, contentType: string, fileSize: number) {
+  if (!ALLOWED_MIME.has(contentType)) {
+    throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
+  }
+  if (fileSize > MAX_BYTES) {
+    throw new Error("Photo trop lourde (5 Mo maximum).");
+  }
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "jpg";
+  if (!/^[a-z0-9]{1,10}$/.test(ext)) {
+    throw new Error("Extension de fichier invalide.");
+  }
+  return ext;
+}
 
 const photoUploadSchema = z.object({
   reference: z.string().trim().min(1, "Référence requise").max(20),
@@ -64,3 +121,170 @@ export const getDevicePhotoUpload = createServerFn({ method: "POST" })
 
     return { signedUrl: signed.signedUrl, path, token: signed.token };
   });
+
+const staffPhotoUploadSchema = z.object({
+  reservationId: z.string().uuid(),
+  stage: z.enum(STAGES),
+  fileName: z.string().trim().min(1).max(200),
+  contentType: z.string().trim().min(1).max(80),
+  fileSize: z
+    .number()
+    .int()
+    .positive()
+    .max(MAX_BYTES + 1),
+});
+
+/**
+ * Prépare l'upload d'une photo de suivi par l'atelier, pour une étape donnée
+ * (diagnostic, pièces, réparation). L'appelant doit être staff avec une double
+ * authentification fraîche. Renvoie une URL signée + le chemin stocké.
+ */
+export const getStaffPhotoUpload = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => staffPhotoUploadSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("staff-photo-upload", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    await requireStaffWithOtp(supabaseAdmin);
+
+    const ext = assertValidImage(data.fileName, data.contentType, data.fileSize);
+
+    const path = `uploads/${data.reservationId}/${data.stage}/${crypto.randomUUID()}.${ext}`;
+
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("device-photos")
+      .createSignedUploadUrl(path, { upsert: false });
+
+    if (error || !signed) {
+      console.error("[photos] staff signed upload url failed", error);
+      throw new Error("L'envoi de la photo n'a pas pu être préparé. Réessayez.");
+    }
+
+    return { signedUrl: signed.signedUrl, path, token: signed.token };
+  });
+
+const addStagePhotoSchema = z.object({
+  reservationId: z.string().uuid(),
+  stage: z.enum(STAGES),
+  url: z.string().trim().min(1).max(500),
+  caption: z.string().trim().max(300).optional(),
+});
+
+/**
+ * Enregistre une photo de suivi (une fois l'upload via l'URL signée terminé)
+ * dans reservation_attachments, rattachée à l'étape correspondante.
+ */
+export const addStagePhoto = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => addStagePhotoSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("staff-add-photo", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await requireStaffWithOtp(supabaseAdmin);
+
+    const { error } = await supabaseAdmin.from("reservation_attachments").insert({
+      reservation_id: data.reservationId,
+      stage: data.stage,
+      kind: "photo",
+      url: data.url,
+      ...(data.caption ? { caption: data.caption } : {}),
+      uploaded_by: userId,
+    });
+    if (error) {
+      console.error("[photos] add stage photo failed", error);
+      throw new Error("La photo n'a pas pu être rattachée au dossier.");
+    }
+
+    const { data: row } = await supabaseAdmin
+      .from("reservations")
+      .select("reference, customer_name, email, phone, device")
+      .eq("id", data.reservationId)
+      .maybeSingle();
+
+    if (row) {
+      const { notifyPhotoAdded } = await import("@/lib/notifications");
+      void notifyPhotoAdded({ ...row, stage: data.stage });
+    }
+
+    return { ok: true };
+  });
+
+const attachmentsLookupSchema = z.object({
+  reference: z.string().trim().min(1, "Référence requise"),
+  code: z.string().trim().min(1, "Code de suivi requis").max(20),
+});
+
+export type ReservationAttachment = {
+  url: string;
+  stage: string;
+  caption: string | null;
+  created_at: string;
+};
+
+/**
+ * Photos de suivi du dossier (publiques) : vérifie le code de suivi secret puis
+ * renvoie les images de chaque étape sous forme d'URLs publiques servables.
+ */
+export const getReservationAttachments = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => attachmentsLookupSchema.parse(data))
+  .handler(
+    async ({
+      data,
+    }): Promise<{ found: true; attachments: ReservationAttachment[] } | { found: false }> => {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      if (!rateLimit("suivi-photos", 30)) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
+
+      const { data: row, error } = await supabaseAdmin
+        .from("reservations")
+        .select("id, tracking_code_hash")
+        .eq("reference", data.reference)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[photos] reservations lookup failed", error);
+        throw new Error("Impossible de vérifier ce dossier. Réessayez plus tard.");
+      }
+      if (!row || !(await verifyTrackingCode(data.code, row.tracking_code_hash))) {
+        return { found: false };
+      }
+
+      const { data: attachments, error: attachError } = await supabaseAdmin
+        .from("reservation_attachments")
+        .select("url, stage, caption, created_at")
+        .eq("reservation_id", row.id)
+        .eq("kind", "photo")
+        .order("created_at", { ascending: true });
+
+      if (attachError) {
+        console.error("[photos] attachments fetch failed", attachError);
+        return { found: false };
+      }
+
+      const bucket = supabaseAdmin.storage.from("device-photos");
+      const photoList: ReservationAttachment[] = [];
+      for (const a of attachments ?? []) {
+        const { data: signed, error: signError } = await bucket.createSignedUrl(
+          a.url,
+          30 * 24 * 3600,
+        );
+        if (signError || !signed?.signedUrl) continue;
+        photoList.push({
+          url: signed.signedUrl,
+          stage: a.stage,
+          caption: a.caption,
+          created_at: a.created_at,
+        });
+      }
+
+      return { found: true, attachments: photoList };
+    },
+  );

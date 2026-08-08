@@ -408,6 +408,42 @@ export type Database = {
         };
         Relationships: [];
       };
+      promo_codes: {
+        Row: {
+          active: boolean;
+          code: string;
+          created_at: string;
+          label: string | null;
+          percent: number;
+          single_use: boolean;
+          used_count: number;
+          valid_from: string | null;
+          valid_to: string | null;
+        };
+        Insert: {
+          active?: boolean;
+          code: string;
+          created_at?: string;
+          label?: string | null;
+          percent?: number;
+          single_use?: boolean;
+          used_count?: number;
+          valid_from?: string | null;
+          valid_to?: string | null;
+        };
+        Update: {
+          active?: boolean;
+          code?: string;
+          created_at?: string;
+          label?: string | null;
+          percent?: number;
+          single_use?: boolean;
+          used_count?: number;
+          valid_from?: string | null;
+          valid_to?: string | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -588,6 +624,12 @@ export type Database = {
           mode: string;
           payment: string;
           phone: string;
+          promo_amount: number | null;
+          promo_code: string | null;
+          quote_amount: number | null;
+          quote_decided_at: string | null;
+          quote_status: string;
+          quote_token: string | null;
           reference: string;
           slot_date: string;
           slot_hour: string | null;
@@ -597,6 +639,7 @@ export type Database = {
           tracking_code_hash: string | null;
           updated_at: string;
           user_id: string | null;
+          warranty_months: number;
         };
         Insert: {
           created_at?: string;
@@ -611,6 +654,12 @@ export type Database = {
           mode?: string;
           payment?: string;
           phone: string;
+          promo_amount?: number | null;
+          promo_code?: string | null;
+          quote_amount?: number | null;
+          quote_decided_at?: string | null;
+          quote_status?: string;
+          quote_token?: string | null;
           reference?: string;
           slot_date: string;
           slot_hour?: string | null;
@@ -620,6 +669,7 @@ export type Database = {
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          warranty_months?: number;
         };
         Update: {
           created_at?: string;
@@ -635,6 +685,12 @@ export type Database = {
           mode?: string;
           payment?: string;
           phone?: string;
+          promo_amount?: number | null;
+          promo_code?: string | null;
+          quote_amount?: number | null;
+          quote_decided_at?: string | null;
+          quote_status?: string;
+          quote_token?: string | null;
           reference?: string;
           slot_date?: string;
           slot_hour?: string | null;
@@ -644,6 +700,7 @@ export type Database = {
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          warranty_months?: number;
         };
         Relationships: [];
       };
@@ -791,6 +848,10 @@ export type Database = {
       is_staff: { Args: { _user_id: string }; Returns: boolean };
       next_reservation_reference: { Args: never; Returns: string };
       next_shop_reference: { Args: never; Returns: string };
+      respond_to_quote: {
+        Args: { _token: string; _approve: boolean };
+        Returns: boolean;
+      };
       set_delivery_status: {
         Args: { _reservation_id: string; _status: string; _address: string };
         Returns: boolean;
@@ -807,6 +868,14 @@ export type Database = {
           remaining: number;
           slot_date: string;
         }[];
+      };
+      staff_send_quote: {
+        Args: {
+          _reservation_id: string;
+          _amount: number;
+          _warranty_months?: number;
+        };
+        Returns: boolean;
       };
       staff_set_reservation_status: {
         Args: {
@@ -827,6 +896,10 @@ export type Database = {
       update_payment_status: {
         Args: { _reference: string; _status: string; _tx_id: string };
         Returns: undefined;
+      };
+      validate_promo: {
+        Args: { _code: string };
+        Returns: Json;
       };
     };
     Enums: {

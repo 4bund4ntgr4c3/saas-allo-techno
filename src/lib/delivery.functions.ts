@@ -45,7 +45,7 @@ export const setDeliveryStatus = createServerFn({ method: "POST" })
     });
     if (staffError || !staff) throw new Error("Action non autorisée");
 
-    const { error } = await supabaseAdmin.rpc("set_delivery_status", {
+    const { data: ok, error } = await supabaseAdmin.rpc("set_delivery_status", {
       _reservation_id: data.reservationId,
       _status: data.status,
       _address: data.address ?? "",
@@ -53,6 +53,9 @@ export const setDeliveryStatus = createServerFn({ method: "POST" })
     if (error) {
       console.error("[delivery] set status failed", error);
       throw new Error(error.message);
+    }
+    if (!ok) {
+      throw new Error("Le statut de livraison n'a pas pu être mis à jour (dossier introuvable).");
     }
 
     const { data: row } = await supabaseAdmin

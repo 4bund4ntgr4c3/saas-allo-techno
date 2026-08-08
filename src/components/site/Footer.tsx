@@ -103,6 +103,9 @@ export function Footer() {
                 { to: "/tarifs", label: t("footer.grille-tarifaire") },
                 { to: "/devis", label: t("nav.devis") },
                 { to: "/reservation", label: t("footer.prendre-rendez-vous") },
+                { to: "/services", label: t("nav.services") },
+                { to: "/promotions", label: t("nav.promotions") },
+                { to: "/magasins", label: t("nav.magasins") },
                 { to: "/reprise", label: t("footer.reprise-appareils") },
                 { to: "/garantie", label: t("footer.garanties") },
               ].map((link) => (

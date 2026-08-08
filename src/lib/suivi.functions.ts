@@ -20,7 +20,7 @@ const rescheduleSchema = z.object({
 });
 
 const RESERVATION_FIELDS =
-  "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, created_at";
+  "reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, created_at, warranty_months";
 
 export type ReservationStatus = {
   reference: string;
@@ -38,6 +38,7 @@ export type ReservationStatus = {
   delivery_status: Enums<"delivery_status">;
   delivery_address: string | null;
   created_at: string;
+  warranty_months: number;
 };
 
 export type TimelineEntry = {
