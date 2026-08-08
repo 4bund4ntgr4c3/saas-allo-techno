@@ -10,6 +10,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { COMPANY } from "@/data/catalog/company";
 import { rateLimit } from "@/lib/security";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("reviews");
 
 // ---------------------------------------------------------------------------
 // Types
@@ -129,7 +132,7 @@ function normalizePhone(raw: string): string {
 
 async function sendRawEmail(to: string, subject: string, html: string): Promise<void> {
   if (!RESEND_API_KEY) {
-    console.warn("[reviews] RESEND_API_KEY manquante — e-mail ignoré");
+    logger.warn("RESEND_API_KEY manquante — e-mail ignoré");
     return;
   }
   try {
@@ -141,15 +144,19 @@ async function sendRawEmail(to: string, subject: string, html: string): Promise<
       },
       body: JSON.stringify({ from: RESEND_FROM, to: [to], subject, html }),
     });
-    if (!res.ok) console.error("[reviews] Resend", res.status, await res.text());
+    if (!res.ok)
+      logger.error("Resend error", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        body: await res.text(),
+      });
   } catch (err) {
-    console.error("[reviews] Resend échec réseau", err);
+    logger.error("Resend échec réseau", err as Error);
   }
 }
 
 async function sendRawWhatsApp(to: string, body: string): Promise<void> {
   if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-    console.warn("[reviews] WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID manquants — WhatsApp ignoré");
+    logger.warn("WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID manquants — WhatsApp ignoré");
     return;
   }
   try {
@@ -169,9 +176,13 @@ async function sendRawWhatsApp(to: string, body: string): Promise<void> {
         }),
       },
     );
-    if (!res.ok) console.error("[reviews] WhatsApp", res.status, await res.text());
+    if (!res.ok)
+      logger.error("WhatsApp error", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        body: await res.text(),
+      });
   } catch (err) {
-    console.error("[reviews] WhatsApp échec réseau", err);
+    logger.error("WhatsApp échec réseau", err as Error);
   }
 }
 
@@ -348,7 +359,7 @@ export const listCustomerReviews = createServerFn({ method: "POST" })
       .limit(50);
 
     if (error) {
-      console.error("[reviews] customer list failed", error);
+      logger.error("customer list failed", error as Error);
       return [];
     }
 
@@ -421,7 +432,7 @@ export const submitReview = createServerFn({ method: "POST" })
       .single();
 
     if (insertError) {
-      console.error("[reviews] submit insert failed", insertError);
+      logger.error("submit insert failed", insertError as Error);
       return { ok: false, error: "Impossible d'enregistrer votre avis. Réessayez." };
     }
 
@@ -432,7 +443,7 @@ export const submitReview = createServerFn({ method: "POST" })
       .select("id")
       .single();
 
-    if (markError) console.error("[reviews] invite mark used failed", markError);
+    if (markError) logger.error("invite mark used failed", markError as Error);
 
     return { ok: true };
   });
@@ -467,7 +478,7 @@ export const listPublishedReviews = createServerFn({ method: "POST" })
       .limit(50);
 
     if (error) {
-      console.error("[reviews] list published failed", error);
+      logger.error("list published failed", error as Error);
       return [];
     }
 
@@ -514,7 +525,7 @@ export const sendReviewInvite = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (fetchError) {
-      console.error("[reviews] reservation fetch failed", fetchError);
+      logger.error("reservation fetch failed", fetchError as Error);
       return { ok: false, error: "Impossible de lire ce dossier." };
     }
     if (!reservation) return { ok: false, error: "Dossier introuvable." };
@@ -550,7 +561,7 @@ export const sendReviewInvite = createServerFn({ method: "POST" })
       .single();
 
     if (insertError) {
-      console.error("[reviews] invite insert failed", insertError);
+      logger.error("invite insert failed", insertError as Error);
       return { ok: false, error: "Impossible de créer l'invitation." };
     }
 
@@ -608,7 +619,7 @@ export const adminListReviews = createServerFn({ method: "POST" })
       .limit(200);
 
     if (error) {
-      console.error("[reviews] admin list failed", error);
+      logger.error("admin list failed", error as Error);
       throw new Error("Impossible de charger les avis.");
     }
 
@@ -654,7 +665,7 @@ export const adminSetReviewStatus = createServerFn({ method: "POST" })
       .single();
 
     if (error) {
-      console.error("[reviews] set status failed", error);
+      logger.error("set status failed", error as Error);
       throw new Error("Impossible de mettre à jour cet avis.");
     }
 

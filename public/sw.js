@@ -2,9 +2,12 @@
  * statiques, réseau d'abord pour les pages (HTML SSR). Défensif : ne doit
  * jamais casser l'application. Les requêtes non-GET ou /api ne sont jamais
  * mises en cache. */
-const CACHE = "allotechno-v1";
+const CACHE = "allotechno-v2";
 
-self.addEventListener("install", () => {
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.addAll(["/offline.html"]).catch(() => {})),
+  );
   self.skipWaiting();
 });
 
@@ -48,7 +51,13 @@ async function networkFirst(req) {
     }
     return res;
   } catch {
-    return (await caches.match(req)) || Response.error();
+    const cached = await caches.match(req);
+    if (cached) return cached;
+    if (req.mode === "navigate") {
+      const offlinePage = await caches.match("/offline.html");
+      if (offlinePage) return offlinePage;
+    }
+    return Response.error();
   }
 }
 

@@ -17,6 +17,9 @@
 import { COMPANY } from "@/data/catalog/company";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import type { Enums } from "@/integrations/supabase/types";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("notifications");
 
 export type ReservationEvent = {
   reference: string;
@@ -66,7 +69,7 @@ function normalizePhone(raw: string): string {
 
 async function sendEmail(to: string, subject: string, html: string): Promise<void> {
   if (!RESEND_API_KEY) {
-    console.warn("[notifications] RESEND_API_KEY manquante — e-mail ignoré");
+    logger.warn("RESEND_API_KEY manquante — e-mail ignoré");
     return;
   }
   try {
@@ -79,18 +82,19 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
       body: JSON.stringify({ from: RESEND_FROM, to: [to], subject, html }),
     });
     if (!res.ok) {
-      console.error("[notifications] Resend", res.status, await res.text());
+      logger.error("Resend error", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        body: await res.text(),
+      });
     }
   } catch (err) {
-    console.error("[notifications] Resend échec réseau", err);
+    logger.error("Resend échec réseau", err as Error);
   }
 }
 
 async function sendWhatsApp(to: string, body: string): Promise<void> {
   if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-    console.warn(
-      "[notifications] WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID manquants — WhatsApp ignoré",
-    );
+    logger.warn("WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID manquants — WhatsApp ignoré");
     return;
   }
   try {
@@ -111,10 +115,13 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
       },
     );
     if (!res.ok) {
-      console.error("[notifications] WhatsApp", res.status, await res.text());
+      logger.error("WhatsApp error", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        body: await res.text(),
+      });
     }
   } catch (err) {
-    console.error("[notifications] WhatsApp échec réseau", err);
+    logger.error("WhatsApp échec réseau", err as Error);
   }
 }
 

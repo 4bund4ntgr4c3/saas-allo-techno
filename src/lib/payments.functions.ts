@@ -13,6 +13,9 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("payments");
 
 const initiateSchema = z.object({
   reference: z.string().trim().min(1).max(30),
@@ -77,7 +80,7 @@ type FlutterwaveCheckoutInput = {
 async function createFlutterwaveLink(input: FlutterwaveCheckoutInput): Promise<string | null> {
   const secret = process.env["FLUTTERWAVE_SECRET_KEY"];
   if (!secret) {
-    console.warn("[payments] FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
+    logger.warn("FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
     return null;
   }
   try {
@@ -112,9 +115,12 @@ async function createFlutterwaveLink(input: FlutterwaveCheckoutInput): Promise<s
     if (res.ok && body.status === "success" && body.data?.link) {
       return body.data.link;
     }
-    console.error("[payments] Flutterwave init failed", res.status, body.message);
+    logger.error("Flutterwave init failed", new Error(`HTTP ${res.status}`), {
+      status: res.status,
+      message: body.message,
+    });
   } catch (err) {
-    console.error("[payments] Flutterwave network error", err);
+    logger.error("Flutterwave network error", err as Error);
   }
   return null;
 }
@@ -136,7 +142,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
 
     const secret = process.env["FLUTTERWAVE_SECRET_KEY"];
     if (!secret) {
-      console.warn("[payments] FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
+      logger.warn("FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
       return { available: false } as const;
     }
 
@@ -189,7 +195,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
     );
 
     if (error) {
-      console.error("[payments] upsert failed", error);
+      logger.error("upsert failed", error as Error);
       return { available: false } as const;
     }
 
@@ -215,7 +221,7 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (error) {
-      console.error("[payments] status lookup failed", error);
+      logger.error("status lookup failed", error as Error);
       throw new Error("Impossible de vérifier le paiement. Réessayez.");
     }
 
@@ -250,7 +256,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (fetchError || !reservation) {
-      console.error("[payments] reservation lookup failed", fetchError);
+      logger.error("reservation lookup failed", fetchError as Error);
       return { ok: false as const, error: "Dossier introuvable." };
     }
 
@@ -329,7 +335,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       .single();
 
     if (error || !inserted) {
-      console.error("[payments] reservation payment upsert failed", error);
+      logger.error("reservation payment upsert failed", error as Error);
       return { ok: false as const, error: "Impossible d'enregistrer le paiement." };
     }
 
@@ -368,7 +374,7 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (error) {
-      console.error("[payments] reservation status lookup failed", error);
+      logger.error("reservation status lookup failed", error as Error);
       throw new Error("Impossible de vérifier le paiement. Réessayez.");
     }
 
@@ -395,7 +401,7 @@ async function loadReservationForPayment(reference: string) {
     .maybeSingle();
 
   if (fetchError || !reservation) {
-    console.error("[payments] reservation lookup failed", fetchError);
+    logger.error("reservation lookup failed", fetchError as Error);
     return { error: "Dossier introuvable." } as const;
   }
 
@@ -453,7 +459,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
 
     const secret = process.env["FEDAPAY_SECRET_KEY"];
     if (!secret) {
-      console.warn("[payments] FEDAPAY_SECRET_KEY absent — FedaPay désactivé");
+      logger.warn("FEDAPAY_SECRET_KEY absent — FedaPay désactivé");
       return {
         ok: false as const,
         error: "Le paiement FedaPay n'est pas disponible pour le moment.",
@@ -519,14 +525,13 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
         providerTxId = String(tx.id);
         paymentUrl = tx.payment_url;
       } else {
-        console.error(
-          "[payments] FedaPay init failed",
-          res.status,
-          JSON.stringify(body).slice(0, 300),
-        );
+        logger.error("FedaPay init failed", new Error(`HTTP ${res.status}`), {
+          status: res.status,
+          body: JSON.stringify(body).slice(0, 300),
+        });
       }
     } catch (err) {
-      console.error("[payments] FedaPay network error", err);
+      logger.error("FedaPay network error", err as Error);
     }
 
     if (!paymentUrl || !providerTxId) {
@@ -554,7 +559,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
       .single();
 
     if (error || !inserted) {
-      console.error("[payments] FedaPay upsert failed", error);
+      logger.error("FedaPay upsert failed", error as Error);
       return { ok: false as const, error: "Impossible d'enregistrer le paiement." };
     }
 
@@ -587,7 +592,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
     const apiKey = process.env["KKIAPAY_API_KEY"];
     const apiSecret = process.env["KKIAPAY_SECRET"];
     if (!apiKey || !apiSecret) {
-      console.warn("[payments] clés KKiaPay absentes — KKiaPay désactivé");
+      logger.warn("clés KKiaPay absentes — KKiaPay désactivé");
       return {
         ok: false as const,
         error: "Le paiement KKiaPay n'est pas disponible pour le moment.",
@@ -644,14 +649,13 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
         redirectUrl = body.redirect_url ?? body.link ?? null;
         providerToken = body.token;
       } else {
-        console.error(
-          "[payments] KKiaPay init failed",
-          res.status,
-          JSON.stringify(body).slice(0, 300),
-        );
+        logger.error("KKiaPay init failed", new Error(`HTTP ${res.status}`), {
+          status: res.status,
+          body: JSON.stringify(body).slice(0, 300),
+        });
       }
     } catch (err) {
-      console.error("[payments] KKiaPay network error", err);
+      logger.error("KKiaPay network error", err as Error);
     }
 
     if (!redirectUrl || !providerToken) {
@@ -679,7 +683,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
       .single();
 
     if (error || !inserted) {
-      console.error("[payments] KKiaPay upsert failed", error);
+      logger.error("KKiaPay upsert failed", error as Error);
       return { ok: false as const, error: "Impossible d'enregistrer le paiement." };
     }
 
@@ -731,7 +735,7 @@ export const listCustomerPayments = createServerFn({ method: "POST" }).handler(
       .limit(200);
 
     if (resError) {
-      console.error("[payments] customer reservations lookup failed", resError);
+      logger.error("customer reservations lookup failed", resError as Error);
       return [];
     }
 
@@ -751,7 +755,7 @@ export const listCustomerPayments = createServerFn({ method: "POST" }).handler(
       .limit(100);
 
     if (payError) {
-      console.error("[payments] customer list failed", payError);
+      logger.error("customer list failed", payError as Error);
       return [];
     }
 

@@ -17,6 +17,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
+import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,6 +154,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang={lang === "en" ? "en" : "fr"}>
       <head>
         <HeadContent />
+        <script defer data-domain="allotechno.africa" src="https://plausible.io/js/script.js" />
       </head>
       <body>
         {children}
@@ -214,6 +216,7 @@ function RootComponent() {
           </Suspense>
           <Toaster />
           <PwaInstallBanner />
+          <OfflineIndicator />
         </I18nProvider>
       </CartProvider>
     </QueryClientProvider>

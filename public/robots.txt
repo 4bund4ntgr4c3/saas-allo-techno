@@ -28,4 +28,4 @@ Disallow: /mon-compte
 Disallow: /fr/panier
 Disallow: /en/panier
 
-Sitemap: https://allotechno.africa/sitemap.xml
+Sitemap: https://allotechno.africa/api/sitemap

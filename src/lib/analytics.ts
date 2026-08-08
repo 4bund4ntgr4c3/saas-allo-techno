@@ -4,6 +4,24 @@
 
 import { trackEvent } from "@/lib/analytics.functions";
 
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: { u?: string; props?: Record<string, string> }) => void;
+  }
+}
+
+export function trackPageView(url: string) {
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("pageview", { u: url });
+  }
+}
+
+export function trackPlausibleEvent(name: string, props?: Record<string, string>) {
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible(name, props ? { props } : undefined);
+  }
+}
+
 let sessionId: string | null = null;
 
 function session(): string {

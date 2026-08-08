@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   BarChart3,
@@ -66,7 +66,9 @@ import {
   downloadReservationsCsv,
   downloadReservationsPdf,
 } from "@/lib/invoice";
-import { StatsDashboard } from "@/components/admin/StatsDashboard";
+const StatsDashboard = lazy(() =>
+  import("@/components/admin/StatsDashboard").then((m) => ({ default: m.StatsDashboard })),
+);
 import { useI18n } from "@/lib/i18n/context";
 import { exportLeadsCsv, exportPaymentsCsv, exportReservationsCsv } from "@/lib/export.functions";
 import {
@@ -132,6 +134,22 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+        <h2 className="at-display mb-2 text-2xl">Erreur d'administration</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {error?.message ?? "Une erreur est survenue."}
+        </p>
+        <button
+          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
+          onClick={() => reset()}
+        >
+          Réessayer
+        </button>
+      </div>
+    </div>
+  ),
   component: AdminPage,
 });
 
@@ -922,7 +940,11 @@ function AdminPage() {
       {tab === "analytics" && <AnalyticsSection />}
       {tab === "securite" && <SecuritySection />}
       {tab === "contenu" && <ContentSection />}
-      {tab === "stats" && <StatsDashboard />}
+      {tab === "stats" && (
+        <Suspense fallback={<p className="text-sm text-muted-foreground">Chargement…</p>}>
+          <StatsDashboard />
+        </Suspense>
+      )}
       {tab === "kpis" && <KpisSection />}
       {tab === "catalogue" && <CatalogSection />}
       {tab === "commandes" && <OrdersSection />}
@@ -3884,6 +3906,8 @@ function DeviceDetailPanel({
               <img
                 src={p.url}
                 alt={p.alt || device.name}
+                loading="lazy"
+                decoding="async"
                 className="h-16 w-16 rounded-sm border border-border object-cover"
               />
               <button

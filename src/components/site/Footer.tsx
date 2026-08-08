@@ -97,7 +97,10 @@ export function Footer() {
           {/* Services column */}
           <div>
             <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.services")}</h2>
-            <ul className="space-y-2.5 text-xs font-medium text-muted-foreground">
+            <ul
+              aria-label={t("footer.services")}
+              className="space-y-2.5 text-xs font-medium text-muted-foreground"
+            >
               {[
                 { to: "/reparations", label: t("footer.nos-reparations") },
                 { to: "/tarifs", label: t("footer.grille-tarifaire") },
@@ -129,7 +132,10 @@ export function Footer() {
           {/* Entreprises column */}
           <div>
             <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.entreprises")}</h2>
-            <ul className="space-y-2.5 text-xs font-medium text-muted-foreground">
+            <ul
+              aria-label={t("footer.entreprises")}
+              className="space-y-2.5 text-xs font-medium text-muted-foreground"
+            >
               {[
                 { to: "/entreprises", label: t("footer.solutions-b2b") },
                 { to: "/suivi", label: t("footer.suivre-reparation") },
@@ -152,7 +158,10 @@ export function Footer() {
           {/* Contact column */}
           <div>
             <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.contact")}</h2>
-            <ul className="space-y-3 text-xs font-medium text-muted-foreground">
+            <ul
+              aria-label={t("footer.contact")}
+              className="space-y-3 text-xs font-medium text-muted-foreground"
+            >
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />
                 <span>{COMPANY.address}</span>

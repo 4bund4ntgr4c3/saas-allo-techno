@@ -12,6 +12,7 @@ import { getOrderPaymentStatus, initiateFlutterwavePayment } from "@/lib/payment
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { trackPlausibleEvent } from "@/lib/analytics";
 import "@/lib/i18n/segments/panier";
 import type { Locale } from "@/lib/i18n/locales";
 
@@ -100,6 +101,7 @@ function Panier() {
         const res = await checkPayment({ data: { reference: search.ref } });
         if (res.status === "paid") {
           setPaymentState("paid");
+          trackPlausibleEvent("payment_completed");
           toast.success(t("panier.paid.title"));
           return;
         }

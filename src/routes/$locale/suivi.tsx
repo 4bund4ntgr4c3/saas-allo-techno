@@ -34,6 +34,7 @@ import { formatDateFr, type DepositMode } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { trackPlausibleEvent } from "@/lib/analytics";
 import "@/lib/i18n/segments/suivi";
 import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
@@ -76,6 +77,22 @@ export const Route = createFileRoute("/$locale/suivi")({
       links: [...seo.links],
     };
   },
+  errorComponent: ({ error, reset }) => (
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+        <h2 className="at-display mb-2 text-2xl">Erreur de suivi</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {error?.message ?? "Impossible de charger la page de suivi."}
+        </p>
+        <button
+          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
+          onClick={() => reset()}
+        >
+          Réessayer
+        </button>
+      </div>
+    </div>
+  ),
   component: Suivi,
 });
 
@@ -187,6 +204,7 @@ function Suivi() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    trackPlausibleEvent("tracking_lookup");
     router.navigate({
       to: "/$locale/suivi",
       params: { locale },
@@ -869,7 +887,13 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
           className="fixed inset-0 z-50 grid cursor-zoom-out place-items-center bg-black/80 p-4"
           onClick={() => setZoom(null)}
         >
-          <img src={zoom} alt="" className="max-h-[90vh] max-w-full rounded-sm object-contain" />
+          <img
+            src={zoom}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="max-h-[90vh] max-w-full rounded-sm object-contain"
+          />
         </div>
       )}
     </div>

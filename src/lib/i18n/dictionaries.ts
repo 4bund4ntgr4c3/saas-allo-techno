@@ -84,6 +84,10 @@ const fr: Dictionary = {
   pannes: "pannes",
   panne: "panne",
   "common.error": "Une erreur est survenue.",
+  "error.title": "Une erreur est survenue",
+  "error.text": "Nous n'avons pas pu charger cette page.",
+  "error.retry": "Réessayer",
+  "error.home": "Retour à l'accueil",
 
   // Home — hero
   "home.meta.title": "Allô Techno — Réparation smartphone & ordinateur à Abomey-Calavi",
@@ -294,6 +298,10 @@ const en: Dictionary = {
   "pagination.suivant": "Next",
   "common.loading": "Loading…",
   "common.error": "An error occurred.",
+  "error.title": "Something went wrong",
+  "error.text": "We couldn't load this page.",
+  "error.retry": "Try again",
+  "error.home": "Back to home",
   pannes: "faults",
   panne: "fault",
 

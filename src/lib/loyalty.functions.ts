@@ -4,6 +4,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("loyalty");
 
 const applyCodeSchema = z.object({
   code: z
@@ -179,7 +182,7 @@ export const ensureReferralCode = createServerFn({ method: "POST" }).handler(asy
       _code: code,
     });
     if (error) {
-      console.error("[loyalty] ensure_referral_code failed", error);
+      logger.error("ensure_referral_code failed", error as Error);
       throw new Error("Impossible de générer un code de parrainage.");
     }
     if (result) return result;
@@ -220,7 +223,7 @@ export const applyReferralCode = createServerFn({ method: "POST" })
       .update({ referred_by: referrer.id })
       .eq("id", userId);
     if (updateError) {
-      console.error("[loyalty] set referred_by failed", updateError);
+      logger.error("set referred_by failed", updateError as Error);
       throw new Error("Impossible d'appliquer le code de parrainage.");
     }
 
@@ -232,7 +235,7 @@ export const applyReferralCode = createServerFn({ method: "POST" })
         _reference: "",
       });
     } catch (err) {
-      console.error("[loyalty] bonus parrainé échoué", err);
+      logger.error("bonus parrainé échoué", err as Error);
     }
 
     try {
@@ -243,7 +246,7 @@ export const applyReferralCode = createServerFn({ method: "POST" })
         _reference: "",
       });
     } catch (err) {
-      console.error("[loyalty] bonus parrain échoué", err);
+      logger.error("bonus parrain échoué", err as Error);
     }
 
     return { ok: true, points: 50 };
