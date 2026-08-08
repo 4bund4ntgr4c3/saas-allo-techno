@@ -21,7 +21,7 @@ import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { Button } from "@/components/ui/button";
-import { downloadInvoicePdf, downloadTimelinePdf } from "@/lib/invoice";
+import { downloadInvoicePdf, downloadQuotePdf, downloadTimelinePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
   type ReservationStatus,
@@ -374,6 +374,30 @@ function StatusResult({
             <FileDown className="mr-2 size-4" />
             {t("suivi.timelinePdf")}
           </Button>
+          {(result.quote_status === "approved" || result.quote_status === "sent") &&
+            (result.quote_amount ?? 0) > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  downloadQuotePdf({
+                    reference: result.reference,
+                    customer_name: result.customer_name,
+                    phone: result.phone,
+                    email: result.email,
+                    device: result.device,
+                    issue: result.issue,
+                    quote_amount: result.quote_amount ?? 0,
+                    warranty_months: result.warranty_months,
+                    quote_token: result.quote_token ?? "",
+                    created_at: result.created_at,
+                  })
+                }
+              >
+                <FileDown className="mr-2 size-4" />
+                {t("suivi.quotePdf")}
+              </Button>
+            )}
           <QrCode
             value={`${window.location.origin}/${locale}/suivi?ref=${result.reference}&code=${code}`}
             label={`${t("suivi.dossier")} ${result.reference}`}

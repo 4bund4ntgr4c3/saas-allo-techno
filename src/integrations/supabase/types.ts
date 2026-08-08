@@ -73,16 +73,19 @@ export type Database = {
       };
       inventory: {
         Row: {
+          low_stock_threshold: number;
           quantity: number;
           slug: string;
           updated_at: string;
         };
         Insert: {
+          low_stock_threshold?: number;
           quantity?: number;
           slug: string;
           updated_at?: string;
         };
         Update: {
+          low_stock_threshold?: number;
           quantity?: number;
           slug?: string;
           updated_at?: string;

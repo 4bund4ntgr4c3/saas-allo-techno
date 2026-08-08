@@ -105,3 +105,57 @@ export const exportLeadsCsv = createServerFn({ method: "POST" }).handler(async (
 
   return { csv: toCsv(header, rows) };
 });
+
+// ---------------------------------------------------------------------------
+// Export comptable : paiements
+// ---------------------------------------------------------------------------
+
+/** Export CSV des paiements (comptabilite), reserve au personnel. */
+export const exportPaymentsCsv = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisee");
+  if (!rateLimit("admin-export", 5))
+    throw new Error("Trop de demandes. Reessayez dans une minute.");
+
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .select("created_at, reference, amount, method, status, tx_ref, source")
+    .order("created_at", { ascending: false })
+    .limit(5000);
+  if (error) throw new Error("Export impossible");
+
+  const references = [...new Set((data ?? []).map((p) => p.reference).filter(Boolean))];
+  const clientMap: Record<string, string> = {};
+  if (references.length > 0) {
+    const { data: reservations } = await supabaseAdmin
+      .from("reservations")
+      .select("reference, customer_name")
+      .in("reference", references as string[]);
+    for (const r of reservations ?? []) {
+      clientMap[r.reference] = r.customer_name;
+    }
+  }
+
+  const header = [
+    "Date",
+    "Reference dossier",
+    "Client",
+    "Montant (FCFA)",
+    "Methode",
+    "Statut",
+    "Reference transaction",
+    "Source",
+  ];
+  const rows = (data ?? []).map((p) => [
+    p.created_at,
+    p.reference,
+    clientMap[p.reference ?? ""] ?? "",
+    p.amount,
+    p.method,
+    p.status,
+    p.tx_ref ?? "",
+    p.source,
+  ]);
+
+  return { csv: toCsv(header, rows) };
+});

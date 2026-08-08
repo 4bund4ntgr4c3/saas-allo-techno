@@ -316,3 +316,24 @@ export async function reserveInventory(
   }
   return Boolean(data);
 }
+
+// ---------------------------------------------------------------------------
+// Alertes stock bas
+// ---------------------------------------------------------------------------
+
+export type LowStockItem = {
+  slug: string;
+  quantity: number;
+  low_stock_threshold: number;
+};
+
+/** Renvoie la liste des accessoires dont le stock est inférieur ou égal au seuil. */
+export async function checkLowStock(): Promise<LowStockItem[]> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("inventory")
+    .select("slug, quantity, low_stock_threshold");
+  if (error || !data) return [];
+
+  return data.filter((row) => row.quantity <= row.low_stock_threshold);
+}

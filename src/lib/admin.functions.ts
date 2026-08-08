@@ -162,6 +162,7 @@ export type ReservationQuote = {
   quote_amount: number | null;
   quote_status: string;
   quote_decided_at: string | null;
+  quote_token: string | null;
   warranty_months: number;
 };
 
@@ -186,7 +187,9 @@ export const getReservationQuote = createServerFn({ method: "POST" })
 
     const { data: row, error } = await supabaseAdmin
       .from("reservations")
-      .select("reference, quote_amount, quote_status, quote_decided_at, warranty_months")
+      .select(
+        "reference, quote_amount, quote_status, quote_decided_at, quote_token, warranty_months",
+      )
       .eq("id", data.reservationId)
       .maybeSingle();
 

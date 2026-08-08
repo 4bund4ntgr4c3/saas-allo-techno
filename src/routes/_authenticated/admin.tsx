@@ -62,12 +62,13 @@ import {
 } from "@/lib/content.functions";
 import {
   downloadInvoicePdf,
+  downloadQuotePdf,
   downloadReservationsCsv,
   downloadReservationsPdf,
 } from "@/lib/invoice";
 import { StatsDashboard } from "@/components/admin/StatsDashboard";
 import { useI18n } from "@/lib/i18n/context";
-import { exportLeadsCsv, exportReservationsCsv } from "@/lib/export.functions";
+import { exportLeadsCsv, exportPaymentsCsv, exportReservationsCsv } from "@/lib/export.functions";
 import {
   listWarrantyClaims,
   setWarrantyClaimStatus,
@@ -793,7 +794,18 @@ function AdminPage() {
                         onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
                       />
 
-                      {!isTechnicien && <QuotePanel reservationId={r.id} />}
+                      {!isTechnicien && (
+                        <QuotePanel
+                          reservationId={r.id}
+                          reference={r.reference}
+                          customer_name={r.customer_name}
+                          phone={r.phone}
+                          email={r.email}
+                          device={r.device}
+                          issue={r.issue}
+                          created_at={r.created_at}
+                        />
+                      )}
 
                       {!isTechnicien && <PhotoPanel reservationId={r.id} />}
                       <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
@@ -1151,7 +1163,25 @@ const PHOTO_STAGES = ["diagnostic", "pieces", "repair"] as const;
  * Devis à valider par le client : l'atelier fixe le montant (FCFA) et la durée
  * de garantie étendue, puis envoie la demande (e-mail + WhatsApp) au client.
  */
-function QuotePanel({ reservationId }: { reservationId: string }) {
+function QuotePanel({
+  reservationId,
+  reference,
+  customer_name,
+  phone,
+  email,
+  device,
+  issue,
+  created_at,
+}: {
+  reservationId: string;
+  reference: string;
+  customer_name: string;
+  phone: string;
+  email: string | null;
+  device: string;
+  issue: string;
+  created_at: string;
+}) {
   const queryClient = useQueryClient();
   const getQuoteFn = useServerFn(getReservationQuote);
   const sendQuoteFn = useServerFn(sendQuote);
@@ -1246,6 +1276,30 @@ function QuotePanel({ reservationId }: { reservationId: string }) {
         >
           {send.isPending ? "Envoi…" : "Envoyer le devis"}
         </Button>
+        {sentAmount != null && sentAmount > 0 && (
+          <Button
+            size="sm"
+            variant="technicalOutline"
+            onClick={() =>
+              downloadQuotePdf({
+                reference,
+                customer_name,
+                phone,
+                email,
+                device,
+                issue,
+                quote_amount: sentAmount,
+                warranty_months: quote.data?.warranty_months ?? 0,
+                quote_token: quote.data?.quote_token ?? "",
+                created_at,
+              })
+            }
+            aria-label={`Devis PDF du dossier ${reference}`}
+          >
+            <FileDown className="mr-1 size-3.5" />
+            PDF
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -1391,6 +1445,35 @@ function CsvExportButton({
         <FileDown className="mr-2 size-4" />
       )}
       {label}
+    </Button>
+  );
+}
+
+function ExportPaymentsButton() {
+  const fn = useServerFn(exportPaymentsCsv);
+  const [pending, setPending] = useState(false);
+
+  const run = async () => {
+    setPending(true);
+    try {
+      const res = await fn();
+      const date = new Date().toISOString().slice(0, 10);
+      downloadCsv(res.csv, `paiements-allotechno-${date}.csv`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Export impossible");
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <Button variant="outline" size="sm" disabled={pending} onClick={run}>
+      {pending ? (
+        <Loader2 className="mr-2 size-4 animate-spin" />
+      ) : (
+        <FileDown className="mr-2 size-4" />
+      )}
+      Export paiements
     </Button>
   );
 }
@@ -2000,6 +2083,18 @@ type ContentTab = (typeof contentTabs)[number]["id"];
 
 function ContentSection() {
   const [sub, setSub] = useState<ContentTab>("blog");
+  const lowStockQuery = useQuery({
+    queryKey: ["admin-low-stock"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("inventory")
+        .select("slug, quantity, low_stock_threshold");
+      if (error) return [];
+      return (data ?? []).filter((row) => row.quantity <= row.low_stock_threshold);
+    },
+    refetchInterval: 5 * 60 * 1000,
+  });
+  const lowStockCount = lowStockQuery.data?.length ?? 0;
 
   return (
     <div className="space-y-8">
@@ -2012,6 +2107,11 @@ function ContentSection() {
             onClick={() => setSub(t.id)}
           >
             {t.label}
+            {t.id === "stock" && lowStockCount > 0 && (
+              <span className="ml-2 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">
+                {lowStockCount}
+              </span>
+            )}
           </Button>
         ))}
       </div>
@@ -4497,11 +4597,14 @@ function KpisSection() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.
+          </p>
+        </div>
+        <ExportPaymentsButton />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

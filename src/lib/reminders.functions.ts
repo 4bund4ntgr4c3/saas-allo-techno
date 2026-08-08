@@ -310,6 +310,23 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
     }
   }
 
+  // 4. Alertes stock bas : accessoires dont la quantité <= seuil.
+  const { data: inventoryRows, error: invError } = await supabaseAdmin
+    .from("inventory")
+    .select("slug, quantity, low_stock_threshold");
+  if (invError) {
+    console.error("[reminders] requête low_stock_alert échouée", invError);
+  } else {
+    const lowStock = (inventoryRows ?? []).filter((row) => row.quantity <= row.low_stock_threshold);
+    for (const item of lowStock) {
+      if (counters.sent >= MAX_MESSAGES_PER_RUN) break;
+      const urgency = item.quantity === 0 ? "RUPTURE" : "stock bas";
+      const msg = `Alerte stock : ${item.slug} — ${item.quantity} en stock (${urgency})`;
+      await sendWhatsApp(process.env["STAFF_PHONE"] ?? "", `[Allô Techno] ${msg}`);
+      counters.sent += 1;
+    }
+  }
+
   return counters;
 }
 

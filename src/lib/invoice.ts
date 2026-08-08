@@ -359,3 +359,135 @@ export function downloadReservationsPdf(rows: InvoiceRow[]) {
 
   doc.save(`dossiers-allotechno-${todayLabel()}.pdf`);
 }
+
+// ---------------------------------------------------------------------------
+// Devis PDF
+// ---------------------------------------------------------------------------
+
+export type QuoteRow = {
+  reference: string;
+  customer_name: string;
+  phone: string;
+  email: string | null;
+  device: string;
+  issue: string;
+  quote_amount: number;
+  warranty_months: number;
+  quote_token: string | null;
+  created_at: string;
+};
+
+/** Devis PDF d'un dossier de réparation — remis au client ou téléchargeable. */
+export function downloadQuotePdf(r: QuoteRow) {
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 18;
+
+  // En-tête
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, pageW, 30, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text(COMPANY.name, margin, 15);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(
+    [COMPANY.address, `Tel. ${COMPANY.phone} - ${COMPANY.email}`, COMPANY.city + ", Benin"],
+    pageW - margin,
+    15,
+    { align: "right" },
+  );
+
+  // Titre
+  doc.setTextColor(20, 20, 20);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text(`DEVIS DE REPARATION`, margin, 44);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text(
+    `Dossier ${r.reference} · Edite le ${new Date(r.created_at).toLocaleDateString("fr-FR")}`,
+    margin,
+    51,
+  );
+
+  // Infos client
+  autoTable(doc, {
+    startY: 58,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Client", "Telephone", "E-mail"]],
+    body: [[r.customer_name, r.phone, r.email ?? "-"]],
+  });
+
+  // Infos appareil
+  autoTable(doc, {
+    startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 4,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    head: [["Appareil", "Panne declaree"]],
+    body: [[r.device, r.issue]],
+  });
+
+  // Montant du devis
+  autoTable(doc, {
+    startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6,
+    margin: { left: margin, right: margin },
+    theme: "striped",
+    styles: { fontSize: 10, cellPadding: 3 },
+    head: [["Designation", "Detail", "Montant (FCFA)"]],
+    body: [
+      ["Reparation", `${r.device} - ${r.issue}`, formatFcfa(r.quote_amount) ?? ""],
+      ["", "TOTAL DEVIS", formatFcfa(r.quote_amount) ?? ""],
+    ],
+    footStyles: { fontStyle: "bold", fillColor: [241, 245, 249], textColor: [15, 23, 42] },
+    didParseCell: (data) => {
+      if (data.section === "body" && data.column.index === 2 && data.row.index === 1) {
+        data.cell.styles.fontStyle = "bold";
+      }
+    },
+  });
+
+  // Infos garantie et validite
+  const noteY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  doc.setFontSize(9);
+  doc.setTextColor(60, 60, 60);
+  doc.text(
+    [
+      `Garantie : ${r.warranty_months} mois pieces et main-d'oeuvre.`,
+      "Ce devis est valable 14 jours a compter de la date d'emission.",
+      "Le paiement s'effectue apres approbation du devis, en ligne ou a l'atelier.",
+    ],
+    margin,
+    noteY,
+  );
+
+  // Lien d'approbation
+  if (r.quote_token) {
+    const linkY = noteY + 16;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 163, 74);
+    doc.setFont("helvetica", "bold");
+    const origin = typeof window !== "undefined" ? window.location.origin : COMPANY.url;
+    const link = `${origin}/fr/suivi?token=${encodeURIComponent(r.quote_token)}`;
+    doc.text("Approuver ou refuser ce devis en ligne :", margin, linkY);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(22, 163, 74);
+    doc.text(link, margin, linkY + 6);
+  }
+
+  // Pied de page
+  const footerY = doc.internal.pageSize.getHeight() - 15;
+  doc.setFontSize(7.5);
+  doc.setTextColor(120, 120, 120);
+  doc.text(`${COMPANY.name} - ${COMPANY.address} - ${COMPANY.phone}`, margin, footerY);
+  doc.text(`Suivi en ligne : ${COMPANY.url}/suivi?ref=${r.reference}`, pageW - margin, footerY, {
+    align: "right",
+  });
+
+  doc.save(`devis-allotechno-${r.reference}.pdf`);
+}
