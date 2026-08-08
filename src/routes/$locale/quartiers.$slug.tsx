@@ -5,13 +5,12 @@ import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { Button } from "@/components/ui/button";
 import { BRANDS } from "@/data/catalog";
-import { COMPANY } from "@/data/catalog/company";
 import { QUARTIERS, quartierBySlug, type QuartierInfo } from "@/data/local-seo";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/quartiers";
-import { localeSeo, localeUrl } from "@/lib/seo";
+import { breadcrumbSchema, localeSeo, localeUrl, localBusinessSchema } from "@/lib/seo";
 
 const QUARTIER_BRAND_SLUGS = ["apple", "samsung", "tecno", "infinix"];
 
@@ -37,6 +36,17 @@ export const Route = createFileRoute("/$locale/quartiers/$slug")({
     }
     const suffix = `/quartiers/${params.slug}`;
     const seo = localeSeo(locale, suffix);
+    const url = localeUrl(locale, suffix);
+    const localBusiness = localBusinessSchema({
+      areaServed: [name, "Abomey-Calavi", ...QUARTIERS],
+    });
+    const breadcrumbs = breadcrumbSchema([
+      {
+        name: translate(locale, "quartiers.breadcrumb"),
+        url: localeUrl(locale, "/quartiers"),
+      },
+      { name, url },
+    ]);
     return {
       meta: [
         { title: translate(locale, "quartiers.slug.meta.title", [name]) },
@@ -58,49 +68,8 @@ export const Route = createFileRoute("/$locale/quartiers/$slug")({
       ],
       links: [...seo.links],
       scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "Service",
-                serviceType: translate(locale, "quartiers.slug.service", [name]),
-                areaServed: [name, "Abomey-Calavi", ...QUARTIERS],
-                provider: {
-                  "@type": "LocalBusiness",
-                  name: COMPANY.name,
-                  telephone: COMPANY.phone,
-                  email: COMPANY.email,
-                  address: {
-                    "@type": "PostalAddress",
-                    streetAddress: COMPANY.address,
-                    addressLocality: COMPANY.city,
-                    addressCountry: "BJ",
-                  },
-                  geo: { "@type": "GeoCoordinates", latitude: COMPANY.lat, longitude: COMPANY.lng },
-                },
-              },
-              {
-                "@type": "BreadcrumbList",
-                itemListElement: [
-                  {
-                    "@type": "ListItem",
-                    position: 1,
-                    name: translate(locale, "quartiers.breadcrumb"),
-                    item: localeUrl(locale, "/quartiers"),
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 2,
-                    name,
-                    item: localeUrl(locale, suffix),
-                  },
-                ],
-              },
-            ],
-          }),
-        },
+        { type: "application/ld+json", children: JSON.stringify(localBusiness) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbs) },
       ],
     };
   },

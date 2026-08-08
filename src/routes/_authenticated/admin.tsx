@@ -27,6 +27,10 @@ import {
   Banknote,
   ImagePlus,
   BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  TrendingUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -34,7 +38,16 @@ import { QrCode } from "@/components/site/QrCode";
 import { Stars } from "@/components/site/Blocks";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
-import { setReservationStatus, getReservationQuote } from "@/lib/admin.functions";
+import {
+  ATELIER_STATUSES,
+  assignTechnician,
+  getAdminKpis,
+  getAtelierBoard,
+  getReservationQuote,
+  setReservationStatus,
+  type AtelierCard,
+  type AtelierTechnician,
+} from "@/lib/admin.functions";
 import { setDeliveryStatus } from "@/lib/delivery.functions";
 import { confirmOtp, disableOtp, enrollOtp, verifyOtpLogin } from "@/lib/otp.functions";
 import { sendQuote } from "@/lib/quote.functions";
@@ -88,6 +101,13 @@ import {
   type ReturnStatus,
 } from "@/lib/returns.functions";
 import { Badge } from "@/components/ui/badge";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import "@/lib/i18n/segments/admin";
 import type { Enums } from "@/integrations/supabase/types";
 
@@ -190,6 +210,7 @@ function AdminPage() {
   const [view, setView] = useState<"liste" | "kanban">("liste");
   const [tab, setTab] = useState<
     | "dossiers"
+    | "atelier"
     | "equipe"
     | "leads"
     | "reclamations"
@@ -197,6 +218,7 @@ function AdminPage() {
     | "securite"
     | "contenu"
     | "stats"
+    | "kpis"
     | "catalogue"
     | "commandes"
     | "retours"
@@ -537,6 +559,14 @@ function AdminPage() {
           Dossiers
         </Button>
         <Button
+          variant={tab === "atelier" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("atelier")}
+        >
+          <Wrench className="mr-2 size-4" />
+          Atelier
+        </Button>
+        <Button
           variant={tab === "equipe" ? "technical" : "outline"}
           size="sm"
           onClick={() => setTab("equipe")}
@@ -575,6 +605,14 @@ function AdminPage() {
         >
           <PieChart className="mr-2 size-4" />
           {t("admin.stats.tab")}
+        </Button>
+        <Button
+          variant={tab === "kpis" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("kpis")}
+        >
+          <TrendingUp className="mr-2 size-4" />
+          KPI avancés
         </Button>
         <Button
           variant={tab === "securite" ? "technical" : "outline"}
@@ -814,6 +852,7 @@ function AdminPage() {
         </>
       )}
 
+      {tab === "atelier" && <AtelierBoard />}
       {tab === "equipe" && <TeamSection />}
       {tab === "leads" && <LeadsSection />}
       {tab === "reclamations" && <ClaimsSection />}
@@ -821,6 +860,7 @@ function AdminPage() {
       {tab === "securite" && <SecuritySection />}
       {tab === "contenu" && <ContentSection />}
       {tab === "stats" && <StatsDashboard />}
+      {tab === "kpis" && <KpisSection />}
       {tab === "catalogue" && <CatalogSection />}
       {tab === "commandes" && <OrdersSection />}
       {tab === "retours" && <ReturnsSection />}
@@ -4137,5 +4177,465 @@ function ReturnCard({
         </Button>
       </div>
     </li>
+  );
+}
+
+// ===========================================================================
+// Atelier — kanban du flux de réparation (temps réel) + KPI avancés
+// ===========================================================================
+
+function AtelierBoard() {
+  const queryClient = useQueryClient();
+  const getBoardFn = useServerFn(getAtelierBoard);
+  const assignFn = useServerFn(assignTechnician);
+
+  const board = useQuery({
+    queryKey: ["atelier-board"],
+    queryFn: () => getBoardFn({ data: {} }),
+  });
+
+  const move = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: Status }) => {
+      await setReservationStatus({ data: { id, status } });
+    },
+    onSuccess: (_d, vars) => {
+      toast.success(`Dossier passé en « ${STATUS_LABEL[vars.status] ?? vars.status} »`);
+      queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
+      queryClient.invalidateQueries({ queryKey: ["status-history"] });
+    },
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+  });
+
+  const assign = useMutation({
+    mutationFn: async ({
+      reservationId,
+      technicianId,
+    }: {
+      reservationId: string;
+      technicianId: string;
+    }) => assignFn({ data: { reservationId, technicianId } }),
+    onSuccess: () => {
+      toast.success("Technicien assigné");
+      queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+    },
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Assignation impossible"),
+  });
+
+  // Temps réel : toute modification de dossier (ailleurs dans l'admin ou par
+  // un autre technicien) rafraîchit le board.
+  useEffect(() => {
+    const channel = supabase
+      .channel("atelier-board-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reservations" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  const cards = board.data?.reservations ?? [];
+  const technicians = board.data?.technicians ?? [];
+  const busy = move.isPending || assign.isPending;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold">Atelier — kanban</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au
+            client.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={board.isFetching}
+          onClick={() => queryClient.invalidateQueries({ queryKey: ["atelier-board"] })}
+        >
+          <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
+          Rafraîchir
+        </Button>
+      </div>
+
+      {board.isLoading ? (
+        <p className="text-sm text-muted-foreground">Chargement de l'atelier…</p>
+      ) : (
+        <div className="overflow-x-auto pb-4">
+          <div className="grid min-w-[72rem] grid-cols-6 gap-px border border-border bg-border">
+            {ATELIER_STATUSES.map((status) => {
+              const columnCards = cards.filter((c) => c.status === status);
+              return (
+                <div key={status} className="min-h-[26rem] bg-card p-3">
+                  <div className="mb-3 flex items-center justify-between gap-2 px-1">
+                    <span
+                      className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[status] ?? ""}`}
+                    >
+                      {STATUS_LABEL[status] ?? status}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {columnCards.length}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {columnCards.map((card) => (
+                      <AtelierCard
+                        key={card.id}
+                        card={card}
+                        technicians={technicians}
+                        busy={busy}
+                        onMove={(status) => move.mutate({ id: card.id, status })}
+                        onAssign={(technicianId) =>
+                          assign.mutate({ reservationId: card.id, technicianId })
+                        }
+                      />
+                    ))}
+                    {columnCards.length === 0 && (
+                      <p className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
+                        Aucun dossier
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Date de créneau compacte (JJ/MM) pour les cartes du kanban. */
+function shortDate(iso: string): string {
+  return `${iso.slice(8)}/${iso.slice(5, 7)}`;
+}
+
+function AtelierCard({
+  card,
+  technicians,
+  busy,
+  onMove,
+  onAssign,
+}: {
+  card: AtelierCard;
+  technicians: AtelierTechnician[];
+  busy: boolean;
+  onMove: (status: Status) => void;
+  onAssign: (technicianId: string) => void;
+}) {
+  const index = ATELIER_STATUSES.findIndex((s) => s === card.status);
+  const prev = index > 0 ? (ATELIER_STATUSES[index - 1] ?? null) : null;
+  const next =
+    index >= 0 && index < ATELIER_STATUSES.length - 1
+      ? (ATELIER_STATUSES[index + 1] ?? null)
+      : null;
+  const paid = card.payment_status === "paid";
+  const quotePending = card.quote_status === "approved" && !paid;
+
+  return (
+    <div
+      className={`rounded-sm border bg-surface p-3 ${
+        card.status === "en_attente" ? "border-amber-500/60" : "border-border"
+      }`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="truncate font-mono text-[10px] text-muted-foreground">{card.reference}</p>
+        {card.status === "en_attente" && (
+          <span className="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
+            Nouveau
+          </span>
+        )}
+      </div>
+      <p className="mt-1 text-sm font-semibold leading-snug">{card.device}</p>
+      <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+        {card.customer_name} · {card.phone}
+      </p>
+      <p className="mt-0.5 text-[11px] text-muted-foreground">
+        {shortDate(card.slot_date)} · {card.slot_hour ?? "—"}
+      </p>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {quotePending && (
+          <span className="rounded-full border border-primary/50 px-2 py-0.5 text-[10px] font-medium text-primary">
+            Devis {formatFcfa(card.quote_amount ?? 0)}
+          </span>
+        )}
+        {paid && (
+          <span className="rounded-full border border-success/50 px-2 py-0.5 text-[10px] font-medium text-success">
+            Payé
+          </span>
+        )}
+        {card.sla && (
+          <span
+            className={`rounded-full border px-2 py-0.5 text-[10px] ${
+              card.sla.remainingDays < 0
+                ? "border-destructive/50 text-destructive"
+                : "border-border text-muted-foreground"
+            }`}
+            title={`Restitution estimée : ${card.sla.expectedDate}`}
+          >
+            SLA {shortDate(card.sla.expectedDate)} ·{" "}
+            {card.sla.remainingDays < 0 ? "en retard" : `J-${Math.round(card.sla.remainingDays)}`}
+          </span>
+        )}
+      </div>
+
+      <label htmlFor={`atelier-tech-${card.id}`} className="sr-only">
+        Technicien du dossier {card.reference}
+      </label>
+      <select
+        id={`atelier-tech-${card.id}`}
+        className={`${field} mt-2 h-8 px-2 py-0 text-xs`}
+        value={card.assigned_technician_id ?? ""}
+        disabled={busy}
+        onChange={(e) => onAssign(e.target.value)}
+      >
+        <option value="">Non assigné</option>
+        {technicians.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.full_name ?? "Technicien"}
+          </option>
+        ))}
+      </select>
+
+      <div className="mt-2 flex items-center justify-between">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="px-2"
+          disabled={busy || !prev}
+          aria-label="Étape précédente"
+          onClick={() => {
+            if (prev) onMove(prev);
+          }}
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+        <span className="text-[10px] text-muted-foreground">
+          {STATUS_LABEL[card.status] ?? card.status}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="px-2"
+          disabled={busy || !next}
+          aria-label="Étape suivante"
+          onClick={() => {
+            if (next) onMove(next);
+          }}
+        >
+          <ChevronRight className="size-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/** Couleur du graphique « revenus » (orange du thème Allô Techno). */
+const REVENUE_CHART_CONFIG = {
+  revenu: { label: "Revenus", color: "var(--primary)" },
+} satisfies ChartConfig;
+
+function KpisSection() {
+  const getKpisFn = useServerFn(getAdminKpis);
+
+  const kpis = useQuery({
+    queryKey: ["admin-kpis"],
+    queryFn: () => getKpisFn({ data: {} }),
+    refetchInterval: 5 * 60 * 1000,
+  });
+
+  if (kpis.isLoading) {
+    return <p className="text-sm text-muted-foreground">Chargement des indicateurs…</p>;
+  }
+
+  if (kpis.isError || !kpis.data) {
+    return (
+      <div>
+        <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
+        <p className="mt-4 text-sm text-destructive">
+          Impossible de charger les indicateurs. Réessayez.
+        </p>
+      </div>
+    );
+  }
+
+  const data = kpis.data;
+  const totalRevenue = data.dailyRevenue.reduce((sum, d) => sum + d.amount, 0);
+  const longestStage = data.avgStageDuration[0]?.avgHours ?? 0;
+  const maxFault = data.topFaults[0]?.count ?? 0;
+  const { quotesSent, quotesApproved, paid, rate } = data.quoteConversion;
+  const approvedShare = quotesSent > 0 ? Math.round((quotesApproved / quotesSent) * 100) : 0;
+  const paidShare = quotesSent > 0 ? Math.round((paid / quotesSent) * 100) : 0;
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="border border-border bg-card p-4">
+          <p className="at-eyebrow">Chiffre d'affaires (30 j)</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums">{formatFcfa(totalRevenue)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Paiements confirmés (atelier + boutique)
+          </p>
+        </div>
+        <div className="border border-border bg-card p-4">
+          <p className="at-eyebrow">Devis envoyés</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums">{quotesSent}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Envoyés ou approuvés</p>
+        </div>
+        <div className="border border-border bg-card p-4">
+          <p className="at-eyebrow">Devis approuvés</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums">{quotesApproved}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Acceptés par le client</p>
+        </div>
+        <div className="border border-border bg-card p-4">
+          <p className="at-eyebrow">Paiements reçus</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums">{paid}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Dossiers réparation payés</p>
+        </div>
+      </div>
+
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="rounded-sm border border-border bg-card p-5">
+          <h3 className="text-sm font-semibold">Conversion devis → paiement</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Part des devis envoyés qui aboutissent à un paiement.
+          </p>
+          <p className="mt-4 text-3xl font-bold tabular-nums">{rate}%</p>
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-40 shrink-0 truncate text-muted-foreground">Devis envoyés</span>
+              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+                <div className="h-full bg-primary/70" style={{ width: "100%" }} />
+              </div>
+              <span className="w-12 text-right font-mono text-xs tabular-nums">{quotesSent}</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-40 shrink-0 truncate text-muted-foreground">Devis approuvés</span>
+              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+                <div className="h-full bg-primary/70" style={{ width: `${approvedShare}%` }} />
+              </div>
+              <span className="w-12 text-right font-mono text-xs tabular-nums">
+                {quotesApproved}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-40 shrink-0 truncate text-muted-foreground">Paiements reçus</span>
+              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+                <div className="h-full bg-success/70" style={{ width: `${paidShare}%` }} />
+              </div>
+              <span className="w-12 text-right font-mono text-xs tabular-nums">{paid}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-sm border border-border bg-card p-5">
+          <h3 className="text-sm font-semibold">Revenus quotidiens (30 jours)</h3>
+          <ChartContainer config={REVENUE_CHART_CONFIG} className="mt-4 aspect-auto h-56">
+            <BarChart data={data.dailyRevenue}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                fontSize={10}
+                tickFormatter={(v) => shortDate(String(v))}
+                interval={4}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                fontSize={10}
+                width={48}
+                tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent formatter={(value) => formatFcfa(Number(value))} />}
+              />
+              <Bar
+                dataKey="amount"
+                fill="var(--color-revenu)"
+                radius={[2, 2, 0, 0]}
+                maxBarSize={28}
+              />
+            </BarChart>
+          </ChartContainer>
+        </div>
+      </div>
+
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="rounded-sm border border-border bg-card p-5">
+          <h3 className="text-sm font-semibold">Durée moyenne par étape</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Temps passé dans chaque étape (historique des statuts).
+          </p>
+          <ul className="mt-4 space-y-2">
+            {data.avgStageDuration.map((s) => (
+              <li key={s.stage} className="flex items-center gap-3 text-sm">
+                <span className="w-44 shrink-0 truncate text-muted-foreground">
+                  {STATUS_LABEL[s.stage] ?? s.stage}
+                </span>
+                <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+                  <div
+                    className="h-full bg-primary/70"
+                    style={{
+                      width: `${longestStage > 0 ? Math.round((s.avgHours / longestStage) * 100) : 0}%`,
+                    }}
+                  />
+                </div>
+                <span className="w-16 shrink-0 text-right font-mono text-xs tabular-nums">
+                  {s.avgHours >= 24 ? `${Math.round(s.avgHours / 24)} j` : `${s.avgHours} h`}
+                </span>
+              </li>
+            ))}
+            {data.avgStageDuration.length === 0 && (
+              <li className="text-sm text-muted-foreground">Pas encore assez d'historique.</li>
+            )}
+          </ul>
+        </div>
+
+        <div className="rounded-sm border border-border bg-card p-5">
+          <h3 className="text-sm font-semibold">Pannes les plus estimées</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Catégories de pannes consultées à l'étape estimation du devis en ligne.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {data.topFaults.map((f) => (
+              <li key={f.fault} className="flex items-center gap-3 text-sm">
+                <span className="flex-1 truncate text-muted-foreground">{f.fault}</span>
+                <div className="h-2 w-32 shrink-0 overflow-hidden rounded-sm bg-surface">
+                  <div
+                    className="h-full bg-primary/70"
+                    style={{
+                      width: `${maxFault > 0 ? Math.round((f.count / maxFault) * 100) : 0}%`,
+                    }}
+                  />
+                </div>
+                <span className="w-10 shrink-0 text-right font-mono text-xs tabular-nums">
+                  {f.count}
+                </span>
+              </li>
+            ))}
+            {data.topFaults.length === 0 && (
+              <li className="text-sm text-muted-foreground">Pas encore de données.</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }

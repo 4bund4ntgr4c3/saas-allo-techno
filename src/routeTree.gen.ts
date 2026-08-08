@@ -37,8 +37,12 @@ import { Route as LocaleSuiviRouteImport } from './routes/$locale/suivi'
 import { Route as LocaleTarifsRouteImport } from './routes/$locale/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
+import { Route as AuthenticatedReviewsAdminRouteImport } from './routes/_authenticated/reviews-admin'
+import { Route as ApiCronRemindersRouteImport } from './routes/api.cron-reminders'
+import { Route as ApiFedapayWebhookRouteImport } from './routes/api.fedapay-webhook'
 import { Route as ApiFlutterwaveWebhookRouteImport } from './routes/api.flutterwave-webhook'
 import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
+import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
@@ -188,6 +192,22 @@ const AuthenticatedMonCompteRoute = AuthenticatedMonCompteRouteImport.update({
   path: '/mon-compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReviewsAdminRoute =
+  AuthenticatedReviewsAdminRouteImport.update({
+    id: '/reviews-admin',
+    path: '/reviews-admin',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiCronRemindersRoute = ApiCronRemindersRouteImport.update({
+  id: '/api/cron-reminders',
+  path: '/api/cron-reminders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFedapayWebhookRoute = ApiFedapayWebhookRouteImport.update({
+  id: '/api/fedapay-webhook',
+  path: '/api/fedapay-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiFlutterwaveWebhookRoute = ApiFlutterwaveWebhookRouteImport.update({
   id: '/api/flutterwave-webhook',
   path: '/api/flutterwave-webhook',
@@ -196,6 +216,11 @@ const ApiFlutterwaveWebhookRoute = ApiFlutterwaveWebhookRouteImport.update({
 const ApiHealthzRoute = ApiHealthzRouteImport.update({
   id: '/api/healthz',
   path: '/api/healthz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKkiapayWebhookRoute = ApiKkiapayWebhookRouteImport.update({
+  id: '/api/kkiapay-webhook',
+  path: '/api/kkiapay-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
@@ -271,8 +296,12 @@ export interface FileRoutesByFullPath {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-reminders': typeof ApiCronRemindersRoute
+  '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -310,8 +339,12 @@ export interface FileRoutesByTo {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-reminders': typeof ApiCronRemindersRoute
+  '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/$locale': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -352,8 +385,12 @@ export interface FileRoutesById {
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
+  '/_authenticated/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-reminders': typeof ApiCronRemindersRoute
+  '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
@@ -394,8 +431,12 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
+    | '/reviews-admin'
+    | '/api/cron-reminders'
+    | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/kkiapay-webhook'
     | '/$locale/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -433,8 +474,12 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/admin'
     | '/mon-compte'
+    | '/reviews-admin'
+    | '/api/cron-reminders'
+    | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/kkiapay-webhook'
     | '/$locale'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -474,8 +519,12 @@ export interface FileRouteTypes {
     | '/$locale/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
+    | '/_authenticated/reviews-admin'
+    | '/api/cron-reminders'
+    | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/kkiapay-webhook'
     | '/$locale/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
@@ -494,8 +543,11 @@ export interface RootRouteChildren {
   LocaleRoute: typeof LocaleRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiCronRemindersRoute: typeof ApiCronRemindersRoute
+  ApiFedapayWebhookRoute: typeof ApiFedapayWebhookRoute
   ApiFlutterwaveWebhookRoute: typeof ApiFlutterwaveWebhookRoute
   ApiHealthzRoute: typeof ApiHealthzRoute
+  ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -696,6 +748,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMonCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/reviews-admin': {
+      id: '/_authenticated/reviews-admin'
+      path: '/reviews-admin'
+      fullPath: '/reviews-admin'
+      preLoaderRoute: typeof AuthenticatedReviewsAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/cron-reminders': {
+      id: '/api/cron-reminders'
+      path: '/api/cron-reminders'
+      fullPath: '/api/cron-reminders'
+      preLoaderRoute: typeof ApiCronRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/fedapay-webhook': {
+      id: '/api/fedapay-webhook'
+      path: '/api/fedapay-webhook'
+      fullPath: '/api/fedapay-webhook'
+      preLoaderRoute: typeof ApiFedapayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/flutterwave-webhook': {
       id: '/api/flutterwave-webhook'
       path: '/api/flutterwave-webhook'
@@ -708,6 +781,13 @@ declare module '@tanstack/react-router' {
       path: '/api/healthz'
       fullPath: '/api/healthz'
       preLoaderRoute: typeof ApiHealthzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/kkiapay-webhook': {
+      id: '/api/kkiapay-webhook'
+      path: '/api/kkiapay-webhook'
+      fullPath: '/api/kkiapay-webhook'
+      preLoaderRoute: typeof ApiKkiapayWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$locale/appareil/$slug': {
@@ -779,11 +859,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedMonCompteRoute: typeof AuthenticatedMonCompteRoute
+  AuthenticatedReviewsAdminRoute: typeof AuthenticatedReviewsAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedMonCompteRoute: AuthenticatedMonCompteRoute,
+  AuthenticatedReviewsAdminRoute: AuthenticatedReviewsAdminRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -864,8 +946,11 @@ const rootRouteChildren: RootRouteChildren = {
   LocaleRoute: LocaleRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiCronRemindersRoute: ApiCronRemindersRoute,
+  ApiFedapayWebhookRoute: ApiFedapayWebhookRoute,
   ApiFlutterwaveWebhookRoute: ApiFlutterwaveWebhookRoute,
   ApiHealthzRoute: ApiHealthzRoute,
+  ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

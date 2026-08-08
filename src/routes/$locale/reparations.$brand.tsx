@@ -5,7 +5,6 @@ import {
   brandBySlug,
   devicesOfBrand,
   formatFcfa,
-  COMPANY,
   POSTS,
   type Brand,
   type Device,
@@ -16,7 +15,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/reparations";
-import { localeSeo } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, localeSeo, localeUrl, serviceSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/reparations/$brand")({
   loader: ({ params }): { brand: Brand; devices: Device[] } => {
@@ -38,6 +37,21 @@ export const Route = createFileRoute("/$locale/reparations/$brand")({
     }
     const suffix = `/reparations/${params.brand}`;
     const seo = localeSeo(locale, suffix);
+    const url = localeUrl(locale, suffix);
+    const service = serviceSchema({
+      name: translate(locale, "reparations.brand.service", [name]),
+      description: translate(locale, "reparations.brand.meta.description", [name]),
+      url,
+      brand: name,
+    });
+    const faq = faqSchema(brandLocal(loaderData.brand).faq);
+    const breadcrumbs = breadcrumbSchema([
+      {
+        name: translate(locale, "reparations.brand.breadcrumb"),
+        url: localeUrl(locale, "/reparations"),
+      },
+      { name, url },
+    ]);
     return {
       meta: [
         { title: translate(locale, "reparations.brand.title", [name]) },
@@ -59,47 +73,9 @@ export const Route = createFileRoute("/$locale/reparations/$brand")({
       ],
       links: [...seo.links],
       scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "Service",
-                serviceType: translate(locale, "reparations.brand.service", [name]),
-                areaServed: ["Abomey-Calavi", "Godomey", "Cotonou", ...QUARTIERS],
-                provider: {
-                  "@type": "LocalBusiness",
-                  name: COMPANY.name,
-                  telephone: COMPANY.phone,
-                  email: COMPANY.email,
-                  address: {
-                    "@type": "PostalAddress",
-                    streetAddress: COMPANY.address,
-                    addressLocality: COMPANY.city,
-                    addressCountry: "BJ",
-                  },
-                  geo: { "@type": "GeoCoordinates", latitude: COMPANY.lat, longitude: COMPANY.lng },
-                },
-              },
-              {
-                "@type": "FAQPage",
-                mainEntity: brandLocal(loaderData.brand).faq.map((f) => ({
-                  "@type": "Question",
-                  name: f.q,
-                  acceptedAnswer: { "@type": "Answer", text: f.a },
-                })),
-              },
-              {
-                "@type": "BreadcrumbList",
-                itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Réparations", item: "/reparations" },
-                  { "@type": "ListItem", position: 2, name, item: `/reparations/${params.brand}` },
-                ],
-              },
-            ],
-          }),
-        },
+        { type: "application/ld+json", children: JSON.stringify(service) },
+        { type: "application/ld+json", children: JSON.stringify(faq) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbs) },
       ],
     };
   },

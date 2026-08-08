@@ -5,6 +5,7 @@ import type { Enums } from "@/integrations/supabase/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
+import { computeSlaForecast, type SlaForecast, type TimelineEntry } from "@/lib/suivi.functions";
 
 const setStatusSchema = z.object({
   id: z.string().uuid(),
@@ -196,4 +197,305 @@ export const getReservationQuote = createServerFn({ method: "POST" })
     if (!row) return null;
 
     return row;
+  });
+
+// ===========================================================================
+// Atelier — tableau kanban des dossiers actifs + indicateurs avancés (KPI)
+// ===========================================================================
+
+/** Statuts affichés sur le board de l'atelier (terminee/annulee exclus). */
+export const ATELIER_STATUSES = [
+  "en_attente",
+  "confirmee",
+  "pieces",
+  "en_cours",
+  "pret",
+  "livre",
+] as const;
+
+export type AtelierStatus = (typeof ATELIER_STATUSES)[number];
+
+/** Carte du kanban atelier : dossier + SLA calculé côté serveur. */
+export type AtelierCard = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  phone: string;
+  device: string;
+  issue: string;
+  slot_date: string;
+  slot_hour: string | null;
+  status: Enums<"reservation_status">;
+  quote_status: string;
+  quote_amount: number | null;
+  payment_status: string;
+  estimated_delivery: string | null;
+  assigned_technician_id: string | null;
+  created_at: string;
+  sla: SlaForecast | null;
+};
+
+export type AtelierTechnician = { id: string; full_name: string | null };
+
+export type AtelierBoardData = {
+  reservations: AtelierCard[];
+  technicians: AtelierTechnician[];
+};
+
+const boardSchema = z.object({});
+
+/**
+ * Board « atelier » : dossiers actifs (6 statuts du flux), techniciens
+ * disponibles pour l'assignation, et SLA prédit par dossier (historique des
+ * statuts + date de restitution estimée). Réservé au staff + 2FA récente.
+ */
+export const getAtelierBoard = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => boardSchema.parse(data))
+  .handler(async (): Promise<AtelierBoardData> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("atelier-board", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) throw new Error("Action non autorisée sur ce dossier");
+
+    // assigned_technician_id n'est pas encore dans les types générés : le
+    // résultat est casté vers AtelierCard.
+    const { data: reservations, error: rError } = await supabaseAdmin
+      .from("reservations")
+      .select(
+        "id, reference, customer_name, phone, device, issue, slot_date, slot_hour, status, quote_status, quote_amount, payment_status, estimated_delivery, created_at, assigned_technician_id",
+      )
+      .in("status", [...ATELIER_STATUSES])
+      .order("slot_date", { ascending: true })
+      .limit(500);
+
+    if (rError) {
+      console.error("[admin] atelier board failed", rError);
+      throw new Error("Impossible de charger le tableau de l'atelier.");
+    }
+    const rows = (reservations as unknown as AtelierCard[] | null) ?? [];
+
+    const { data: roles } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "technicien");
+    const techIds = (roles ?? []).map((r) => r.user_id);
+    let technicianProfiles: { id: string; full_name: string | null }[] = [];
+    if (techIds.length > 0) {
+      const { data } = await supabaseAdmin
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", techIds);
+      technicianProfiles = data ?? [];
+    }
+
+    // Historique des statuts des dossiers affichés : sert au calcul du SLA.
+    const ids = rows.map((r) => r.id);
+    let historyRows: {
+      reservation_id: string;
+      old_status: Enums<"reservation_status"> | null;
+      new_status: Enums<"reservation_status">;
+      created_at: string;
+    }[] = [];
+    if (ids.length > 0) {
+      const { data } = await supabaseAdmin
+        .from("reservation_status_history")
+        .select("reservation_id, old_status, new_status, created_at")
+        .in("reservation_id", ids)
+        .order("created_at", { ascending: true })
+        .limit(5000);
+      historyRows = (data ?? []) as typeof historyRows;
+    }
+
+    const historyByReservation = new Map<string, TimelineEntry[]>();
+    for (const h of historyRows) {
+      const list = historyByReservation.get(h.reservation_id) ?? [];
+      list.push({
+        old_status: h.old_status,
+        new_status: h.new_status,
+        note: null,
+        created_at: h.created_at,
+      });
+      historyByReservation.set(h.reservation_id, list);
+    }
+
+    return {
+      reservations: rows.map((r) => ({
+        ...r,
+        sla: computeSlaForecast(
+          r.status,
+          historyByReservation.get(r.id) ?? [],
+          r.estimated_delivery,
+        ),
+      })),
+      technicians: technicianProfiles.map((p) => ({ id: p.id, full_name: p.full_name })),
+    };
+  });
+
+const assignTechnicianSchema = z.object({
+  reservationId: z.string().uuid(),
+  technicianId: z.string().uuid().or(z.literal("")).optional(),
+});
+
+/**
+ * Assigne (ou retire) le technicien d'un dossier : écrit la colonne
+ * assigned_technician_id de reservations. Staff ou technicien, 2FA vérifiée.
+ */
+export const assignTechnician = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => assignTechnicianSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("atelier-assign", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) {
+      const { data: isTech } = await supabaseAdmin.rpc("has_role", {
+        _user_id: userId,
+        _role: "technicien",
+      });
+      if (!isTech) throw new Error("Action non autorisée sur ce dossier");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("reservations")
+      .update({
+        assigned_technician_id: data.technicianId || null,
+      } as unknown as Database["public"]["Tables"]["reservations"]["Update"])
+      .eq("id", data.reservationId);
+
+    if (error) {
+      console.error("[admin] assign technician failed", error);
+      throw new Error("Assignation impossible.");
+    }
+
+    return { ok: true };
+  });
+
+export type AdminKpis = {
+  dailyRevenue: { date: string; amount: number }[];
+  quoteConversion: { quotesSent: number; quotesApproved: number; paid: number; rate: number };
+  avgStageDuration: { stage: string; avgHours: number }[];
+  topFaults: { fault: string; count: number }[];
+};
+
+/**
+ * Indicateurs avancés de l'atelier : revenus quotidiens encaissés (30 jours),
+ * conversion devis → paiement, durée moyenne par étape (historique des
+ * statuts) et pannes les plus estimées (événements analytics).
+ */
+export const getAdminKpis = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => boardSchema.parse(data))
+  .handler(async (): Promise<AdminKpis> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("admin-kpis", 10)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) throw new Error("Action non autorisée sur ce dossier");
+
+    const DAY_MS = 24 * 3600 * 1000;
+    const since = new Date(Date.now() - 29 * DAY_MS).toISOString();
+
+    const [paymentsResult, reservationsResult, historyResult, faultsResult] = await Promise.all([
+      supabaseAdmin
+        .from("payments")
+        .select("amount, status, source, reference, created_at")
+        .eq("status", "paid")
+        .gte("created_at", since),
+      supabaseAdmin.from("reservations").select("quote_status"),
+      supabaseAdmin
+        .from("reservation_status_history")
+        .select("reservation_id, old_status, new_status, created_at")
+        .order("created_at", { ascending: true })
+        .limit(5000),
+      supabaseAdmin
+        .from("analytics_events")
+        .select("category")
+        .eq("event", "estimation_shown")
+        .limit(3000),
+    ]);
+
+    // Revenus journaliers : sommes des paiements confirmés, par jour (UTC).
+    const byDay = new Map<string, number>();
+    for (const p of paymentsResult.data ?? []) {
+      const day = p.created_at.slice(0, 10);
+      byDay.set(day, (byDay.get(day) ?? 0) + p.amount);
+    }
+    const dailyRevenue: { date: string; amount: number }[] = [];
+    for (let i = 29; i >= 0; i--) {
+      const day = new Date(Date.now() - i * DAY_MS).toISOString().slice(0, 10);
+      dailyRevenue.push({ date: day, amount: byDay.get(day) ?? 0 });
+    }
+
+    // Conversion devis → paiement (uniquement les dossiers réparation).
+    let quotesSent = 0;
+    let quotesApproved = 0;
+    for (const r of reservationsResult.data ?? []) {
+      if (r.quote_status === "sent" || r.quote_status === "approved") quotesSent += 1;
+      if (r.quote_status === "approved") quotesApproved += 1;
+    }
+    const paidReferences = new Set<string>();
+    for (const p of paymentsResult.data ?? []) {
+      if (p.source === "reservation" && p.reference) paidReferences.add(p.reference);
+    }
+    const paid = paidReferences.size;
+    const rate = quotesSent > 0 ? Math.round((paid / quotesSent) * 1000) / 10 : 0;
+
+    // Durée moyenne passée dans chaque étape : l'écart entre deux entrées
+    // consécutives de l'historique d'un même dossier = temps dans l'ancien
+    // statut. Les valeurs aberrantes (> 60 jours) sont ignorées.
+    const history = historyResult.data ?? [];
+    const durations = new Map<string, { totalHours: number; count: number }>();
+    for (let i = 0; i < history.length; i++) {
+      const current = history[i];
+      if (!current || !current.old_status) continue;
+      const previous = history[i - 1];
+      if (!previous || previous.reservation_id !== current.reservation_id) continue;
+      const hours =
+        (new Date(current.created_at).getTime() - new Date(previous.created_at).getTime()) /
+        3600000;
+      if (!Number.isFinite(hours) || hours < 0 || hours > 60 * 24) continue;
+      const acc = durations.get(current.old_status) ?? { totalHours: 0, count: 0 };
+      acc.totalHours += hours;
+      acc.count += 1;
+      durations.set(current.old_status, acc);
+    }
+    const avgStageDuration = [...durations.entries()]
+      .map(([stage, { totalHours, count }]) => ({
+        stage,
+        avgHours: count > 0 ? Math.round((totalHours / count) * 10) / 10 : 0,
+      }))
+      .sort((a, b) => b.avgHours - a.avgHours);
+
+    // Pannes les plus estimées : catégories vues à l'étape estimation.
+    const faultCounts = new Map<string, number>();
+    for (const row of faultsResult.data ?? []) {
+      if (!row.category) continue;
+      faultCounts.set(row.category, (faultCounts.get(row.category) ?? 0) + 1);
+    }
+    const topFaults = [...faultCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([fault, count]) => ({ fault, count }));
+
+    return {
+      dailyRevenue,
+      quoteConversion: { quotesSent, quotesApproved, paid, rate },
+      avgStageDuration,
+      topFaults,
+    };
   });

@@ -89,33 +89,69 @@ export type Database = {
         };
         Relationships: [];
       };
-      reviews: {
+      review_invites: {
         Row: {
-          city: string;
           created_at: string;
-          device: string;
           id: string;
-          name: string;
-          rating: number;
-          text: string;
+          reservation_id: string;
+          sent_at: string;
+          token: string;
+          used_at: string | null;
         };
         Insert: {
-          city?: string;
           created_at?: string;
-          device?: string;
           id?: string;
-          name: string;
-          rating: number;
-          text: string;
+          reservation_id: string;
+          sent_at?: string;
+          token: string;
+          used_at?: string | null;
         };
         Update: {
-          city?: string;
           created_at?: string;
-          device?: string;
           id?: string;
-          name?: string;
+          reservation_id?: string;
+          sent_at?: string;
+          token?: string;
+          used_at?: string | null;
+        };
+        Relationships: [];
+      };
+      reviews: {
+        Row: {
+          comment: string;
+          created_at: string;
+          customer_name: string;
+          email: string | null;
+          id: string;
+          phone: string;
+          rating: number;
+          reservation_id: string | null;
+          status: string;
+          verified: boolean;
+        };
+        Insert: {
+          comment: string;
+          created_at?: string;
+          customer_name: string;
+          email?: string | null;
+          id?: string;
+          phone: string;
+          rating: number;
+          reservation_id?: string | null;
+          status?: string;
+          verified?: boolean;
+        };
+        Update: {
+          comment?: string;
+          created_at?: string;
+          customer_name?: string;
+          email?: string | null;
+          id?: string;
+          phone?: string;
           rating?: number;
-          text?: string;
+          reservation_id?: string | null;
+          status?: string;
+          verified?: boolean;
         };
         Relationships: [];
       };
@@ -376,6 +412,7 @@ export type Database = {
           currency: string;
           id: string;
           method: string;
+          provider_tx_id: string | null;
           reference: string;
           source: string;
           status: Database["public"]["Enums"]["payment_status"];
@@ -390,6 +427,7 @@ export type Database = {
           currency?: string;
           id?: string;
           method?: string;
+          provider_tx_id?: string | null;
           reference: string;
           source?: string;
           status?: Database["public"]["Enums"]["payment_status"];
@@ -404,6 +442,7 @@ export type Database = {
           currency?: string;
           id?: string;
           method?: string;
+          provider_tx_id?: string | null;
           reference?: string;
           source?: string;
           status?: Database["public"]["Enums"]["payment_status"];
@@ -617,6 +656,7 @@ export type Database = {
       };
       reservations: {
         Row: {
+          assigned_technician_id: string | null;
           created_at: string;
           customer_name: string;
           delivery_address: string | null;
@@ -651,6 +691,7 @@ export type Database = {
           payment_status: string;
         };
         Insert: {
+          assigned_technician_id?: string | null;
           created_at?: string;
           customer_name: string;
           delivery_address?: string | null;
@@ -684,6 +725,7 @@ export type Database = {
           payment_status?: string;
         };
         Update: {
+          assigned_technician_id?: string | null;
           created_at?: string;
           customer_name?: string;
           delivery_address?: string | null;
@@ -761,6 +803,27 @@ export type Database = {
           reference?: string;
           status?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      scheduled_notifications: {
+        Row: {
+          created_at: string;
+          id: string;
+          ref: string;
+          type: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          ref: string;
+          type: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          ref?: string;
+          type?: string;
         };
         Relationships: [];
       };

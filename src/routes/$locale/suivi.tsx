@@ -13,13 +13,13 @@ import {
   ScanSearch,
   Search,
   Truck,
-  Wallet,
   Wrench,
 } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
+import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { Button } from "@/components/ui/button";
 import { downloadInvoicePdf, downloadTimelinePdf } from "@/lib/invoice";
 import {
@@ -30,8 +30,6 @@ import {
 } from "@/lib/suivi.functions";
 import { decideOnQuote, getQuoteStatus } from "@/lib/quote.functions";
 import { getReservationAttachments } from "@/lib/photos.functions";
-import { getReservationPaymentStatus, initiateReservationPayment } from "@/lib/payments.functions";
-import { formatFcfa } from "@/data/catalog/company";
 import { formatDateFr, type DepositMode } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -748,108 +746,6 @@ function QuoteDecision({ token }: { token: string }) {
             </div>
           )}
         </>
-      )}
-    </div>
-  );
-}
-
-function ReservationPayBlock({
-  reference,
-  amount,
-  alreadyPaid,
-}: {
-  reference: string;
-  amount: number;
-  alreadyPaid: boolean;
-}) {
-  const { t } = useI18n();
-  const initiate = useServerFn(initiateReservationPayment);
-  const fetchStatus = useServerFn(getReservationPaymentStatus);
-  const [method, setMethod] = useState<"MTN MoMo" | "Moov Money" | "Celtiis">("MTN MoMo");
-  const [state, setState] = useState<"idle" | "redirecting" | "pending" | "paid" | "failed">(
-    "idle",
-  );
-  const [error, setError] = useState<string | null>(null);
-
-  const pay = async () => {
-    setError(null);
-    setState("redirecting");
-    try {
-      const res = await initiate({ data: { reference, method } });
-      if (!res.ok) {
-        setState("failed");
-        setError(res.error || t("suivi.pay.error"));
-        return;
-      }
-      if (res.alreadyPaid) {
-        setState("paid");
-        return;
-      }
-      if (res.url) {
-        window.open(res.url, "_blank", "noopener");
-      }
-      setState("pending");
-      for (let i = 0; i < 10; i++) {
-        await new Promise((r) => setTimeout(r, 4000));
-        const s = await fetchStatus({ data: { reference } });
-        if (s.status === "paid") {
-          setState("paid");
-          return;
-        }
-        if (s.status === "failed") {
-          setState("failed");
-          return;
-        }
-      }
-      setState("failed");
-    } catch {
-      setState("failed");
-      setError(t("suivi.pay.error"));
-    }
-  };
-
-  if (alreadyPaid) {
-    return (
-      <div className="mt-6 flex items-center gap-2 border border-success/40 bg-success/10 p-4">
-        <CheckCircle2 className="size-4 shrink-0 text-success" />
-        <p className="text-sm font-semibold">{t("suivi.pay.paid")}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-6 border border-border bg-surface p-4">
-      <span className="at-eyebrow">{t("suivi.pay.title")}</span>
-      <p className="mt-2 text-xs text-muted-foreground">{t("suivi.pay.intro")}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <select
-          aria-label={t("suivi.pay.method")}
-          value={method}
-          onChange={(e) => setMethod(e.target.value as "MTN MoMo" | "Moov Money" | "Celtiis")}
-          className="border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-        >
-          <option>MTN MoMo</option>
-          <option>Moov Money</option>
-          <option>Celtiis</option>
-        </select>
-        <Button
-          variant="technical"
-          disabled={state === "redirecting" || state === "pending"}
-          onClick={() => void pay()}
-        >
-          <Wallet className="mr-2 size-4" />
-          {state === "redirecting"
-            ? t("suivi.pay.redirecting")
-            : t("suivi.pay.button", [formatFcfa(amount)])}
-        </Button>
-      </div>
-      {state === "pending" && (
-        <p className="mt-3 text-xs text-muted-foreground">{t("suivi.pay.pending")}</p>
-      )}
-      {state === "failed" && (
-        <p role="alert" className="mt-3 text-xs text-destructive">
-          {error ?? t("suivi.pay.failed")}
-        </p>
       )}
     </div>
   );

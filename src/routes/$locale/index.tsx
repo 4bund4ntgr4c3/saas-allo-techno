@@ -15,13 +15,18 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale, type Locale } from "@/lib/i18n/locales";
-import { localeSeo } from "@/lib/seo";
+import { localeSeo, localBusinessSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/")({
   head: ({ params }) => {
     const locale = headLocale(params);
     const suffix = "/";
     const seo = localeSeo(locale, suffix);
+    const avgRating = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length;
+    const localBusiness = localBusinessSchema({
+      ratingValue: Math.round(avgRating * 10) / 10,
+      reviewCount: REVIEWS.length,
+    });
     return {
       meta: [
         { title: translate(locale, "home.meta.title") },
@@ -40,6 +45,7 @@ export const Route = createFileRoute("/$locale/")({
         ...seo.meta,
       ],
       links: [...seo.links],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(localBusiness) }],
     };
   },
   component: Home,

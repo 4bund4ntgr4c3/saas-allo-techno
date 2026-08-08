@@ -2,15 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CalendarClock, Copy, FileDown, Loader2 } from "lucide-react";
+import { CalendarClock, Copy, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
-import { formatFcfa } from "@/data/catalog";
+import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { downloadInvoicePdf } from "@/lib/invoice";
 import { applyReferralCode, ensureReferralCode } from "@/lib/loyalty.functions";
-import { getReservationPaymentStatus, initiateReservationPayment } from "@/lib/payments.functions";
 import { useI18n } from "@/lib/i18n/context";
 import {
   PERIOD_LABEL,
@@ -55,128 +54,6 @@ const STATUS_TONE: Record<string, string> = {
   terminee: "border-success/50 text-success",
   annulee: "border-destructive/50 text-destructive",
 };
-
-const PAYMENT_METHODS = ["MTN MoMo", "Moov Money", "Celtiis"] as const;
-
-type ReservationPayPhase = "idle" | "starting" | "pending" | "paid" | "failed";
-
-/**
- * Bloc « Payer en ligne » pour un devis approuvé : choix du moyen (Mobile
- * Money), ouverture du checkout Flutterwave dans un nouvel onglet, puis
- * sondage du statut du paiement (toutes les 4 s, max ~10 essais).
- */
-function ReservationPayBlock({
-  reservation,
-  userId,
-}: {
-  reservation: {
-    reference: string;
-    quote_amount: number | null;
-    quote_status: string;
-    payment_status?: string | null;
-  };
-  userId: string;
-}) {
-  const initPay = useServerFn(initiateReservationPayment);
-  const checkPay = useServerFn(getReservationPaymentStatus);
-  const queryClient = useQueryClient();
-  const [method, setMethod] = useState<(typeof PAYMENT_METHODS)[number]>("MTN MoMo");
-  const [phase, setPhase] = useState<ReservationPayPhase>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const busy = phase === "starting" || phase === "pending";
-  const amount = reservation.quote_amount ?? 0;
-
-  const pay = async () => {
-    if (busy) return;
-    setError(null);
-    setPhase("starting");
-    try {
-      const res = await initPay({ data: { reference: reservation.reference, method } });
-      if (!res.ok) {
-        setError(res.error);
-        setPhase("idle");
-        return;
-      }
-      if (res.alreadyPaid || res.url === null) {
-        setPhase("paid");
-        toast.success("Paiement déjà reçu. Merci !");
-        queryClient.invalidateQueries({ queryKey: ["reservations", userId] });
-        return;
-      }
-      window.open(res.url, "_blank", "noopener,noreferrer");
-      setPhase("pending");
-      for (let attempt = 0; attempt < 10; attempt += 1) {
-        await new Promise((r) => setTimeout(r, 4000));
-        try {
-          const s = await checkPay({ data: { reference: reservation.reference } });
-          if (s.status === "paid") {
-            setPhase("paid");
-            toast.success("Paiement confirmé. Merci !");
-            queryClient.invalidateQueries({ queryKey: ["reservations", userId] });
-            return;
-          }
-          if (s.status === "failed") {
-            setPhase("failed");
-            toast.error("Le paiement a échoué. Vous pouvez réessayer.");
-            return;
-          }
-        } catch {
-          // réseau : on réessaie
-        }
-      }
-      setPhase("idle");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Paiement impossible. Réessayez.");
-      setPhase("idle");
-    }
-  };
-
-  return (
-    <div className="mt-6 border-t border-border pt-4">
-      <p className="at-eyebrow mb-2 block">Paiement en ligne</p>
-      <div className="flex flex-wrap items-center gap-3">
-        <select
-          aria-label="Moyen de paiement"
-          className={`${field} h-10 w-auto max-w-52`}
-          value={method}
-          disabled={busy}
-          onChange={(e) => setMethod(e.target.value as (typeof PAYMENT_METHODS)[number])}
-        >
-          {PAYMENT_METHODS.map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-        <Button
-          variant="primaryBlock"
-          size="sm"
-          disabled={busy || amount <= 0}
-          onClick={() => void pay()}
-        >
-          {busy ? "En attente…" : `Payer ${formatFcfa(amount)} en ligne`}
-        </Button>
-      </div>
-      {phase === "pending" && (
-        <p className="mt-3 flex items-center gap-2 text-sm text-amber-500">
-          <Loader2 className="size-4 animate-spin" />
-          En attente de confirmation du paiement… (l'onglet Flutterwave est resté ouvert)
-        </p>
-      )}
-      {phase === "paid" && (
-        <p className="mt-3 w-fit rounded-sm border border-success/50 px-3 py-1 font-mono text-xs uppercase text-success">
-          Payé en ligne
-        </p>
-      )}
-      {phase === "failed" && (
-        <p className="mt-3 w-fit rounded-sm border border-destructive/50 px-3 py-1 font-mono text-xs uppercase text-destructive">
-          Échec du paiement — réessayez
-        </p>
-      )}
-      {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-    </div>
-  );
-}
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -470,12 +347,9 @@ function Dashboard() {
 
                     {canPay && (
                       <ReservationPayBlock
-                        reservation={{
-                          reference: r.reference,
-                          quote_amount: r.quote_amount,
-                          quote_status: r.quote_status,
-                          payment_status: payStatus ?? null,
-                        }}
+                        reference={r.reference}
+                        amount={r.quote_amount ?? 0}
+                        alreadyPaid={payStatus === "paid"}
                         userId={user.id}
                       />
                     )}
