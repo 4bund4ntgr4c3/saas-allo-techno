@@ -18,6 +18,7 @@ const TOP_LEFT = [
 ] as const;
 
 const TOP_RIGHT = [
+  { to: "/$locale/magasins", label: "nav.magasins" },
   { to: "/$locale/blog", label: "nav.blog" },
   { to: "/$locale/contact", label: "nav.contact" },
 ] as const;
@@ -25,12 +26,9 @@ const TOP_RIGHT = [
 const NAV = [
   { to: "/$locale/reparations", label: "nav.reparations" },
   { to: "/$locale/catalogue", label: "nav.catalogue" },
-  { to: "/$locale/tarifs", label: "nav.tarifs" },
   { to: "/$locale/services", label: "nav.services" },
   { to: "/$locale/boutique", label: "nav.boutique" },
   { to: "/$locale/promotions", label: "nav.promotions" },
-  { to: "/$locale/suivi", label: "nav.suivi" },
-  { to: "/$locale/magasins", label: "nav.magasins" },
 ] as const;
 
 function ThemeToggle() {
@@ -208,6 +206,8 @@ export function Header() {
                     label: user ? t("nav.mon-compte") : t("nav.connexion"),
                   },
                   { to: "/devis", label: t("nav.devis") },
+                  { to: "/tarifs", label: t("nav.tarifs") },
+                  { to: "/suivi", label: t("nav.suivi") },
                   { to: "/garantie", label: t("nav.garantie") },
                   { to: "/reprise", label: t("nav.reprise") },
                   { to: "/avis", label: t("nav.avis") },
