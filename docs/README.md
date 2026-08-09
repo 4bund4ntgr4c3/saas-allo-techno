@@ -20,7 +20,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Mode hors-ligne** : cache localStorage avec TTL 5 min.
 - **PWA installable** : manifeste + service worker.
 
-### Côté atelier / admin (15 onglets)
+### Côté atelier / admin (20 onglets)
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
 - **Atelier** : tableau kanban des réparations en cours, assignment technicien.
 - **Équipe** : gestion des rôles (staff, technicien).
@@ -28,6 +28,19 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Réclamations** : tickets de garantie avec statuts.
 - **Analytics** : événements récents + compteurs.
 - **Statistiques** : Recharts (LineChart + PieChart), 4 onglets (Revenus, Clients, Appareils, Temps).
+- **KPI avancés** : métriques de performance en temps réel.
+- **Sécurité** : OTP 2FA, historique des connexions.
+- **Contenu** : blog, guides, mentions légales.
+- **Catalogue** : gestion des appareils, marques, pannes.
+- **Commandes** : suivi des commandes boutique.
+- **Remboursements** : flow de remboursement avec audit.
+- **Retours** : gestion des retours produits.
+- **Audit** : journal d'audit enrichi avec filtres et export.
+- **Ateliers** : multi-ateliers avec CRUD complet.
+- **Fournisseurs** : gestion fournisseurs et commandes pièces.
+- **Parrainage** : programme de parrainage avec niveaux.
+- **Chat** : messagerie client-staff en temps réel.
+- **Rapports** : rapports avancés avec export PDF.
 - **KPIs avancés** : revenus, conversion, durée moyenne par étape, top pannes.
 - **Sécurité** : OTP/TOTP 2FA, rate limiting, métriques temps réel.
 - **Contenu** : CRUD blog, modération avis, invitations d'avis (WhatsApp + email).

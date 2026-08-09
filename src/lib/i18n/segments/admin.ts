@@ -97,6 +97,22 @@ const fr = {
 
   // Admin — Notification center
   "admin.notifications.title": "Centre de notifications",
+
+  // Admin — Workshops (multi-ateliers)
+  "admin.workshops": "Ateliers",
+  "admin.workshops.add": "Ajouter un atelier",
+
+  // Admin — Suppliers
+  "admin.suppliers": "Fournisseurs",
+
+  // Admin — Referrals
+  "admin.referrals": "Programme de parrainage",
+
+  // Admin — Chat
+  "admin.chat": "Messages clients",
+
+  // Admin — Advanced reports
+  "admin.reports": "Rapports avancés",
 };
 
 const en = {
@@ -195,6 +211,22 @@ const en = {
 
   // Admin — Notification center
   "admin.notifications.title": "Notification Center",
+
+  // Admin — Workshops (multi-ateliers)
+  "admin.workshops": "Ateliers",
+  "admin.workshops.add": "Ajouter un atelier",
+
+  // Admin — Suppliers
+  "admin.suppliers": "Fournisseurs",
+
+  // Admin — Referrals
+  "admin.referrals": "Programme de parrainage",
+
+  // Admin — Chat
+  "admin.chat": "Messages clients",
+
+  // Admin — Advanced reports
+  "admin.reports": "Rapports avancés",
 };
 
 registerSegments({ fr, en });

@@ -56,6 +56,7 @@ import { Route as LocaleQuartiersIndexRouteImport } from './routes/$locale/quart
 import { Route as LocaleQuartiersSlugRouteImport } from './routes/$locale/quartiers.$slug'
 import { Route as LocaleReparationsIndexRouteImport } from './routes/$locale/reparations.index'
 import { Route as LocaleReparationsBrandRouteImport } from './routes/$locale/reparations.$brand'
+import { Route as ApiV1SplatRouteImport } from './routes/api.v1.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -292,6 +293,11 @@ const LocaleReparationsBrandRoute = LocaleReparationsBrandRouteImport.update({
   path: '/reparations/$brand',
   getParentRoute: () => LocaleRoute,
 } as any)
+const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
+  id: '/api/v1/$',
+  path: '/api/v1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -336,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
@@ -383,6 +390,7 @@ export interface FileRoutesByTo {
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog': typeof LocaleBlogIndexRoute
   '/$locale/boutique': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers': typeof LocaleQuartiersIndexRoute
@@ -433,6 +441,7 @@ export interface FileRoutesById {
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
@@ -483,6 +492,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/$slug'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/api/v1/$'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
@@ -530,6 +540,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/$slug'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/api/v1/$'
     | '/$locale/blog'
     | '/$locale/boutique'
     | '/$locale/quartiers'
@@ -579,6 +590,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/$slug'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/api/v1/$'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
@@ -599,6 +611,7 @@ export interface RootRouteChildren {
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
   ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
+  ApiV1SplatRoute: typeof ApiV1SplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -932,6 +945,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleReparationsBrandRouteImport
       parentRoute: typeof LocaleRoute
     }
+    '/api/v1/$': {
+      id: '/api/v1/$'
+      path: '/api/v1/$'
+      fullPath: '/api/v1/$'
+      preLoaderRoute: typeof ApiV1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1035,6 +1055,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
   ApiPushSubscribeRoute: ApiPushSubscribeRoute,
   ApiSitemapRoute: ApiSitemapRoute,
+  ApiV1SplatRoute: ApiV1SplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

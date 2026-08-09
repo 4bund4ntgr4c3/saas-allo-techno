@@ -66,6 +66,11 @@ import { RefundsSection } from "@/components/admin/AdminRefunds";
 import { ReturnsSection } from "@/components/admin/AdminReturns";
 import { AtelierBoard } from "@/components/admin/AdminAtelier";
 import { AuditSection } from "@/components/admin/AdminAudit";
+import { AdminWorkshops } from "@/components/admin/AdminWorkshops";
+import { AdminSuppliers } from "@/components/admin/AdminSuppliers";
+import { AdminReferrals } from "@/components/admin/AdminReferrals";
+import { AdminChat } from "@/components/admin/AdminChat";
+import { AdminAdvancedReports } from "@/components/admin/AdminAdvancedReports";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -137,6 +142,11 @@ function AdminPage() {
     | "remboursements"
     | "retours"
     | "audit"
+    | "ateliers"
+    | "fournisseurs"
+    | "parrainage"
+    | "chat"
+    | "rapports"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -610,6 +620,46 @@ function AdminPage() {
           <History className="mr-2 size-4" />
           {t("admin.audit.title")}
         </Button>
+        <Button
+          variant={tab === "ateliers" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("ateliers")}
+        >
+          <Wrench className="mr-2 size-4" />
+          Ateliers
+        </Button>
+        <Button
+          variant={tab === "fournisseurs" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("fournisseurs")}
+        >
+          <Package className="mr-2 size-4" />
+          Fournisseurs
+        </Button>
+        <Button
+          variant={tab === "parrainage" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("parrainage")}
+        >
+          <Users className="mr-2 size-4" />
+          Parrainage
+        </Button>
+        <Button
+          variant={tab === "chat" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("chat")}
+        >
+          <MailPlus className="mr-2 size-4" />
+          Chat
+        </Button>
+        <Button
+          variant={tab === "rapports" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("rapports")}
+        >
+          <BarChart3 className="mr-2 size-4" />
+          Rapports
+        </Button>
       </div>
 
       {tab === "dossiers" && (
@@ -882,6 +932,11 @@ function AdminPage() {
       {tab === "remboursements" && <RefundsSection />}
       {tab === "retours" && <ReturnsSection />}
       {tab === "audit" && <AuditSection />}
+      {tab === "ateliers" && <AdminWorkshops />}
+      {tab === "fournisseurs" && <AdminSuppliers />}
+      {tab === "parrainage" && <AdminReferrals />}
+      {tab === "chat" && <AdminChat />}
+      {tab === "rapports" && <AdminAdvancedReports />}
     </div>
   );
 }

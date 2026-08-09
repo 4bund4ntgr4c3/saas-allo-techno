@@ -9,28 +9,28 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ## [2026.08.09] — 2026-08-09
 
-### Fixed
-
-- **Footer navigation** : toutes les colonnes du footer utilisaient `to="/page"` sans préfixe locale, ce qui empêchait la navigation côté client. Correction vers `to="/$locale/page"` + `params={{ locale }}` (pattern identique aux liens Header et bottom bar).
-- **Footer i18n** : ajout de `nav.changelog` FR/EN dans le dictionnaire.
-
 ### Added
 
-- **Services i18n** : migration complète du système bilingue `_fr/_en` vers le système i18n `t()`. `data/services.ts` simplifié (champ `i18nKey` au lieu de 6 champs bilingues). 28 clés `services.*` ajoutées.
-- **Reconditionnés fix** : fallback `"3 mois"` → `t("reconditionnes.default-warranty")`.
-- **Reprise cleanup** : suppression des champs `label` dead code dans `CONDITIONS`.
-- **RBAC enhanced** : ajout de `hasRole()`, `isAdmin()`, `requireRole()` dans `rbac.ts`. Type `AppRole` exporté.
-- **Email notifications** : `email.ts` avec Resend API — confirmation réservation, paiement, statut, devis. Templates HTML responsive.
-- **SMS notifications** : `sms.ts` avec Africa's Talking API — SMS pour statuts critiques (réservation, statut, paiement).
-- **Calendar view admin** : `AdminCalendar.tsx` — vue mensuelle des réservations avec code couleur par statut.
-- **Feature flags** : table `feature_flags`, `feature-flags.ts` (cache 60s + CRUD server functions), `AdminFeatureFlags.tsx` (admin UI).
-- **Webhook management UI** : `webhook-manage.ts` (CRUD + test), `AdminWebhooks.tsx` (admin UI avec toggle, test, suppression).
-- **Export PDF devis** : `devis-pdf.ts` — génération PDF avec jsPDF + QR code, en-tête branded, tableau détaillé, footer légal.
-- **DB migration** : tables `feature_flags` et `webhook_configs` avec RLS staff-only.
+- **Multi-ateliers** : table `workshops`, `workshops.functions.ts`, `AdminWorkshops.tsx` — CRUD ateliers avec adresse, ville, téléphone, timezone.
+- **Gestion fournisseurs** : tables `suppliers` + `supplier_orders`, `suppliers.functions.ts`, `AdminSuppliers.tsx` — ajout fournisseurs, suivi commandes pièces, statuts (pending→ordered→shipped→received).
+- **Programme de parrainage** : table `referrals`, `referral-advanced.ts`, `AdminReferrals.tsx` — stats parrainage, niveaux Bronze/Argent/Or, historique entrées.
+- **Chat client-staff** : table `chat_messages`, `chat.functions.ts`, `AdminChat.tsx` — messagerie temps réel entre client et atelier.
+- **Rapports avancés** : `reports.functions.ts`, `AdminAdvancedReports.tsx`, `report-pdf.ts` — génération rapports (stats par jour/marque/statut), export PDF avec jsPDF + QR code.
+- **API publique REST** : `api.v1.$.tsx` — endpoints `/api/v1/reservations`, `/api/v1/devices`, `/api/v1/brands`, `/api/v1/status` avec auth par API key (Bearer + query param).
+- **Table API keys** : table `api_keys` avec rate limit, scopes, last_used_at.
+- **Google Reviews widget** : `google-reviews.ts` + `GoogleReviewsWidget.tsx` — avis Google Places avec cache.
+- **Comparateur devis** : `DevisComparison.tsx` — comparaison côte à côte de devis (prix, durée, garantie, pièces).
+- **DB migration** : tables `workshops`, `suppliers`, `supplier_orders`, `chat_messages`, `referrals`, `saved_reports`, `google_reviews_cache`, `api_keys`. Feature flags defaults ajoutés.
+
+### Fixed
+
+- **Footer navigation** : toutes les colonnes du footer utilisaient `to="/page"` sans préfixe locale, ce qui empêchait la navigation côté client. Correction vers `to="/$locale/page"` + `params={{ locale }}`.
+- **Footer i18n** : ajout de `nav.changelog` FR/EN dans le dictionnaire.
 
 ### Changed
 
-- **FAQ i18n** : catégories traduites via `CAT_I18N` mapping (Réparation, Garantie, Paiement, Données, Suivi).
+- **Services i18n** : migration complète du système bilingue `_fr/_en` vers le système i18n `t()`. 28 clés `services.*` ajoutées.
+- **FAQ i18n** : catégories traduites via `CAT_I18N` mapping.
 - **Contact i18n** : horaires traduits (Lundi—Vendredi, Samedi, Dimanche, Fermé).
 - **Devis i18n** : "Estimation :" → `t("devis.estimateLabel")`.
 - **Admin atelier** : vue calendrier ajoutée (toggle kanban/calendrier).
@@ -41,13 +41,6 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Facture PDF** : `invoice-pdf.ts` — facture finale avec QR code, détails, garantie.
 - **Audit enrichi** : `AdminAuditEnriched.tsx` — filtres par action/entité, export CSV, pagination.
 - **Performance monitoring** : `PerfMonitoring.tsx` — temps de réponse, taux d'erreur, uptime, requêtes/min.
-
-### Added
-
-- **Password reset flow** : mot de passe oublié → email → mise à jour (4 modes auth).
-- **Auth page i18n** : toutes les chaînes traduites FR/EN (27 clés `auth.*`).
-- **404 page i18n** : page introuvable et composant d'erreur traduits FR/EN.
-- **Admin refactor** : `admin.tsx` réduit de 5131 à 872 lignes (-83%), 14 composants extraits dans `src/components/admin/`.
 - **Refund flow** : `initiateRefund` + `listRefundablePayments` serveur, onglet admin "Remboursements" avec confirmation et audit log.
 - **Push notifications serveur** : endpoint `/api/push-subscribe` (POST/GET), migration `push_subscriptions` avec RLS, `sendPushNotification` avec chiffrement VAPID/AES-128-GCM.
 - **Audit log** : table `audit_log`, fonctions `logAudit` / `getAuditLogs`, onglet admin "Journal d'audit".
