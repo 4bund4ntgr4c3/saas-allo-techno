@@ -12,14 +12,13 @@ import { PushNotificationToggle } from "@/components/site/PushNotificationToggle
 import { prefetchRoute } from "@/lib/prefetch";
 
 const TOP_LEFT = [
-  { to: "/$locale/entreprises", label: "nav.about" },
-  { to: "/$locale/contact", label: "nav.work-at" },
-  { to: "/$locale/blog", label: "nav.blog" },
+  { to: "/$locale/about", label: "nav.about" },
+  { to: "/$locale/work-at", label: "nav.work-at" },
+  { to: "/$locale/entreprises", label: "nav.entreprises" },
 ] as const;
 
 const TOP_RIGHT = [
-  { to: "/$locale/boutique", label: "nav.store" },
-  { to: "/$locale/suivi", label: "nav.track" },
+  { to: "/$locale/blog", label: "nav.blog" },
   { to: "/$locale/contact", label: "nav.contact" },
 ] as const;
 
@@ -199,7 +198,9 @@ export function Header() {
                 {[
                   ...NAV,
                   ...TOP_LEFT,
-                  ...TOP_RIGHT.filter((r) => !TOP_LEFT.some((l) => l.to === r.to)),
+                  ...TOP_RIGHT.filter(
+                    (r) => !(TOP_LEFT as readonly { to: string }[]).some((l) => l.to === r.to),
+                  ),
                   { to: "/panier", label: t("nav.panier") },
                   { to: "/reservation", label: t("nav.reservation") },
                   {

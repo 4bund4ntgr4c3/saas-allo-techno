@@ -28,14 +28,24 @@ export const Route = createFileRoute("/$locale/guides")({
       links: [...seo.links],
     };
   },
-  loader: ({ params }): Promise<{ guides: BlogPost[] }> => {
+  loader: async ({ params }): Promise<{ guides: BlogPost[] }> => {
     const locale = normalizeLocale(params.locale) as Locale;
-    return listBlogPosts({ data: { fallback: POSTS, locale } }).then((posts) => ({
-      guides: (posts as BlogPost[]).filter(
-        (p) =>
-          Boolean(p) && typeof p.category === "string" && p.category.toLowerCase() === "guides",
-      ),
-    }));
+    try {
+      const posts = await listBlogPosts({ data: { fallback: POSTS, locale } });
+      return {
+        guides: (posts as BlogPost[]).filter(
+          (p) =>
+            Boolean(p) && typeof p.category === "string" && p.category.toLowerCase() === "guides",
+        ),
+      };
+    } catch {
+      return {
+        guides: POSTS.filter(
+          (p) =>
+            Boolean(p) && typeof p.category === "string" && p.category.toLowerCase() === "guides",
+        ) as BlogPost[],
+      };
+    }
   },
   component: Guides,
 });

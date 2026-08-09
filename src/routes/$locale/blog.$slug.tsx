@@ -62,7 +62,12 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
     const slug = (params as { slug: string }).slug;
     const post = getBlogPost(slug, locale);
     if (!post) {
-      const all = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+      let all: BlogPost[];
+      try {
+        all = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+      } catch {
+        all = [];
+      }
       const dbPost = all.find((p) => p.slug === slug);
       if (!dbPost) throw notFound();
       return { post: dbPost, others: all.filter((p) => p.slug !== dbPost.slug).slice(0, 2) };

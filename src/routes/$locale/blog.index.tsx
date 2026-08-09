@@ -30,7 +30,12 @@ export const Route = createFileRoute("/$locale/blog/")({
   },
   loader: async ({ params }) => {
     const locale = normalizeLocale((params as { locale?: string }).locale) as string;
-    const dbPosts = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+    let dbPosts: BlogPost[];
+    try {
+      dbPosts = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+    } catch {
+      dbPosts = [];
+    }
     const staticPosts = getBlogPosts(locale);
     const merged =
       dbPosts.length > 0

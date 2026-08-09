@@ -11,16 +11,30 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Added
 
-- **Header restructuré** : barre utilitaire supérieure (À propos, Rejoindre l'équipe, Blog à gauche ; Boutique, Suivi, Contact à droite), nav principale avec 8 liens, LanguageSwitcher supprimé du header.
-- **Footer restructuré** : grille 5 colonnes — Marque+Contact fusionnée (col-span-2), Services (14 liens), Entreprises (6 liens), Boutique (4 liens). LanguageSwitcher déplacé dans la barre inférieure.
-- **Icônes SVG marques** : `brand-icons.ts` avec SVG inline pour 27 marques (Apple, Samsung, Xiaomi, Huawei, Oppo, Google, OnePlus, Tecno, Infinix, Itel, Nokia, Motorola, Honor, Sony, Nintendo, Microsoft, HP, Lenovo, Dell, Realme, LG, Philips, Hisense, TCL, Bosch, JBL, Bose, Whirlpool). `BrandLogo.tsx` pour le rendu.
-- **Widget panier animé** : `AddToCartWidget.tsx` — toast flottant en bas à droite avec animation slide-in, affiche le dernier article ajouté, prix, boutons "Voir le panier" / "Continuer". Auto-masquage après 4 secondes. Monté dans `__root.tsx`.
-- **Sidebar filtres shop** : `ShopFilterSidebar.tsx` — filtres latéraux pour la page boutique avec catégorie, fourchettes de prix (5 plages), disponibilité, indice livraison gratuite. Drawer mobile. Intégré à `boutique.index.tsx`.
-- **Timeline dots changelog** : `changelog.tsx` — ligne verticale de connexion avec dots animés (le premier est primary, les autres muted). Chaque entrée a un point pulsant.
-- **i18n extensions** : `nav.about`, `nav.work-at`, `nav.store`, `nav.track` (FR/EN). Clés panier widget (`cart.widget.added/checkout/continue`). Clés filtres shop (`shop.filter.title/open/category/all/price/availability/in-stock-only/free-delivery/free-delivery.hint`).
-- **Moteur de recherche amélioré** : `search-fulltext.ts` — scoring avancé avec Levenshtein, fuzzy matching (tolérance aux fautes de frappe), préfixe de mots, bonus de position. `catalog-search.ts` — fuzzy matching ajouté. `SearchModal.tsx` — classement par score, historique des recherches récentes (localStorage), suggestions.
-- **Baisse des prix de 60%** : tous les tarifs réparations (pannes) réduits de 60%. Services, accessoires et frais de service inchangés.
-- **Multi-ateliers** : table `workshops`, `workshops.functions.ts`, `AdminWorkshops.tsx` — CRUD ateliers avec adresse, ville, téléphone, timezone.
+- **Page À propos** : `/$locale/about` — histoire, mission, valeurs (4), timeline chronologique, chiffres clés (5000+ réparations, 3500+ clients, 4.8/5, 6 mois garantie), localisation. i18n complet FR/EN via `segments/about.ts`.
+- **Page Rejoindre l'équipe** : `/$locale/work-at` — pourquoi nous, avantages (4), postes ouverts (technicien, commercial, stagiaire, manager), processus de candidature (4 étapes), CTA contact. i18n complet FR/EN via `segments/work-at.ts`.
+- **Header restructuré** : barre utilitaire — À propos, Rejoindre l'équipe, Entreprises (gauche) ; Blog, Contact (droite). Suppression de Suivi et Boutique de la barre supérieure. Mobile nav mise à jour.
+- **Footer restructuré** : grille 6 colonnes — Marque+Contact (col-span-2), Réparations & Devis (7 liens), Services & Accessoires (8 liens), Entreprises & Info (8 liens), Localisation (5 liens). Toutes les 33 pages ont un lien dans le footer.
+- **Filtres boutique reconditionnés** : `ShopFilterSidebar` intégré à `reconditionnes.tsx` avec filtres prix et disponibilité, drawer mobile.
+- **Fix guide/blog** : loaders `listBlogPosts` wrappés en try/catch avec fallback sur données statiques POSTS — plus de crash si Supabase non configuré.
+- **Widget panier animé** : `AddToCartWidget.tsx` — toast flottant en bas à droite avec animation slide-in, auto-masquage 4s.
+- **Sidebar filtres shop** : `ShopFilterSidebar.tsx` — catégorie, fourchettes de prix, disponibilité, livraison gratuite. Intégré à boutique et reconditionnés.
+- **Timeline dots changelog** : `changelog.tsx` — ligne verticale avec dots animés pour chaque entrée.
+- **Icônes SVG marques** : `brand-icons.ts` + `BrandLogo.tsx` — 27 marques avec logos vectoriels inline.
+- **Moteur de recherche amélioré** : Levenshtein, fuzzy matching, scoring par pertinence, historique des recherches.
+- **Baisse des prix de 60%** : tarifs réparations (pannes) uniquement. Services/accessoires/frais inchangés.
+- **Multi-ateliers** : table `workshops`, CRUD admin.
+- **Gestion fournisseurs** : tables `suppliers` + `supplier_orders`.
+- **Programme de parrainage** : table `referrals`, stats, niveaux Bronze/Argent/Or.
+- **Chat client-staff** : table `chat_messages`, messagerie temps réel.
+- **Rapports avancés** : génération PDF avec jsPDF + QR code.
+- **API publique REST** : endpoints `/api/v1/*` avec auth par API key.
+- **Inventaire pièces** : tables `inventory_parts` + `stock_movements`, alertes stock bas.
+- **SLA tracking** : alertes retard, stats temps moyen/P90.
+- **Satisfaction client** : NPS (0-10), note 1-5 étoiles.
+- **Notifications internes** : centre de notifications staff.
+- **Historique device** : recherche par téléphone/email/appareil.
+- **DB migration** : 10 tables supplémentaires.
 - **Gestion fournisseurs** : tables `suppliers` + `supplier_orders`, `suppliers.functions.ts`, `AdminSuppliers.tsx` — ajout fournisseurs, suivi commandes pièces, statuts (pending→ordered→shipped→received).
 - **Programme de parrainage** : table `referrals`, `referral-advanced.ts`, `AdminReferrals.tsx` — stats parrainage, niveaux Bronze/Argent/Or, historique entrées.
 - **Chat client-staff** : table `chat_messages`, `chat.functions.ts`, `AdminChat.tsx` — messagerie temps réel entre client et atelier.

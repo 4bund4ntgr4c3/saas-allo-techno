@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAboutRouteImport } from './routes/$locale/about'
 import { Route as LocaleAvisRouteImport } from './routes/$locale/avis'
 import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
 import { Route as LocaleChangelogRouteImport } from './routes/$locale/changelog'
@@ -36,6 +37,7 @@ import { Route as LocaleReservationRouteImport } from './routes/$locale/reservat
 import { Route as LocaleServicesRouteImport } from './routes/$locale/services'
 import { Route as LocaleSuiviRouteImport } from './routes/$locale/suivi'
 import { Route as LocaleTarifsRouteImport } from './routes/$locale/tarifs'
+import { Route as LocaleWorkAtRouteImport } from './routes/$locale/work-at'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AuthenticatedReviewsAdminRouteImport } from './routes/_authenticated/reviews-admin'
@@ -85,6 +87,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const LocaleIndexRoute = LocaleIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleAboutRoute = LocaleAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleAvisRoute = LocaleAvisRouteImport.update({
@@ -190,6 +197,11 @@ const LocaleSuiviRoute = LocaleSuiviRouteImport.update({
 const LocaleTarifsRoute = LocaleTarifsRouteImport.update({
   id: '/tarifs',
   path: '/tarifs',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleWorkAtRoute = LocaleWorkAtRouteImport.update({
+  id: '/work-at',
+  path: '/work-at',
   getParentRoute: () => LocaleRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -304,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/$locale': typeof LocaleRouteWithChildren
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/changelog': typeof LocaleChangelogRoute
@@ -325,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
+  '/$locale/work-at': typeof LocaleWorkAtRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
@@ -352,6 +366,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/changelog': typeof LocaleChangelogRoute
@@ -373,6 +388,7 @@ export interface FileRoutesByTo {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
+  '/$locale/work-at': typeof LocaleWorkAtRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
@@ -403,6 +419,7 @@ export interface FileRoutesById {
   '/$locale': typeof LocaleRouteWithChildren
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
   '/$locale/changelog': typeof LocaleChangelogRoute
@@ -424,6 +441,7 @@ export interface FileRoutesById {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
+  '/$locale/work-at': typeof LocaleWorkAtRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/_authenticated/reviews-admin': typeof AuthenticatedReviewsAdminRoute
@@ -454,6 +472,7 @@ export interface FileRouteTypes {
     | '/$locale'
     | '/auth'
     | '/sitemap.xml'
+    | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
     | '/$locale/changelog'
@@ -475,6 +494,7 @@ export interface FileRouteTypes {
     | '/$locale/services'
     | '/$locale/suivi'
     | '/$locale/tarifs'
+    | '/$locale/work-at'
     | '/admin'
     | '/mon-compte'
     | '/reviews-admin'
@@ -502,6 +522,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/sitemap.xml'
+    | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
     | '/$locale/changelog'
@@ -523,6 +544,7 @@ export interface FileRouteTypes {
     | '/$locale/services'
     | '/$locale/suivi'
     | '/$locale/tarifs'
+    | '/$locale/work-at'
     | '/admin'
     | '/mon-compte'
     | '/reviews-admin'
@@ -552,6 +574,7 @@ export interface FileRouteTypes {
     | '/$locale'
     | '/auth'
     | '/sitemap.xml'
+    | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
     | '/$locale/changelog'
@@ -573,6 +596,7 @@ export interface FileRouteTypes {
     | '/$locale/services'
     | '/$locale/suivi'
     | '/$locale/tarifs'
+    | '/$locale/work-at'
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
     | '/_authenticated/reviews-admin'
@@ -656,6 +680,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/$locale/'
       preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/about': {
+      id: '/$locale/about'
+      path: '/about'
+      fullPath: '/$locale/about'
+      preLoaderRoute: typeof LocaleAboutRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/avis': {
@@ -803,6 +834,13 @@ declare module '@tanstack/react-router' {
       path: '/tarifs'
       fullPath: '/$locale/tarifs'
       preLoaderRoute: typeof LocaleTarifsRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/work-at': {
+      id: '/$locale/work-at'
+      path: '/work-at'
+      fullPath: '/$locale/work-at'
+      preLoaderRoute: typeof LocaleWorkAtRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/_authenticated/admin': {
@@ -971,6 +1009,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface LocaleRouteChildren {
+  LocaleAboutRoute: typeof LocaleAboutRoute
   LocaleAvisRoute: typeof LocaleAvisRoute
   LocaleCatalogueRoute: typeof LocaleCatalogueRoute
   LocaleChangelogRoute: typeof LocaleChangelogRoute
@@ -992,6 +1031,7 @@ interface LocaleRouteChildren {
   LocaleServicesRoute: typeof LocaleServicesRoute
   LocaleSuiviRoute: typeof LocaleSuiviRoute
   LocaleTarifsRoute: typeof LocaleTarifsRoute
+  LocaleWorkAtRoute: typeof LocaleWorkAtRoute
   LocaleIndexRoute: typeof LocaleIndexRoute
   LocaleAppareilSlugRoute: typeof LocaleAppareilSlugRoute
   LocaleBlogSlugRoute: typeof LocaleBlogSlugRoute
@@ -1005,6 +1045,7 @@ interface LocaleRouteChildren {
 }
 
 const LocaleRouteChildren: LocaleRouteChildren = {
+  LocaleAboutRoute: LocaleAboutRoute,
   LocaleAvisRoute: LocaleAvisRoute,
   LocaleCatalogueRoute: LocaleCatalogueRoute,
   LocaleChangelogRoute: LocaleChangelogRoute,
@@ -1026,6 +1067,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleServicesRoute: LocaleServicesRoute,
   LocaleSuiviRoute: LocaleSuiviRoute,
   LocaleTarifsRoute: LocaleTarifsRoute,
+  LocaleWorkAtRoute: LocaleWorkAtRoute,
   LocaleIndexRoute: LocaleIndexRoute,
   LocaleAppareilSlugRoute: LocaleAppareilSlugRoute,
   LocaleBlogSlugRoute: LocaleBlogSlugRoute,

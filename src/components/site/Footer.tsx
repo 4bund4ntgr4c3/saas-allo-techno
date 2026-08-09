@@ -63,7 +63,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div className="grid gap-12 md:grid-cols-5">
+        <div className="grid gap-12 md:grid-cols-6">
           {/* Brand + Contact (merged) */}
           <div className="md:col-span-2">
             <span className="at-display text-2xl">Allô Techno</span>
@@ -98,28 +98,21 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Services */}
+          {/* Réparations & Devis */}
           <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.services")}</h2>
+            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.repairs")}</h2>
             <ul
-              aria-label={t("footer.services")}
+              aria-label={t("footer.repairs")}
               className="space-y-2.5 text-xs font-medium text-muted-foreground"
             >
               {[
                 { to: "/$locale/reparations", label: t("footer.nos-reparations") },
+                { to: "/$locale/catalogue", label: t("nav.catalogue") },
                 { to: "/$locale/tarifs", label: t("footer.grille-tarifaire") },
                 { to: "/$locale/devis", label: t("nav.devis") },
                 { to: "/$locale/reservation", label: t("footer.prendre-rendez-vous") },
-                { to: "/$locale/services", label: t("nav.services") },
-                { to: "/$locale/promotions", label: t("nav.promotions") },
-                { to: "/$locale/magasins", label: t("nav.magasins") },
-                { to: "/$locale/reprise", label: t("footer.reprise-appareils") },
-                { to: "/$locale/garantie", label: t("footer.garanties") },
-                { to: "/$locale/reconditionnes", label: t("nav.reconditionnes") },
+                { to: "/$locale/suivi", label: t("footer.suivre-reparation") },
                 { to: "/$locale/guides", label: t("nav.guides") },
-                { to: "/$locale/reclamation", label: t("nav.reclamation") },
-                { to: "/$locale/engagements", label: t("nav.engagements") },
-                { to: "/$locale/quartiers", label: t("nav.quartiers") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
@@ -138,7 +131,41 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Entreprises */}
+          {/* Services & Accessoires */}
+          <div>
+            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.services")}</h2>
+            <ul
+              aria-label={t("footer.services")}
+              className="space-y-2.5 text-xs font-medium text-muted-foreground"
+            >
+              {[
+                { to: "/$locale/services", label: t("nav.services") },
+                { to: "/$locale/boutique", label: t("nav.boutique") },
+                { to: "/$locale/tarifs", label: t("nav.tarifs") },
+                { to: "/$locale/reconditionnes", label: t("nav.reconditionnes") },
+                { to: "/$locale/reprise", label: t("footer.reprise-appareils") },
+                { to: "/$locale/promotions", label: t("nav.promotions") },
+                { to: "/$locale/garantie", label: t("footer.garanties") },
+                { to: "/$locale/reclamation", label: t("nav.reclamation") },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    params={{ locale }}
+                    className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
+                    onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Entreprises & Info */}
           <div>
             <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.entreprises")}</h2>
             <ul
@@ -147,11 +174,13 @@ export function Footer() {
             >
               {[
                 { to: "/$locale/entreprises", label: t("footer.solutions-b2b") },
-                { to: "/$locale/suivi", label: t("footer.suivre-reparation") },
                 { to: "/$locale/avis", label: t("nav.avis") },
                 { to: "/$locale/faq", label: t("nav.faq") },
                 { to: "/$locale/blog", label: t("nav.blog") },
                 { to: "/$locale/changelog", label: t("nav.changelog") },
+                { to: "/$locale/about", label: t("nav.about") },
+                { to: "/$locale/work-at", label: t("nav.work-at") },
+                { to: "/$locale/engagements", label: t("nav.engagements") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
@@ -170,18 +199,19 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Boutique */}
+          {/* Localisation & Contact */}
           <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("nav.boutique")}</h2>
+            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.localisation")}</h2>
             <ul
-              aria-label={t("nav.boutique")}
+              aria-label={t("footer.localisation")}
               className="space-y-2.5 text-xs font-medium text-muted-foreground"
             >
               {[
-                { to: "/$locale/boutique", label: t("nav.store") },
-                { to: "/$locale/reconditionnes", label: t("nav.reconditionnes") },
-                { to: "/$locale/panier", label: t("nav.panier") },
+                { to: "/$locale/magasins", label: t("nav.magasins") },
+                { to: "/$locale/quartiers", label: t("nav.quartiers") },
                 { to: "/$locale/contact", label: t("nav.contact") },
+                { to: "/$locale/panier", label: t("nav.panier") },
+                { to: "/$locale/mentions-legales", label: t("footer.mentions-legales") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
