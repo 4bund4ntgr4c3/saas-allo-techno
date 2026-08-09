@@ -1,10 +1,24 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  Clock,
+  Copy,
+  CheckCircle2,
+  Heart,
+  ShieldCheck,
+  Share2,
+  ShoppingBag,
+  Truck,
+  Wallet,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MobileMoneyBar } from "@/components/site/Blocks";
 import { FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
+import { useWishlist } from "@/components/shop/wishlist";
+import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
+import { ProductReviewsSection } from "@/components/shop/ProductReviews";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -46,10 +60,22 @@ function Produit() {
   const { product, stock } = Route.useLoaderData();
   const [qty, setQty] = useState(1);
   const cart = useCart();
+  const wishlist = useWishlist();
+  const { track } = useRecentlyViewed();
   const { locale, t } = useI18n();
   const related = ACCESSORIES.filter(
     (a) => a.category === product.category && a.slug !== product.slug,
   ).slice(0, 3);
+  const wished = wishlist.has(product.slug);
+
+  useEffect(() => {
+    track({
+      slug: product.slug,
+      name: product.name,
+      category: product.category,
+      price: product.price,
+    });
+  }, [product, track]);
 
   return (
     <>
@@ -69,7 +95,23 @@ function Produit() {
               </span>
             </div>
             <div className="bg-card p-8">
-              <span className="at-eyebrow">{product.category}</span>
+              <div className="flex items-start justify-between">
+                <span className="at-eyebrow">{product.category}</span>
+                <button
+                  onClick={() => {
+                    wishlist.toggle(product.slug);
+                    toast.success(
+                      wished ? t("boutique.wishlist-removed") : t("boutique.wishlist-added"),
+                    );
+                  }}
+                  className="text-muted-foreground hover:text-destructive transition-colors"
+                  aria-label={t("boutique.wishlist")}
+                >
+                  <Heart
+                    className={`size-5 ${wished ? "fill-destructive text-destructive" : ""}`}
+                  />
+                </button>
+              </div>
               <h1 className="at-display mt-3 text-3xl md:text-4xl">{product.name}</h1>
               <div className="mt-6 font-mono text-3xl font-medium text-primary">
                 {formatFcfa(product.price)}
@@ -79,8 +121,26 @@ function Produit() {
               <dl className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-2">
                 <div className="bg-surface p-4">
                   <dt className="at-eyebrow">{t("boutique.availability")}</dt>
-                  <dd className="mt-1 font-mono text-xs">
-                    {stock > 0 ? t("boutique.stock-available", [stock]) : t("boutique.on-order-72")}
+                  <dd className="mt-1">
+                    {stock > 0 ? (
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+                          stock <= 5
+                            ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                            : "border-success/40 bg-success/10 text-success"
+                        }`}
+                      >
+                        <span
+                          className={`size-1.5 rounded-full ${stock <= 5 ? "animate-pulse bg-amber-500" : "bg-success"}`}
+                        />
+                        {t("boutique.stock-available", [stock])}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <span className="size-1.5 rounded-full bg-muted-foreground" />
+                        {t("boutique.on-order-72")}
+                      </span>
+                    )}
                   </dd>
                 </div>
                 <div className="bg-surface p-4">
@@ -131,9 +191,60 @@ function Produit() {
                   {t("boutique.free-delivery", [formatFcfa(FREE_DELIVERY_FROM)])}
                 </li>
                 <li className="flex items-center gap-2">
+                  <Clock className="size-4 text-primary" /> {t("boutique.delivery-estimate")}
+                </li>
+                <li className="flex items-center gap-2">
                   <ShieldCheck className="size-4 text-primary" /> {t("boutique.exchange")}
                 </li>
               </ul>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Button
+                  variant="technicalOutline"
+                  size="sm"
+                  onClick={() => {
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    const text = `${product.name} — ${formatFcfa(product.price)}`;
+                    const waUrl = `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`;
+                    window.open(waUrl, "_blank", "noopener,noreferrer");
+                  }}
+                >
+                  <Share2 className="size-3" /> WhatsApp
+                </Button>
+                <Button
+                  variant="technicalOutline"
+                  size="sm"
+                  onClick={() => {
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    navigator.clipboard.writeText(url).then(() => {
+                      toast.success(t("boutique.link-copied"));
+                    });
+                  }}
+                >
+                  <Copy className="size-3" /> {t("boutique.copy-link")}
+                </Button>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-px border border-border bg-border text-center">
+                <div className="bg-surface p-3">
+                  <Wallet className="mx-auto size-4 text-primary" />
+                  <span className="mt-1 block font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+                    {t("boutique.trust.secure")}
+                  </span>
+                </div>
+                <div className="bg-surface p-3">
+                  <ShieldCheck className="mx-auto size-4 text-primary" />
+                  <span className="mt-1 block font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+                    {t("boutique.trust.return")}
+                  </span>
+                </div>
+                <div className="bg-surface p-3">
+                  <CheckCircle2 className="mx-auto size-4 text-primary" />
+                  <span className="mt-1 block font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+                    {t("boutique.trust.verified")}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
           <div className="mt-8">
@@ -141,6 +252,8 @@ function Produit() {
           </div>
         </div>
       </section>
+
+      <ProductReviewsSection productSlug={product.slug} />
 
       {related.length > 0 && (
         <section className="py-16">

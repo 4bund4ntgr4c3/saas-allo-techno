@@ -1,11 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Check, Plus, ShoppingBag } from "lucide-react";
+import { Check, Eye, Heart, Plus, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { ShopFilterSidebar, type ShopFilters } from "@/components/shop/ShopFilterSidebar";
 import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
+import { useWishlist } from "@/components/shop/wishlist";
+import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
+import { QuickView } from "@/components/shop/QuickView";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -56,8 +59,13 @@ function Boutique() {
     sort: "populaire",
   });
   const [q, setQ] = useState("");
+  const [quickViewSlug, setQuickViewSlug] = useState<string | null>(null);
   const cart = useCart();
+  const wishlist = useWishlist();
+  const { items: recentItems } = useRecentlyViewed();
   const { locale, t } = useI18n();
+
+  const quickViewProduct = quickViewSlug ? ACCESSORIES.find((a) => a.slug === quickViewSlug) : null;
 
   const products = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -76,6 +84,10 @@ function Boutique() {
     return sorted;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, q, stock]);
+
+  const recentProducts = recentItems
+    .map((ri) => ACCESSORIES.find((a) => a.slug === ri.slug))
+    .filter((a): a is (typeof ACCESSORIES)[number] => a !== undefined);
 
   return (
     <>
@@ -143,9 +155,28 @@ function Boutique() {
                   {products.map((p) => {
                     const inCart = cart.items.find((i) => i.accessory.slug === p.slug)?.qty ?? 0;
                     const available = stockOf(p.slug);
+                    const wished = wishlist.has(p.slug);
                     return (
                       <article key={p.slug} className="flex flex-col bg-card p-6">
-                        <span className="at-eyebrow">{p.category}</span>
+                        <div className="flex items-start justify-between">
+                          <span className="at-eyebrow">{p.category}</span>
+                          <button
+                            onClick={() => {
+                              wishlist.toggle(p.slug);
+                              toast.success(
+                                wished
+                                  ? t("boutique.wishlist-removed")
+                                  : t("boutique.wishlist-added"),
+                              );
+                            }}
+                            className="text-muted-foreground hover:text-destructive transition-colors"
+                            aria-label={t("boutique.wishlist")}
+                          >
+                            <Heart
+                              className={`size-4 ${wished ? "fill-destructive text-destructive" : ""}`}
+                            />
+                          </button>
+                        </div>
                         <h3 className="mt-3 text-base font-bold tracking-tight">
                           <Link
                             to="/$locale/boutique/$slug"
@@ -158,12 +189,23 @@ function Boutique() {
                         <div className="mt-4 font-mono text-xl font-medium text-primary">
                           {formatFcfa(p.price)}
                         </div>
-                        <div className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                          {available <= 0
-                            ? t("boutique.on-order")
-                            : available > 10
-                              ? t("boutique.in-stock", [available])
-                              : t("boutique.low-stock", [available])}
+                        <div className="mt-2 flex items-center gap-2">
+                          {available <= 0 ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                              <span className="size-1.5 rounded-full bg-muted-foreground" />
+                              {t("boutique.on-order")}
+                            </span>
+                          ) : available <= 5 ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                              <span className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+                              {t("boutique.low-stock", [available])}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-success/40 bg-success/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-success">
+                              <span className="size-1.5 rounded-full bg-success" />
+                              {t("boutique.in-stock", [available])}
+                            </span>
+                          )}
                         </div>
                         <div className="mt-6 flex flex-wrap gap-2">
                           <Button
@@ -175,12 +217,23 @@ function Boutique() {
                               toast.success(t("boutique.toast.added", [p.name]));
                             }}
                           >
-                            {inCart > 0 ? <Check className="size-4" /> : <Plus className="size-4" />}
+                            {inCart > 0 ? (
+                              <Check className="size-4" />
+                            ) : (
+                              <Plus className="size-4" />
+                            )}
                             {available <= 0
                               ? t("boutique.unavailable")
                               : inCart > 0
                                 ? t("boutique.in-cart", [inCart])
                                 : t("boutique.add")}
+                          </Button>
+                          <Button
+                            variant="technicalOutline"
+                            size="sm"
+                            onClick={() => setQuickViewSlug(p.slug)}
+                          >
+                            <Eye className="size-3" /> {t("boutique.quick-view")}
                           </Button>
                           <Button asChild variant="technicalOutline" size="sm">
                             <Link to="/$locale/boutique/$slug" params={{ locale, slug: p.slug }}>
@@ -198,7 +251,38 @@ function Boutique() {
         </div>
       </section>
 
+      {recentProducts.length > 0 && (
+        <section className="border-t border-border py-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <h2 className="at-display text-xl">{t("boutique.recently-viewed")}</h2>
+            <div className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-3 lg:grid-cols-5">
+              {recentProducts.map((p) => (
+                <Link
+                  key={p.slug}
+                  to="/$locale/boutique/$slug"
+                  params={{ locale, slug: p.slug }}
+                  className="bg-card p-4 transition-colors hover:bg-surface"
+                >
+                  <span className="at-eyebrow text-[9px]">{p.category}</span>
+                  <h3 className="mt-1 text-xs font-bold tracking-tight line-clamp-2">{p.name}</h3>
+                  <div className="mt-2 font-mono text-sm text-primary">{formatFcfa(p.price)}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <CtaBand />
+
+      {quickViewProduct && (
+        <QuickView
+          product={quickViewProduct}
+          stock={stockOf(quickViewProduct.slug)}
+          open={true}
+          onClose={() => setQuickViewSlug(null)}
+        />
+      )}
     </>
   );
 }

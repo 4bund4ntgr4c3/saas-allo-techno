@@ -7,6 +7,31 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 27)
+
+### Added
+
+- **Avis produits** : notes 1-5 étoiles + texte sur chaque accessoire. Composant `StarRating` (interactive + lecture seule), `ProductReviewsSection` sur fiche produit, formulaire de soumission, table `product_reviews` + RPC `get_product_reviews` / `get_product_rating`. 12 clés i18n `boutique.review.*` FR/EN.
+- **Liste de souhaits** : `WishlistProvider` + `useWishlist` (localStorage), bouton coeur sur chaque produit (liste + fiche), toggle avec toast. 4 clés i18n `boutique.wishlist.*`.
+- **Récemment consultés** : `useRecentlyViewed` (localStorage, 5 derniers), section sur page boutique + tracking automatique sur fiche produit. 1 clé i18n.
+- **Badges stock visuels** : pastilles verte (stock > 5), ambre avec animation pulse (stock ≤ 5), grise (sur commande) sur liste et fiche produit.
+- **Aperçu rapide** : modal `QuickView` depuis la liste boutique (image, prix, stock, ajout panier). 1 clé i18n.
+- **Estimation livraison** : délai 24-72h selon zone sur fiche produit. 1 clé i18n.
+- **Partage produit** : boutons WhatsApp + copier lien sur fiche produit. 2 clés i18n.
+- **Badges confiance** : grille 3 colonnes (paiement sécurisé, retour 14j, stock vérifié) sur fiche produit. 3 clés i18n.
+
+### Changed
+
+- **Boutique enrichie** : liste avec WishlistProvider, QuickView, badges stock colorés, section récemment consultés.
+- **Fiche produit enrichie** : badges stock, estimation livraison, partage, badges confiance, avis produits, tracking récemment consultés.
+- **Root layout** : `WishlistProvider` ajouté au provider tree global.
+
+### Migration
+
+- `supabase/migrations/20260810120000_batch27_product_reviews.sql` : table `product_reviews` + RPCs + RLS.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 26)
 
 ### Added

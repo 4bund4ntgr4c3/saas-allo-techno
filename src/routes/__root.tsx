@@ -21,6 +21,7 @@ import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
+import { WishlistProvider } from "@/components/shop/wishlist";
 import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { supabase } from "@/integrations/supabase/client";
@@ -220,29 +221,31 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <I18nProvider initialLocale={locale}>
-          <a
-            href="#contenu-principal"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-sm focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:uppercase focus:tracking-widest focus:text-primary-foreground"
-          >
-            Aller au contenu principal
-          </a>
-          <Header />
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
-            <Outlet />
-          </main>
-          <Footer />
-          <Suspense fallback={null}>
-            <SearchModal />
-          </Suspense>
-          <Toaster />
-          <AddToCartWidget />
-          <CartDrawer />
-          <PwaInstallBanner />
-          <OfflineIndicator />
-          <AuthErrorHandler />
-        </I18nProvider>
+        <WishlistProvider>
+          <I18nProvider initialLocale={locale}>
+            <a
+              href="#contenu-principal"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-sm focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:uppercase focus:tracking-widest focus:text-primary-foreground"
+            >
+              Aller au contenu principal
+            </a>
+            <Header />
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
+              <Outlet />
+            </main>
+            <Footer />
+            <Suspense fallback={null}>
+              <SearchModal />
+            </Suspense>
+            <Toaster />
+            <AddToCartWidget />
+            <CartDrawer />
+            <PwaInstallBanner />
+            <OfflineIndicator />
+            <AuthErrorHandler />
+          </I18nProvider>
+        </WishlistProvider>
       </CartProvider>
     </QueryClientProvider>
   );

@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.10 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.10-b27 — [Changelog](./CHANGELOG.md)
 
 ## Fonctionnalités
 
@@ -17,6 +17,8 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
 - **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape, photos d'atelier, commentaires client en temps réel.
 - **Historique appareils** : page publique `/historique` — recherche par téléphone ou email, stats de réparation, résultats vers le suivi.
+- **Boutique enrichie** : badges stock visuels (pulse sur stock limité), aperçu rapide (modal QuickView), liste de souhaits (coeur), récemment consultés, estimation livraison, partage WhatsApp, badges confiance.
+- **Avis produits** : notes 1-5 étoiles + texte sur chaque accessoire, affichage sur fiche produit avec formulaire.
 - **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.
 - **Acompte 50%** : paiement partiel pour confirmer la réservation.
 - **Programme de fidélité** : points gagnés, 3 niveaux (Bronze/Argent/Or), utilisation (100 pts = 500 FCFA).
