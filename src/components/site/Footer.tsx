@@ -103,27 +103,30 @@ export function Footer() {
               className="space-y-2.5 text-xs font-medium text-muted-foreground"
             >
               {[
-                { to: "/reparations", label: t("footer.nos-reparations") },
-                { to: "/tarifs", label: t("footer.grille-tarifaire") },
-                { to: "/devis", label: t("nav.devis") },
-                { to: "/reservation", label: t("footer.prendre-rendez-vous") },
-                { to: "/services", label: t("nav.services") },
-                { to: "/promotions", label: t("nav.promotions") },
-                { to: "/magasins", label: t("nav.magasins") },
-                { to: "/reprise", label: t("footer.reprise-appareils") },
-                { to: "/garantie", label: t("footer.garanties") },
-                { to: "/reconditionnes", label: t("nav.reconditionnes") },
-                { to: "/guides", label: t("nav.guides") },
-                { to: "/reclamation", label: t("nav.reclamation") },
-                { to: "/engagements", label: t("nav.engagements") },
-                { to: "/quartiers", label: t("nav.quartiers") },
+                { to: "/$locale/reparations", label: t("footer.nos-reparations") },
+                { to: "/$locale/tarifs", label: t("footer.grille-tarifaire") },
+                { to: "/$locale/devis", label: t("nav.devis") },
+                { to: "/$locale/reservation", label: t("footer.prendre-rendez-vous") },
+                { to: "/$locale/services", label: t("nav.services") },
+                { to: "/$locale/promotions", label: t("nav.promotions") },
+                { to: "/$locale/magasins", label: t("nav.magasins") },
+                { to: "/$locale/reprise", label: t("footer.reprise-appareils") },
+                { to: "/$locale/garantie", label: t("footer.garanties") },
+                { to: "/$locale/reconditionnes", label: t("nav.reconditionnes") },
+                { to: "/$locale/guides", label: t("nav.guides") },
+                { to: "/$locale/reclamation", label: t("nav.reclamation") },
+                { to: "/$locale/engagements", label: t("nav.engagements") },
+                { to: "/$locale/quartiers", label: t("nav.quartiers") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to}`)}
-                    onFocus={() => prefetchRoute(`/${locale}${link.to}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
+                    onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
                   </Link>
@@ -140,19 +143,22 @@ export function Footer() {
               className="space-y-2.5 text-xs font-medium text-muted-foreground"
             >
               {[
-                { to: "/entreprises", label: t("footer.solutions-b2b") },
-                { to: "/suivi", label: t("footer.suivre-reparation") },
-                { to: "/avis", label: t("nav.avis") },
-                { to: "/faq", label: t("nav.faq") },
-                { to: "/blog", label: t("nav.blog") },
-                { to: "/changelog", label: "Changelog" },
+                { to: "/$locale/entreprises", label: t("footer.solutions-b2b") },
+                { to: "/$locale/suivi", label: t("footer.suivre-reparation") },
+                { to: "/$locale/avis", label: t("nav.avis") },
+                { to: "/$locale/faq", label: t("nav.faq") },
+                { to: "/$locale/blog", label: t("nav.blog") },
+                { to: "/$locale/changelog", label: t("nav.changelog") },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to}`)}
-                    onFocus={() => prefetchRoute(`/${locale}${link.to}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
+                    onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
                   </Link>

@@ -9,7 +9,13 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ## [2026.08.09] — 2026-08-09
 
+### Fixed
+
+- **Footer navigation** : toutes les colonnes du footer utilisaient `to="/page"` sans préfixe locale, ce qui empêchait la navigation côté client. Correction vers `to="/$locale/page"` + `params={{ locale }}` (pattern identique aux liens Header et bottom bar).
+- **Footer i18n** : ajout de `nav.changelog` FR/EN dans le dictionnaire.
+
 ### Added
+
 - **Password reset flow** : mot de passe oublié → email → mise à jour (4 modes auth).
 - **Auth page i18n** : toutes les chaînes traduites FR/EN (27 clés `auth.*`).
 - **404 page i18n** : page introuvable et composant d'erreur traduits FR/EN.
@@ -22,11 +28,13 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **i18n segments** : `auth.ts`, `notfound.ts` ajoutés au système de segments.
 
 ### Changed
+
 - `admin.tsx` : import des 14 composants extraits au lieu de fonctions inline.
 - `__root.tsx` : `NotFoundComponent` et `ErrorComponent` utilisent `t()`.
 - `auth.tsx` : réécrit avec i18n complet + modes login/signup/forgot/reset-sent/update-password.
 
 ### Fixed
+
 - `mon-compte.tsx` : hooks réordonnés (useServerFn avant useQuery), imports inutilisés supprimés.
 - `webhook-retry.ts` : interface `WebhookAttempt` et `retryQueue` supprimés (inutilisés).
 - `vite.config.ts` : `process.env["ANALYZE"]` en notation bracket (TS4111).
@@ -40,6 +48,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.08] — 2026-08-08
 
 ### Added
+
 - **Batch 9-11** : hardening complet.
   - 17 indexes de performance sur les tables Supabase.
   - `AuthErrorHandler` : détection d'expiration de session avec toast + redirection.
@@ -75,6 +84,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
   - E2E tests (devis + navigation).
 
 ### Changed
+
 - `StatsDashboard` : lazy-loaded, 4 onglets (Revenus, Clients, Appareils, Temps).
 - `ReservationPayBlock` : toggle acompte/complet, réduction fidélité.
 
@@ -83,12 +93,14 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.07] — 2026-08-07
 
 ### Added
+
 - **Onglets mon-compte** : Fidélité, Parrainage, Avis, Profil (6 onglets au total).
 - **Fonctions serveur** : `listCustomerReviews`, `listCustomerPayments`, `getLoyaltySummary`.
 - **i18n segment mon-compte** : 6 onglets FR/EN.
 - **Export CSV paiements** et **alertes stock bas**.
 
 ### Changed
+
 - `mon-compte.tsx` : architecture refactorisée avec onglets TanStack UI.
 
 ---
@@ -96,6 +108,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.06] — 2026-08-06
 
 ### Added
+
 - **Paiements FedaPay/KKiaPay** : deux providers Mobile Money supplémentaires.
 - **Rappels WhatsApp automatiques** : confirmation, changement de statut, reprogrammation.
 - **Avis clients vérifiés** : système de modération (publier/masquer).
@@ -104,6 +117,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Données structurées SEO** : Schema.org LocalBusiness.
 
 ### Changed
+
 - Webhooks : vérification HMAC, idempotence, montant cohérent.
 
 ---
@@ -111,6 +125,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.05] — 2026-08-05
 
 ### Added
+
 - **Pages quartiers** : index + pages slug pour chaque quartier d'Abomey-Calavi.
 - **Paiement de devis en ligne** : Flutterwave pour les devis approuvés.
 - **Gestion des retours** : suivi des retours de pièces/reparations.
@@ -122,6 +137,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.04] — 2026-08-04
 
 ### Added
+
 - **Consoles et jeux** : PS4, PS5, Xbox, Switch dans le catalogue.
 - **Guides réparation** : articles de maintenance et dépannage.
 - **Réclamation de garantie** : système de tickets avec statuts.
@@ -133,6 +149,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.03] — 2026-08-03
 
 ### Added
+
 - **Devis à valider** : workflow complet devis → approbation → paiement.
 - **Photos de suivi** : upload par étape (diagnostic, pièces, réparation).
 - **Garantie étendue** : options 6/12 mois avec tarification.
@@ -145,6 +162,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08.02] — 2026-08-02
 
 ### Added
+
 - **Paiement en ligne** : Flutterwave (MTN MoMo, Moov Money, Celtiis).
 - **Programme de fidélité** : points, niveaux (Bronze/Argent/Or), parrainage.
 - **Livraison à domicile** : suivi statut (à planifier → en route → livré).
@@ -158,6 +176,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.08-01] — 2026-08-01
 
 ### Added
+
 - **Sécurité** : code de suivi secret, 2FA serveur, uploads prives, rate limiting.
 - **Catalogue étendu** : Samsung 263, HP 350, Apple 142, electroménager.
 - **Admin staff** : gestion des rôles, leads, tests.
@@ -171,6 +190,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.07-31] — 2026-07-31
 
 ### Added
+
 - **Migration Lovable → Cloudflare Workers** : build autonome, wrangler, custom domain.
 - **Config Supabase** : nouveau projet, `.env` exclu de git, support clés `sb_publishable_`/`sb_secret_`.
 - **References** : padding adaptatif AT-YYYY-XXXX au-delà de 9999.
@@ -182,6 +202,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.07-30] — 2026-07-30
 
 ### Added
+
 - **Reservation 9 étapes** : type → marque → série → famille → modèle → pannes → créneau → photos → contact.
 - **Reprogrammation** : modification de créneau après réservation.
 - **Recherche globale** : cmdk + SearchModal avec autocomplétion.
@@ -192,6 +213,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.07-29] — 2026-07-29
 
 ### Added
+
 - **Admin écran** : tableau de bord avec gestion des statuts.
 - **Suivi** : page de suivi par numéro de référence.
 - **Boutique d'accessoires** : catalogue avec panier.
@@ -203,6 +225,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ## [2026.07-28] — 2026-07-28
 
 ### Added
+
 - **Projet initial** : template TanStack Start.
 - **Pages de base** : accueil, réparations, contact, tarifs.
 - **Réservation en ligne** : assistant de diagnostic.
@@ -213,42 +236,42 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ## Statistiques du projet
 
-| Métrique | Valeur |
-|---|---|
-| Commits totaux | 164 |
-| Fichiers sources (src/) | ~200 |
-| Composants React | ~150 |
-| Fonctions serveur | ~60 |
-| Routes TanStack Router | ~50 |
-| Migrations Supabase | 40 |
-| Tests unitaires (Vitest) | 92 passent |
-| Tests E2E (Playwright) | 10 fichiers spec |
-| Pages i18n (FR/EN) | 27 segments |
-| Providers de paiement | 3 (Flutterwave, FedaPay, KKiaPay) |
-| Onglets admin | 15 |
-| Onglets mon-compte | 6 |
+| Métrique                 | Valeur                            |
+| ------------------------ | --------------------------------- |
+| Commits totaux           | 164                               |
+| Fichiers sources (src/)  | ~200                              |
+| Composants React         | ~150                              |
+| Fonctions serveur        | ~60                               |
+| Routes TanStack Router   | ~50                               |
+| Migrations Supabase      | 40                                |
+| Tests unitaires (Vitest) | 92 passent                        |
+| Tests E2E (Playwright)   | 10 fichiers spec                  |
+| Pages i18n (FR/EN)       | 27 segments                       |
+| Providers de paiement    | 3 (Flutterwave, FedaPay, KKiaPay) |
+| Onglets admin            | 15                                |
+| Onglets mon-compte       | 6                                 |
 
 ---
 
 ## Stack technique
 
-| Couche | Technologie |
-|---|---|
-| Framework | TanStack Start (React 19 SSR) |
-| Routing | TanStack Router (file-based) |
-| State | TanStack Query |
-| Build | Vite 8 |
-| CSS | Tailwind CSS v4 |
-| UI | shadcn/ui + Radix UI (22 primitives) |
+| Couche          | Technologie                                |
+| --------------- | ------------------------------------------ |
+| Framework       | TanStack Start (React 19 SSR)              |
+| Routing         | TanStack Router (file-based)               |
+| State           | TanStack Query                             |
+| Build           | Vite 8                                     |
+| CSS             | Tailwind CSS v4                            |
+| UI              | shadcn/ui + Radix UI (22 primitives)       |
 | Base de données | Supabase (PostgreSQL, Auth, Realtime, RLS) |
-| Validation | react-hook-form + Zod |
-| Déploiement | Cloudflare Workers (Wrangler) |
-| Monitoring | Plausible Analytics, `/api/healthz` |
-| Tests | Vitest (unit) + Playwright (E2E) |
-| CI/CD | GitHub Actions |
-| Notifications | Resend (email) + WhatsApp Cloud API |
-| Paiements | Flutterwave, FedaPay, KKiaPay |
-| PDF | jsPDF + jspdf-autotable |
-| QR Codes | qrcode |
-| Animation | Motion (ex-Framer Motion) |
-| Charts | Recharts |
+| Validation      | react-hook-form + Zod                      |
+| Déploiement     | Cloudflare Workers (Wrangler)              |
+| Monitoring      | Plausible Analytics, `/api/healthz`        |
+| Tests           | Vitest (unit) + Playwright (E2E)           |
+| CI/CD           | GitHub Actions                             |
+| Notifications   | Resend (email) + WhatsApp Cloud API        |
+| Paiements       | Flutterwave, FedaPay, KKiaPay              |
+| PDF             | jsPDF + jspdf-autotable                    |
+| QR Codes        | qrcode                                     |
+| Animation       | Motion (ex-Framer Motion)                  |
+| Charts          | Recharts                                   |
