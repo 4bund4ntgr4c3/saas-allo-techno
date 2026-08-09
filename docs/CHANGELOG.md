@@ -21,6 +21,16 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Google Reviews widget** : `google-reviews.ts` + `GoogleReviewsWidget.tsx` — avis Google Places avec cache.
 - **Comparateur devis** : `DevisComparison.tsx` — comparaison côte à côte de devis (prix, durée, garantie, pièces).
 - **DB migration** : tables `workshops`, `suppliers`, `supplier_orders`, `chat_messages`, `referrals`, `saved_reports`, `google_reviews_cache`, `api_keys`. Feature flags defaults ajoutés.
+- **Inventaire pièces** : tables `inventory_parts` + `stock_movements`, `inventory.functions.ts`, `AdminInventory.tsx` — CRUD pièces, alertes stock bas, mouvements entrée/sortie avec historique.
+- **SLA tracking** : table `sla_configs`, `sla.ts`, `AdminSLA.tsx` — alertes retard par statut, stats temps moyen/P90 par transition, dossiers critiques.
+- **Satisfaction client** : table `satisfaction_surveys`, `satisfaction.functions.ts`, `AdminSatisfaction.tsx` — enquête NPS (0-10), note 1-5 étoiles, distribution, promoteurs/détracteurs.
+- **Notifications internes** : table `internal_notifications`, `internal-notifications.ts`, `AdminInternalNotifs.tsx` — centre de notifications staff avec marquer lu/tout lu.
+- **Historique device** : `device-history.ts` — recherche par téléphone/email/appareil, stats taux complétion.
+- **Garantie étendue** : table `extended_warranties`, `extended-warranty.ts` — upsell 6/12/24 mois (5000/10000/18000 FCFA), suivi statut actif/expiré/réclamé.
+- **Rapports programmés** : table `scheduled_reports`, `scheduled-reports.ts` — planification email quotidien/hebdo/mensuel avec metrics configurables.
+- **Escalade automatique** : tables `escalation_rules` + `escalation_events`, `escalation.ts` — détection SLA dépassé avec notification rôles et réaffectation auto.
+- **Knowledge base** : table `kb_articles`, `knowledge-base.ts`, `AdminKnowledgeBase.tsx` — wiki interne techniciens (8 catégories, recherche full-text, compteur vues/helpful).
+- **DB migration batch 22** : `inventory_parts`, `stock_movements`, `sla_configs`, `satisfaction_surveys`, `internal_notifications`, `extended_warranties`, `scheduled_reports`, `escalation_rules`, `escalation_events`, `kb_articles`. SLA/escalation defaults.
 
 ### Fixed
 

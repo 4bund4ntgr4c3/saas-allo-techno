@@ -20,7 +20,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Mode hors-ligne** : cache localStorage avec TTL 5 min.
 - **PWA installable** : manifeste + service worker.
 
-### Côté atelier / admin (20 onglets)
+### Côté atelier / admin (25 onglets)
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
 - **Atelier** : tableau kanban des réparations en cours, assignment technicien.
 - **Équipe** : gestion des rôles (staff, technicien).
@@ -50,6 +50,12 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Retours** : gestion des retours de pièces/réparations.
 - **Remboursements** : initiation de remboursements avec audit log.
 - **Audit** : journal des opérations (100 dernières entrées).
+- **Inventaire** : CRUD pièces, alertes stock bas, mouvements entrée/sortie.
+- **SLA** : suivi temps par statut, alertes retard, stats P90.
+- **Satisfaction** : enquête NPS + note étoiles, dashboard promoteurs/détracteurs.
+- **Notifications internes** : centre de notifications staff avec marquer lu.
+- **Knowledge base** : wiki interne techniciens (8 catégories, recherche full-text).
+- **Garantie étendue** : upsell 6/12/24 mois, suivi statut.
 
 ### Contenu et SEO
 - **Pages** : Accueil, Réparations (par marque/appareil), Catalogue, Tarifs, Services, Boutique, Promotions, Magasins, Suivi, Devis, Reprise, Reconditionnés, FAQ, Blog, Avis, Contact, Engagements, Entreprises, Garantie, Réclamation, Guides, Quartiers, Mentions légales.

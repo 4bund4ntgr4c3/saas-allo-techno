@@ -71,6 +71,11 @@ import { AdminSuppliers } from "@/components/admin/AdminSuppliers";
 import { AdminReferrals } from "@/components/admin/AdminReferrals";
 import { AdminChat } from "@/components/admin/AdminChat";
 import { AdminAdvancedReports } from "@/components/admin/AdminAdvancedReports";
+import { AdminInventory } from "@/components/admin/AdminInventory";
+import { AdminSLA } from "@/components/admin/AdminSLA";
+import { AdminSatisfaction } from "@/components/admin/AdminSatisfaction";
+import { AdminInternalNotifs } from "@/components/admin/AdminInternalNotifs";
+import { AdminKnowledgeBase } from "@/components/admin/AdminKnowledgeBase";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -147,6 +152,11 @@ function AdminPage() {
     | "parrainage"
     | "chat"
     | "rapports"
+    | "inventaire"
+    | "sla"
+    | "satisfaction"
+    | "notif-interne"
+    | "kb"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -660,6 +670,46 @@ function AdminPage() {
           <BarChart3 className="mr-2 size-4" />
           Rapports
         </Button>
+        <Button
+          variant={tab === "inventaire" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("inventaire")}
+        >
+          <Package className="mr-2 size-4" />
+          Inventaire
+        </Button>
+        <Button
+          variant={tab === "sla" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("sla")}
+        >
+          <BarChart3 className="mr-2 size-4" />
+          SLA
+        </Button>
+        <Button
+          variant={tab === "satisfaction" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("satisfaction")}
+        >
+          <TrendingUp className="mr-2 size-4" />
+          Satisfaction
+        </Button>
+        <Button
+          variant={tab === "notif-interne" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("notif-interne")}
+        >
+          <MailPlus className="mr-2 size-4" />
+          Notifs
+        </Button>
+        <Button
+          variant={tab === "kb" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("kb")}
+        >
+          <FileText className="mr-2 size-4" />
+          KB
+        </Button>
       </div>
 
       {tab === "dossiers" && (
@@ -937,6 +987,11 @@ function AdminPage() {
       {tab === "parrainage" && <AdminReferrals />}
       {tab === "chat" && <AdminChat />}
       {tab === "rapports" && <AdminAdvancedReports />}
+      {tab === "inventaire" && <AdminInventory />}
+      {tab === "sla" && <AdminSLA />}
+      {tab === "satisfaction" && <AdminSatisfaction />}
+      {tab === "notif-interne" && <AdminInternalNotifs />}
+      {tab === "kb" && <AdminKnowledgeBase />}
     </div>
   );
 }

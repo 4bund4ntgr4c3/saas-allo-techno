@@ -113,6 +113,17 @@ const fr = {
 
   // Admin — Advanced reports
   "admin.reports": "Rapports avancés",
+
+  // Admin — Batch 22
+  "admin.inventory": "Inventaire pièces",
+  "admin.sla": "Suivi SLA",
+  "admin.satisfaction": "Satisfaction client",
+  "admin.notifications": "Notifications internes",
+  "admin.device-history": "Historique appareils",
+  "admin.warranty": "Garantie étendue",
+  "admin.scheduled-reports": "Rapports programmés",
+  "admin.escalation": "Escalade automatique",
+  "admin.kb": "Knowledge base",
 };
 
 const en = {
@@ -213,20 +224,31 @@ const en = {
   "admin.notifications.title": "Notification Center",
 
   // Admin — Workshops (multi-ateliers)
-  "admin.workshops": "Ateliers",
-  "admin.workshops.add": "Ajouter un atelier",
+  "admin.workshops": "Workshops",
+  "admin.workshops.add": "Add workshop",
 
   // Admin — Suppliers
-  "admin.suppliers": "Fournisseurs",
+  "admin.suppliers": "Suppliers",
 
   // Admin — Referrals
-  "admin.referrals": "Programme de parrainage",
+  "admin.referrals": "Referral program",
 
   // Admin — Chat
-  "admin.chat": "Messages clients",
+  "admin.chat": "Customer messages",
 
   // Admin — Advanced reports
-  "admin.reports": "Rapports avancés",
+  "admin.reports": "Advanced reports",
+
+  // Admin — Batch 22
+  "admin.inventory": "Parts inventory",
+  "admin.sla": "SLA tracking",
+  "admin.satisfaction": "Customer satisfaction",
+  "admin.notifications": "Internal notifications",
+  "admin.device-history": "Device history",
+  "admin.warranty": "Extended warranty",
+  "admin.scheduled-reports": "Scheduled reports",
+  "admin.escalation": "Auto escalation",
+  "admin.kb": "Knowledge base",
 };
 
 registerSegments({ fr, en });
