@@ -130,7 +130,7 @@ function Reconditionnes() {
                       )}
                     </div>
                     <span className="at-eyebrow mt-4">
-                      {t("reconditionnes.warranty.tile", [p.warranty ?? "3 mois"])}
+                      {t("reconditionnes.warranty.tile", [p.warranty ?? t("reconditionnes.default-warranty")])}
                     </span>
                     <h3 className="mt-3 text-base font-bold tracking-tight">
                       <Link

@@ -78,6 +78,19 @@ const fr = {
   // Admin — View mode
   "admin.view.technician": "Vue technicien — vos dossiers uniquement",
   "admin.view.admin": "Vue complète — tous les dossiers",
+
+  // Admin — Feature flags
+  "admin.feature-flags": "Feature Flags",
+  "admin.feature-flags.description": "Description (optionnel)",
+  "admin.feature-flags.add": "Ajouter",
+
+  // Admin — Webhooks
+  "admin.webhooks": "Webhooks",
+  "admin.webhooks.add": "Ajouter un webhook",
+  "admin.webhooks.save": "Enregistrer",
+
+  // Admin — Calendar
+  "admin.calendar.title": "Calendrier des réservations",
 };
 
 const en = {
@@ -157,6 +170,19 @@ const en = {
   // Admin — View mode
   "admin.view.technician": "Technician view — your cases only",
   "admin.view.admin": "Full view — all cases",
+
+  // Admin — Feature flags
+  "admin.feature-flags": "Feature Flags",
+  "admin.feature-flags.description": "Description (optional)",
+  "admin.feature-flags.add": "Add",
+
+  // Admin — Webhooks
+  "admin.webhooks": "Webhooks",
+  "admin.webhooks.add": "Add webhook",
+  "admin.webhooks.save": "Save",
+
+  // Admin — Calendar
+  "admin.calendar.title": "Reservation Calendar",
 };
 
 registerSegments({ fr, en });

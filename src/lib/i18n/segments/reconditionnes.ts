@@ -48,6 +48,7 @@ const fr = {
   "reconditionnes.unavailable": "Indisponible",
   "reconditionnes.details": "Voir la fiche",
   "reconditionnes.toast.added": "{0} ajouté au panier",
+  "reconditionnes.default-warranty": "3 mois",
 };
 
 const en = {
@@ -97,6 +98,7 @@ const en = {
   "reconditionnes.unavailable": "Unavailable",
   "reconditionnes.details": "View product sheet",
   "reconditionnes.toast.added": "{0} added to cart",
+  "reconditionnes.default-warranty": "3 months",
 };
 
 registerSegments({ fr, en });

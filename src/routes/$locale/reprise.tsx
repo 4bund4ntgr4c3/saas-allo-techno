@@ -27,10 +27,10 @@ export const Route = createFileRoute("/$locale/reprise")({
 });
 
 const CONDITIONS = [
-  { key: "excellent", label: "Excellent — comme neuf", factor: 1 },
-  { key: "bon", label: "Bon — micro-rayures", factor: 0.8 },
-  { key: "usage", label: "Usagé — rayures visibles", factor: 0.6 },
-  { key: "hs", label: "En panne — écran ou batterie HS", factor: 0.35 },
+  { key: "excellent", factor: 1 },
+  { key: "bon", factor: 0.8 },
+  { key: "usage", factor: 0.6 },
+  { key: "hs", factor: 0.35 },
 ] as const;
 
 function baseValue(year: number, faultsTotal: number) {

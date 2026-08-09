@@ -61,9 +61,7 @@ function Services() {
           <div className="grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((s) => {
               const Icon = SERVICE_ICONS[s.icon] ?? SprayCan;
-              const label = locale === "en" ? s.label_en : s.label_fr;
-              const short = locale === "en" ? s.short_en : s.short_fr;
-              const bullets = locale === "en" ? s.bullet_en : s.bullet_fr;
+              const prefix = `services.${s.i18nKey}`;
               return (
                 <article key={s.slug} className="flex flex-col bg-card p-6">
                   <div className="flex items-center justify-between">
@@ -72,20 +70,26 @@ function Services() {
                       {t("services.duration")} {s.duration}
                     </span>
                   </div>
-                  <h2 className="mt-4 text-base font-bold tracking-tight">{label}</h2>
-                  <p className="mt-2 text-sm text-muted-foreground">{short}</p>
+                  <h2 className="mt-4 text-base font-bold tracking-tight">
+                    {t(`${prefix}.label`)}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(`${prefix}.short`)}
+                  </p>
                   <ul className="mt-4 space-y-1">
-                    {bullets.map((b) => (
-                      <li key={b} className="flex gap-2 text-sm">
+                    {[1, 2, 3].map((i) => (
+                      <li key={i} className="flex gap-2 text-sm">
                         <span className="text-primary">+</span>
-                        <span>{b}</span>
+                        <span>{t(`${prefix}.bullet.${i}`)}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="mt-4 font-mono text-xl font-medium text-primary">
                     {formatFcfa(s.price)}
                   </div>
-                  <p className="mt-3 text-xs text-muted-foreground">{t("services.reservation")}</p>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    {t("services.reservation")}
+                  </p>
                   <Button asChild variant="technical" size="sm" className="mt-6">
                     <Link
                       to="/$locale/reparations"
@@ -100,7 +104,7 @@ function Services() {
             })}
           </div>
           <p className="mt-8 text-sm text-muted-foreground">
-            Question sur un service ? Contactez l'atelier au {COMPANY.phone} ({COMPANY.city}).
+            {t("services.contact", [COMPANY.phone, COMPANY.city])}
           </p>
         </div>
       </section>

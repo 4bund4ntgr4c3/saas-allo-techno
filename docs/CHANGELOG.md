@@ -16,6 +16,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Added
 
+- **Services i18n** : migration complète du système bilingue `_fr/_en` vers le système i18n `t()`. `data/services.ts` simplifié (champ `i18nKey` au lieu de 6 champs bilingues). 28 clés `services.*` ajoutées.
+- **Reconditionnés fix** : fallback `"3 mois"` → `t("reconditionnes.default-warranty")`.
+- **Reprise cleanup** : suppression des champs `label` dead code dans `CONDITIONS`.
+- **RBAC enhanced** : ajout de `hasRole()`, `isAdmin()`, `requireRole()` dans `rbac.ts`. Type `AppRole` exporté.
+- **Email notifications** : `email.ts` avec Resend API — confirmation réservation, paiement, statut, devis. Templates HTML responsive.
+- **SMS notifications** : `sms.ts` avec Africa's Talking API — SMS pour statuts critiques (réservation, statut, paiement).
+- **Calendar view admin** : `AdminCalendar.tsx` — vue mensuelle des réservations avec code couleur par statut.
+- **Feature flags** : table `feature_flags`, `feature-flags.ts` (cache 60s + CRUD server functions), `AdminFeatureFlags.tsx` (admin UI).
+- **Webhook management UI** : `webhook-manage.ts` (CRUD + test), `AdminWebhooks.tsx` (admin UI avec toggle, test, suppression).
+- **Export PDF devis** : `devis-pdf.ts` — génération PDF avec jsPDF + QR code, en-tête branded, tableau détaillé, footer légal.
+- **DB migration** : tables `feature_flags` et `webhook_configs` avec RLS staff-only.
+
+### Added
+
 - **Password reset flow** : mot de passe oublié → email → mise à jour (4 modes auth).
 - **Auth page i18n** : toutes les chaînes traduites FR/EN (27 clés `auth.*`).
 - **404 page i18n** : page introuvable et composant d'erreur traduits FR/EN.

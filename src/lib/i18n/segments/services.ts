@@ -17,6 +17,44 @@ const fr = {
   "services.cta": "Réserver ce service",
   "services.reservation":
     "Réservez ce service avec votre appareil : nous préparons le créneau et vous confirmons par WhatsApp.",
+  "services.contact":
+    "Question sur un service ? Contactez l'atelier au {phone} ({city}).",
+  "services.nettoyage.label": "Nettoyage d'appareil",
+  "services.nettoyage.short":
+    "Nettoyage complet intérieur et extérieur (contacts, connecteurs).",
+  "services.nettoyage.bullet.1": "Contacts et connecteurs nettoyés",
+  "services.nettoyage.bullet.2": "Dépoussiérage extérieur",
+  "services.nettoyage.bullet.3": "Conseils d'entretien",
+  "services.transfert.label": "Transfert de données",
+  "services.transfert.short":
+    "Transfert de vos photos, contacts, applications et fichiers.",
+  "services.transfert.bullet.1": "Contacts, SMS et photos",
+  "services.transfert.bullet.2": "D'un appareil à l'autre",
+  "services.transfert.bullet.3": "Sécurité de vos fichiers",
+  "services.sauvegarde.label": "Sauvegarde & récupération de données",
+  "services.sauvegarde.short":
+    "Sauvegarde sécurisée ou récupération de données perdues.",
+  "services.sauvegarde.bullet.1": "Récupération après perte",
+  "services.sauvegarde.bullet.2": "Sauvegarde sur support",
+  "services.sauvegarde.bullet.3": "Données sensibles protégées",
+  "services.reset.label": "Reset usine sécurisé",
+  "services.reset.short":
+    "Réinitialisation complète avec sauvegarde préalable de vos données.",
+  "services.reset.bullet.1": "Sauvegarde avant reset",
+  "services.reset.bullet.2": "Réactivation propre du système",
+  "services.reset.bullet.3": "Appareil remis en état d'usine",
+  "services.pctuneup.label": "PC tune-up (nettoyage & performance)",
+  "services.pctuneup.short":
+    "Accélération de votre PC : nettoyage, mise à jour, optimisation.",
+  "services.pctuneup.bullet.1": "Nettoyage du disque",
+  "services.pctuneup.bullet.2": "Mise à jour des pilotes",
+  "services.pctuneup.bullet.3": "Optimisation du démarrage",
+  "services.antivirus.label": "Antivirus & installation logiciel",
+  "services.antivirus.short":
+    "Suppression de virus et installation de vos logiciels.",
+  "services.antivirus.bullet.1": "Suppression de malwares",
+  "services.antivirus.bullet.2": "Installation d'un antivirus",
+  "services.antivirus.bullet.3": "Installation de vos logiciels",
 };
 
 const en = {
@@ -35,6 +73,44 @@ const en = {
   "services.cta": "Book this service",
   "services.reservation":
     "Book this service with your device: we prepare the time slot and confirm via WhatsApp.",
+  "services.contact":
+    "Question about a service? Contact the workshop at {phone} ({city}).",
+  "services.nettoyage.label": "Device cleaning",
+  "services.nettoyage.short":
+    "Full internal and external cleaning (contacts, connectors).",
+  "services.nettoyage.bullet.1": "Cleaned contacts and connectors",
+  "services.nettoyage.bullet.2": "External dusting",
+  "services.nettoyage.bullet.3": "Care tips",
+  "services.transfert.label": "Data transfer",
+  "services.transfert.short":
+    "Transfer of your photos, contacts, apps and files.",
+  "services.transfert.bullet.1": "Contacts, SMS and photos",
+  "services.transfert.bullet.2": "From one device to another",
+  "services.transfert.bullet.3": "Your files kept safe",
+  "services.sauvegarde.label": "Data backup & recovery",
+  "services.sauvegarde.short":
+    "Secure backup or recovery of lost data.",
+  "services.sauvegarde.bullet.1": "Recovery after loss",
+  "services.sauvegarde.bullet.2": "Backup on a support",
+  "services.sauvegarde.bullet.3": "Sensitive data protected",
+  "services.reset.label": "Secure factory reset",
+  "services.reset.short":
+    "Full reset with a prior backup of your data.",
+  "services.reset.bullet.1": "Backup before reset",
+  "services.reset.bullet.2": "Clean system reinstall",
+  "services.reset.bullet.3": "Device restored to factory state",
+  "services.pctuneup.label": "PC tune-up (cleaning & performance)",
+  "services.pctuneup.short":
+    "Speed up your PC: cleaning, updates, optimization.",
+  "services.pctuneup.bullet.1": "Disk cleanup",
+  "services.pctuneup.bullet.2": "Driver updates",
+  "services.pctuneup.bullet.3": "Startup optimization",
+  "services.antivirus.label": "Virus removal & software install",
+  "services.antivirus.short":
+    "Virus removal and installation of your software.",
+  "services.antivirus.bullet.1": "Malware removal",
+  "services.antivirus.bullet.2": "Antivirus installation",
+  "services.antivirus.bullet.3": "Installation of your software",
 };
 
 registerSegments({ fr, en });
