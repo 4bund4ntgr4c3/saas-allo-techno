@@ -2,47 +2,109 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
+**Version** : 2026.08.09 — [Changelog](./CHANGELOG.md)
+
 ## Fonctionnalités
 
-- Page d'accueil immersive avec recherche intelligente d'appareils (assistant de diagnostic en 5 étapes).
-- Pages de réparation par marque et fiches détaillées par appareil (pannes, tarifs, délais, garanties, pièces utilisées, FAQ).
-- Réservation en ligne avec disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
-- Suivi de réparation par numéro de dossier, avec historique des changements de statut.
-- Espace client (profil, réservations, annulation) et espace administrateur / technicien (gestion des statuts des dossiers, statistiques, export CSV).
-- Paiement en ligne Flutterwave (mobile money) pour la boutique, avec webhook de confirmation et repli en « paiement à la remise ».
-- Programme de fidélité : points gagnés par réparation terminée, code de parrainage et bonus de parrainage.
-- Suivi de la livraison pour les enlèvements à domicile (à planifier, en route, livré), visible côté client et administrable côté atelier.
-- Demande de devis, FAQ, blog, avis clients, garantie, offres entreprises (B2B), reprise d'appareils, boutique d'accessoires.
-- SEO par page (meta, Open Graph, FAQPage, sitemap), PWA installable (manifeste + service worker) et honeypot anti-spam sur les formulaires.
-- Monitoring : endpoint `GET /api/healthz` pour les vérificateurs d'uptime.
+### Côté client
+- **Recherche intelligente** : assistant de diagnostic en 9 étapes (type → marque → série → famille → modèle → pannes → créneau → photos → contact).
+- **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
+- **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape.
+- **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.
+- **Acompte 50%** : paiement partiel pour confirmer la réservation.
+- **Programme de fidélité** : points gagnés, 3 niveaux (Bronze/Argent/Or), utilisation (100 pts = 500 FCFA).
+- **Parrainage** : code unique, lien de partage, bonus de parrainage.
+- **Espace client** (6 onglets) : Dossiers, Fidélité, Parrainage, Avis, Paiements, Profil.
+- **Demande de devis** : soumission en ligne avec calcul automatique.
+- **Notifications push** : toggle dans l'espace client.
+- **Mode hors-ligne** : cache localStorage avec TTL 5 min.
+- **PWA installable** : manifeste + service worker.
+
+### Côté atelier / admin (15 onglets)
+- **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
+- **Atelier** : tableau kanban des réparations en cours, assignment technicien.
+- **Équipe** : gestion des rôles (staff, technicien).
+- **Leads** : suivi des demandes de devis.
+- **Réclamations** : tickets de garantie avec statuts.
+- **Analytics** : événements récents + compteurs.
+- **Statistiques** : Recharts (LineChart + PieChart), 4 onglets (Revenus, Clients, Appareils, Temps).
+- **KPIs avancés** : revenus, conversion, durée moyenne par étape, top pannes.
+- **Sécurité** : OTP/TOTP 2FA, rate limiting, métriques temps réel.
+- **Contenu** : CRUD blog, modération avis, invitations d'avis (WhatsApp + email).
+- **Stock** : gestion inventaire, alertes stock bas.
+- **Catalogue** : CRUD marques, catégories, appareils, pannes, photos.
+- **Commandes** : suivi des commandes boutique.
+- **Retours** : gestion des retours de pièces/réparations.
+- **Remboursements** : initiation de remboursements avec audit log.
+- **Audit** : journal des opérations (100 dernières entrées).
+
+### Contenu et SEO
+- **Pages** : Accueil, Réparations (par marque/appareil), Catalogue, Tarifs, Services, Boutique, Promotions, Magasins, Suivi, Devis, Reprise, Reconditionnés, FAQ, Blog, Avis, Contact, Engagements, Entreprises, Garantie, Réclamation, Guides, Quartiers, Mentions légales.
+- **SEO** : Schema.org LocalBusiness, OpenGraph, Twitter Cards, sitemap dynamique, meta par page.
+- **Blog** : articles bilingues FR/EN avec catégories et temps de lecture.
+- **i18n** : routage bilingue `/fr` + `/en`, 27 segments traduits.
+
+### Infrastructure
+- **CI/CD** : GitHub Actions (lint + test + build + deploy + backup hebdomadaire).
+- **Monitoring** : Plausible Analytics, endpoint `/api/healthz`, métriques temps réel.
+- **Logging structuré** : JSON avec contexte (module, user, reservation).
+- **Rate limiting** : sliding window en mémoire (KV documentation pour persistance).
+- **Webhooks** : retry exponentiel, vérification HMAC, idempotence.
+- **Backup** : script Supabase + workflow GitHub Actions.
 
 ## Stack technique
 
-- [TanStack Start](https://tanstack.com/start) (React 19, SSR) avec TanStack Router et TanStack Query
-- [Vite](https://vite.dev)
-- [Tailwind CSS](https://tailwindcss.com) v4 + [shadcn/ui](https://ui.shadcn.com)
-- [Supabase](https://supabase.com) : base PostgreSQL, authentification, Realtime (disponibilités des créneaux), RLS et fonctions SQL
-- [react-hook-form](https://react-hook-form.com) + [Zod](https://zod.dev)
-- [Motion](https://motion.dev) et [Recharts](https://recharts.org)
+| Couche | Technologie | Version |
+|---|---|---|
+| Framework | [TanStack Start](https://tanstack.com/start) (React 19 SSR) | ^1.168.32 |
+| Routing | [TanStack Router](https://tanstack.com/router) (file-based) | ^1.170.18 |
+| State | [TanStack Query](https://tanstack.com/query) | ^5.101.1 |
+| Build | [Vite](https://vite.dev) | ^8.1.5 |
+| Langage | [TypeScript](https://www.typescriptlang.org) | ^5.8.3 |
+| CSS | [Tailwind CSS](https://tailwindcss.com) v4 | ^4.2.1 |
+| UI | [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://www.radix-ui.com) | 22 primitives |
+| Base de données | [Supabase](https://supabase.com) (PostgreSQL, Auth, Realtime, RLS) | ^2.111.0 |
+| Validation | [react-hook-form](https://react-hook-form.com) + [Zod](https://zod.dev) | ^7.71.2 / ^3.24.2 |
+| Déploiement | [Cloudflare Workers](https://workers.cloudflare.com) (Wrangler) | ^4.120.0 |
+| SSR / Server | [Nitro](https://nitro.build) | ^3.0.260610-beta |
+| Testing | [Vitest](https://vitest.dev) (unit) + [Playwright](https://playwright.dev) (E2E) | ^4.1.10 / ^1.62.1 |
+| CI/CD | [GitHub Actions](https://github.com/features/actions) | — |
+| Monitoring | [Plausible Analytics](https://plausible.io) | — |
+| Notifications | [Resend](https://resend.com) (email) + WhatsApp Cloud API | — |
+| Paiements | [Flutterwave](https://flutterwave.com), [FedaPay](https://fedapay.com), [KKiaPay](https://kkiapay.me) | — |
+| PDF | [jsPDF](https://www.npmjs.com/package/jspdf) + jspdf-autotable | ^4.2.1 |
+| QR Codes | [qrcode](https://www.npmjs.com/package/qrcode) | ^1.5.4 |
+| Animation | [Motion](https://motion.dev) (ex-Framer Motion) | ^12.43.0 |
+| Charts | [Recharts](https://recharts.org) | ^2.15.4 |
+| Icons | [Lucide React](https://lucide.dev) | ^0.575.0 |
+| Toasts | [Sonner](https://sonner.emilkowal.ski) | ^2.0.7 |
+| Linting | ESLint 9 + typescript-eslint + Prettier | ^9.32.0 |
 
 ## Structure du projet
 
 ```
 src/
-  routes/                # Pages de l'application (TanStack Router)
-  components/site/       # Composants propres au site
-  components/ui/         # Composants shadcn/ui
-  data/                  # Catalogue statique (marques, appareils, tarifs, accessoires, blog, FAQ, avis)
-  hooks/                 # Hooks (session, disponibilité des créneaux)
-  integrations/supabase/ # Clients Supabase (navigateur, serveur, auth)
-  lib/                   # Logique métier (schémas, devis, fonctions serveur)
+  routes/                  # Pages de l'application (TanStack Router)
+  routes/api.*.ts          # Routes API brutes (webhooks, sitemap, docs)
+  components/site/         # Composants propres au site
+  components/ui/           # Composants shadcn/ui
+  components/admin/        # Composants admin (14 onglets extraits)
+  components/shop/         # Composants boutique
+  data/                    # Catalogue statique (marques, appareils, tarifs, blog, FAQ)
+  hooks/                   # Hooks (session, disponibilité des créneaux)
+  integrations/supabase/   # Clients Supabase (navigateur, serveur, auth)
+  lib/                     # Logique métier (schémas, devis, fonctions serveur)
+  lib/i18n/                # Internationalisation (dictionaries, segments, context)
+  __tests__/               # Tests unitaires (Vitest)
 supabase/
-  migrations/            # Schéma SQL, RLS, fonctions et triggers
+  migrations/              # Schéma SQL, RLS, fonctions et triggers (40 migrations)
+e2e/                       # Tests E2E (Playwright, 10 fichiers spec)
+scripts/                   # Scripts utilitaires (backup Supabase)
 ```
 
 ## Développement
 
-Prérequis : Node.js 20+ et npm (ou [bun](https://bun.sh)).
+Prérequis : Node.js 20+ et npm.
 
 ```sh
 npm install
@@ -56,6 +118,10 @@ npm run build          # build de production
 npm run preview        # prévisualisation du build
 npm run lint           # eslint
 npm run format         # prettier
+npx tsc --noEmit       # vérification de types
+npx vitest run         # tests unitaires
+npx playwright test    # tests E2E
+npm run backup         # backup Supabase (bash, nécessite pg_dump)
 ```
 
 ## Configuration
@@ -64,59 +130,43 @@ Le projet s'appuie sur Supabase. Les variables d'environnement suivantes sont at
 
 - `VITE_SUPABASE_URL` / `SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_SECRET_KEY` (côté serveur uniquement ; l'ancien nom
-  `SUPABASE_SERVICE_ROLE_KEY` reste accepté pour compatibilité)
-- `TRACKING_CODE_PEPPER` — sel de hachage des codes de suivi (côté serveur)
+- `SUPABASE_SECRET_KEY` (côté serveur uniquement)
+- `TRACKING_CODE_PEPPER` — sel de hachage des codes de suivi
 
-### Notifications (e-mail Resend + WhatsApp Meta)
+### Notifications (optionnel)
 
-Les notifications sont optionnelles : sans clé, le site fonctionne normalement
-(rien n'est envoyé, les tentatives sont loggées côté serveur).
+- `RESEND_API_KEY` + `RESEND_FROM` — email via Resend.
+- `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID` — WhatsApp Cloud API.
 
-- `RESEND_API_KEY` — clé API [Resend](https://resend.com/api-keys). Expéditeur
-  configurable via `RESEND_FROM` (par défaut `Allô Techno <noreply@…>`).
-  **Action requise côté Resend** : vérifier le domaine de l'expéditeur (DNS
-  `SPF`/`DKIM`) avant la mise en production.
-- `WHATSAPP_TOKEN` — jeton d'accès Meta (WhatsApp Cloud API, généré dans
-  WhatsApp Manager → Configuration de l'API).
-- `WHATSAPP_PHONE_NUMBER_ID` — identifiant du numéro WhatsApp utilisé pour
-  l'envoi.
-  **Action requise côté Meta** : les messages initiés par l'entreprise doivent
-  utiliser un **modèle approuvé** (WhatsApp Manager → Modèles). Sans modèle,
-  l'envoi texte direct fonctionne uniquement vers les numéros de test du compte
-  ou dans la fenêtre de session client (24 h).
+### Paiement en ligne (optionnel)
 
-Canaux activés automatiquement : confirmation de réservation, changement de
-statut, reprogrammation du rendez-vous (client), alerte interne à l'équipe
-(nouveau dossier).
+- `FLUTTERWAVE_SECRET_KEY` + `FLUTTERWAVE_WEBHOOK_SECRET_HASH` — Flutterwave.
+- `FEDAPAY_SECRET_KEY` + `FEDAPAY_WEBHOOK_SECRET` — FedaPay.
+- `KKIAPAY_PRIVATE_KEY` + `KKIAPAY_SECRET_KEY` + `KKIAPAY_PUBLIC_KEY` — KKiaPay.
 
-### Paiement en ligne (Flutterwave — optionnel)
+### Push notifications (optionnel)
 
-Le paiement mobile money (MTN MoMo / Moov Money / Celtiis) est désactivé tant
-que les variables ne sont pas configurées : les commandes boutique passent
-alors en « paiement à la remise ».
+- `VAPID_PUBLIC_KEY` + `VAPID_PRIVATE_KEY` — clés VAPID pour les notifications push.
 
-- `FLUTTERWAVE_SECRET_KEY` — clé API secrète Flutterwave.
-- `FLUTTERWAVE_WEBHOOK_SECRET_HASH` — valeur de l'entête `verif-hash` attendue
-  sur le webhook. Enregistrer l'URL `https://allotechno.africa/api/flutterwave-webhook`
-  comme Webhook URL dans le dashboard Flutterwave et y renseigner ce hash.
+### Hors-ligne
 
-Une migration Supabase (`supabase/migrations/20260808000000_payments.sql`) crée
-la table `payments` et le statut `payment_status` ; à appliquer avant d'activer
-le paiement en ligne.
-
-Deux autres migrations sont à appliquer pour les dernières fonctionnalités :
-
-- `supabase/migrations/20260808100000_loyalty.sql` — programme de fidélité :
-  colonnes `loyalty_points`, `referral_code`, `referred_by` sur `profiles`,
-  journal `loyalty_ledger` et fonctions `add_loyalty_points` /
-  `ensure_referral_code`.
-- `supabase/migrations/20260808200000_delivery.sql` — suivi de livraison :
-  enum `delivery_status`, colonnes `delivery_status` / `delivery_address` sur
-  `reservations` et fonction `set_delivery_status`.
+Le mode hors-ligne fonctionne automatiquement : les données sont mises en cache dans localStorage avec un TTL de 5 minutes.
 
 ## Monitoring
 
-L'endpoint `GET /api/healthz` renvoie `{"status":"ok", …}` (code HTTP 200).
-Il peut être surveillé par un service d'uptime (UptimeRobot, Pingdom, Cloudflare
-Health Checks…) : point d'entrée `https://allotechno.africa/api/healthz`.
+- **Health check** : `GET /api/healthz` → `{"status":"ok", …}` (HTTP 200).
+- **Sitemap** : `GET /api/sitemap` → XML sitemap dynamique.
+- **API docs** : `GET /api/docs` → documentation webhook HTML.
+- **Analytics** : Plausible Analytics (configurable via `data-domain`).
+
+## Déploiement
+
+```sh
+npx wrangler deploy    # déployer sur Cloudflare Workers
+```
+
+Custom domain : `allotechno.africa` (configuré dans `wrangler.jsonc`).
+
+## Licence
+
+Projet privé — Allô Techno, Abomey-Calavi, Bénin.
