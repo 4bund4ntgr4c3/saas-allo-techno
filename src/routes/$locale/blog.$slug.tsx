@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
-import { POSTS } from "@/data/catalog";
+import { getBlogPosts, getBlogPost, type BilingualPost } from "@/lib/blog.functions";
 import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
+import { POSTS } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -13,7 +14,8 @@ import { localeSeo } from "@/lib/seo";
 export const Route = createFileRoute("/$locale/blog/$slug")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
-    const post = POSTS.find((p) => p.slug === params.slug);
+    const slug = (params as { slug: string }).slug;
+    const post = getBlogPost(slug, locale);
     if (!post) {
       return {
         meta: [
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
         ],
       };
     }
-    const suffix = `/blog/${params.slug}`;
+    const suffix = `/blog/${slug}`;
     const seo = localeSeo(locale, suffix);
     return {
       meta: [
@@ -44,22 +46,29 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
             headline: post.title,
             description: post.excerpt,
             datePublished: post.date,
-            inLanguage: "fr-BJ",
+            inLanguage: locale === "en" ? "en" : "fr-BJ",
             articleSection: post.category,
             author: { "@type": "Organization", name: "Allô Techno" },
             publisher: { "@type": "Organization", name: "Allô Techno" },
             about: { "@type": "Place", name: "Abomey-Calavi, Bénin" },
-            mainEntityOfPage: `/blog/${params.slug}`,
+            mainEntityOfPage: `/blog/${slug}`,
           }),
         },
       ],
     };
   },
   loader: async ({ params }) => {
-    const all = (await listBlogPosts({ data: { fallback: POSTS } })) as BlogPost[];
-    const post = all.find((p) => p.slug === params.slug);
-    if (!post) throw notFound();
-    return { post, others: all.filter((p) => p.slug !== post.slug).slice(0, 2) };
+    const locale = normalizeLocale((params as { locale?: string }).locale) as string;
+    const slug = (params as { slug: string }).slug;
+    const post = getBlogPost(slug, locale);
+    if (!post) {
+      const all = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+      const dbPost = all.find((p) => p.slug === slug);
+      if (!dbPost) throw notFound();
+      return { post: dbPost, others: all.filter((p) => p.slug !== dbPost.slug).slice(0, 2) };
+    }
+    const allPosts = getBlogPosts(locale);
+    return { post, others: allPosts.filter((p) => p.slug !== post.slug).slice(0, 2) };
   },
   errorComponent: BlogError,
   notFoundComponent: PostNotFound,
@@ -93,7 +102,10 @@ function PostNotFound() {
 }
 
 function BlogPost() {
-  const { post, others } = Route.useLoaderData() as { post: BlogPost; others: BlogPost[] };
+  const { post, others } = Route.useLoaderData() as {
+    post: BilingualPost;
+    others: BilingualPost[];
+  };
   const { locale, t } = useI18n();
 
   return (
@@ -121,7 +133,7 @@ function BlogPost() {
           <h1 className="at-display mt-5 text-3xl md:text-5xl">{post.title}</h1>
           <p className="mt-6 text-lg text-muted-foreground">{post.excerpt}</p>
           <div className="mt-10 space-y-5 border-t border-border pt-10">
-            {post.body.map((par) => (
+            {post.body.map((par: string) => (
               <p key={par.slice(0, 30)} className="text-sm leading-relaxed">
                 {par}
               </p>
@@ -134,7 +146,7 @@ function BlogPost() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <span className="at-eyebrow mb-6 block">{t("blog.readalso")}</span>
           <div className="grid gap-px border border-border bg-border md:grid-cols-2">
-            {others.map((p) => (
+            {others.map((p: BilingualPost) => (
               <Link
                 key={p.slug}
                 to="/$locale/blog/$slug"

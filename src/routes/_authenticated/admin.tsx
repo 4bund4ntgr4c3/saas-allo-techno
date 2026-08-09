@@ -66,6 +66,7 @@ import {
   downloadReservationsCsv,
   downloadReservationsPdf,
 } from "@/lib/invoice";
+import { logAudit } from "@/lib/audit";
 const StatsDashboard = lazy(() =>
   import("@/components/admin/StatsDashboard").then((m) => ({ default: m.StatsDashboard })),
 );
@@ -105,6 +106,7 @@ import {
   type ReturnRow,
   type ReturnStatus,
 } from "@/lib/returns.functions";
+import { getAuditLogs } from "@/lib/audit.functions";
 import { Badge } from "@/components/ui/badge";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
@@ -246,6 +248,7 @@ function AdminPage() {
     | "catalogue"
     | "commandes"
     | "retours"
+    | "audit"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -325,6 +328,13 @@ function AdminPage() {
     onSuccess: () => {
       toast.success("Technicien assigné");
       queryClient.invalidateQueries({ queryKey: ["assignments"] });
+      // Audit log
+      void logAudit(supabase as never, {
+        user_id: user.id,
+        action: "reservation.assigned",
+        entity: "reservation",
+        details: {},
+      });
     },
     onError: (err: unknown) =>
       toast.error(err instanceof Error ? err.message : "Assignation impossible"),
@@ -362,16 +372,20 @@ function AdminPage() {
   const otpRequired = otpEnabled.data === true && Date.now() - otpUnlockedAt > 24 * 3600 * 1000;
 
   const reservations = useQuery({
-    queryKey: ["admin-reservations"],
+    queryKey: ["admin-reservations", isTechnicien ? user.id : "all"],
     enabled: access.data === true,
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("reservations")
         .select(
-          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at",
+          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id",
         )
         .order("slot_date", { ascending: false })
         .limit(200);
+      if (isTechnicien) {
+        query = query.eq("assigned_technician_id" as never, user.id);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -385,6 +399,14 @@ function AdminPage() {
       toast.success(`Statut mis à jour : ${STATUS_LABEL[vars.status]}`);
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
+      // Audit log
+      void logAudit(supabase as never, {
+        user_id: user.id,
+        action: vars.status === "annulee" ? "reservation.cancelled" : "reservation.status_changed",
+        entity: "reservation",
+        entity_id: vars.id,
+        details: { status: vars.status, note: vars.note },
+      });
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Mise à jour impossible";
@@ -574,6 +596,9 @@ function AdminPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           Mettez à jour le statut d'une réparation et consultez l'historique des changements.
         </p>
+        {isTechnicien && (
+          <p className="mt-1 text-xs font-medium text-primary">{t("admin.view.technician")}</p>
+        )}
       </header>
 
       <div className="mb-8 flex flex-wrap gap-2">
@@ -680,6 +705,14 @@ function AdminPage() {
         >
           <RotateCcw className="mr-2 size-4" />
           Retours
+        </Button>
+        <Button
+          variant={tab === "audit" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("audit")}
+        >
+          <History className="mr-2 size-4" />
+          {t("admin.audit.title")}
         </Button>
       </div>
 
@@ -951,6 +984,7 @@ function AdminPage() {
       {tab === "catalogue" && <CatalogSection />}
       {tab === "commandes" && <OrdersSection />}
       {tab === "retours" && <ReturnsSection />}
+      {tab === "audit" && <AuditSection />}
     </div>
   );
 }
@@ -1257,6 +1291,7 @@ function QuotePanel({
   issue: string;
   created_at: string;
 }) {
+  const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const getQuoteFn = useServerFn(getReservationQuote);
@@ -1286,6 +1321,14 @@ function QuotePanel({
       toast.success("Devis envoyé au client");
       setAmount("");
       queryClient.invalidateQueries({ queryKey: ["reservation-quote", reservationId] });
+      // Audit log
+      void logAudit(supabase as never, {
+        user_id: user.id,
+        action: "quote.sent",
+        entity: "reservation",
+        entity_id: reservationId,
+        details: { reference },
+      });
     },
     onError: (err: unknown) =>
       toast.error(err instanceof Error ? err.message : "Envoi du devis impossible"),
@@ -2616,6 +2659,7 @@ function parsePostBody(raw: string): string[] {
 }
 
 function ReviewsAdmin() {
+  const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const reviewsQuery = useQuery({
     queryKey: ["admin-reviews"],
@@ -2671,6 +2715,14 @@ function ReviewsAdmin() {
       });
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
       toast.success(form.id ? "Avis mis à jour" : "Avis ajouté");
+      // Audit log
+      void logAudit(supabase as never, {
+        user_id: user.id,
+        action: form.status === "published" ? "review.published" : "review.hidden",
+        entity: "review",
+        entity_id: form.id || null,
+        details: { status: form.status, customer_name: form.customer_name },
+      });
       reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Enregistrement impossible");
@@ -4770,6 +4822,112 @@ function AtelierCard({
 const REVENUE_CHART_CONFIG = {
   revenu: { label: "Revenus", color: "var(--primary)" },
 } satisfies ChartConfig;
+
+const AUDIT_ACTION_LABEL: Record<string, string> = {
+  "reservation.status_changed": "Statut changé",
+  "reservation.cancelled": "Réservation annulée",
+  "reservation.assigned": "Technicien assigné",
+  "quote.sent": "Devis envoyé",
+  "quote.approved": "Devis approuvé",
+  "quote.declined": "Devis refusé",
+  "payment.confirmed": "Paiement confirmé",
+  "payment.refunded": "Paiement remboursé",
+  "review.published": "Avis publié",
+  "review.hidden": "Avis masqué",
+  "lead.status_changed": "Lead mis à jour",
+  "claim.status_changed": "Réclamation mise à jour",
+  "user.role_changed": "Rôle modifié",
+  "stock.updated": "Stock mis à jour",
+  "blog.post_created": "Article créé",
+  "blog.post_updated": "Article mis à jour",
+};
+
+function AuditSection() {
+  const { t } = useI18n();
+  const getLogsFn = useServerFn(getAuditLogs);
+
+  const logs = useQuery({
+    queryKey: ["audit-logs"],
+    queryFn: () => getLogsFn({ data: {} }),
+  });
+
+  if (logs.isLoading) {
+    return <p className="text-sm text-muted-foreground">Chargement du journal…</p>;
+  }
+
+  if (logs.isError) {
+    return (
+      <div>
+        <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
+        <p className="mt-4 text-sm text-destructive">
+          Impossible de charger le journal d'audit. Réessayez.
+        </p>
+      </div>
+    );
+  }
+
+  const rows = logs.data ?? [];
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Historique des opérations effectuées par le personnel (100 dernières entrées).
+      </p>
+      {rows.length === 0 ? (
+        <p className="mt-6 text-sm text-muted-foreground">{t("admin.audit.empty")}</p>
+      ) : (
+        <div className="mt-6 overflow-x-auto border border-border bg-card">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                <th className="px-4 py-2 text-left">Date</th>
+                <th className="px-4 py-2 text-left">Action</th>
+                <th className="px-4 py-2 text-left">Entité</th>
+                <th className="px-4 py-2 text-left">Détails</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="border-b border-border last:border-b-0 hover:bg-surface"
+                >
+                  <td className="px-4 py-2 whitespace-nowrap text-muted-foreground">
+                    {new Date(row.created_at).toLocaleString("fr-FR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="px-4 py-2">
+                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      {AUDIT_ACTION_LABEL[row.action] ?? row.action}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-muted-foreground">
+                    {row.entity}
+                    {row.entity_id ? (
+                      <span className="ml-1 font-mono text-[10px]">
+                        ({row.entity_id.slice(0, 8)}…)
+                      </span>
+                    ) : null}
+                  </td>
+                  <td className="px-4 py-2 text-xs text-muted-foreground">
+                    {row.user_name ? <span>{row.user_name} · </span> : null}
+                    {row.details ? JSON.stringify(row.details) : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function KpisSection() {
   const getKpisFn = useServerFn(getAdminKpis);

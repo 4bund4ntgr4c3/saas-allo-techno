@@ -24,6 +24,7 @@ import {
   formatFcfa,
   type Device,
 } from "@/data/catalog";
+import { fullTextSearch, type SearchResult } from "@/lib/search-fulltext";
 import { categoryMedia } from "@/data/device-media";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
 import { ContactForm } from "@/components/site/ContactForm";
@@ -490,6 +491,23 @@ export function DeviceSearch({
     );
   }, [query]);
 
+  const fullTextResults = useMemo(() => {
+    const q = query.trim();
+    if (q.length < 2) return [];
+    return fullTextSearch(q, locale);
+  }, [query, locale]);
+
+  const groupedResults = useMemo(() => {
+    const groups: { type: SearchResult["type"]; label: string; items: SearchResult[] }[] = [];
+    const deviceResults = fullTextResults.filter((r) => r.type === "device");
+    const blogResults = fullTextResults.filter((r) => r.type === "blog");
+    const pageResults = fullTextResults.filter((r) => r.type === "page");
+    if (deviceResults.length > 0) groups.push({ type: "device", label: t("search.group.devices"), items: deviceResults });
+    if (blogResults.length > 0) groups.push({ type: "blog", label: t("search.group.blog"), items: blogResults });
+    if (pageResults.length > 0) groups.push({ type: "page", label: t("search.group.pages"), items: pageResults });
+    return groups;
+  }, [fullTextResults, t]);
+
   const selectedFaults = useMemo(
     () => (device?.faults ?? []).filter((f) => faults.includes(f.slug)),
     [device, faults],
@@ -696,38 +714,50 @@ export function DeviceSearch({
             )}
           </p>
         )}
-        {suggestions.length > 0 && (
+        {fullTextResults.length > 0 && (
           <ul className="absolute z-20 mt-1 max-h-80 w-full overflow-y-auto border border-border bg-card shadow-xl">
-            {suggestions.map((s) => (
-              <li key={s.slug}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategory(s.category);
-                    setBrand(s.brand);
-                    setSeries(s.series);
-                    setFamily(null);
-                    setDevice(s);
-                    setFaults([]);
-                    setStep(5);
-                    setQuery("");
-                  }}
-                  className="flex w-full items-center justify-between px-4 py-3 text-left text-sm hover:bg-secondary"
-                >
-                  <span className="font-bold">{s.name}</span>
-                  <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                    {brandName(s.brand)} · {t(s.category)}
-                  </span>
-                </button>
+            {groupedResults.map((group) => (
+              <li key={group.type}>
+                <div className="border-t border-border bg-surface px-4 py-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {group.label}
+                </div>
+                {group.items.map((item) => (
+                  <li key={item.url}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (item.type === "device") {
+                          const d = DEVICES.find((dev) => item.url.includes(dev.slug));
+                          if (d) {
+                            setCategory(d.category);
+                            setBrand(d.brand);
+                            setSeries(d.series);
+                            setFamily(null);
+                            setDevice(d);
+                            setFaults([]);
+                            setStep(5);
+                          }
+                        }
+                        setQuery("");
+                      }}
+                      className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm hover:bg-secondary"
+                    >
+                      <span className="flex flex-col">
+                        <span className="font-bold">{item.title}</span>
+                        {item.description && (
+                          <span className="text-xs text-muted-foreground">{item.description}</span>
+                        )}
+                      </span>
+                      <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                        {item.type === "device" ? t("search.type.device") : item.type === "blog" ? t("search.type.blog") : t("search.type.page")}
+                      </span>
+                    </button>
+                  </li>
+                ))}
               </li>
             ))}
             <li className="border-t border-border px-4 py-2 font-mono text-[10px] uppercase text-muted-foreground">
-              {t(
-                suggestions.length > 1
-                  ? "wizard.search.results.plural"
-                  : "wizard.search.results.single",
-                [suggestions.length],
-              )}
+              {fullTextResults.length} {fullTextResults.length > 1 ? t("wizard.search.results.plural") : t("wizard.search.results.single")}
             </li>
           </ul>
         )}

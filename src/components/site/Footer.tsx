@@ -4,6 +4,7 @@ import { Clock, MapPin, Phone, Mail } from "lucide-react";
 import { COMPANY } from "@/data/catalog/company";
 import { OPEN_SCHEDULE, isOpenNow } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
+import { prefetchRoute } from "@/lib/prefetch";
 
 function OpenNow() {
   const { t, locale } = useI18n();
@@ -121,6 +122,8 @@ export function Footer() {
                   <Link
                     to={link.to}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to}`)}
+                    onFocus={() => prefetchRoute(`/${locale}${link.to}`)}
                   >
                     {link.label}
                   </Link>
@@ -147,6 +150,8 @@ export function Footer() {
                   <Link
                     to={link.to}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to}`)}
+                    onFocus={() => prefetchRoute(`/${locale}${link.to}`)}
                   >
                     {link.label}
                   </Link>
@@ -179,6 +184,8 @@ export function Footer() {
               to="/$locale/contact"
               params={{ locale }}
               className="mt-6 inline-flex items-center gap-1.5 border-b-2 border-primary pb-0.5 text-[10px] font-extrabold uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-foreground hover:text-primary"
+              onMouseEnter={() => prefetchRoute(`/${locale}/contact`)}
+              onFocus={() => prefetchRoute(`/${locale}/contact`)}
             >
               {t("action.ouvrir-carte")}
             </Link>
@@ -198,6 +205,8 @@ export function Footer() {
               to="/$locale/garantie"
               params={{ locale }}
               className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors duration-200 hover:text-foreground"
+              onMouseEnter={() => prefetchRoute(`/${locale}/garantie`)}
+              onFocus={() => prefetchRoute(`/${locale}/garantie`)}
             >
               {t("footer.garanties")}
             </Link>
@@ -205,6 +214,8 @@ export function Footer() {
               to="/$locale/mentions-legales"
               params={{ locale }}
               className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors duration-200 hover:text-foreground"
+              onMouseEnter={() => prefetchRoute(`/${locale}/mentions-legales`)}
+              onFocus={() => prefetchRoute(`/${locale}/mentions-legales`)}
             >
               {t("footer.mentions-legales")}
             </Link>

@@ -213,6 +213,14 @@ const fr = {
   "reservation.warranty.standard": "Garantie standard (6 mois)",
   "reservation.warranty.extended": "Garantie étendue (12 mois)",
   "reservation.warranty.extended.price": "+{0} FCFA",
+
+  // Recherche full-text
+  "search.group.devices": "Appareils",
+  "search.group.blog": "Blog",
+  "search.group.pages": "Pages",
+  "search.type.device": "Appareil",
+  "search.type.blog": "Article",
+  "search.type.page": "Page",
 };
 
 const en = {
@@ -425,6 +433,14 @@ const en = {
   "reservation.warranty.standard": "Standard warranty (6 months)",
   "reservation.warranty.extended": "Extended warranty (12 months)",
   "reservation.warranty.extended.price": "+{0} FCFA",
+
+  // Full-text search
+  "search.group.devices": "Devices",
+  "search.group.blog": "Blog",
+  "search.group.pages": "Pages",
+  "search.type.device": "Device",
+  "search.type.blog": "Article",
+  "search.type.page": "Page",
 };
 
 registerSegments({ fr, en });

@@ -13,6 +13,7 @@ import { downloadInvoicePdf } from "@/lib/invoice";
 import { applyReferralCode, ensureReferralCode, getLoyaltySummary } from "@/lib/loyalty.functions";
 import { listCustomerReviews, type CustomerReview } from "@/lib/reviews.functions";
 import { listCustomerPayments, type CustomerPayment } from "@/lib/payments.functions";
+import { saveOfflineData } from "@/lib/offline-cache";
 import { useI18n } from "@/lib/i18n/context";
 import "@/lib/i18n/segments/mon-compte";
 import {
@@ -124,6 +125,10 @@ function Dashboard() {
     }
   }, [profile.data]);
 
+  const getLoyaltySummaryFn = useServerFn(getLoyaltySummary);
+  const getCustomerReviewsFn = useServerFn(listCustomerReviews);
+  const getCustomerPaymentsFn = useServerFn(listCustomerPayments);
+
   const reservations = useQuery({
     queryKey: ["reservations", user.id],
     queryFn: async () => {
@@ -162,10 +167,14 @@ function Dashboard() {
     },
   });
 
-  const getLoyaltySummaryFn = useServerFn(getLoyaltySummary);
-
-  const getCustomerReviewsFn = useServerFn(listCustomerReviews);
-  const getCustomerPaymentsFn = useServerFn(listCustomerPayments);
+  useEffect(() => {
+    if (reservations.data && loyaltyQuery.data) {
+      saveOfflineData({
+        reservations: reservations.data,
+        loyalty: loyaltyQuery.data,
+      });
+    }
+  }, [reservations.data, loyaltyQuery.data]);
 
   const saveProfile = useMutation({
     mutationFn: async () => {

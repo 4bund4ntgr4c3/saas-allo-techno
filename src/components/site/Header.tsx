@@ -10,6 +10,7 @@ import { openSearch } from "@/lib/search-events";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { PushNotificationToggle } from "@/components/site/PushNotificationToggle";
+import { prefetchRoute } from "@/lib/prefetch";
 
 const NAV = [
   { to: "/$locale/reparations", label: "nav.reparations" },
@@ -95,6 +96,8 @@ export function Header() {
                 params={{ locale }}
                 className="transition-colors hover:text-foreground"
                 activeProps={{ className: "text-foreground" }}
+                onMouseEnter={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
+                onFocus={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
               >
                 {t(item.label)}
               </Link>
@@ -129,7 +132,12 @@ export function Header() {
             </Link>
           </Button>
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
-            <Link to="/$locale/reservation" params={{ locale }}>
+            <Link
+              to="/$locale/reservation"
+              params={{ locale }}
+              onMouseEnter={() => prefetchRoute(`/${locale}/reservation`)}
+              onFocus={() => prefetchRoute(`/${locale}/reservation`)}
+            >
               {t("nav.reservation")}
             </Link>
           </Button>

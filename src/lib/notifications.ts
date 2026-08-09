@@ -18,6 +18,7 @@ import { COMPANY } from "@/data/catalog/company";
 import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
 import type { Enums } from "@/integrations/supabase/types";
 import { createLogger } from "@/lib/logger";
+import { fetchWithRetry } from "@/lib/webhook-retry";
 
 const logger = createLogger("notifications");
 
@@ -73,7 +74,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
     return;
   }
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetchWithRetry("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${RESEND_API_KEY}`,
@@ -98,7 +99,7 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
     return;
   }
   try {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `https://graph.facebook.com/v21.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
       {
         method: "POST",

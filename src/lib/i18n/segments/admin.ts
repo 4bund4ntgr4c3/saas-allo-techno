@@ -70,6 +70,14 @@ const fr = {
   "admin.stock.low.title": "Stock faible",
   "admin.stock.low.remaining.one": "{0} restant",
   "admin.stock.low.remaining.other": "{0} restants",
+
+  // Admin — Audit log
+  "admin.audit.title": "Journal d'audit",
+  "admin.audit.empty": "Aucune opération enregistrée",
+
+  // Admin — View mode
+  "admin.view.technician": "Vue technicien — vos dossiers uniquement",
+  "admin.view.admin": "Vue complète — tous les dossiers",
 };
 
 const en = {
@@ -141,6 +149,14 @@ const en = {
   "admin.stock.low.title": "Low stock",
   "admin.stock.low.remaining.one": "{0} left",
   "admin.stock.low.remaining.other": "{0} left",
+
+  // Admin — Audit log
+  "admin.audit.title": "Audit log",
+  "admin.audit.empty": "No operations recorded",
+
+  // Admin — View mode
+  "admin.view.technician": "Technician view — your cases only",
+  "admin.view.admin": "Full view — all cases",
 };
 
 registerSegments({ fr, en });

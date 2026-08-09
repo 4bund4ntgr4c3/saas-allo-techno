@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CtaBand } from "@/components/site/Blocks";
-import { POSTS } from "@/data/catalog";
+import { getBlogPosts } from "@/lib/blog.functions";
 import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
+import { POSTS } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -27,15 +28,21 @@ export const Route = createFileRoute("/$locale/blog/")({
       links: [...seo.links],
     };
   },
-  loader: (): Promise<{ posts: BlogPost[] }> =>
-    listBlogPosts({ data: { fallback: POSTS } }).then((posts) => ({
-      posts: (posts as BlogPost[]).filter((p) => p && typeof p.date === "string"),
-    })),
+  loader: async ({ params }) => {
+    const locale = normalizeLocale((params as { locale?: string }).locale) as string;
+    const dbPosts = (await listBlogPosts({ data: { fallback: POSTS, locale } })) as BlogPost[];
+    const staticPosts = getBlogPosts(locale);
+    const merged =
+      dbPosts.length > 0
+        ? dbPosts.filter((p) => p && typeof p.date === "string")
+        : staticPosts.filter((p) => p && typeof p.date === "string");
+    return { posts: merged };
+  },
   component: BlogIndex,
 });
 
 function BlogIndex() {
-  const { posts } = Route.useLoaderData();
+  const { posts } = Route.useLoaderData() as { posts: BlogPost[] };
   const { locale, t } = useI18n();
 
   return (
@@ -51,7 +58,7 @@ function BlogIndex() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-px border border-border bg-border md:grid-cols-2">
-            {posts.map((p) => (
+            {posts.map((p: BlogPost) => (
               <article key={p.slug} className="bg-card p-8">
                 <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   <span className="border border-border px-2 py-1 font-bold">{p.category}</span>

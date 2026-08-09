@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig(async ({ mode }) => {
   const loadedEnv = loadEnv(mode, process.cwd(), "VITE_");
@@ -68,6 +69,9 @@ export default defineConfig(async ({ mode }) => {
       tsConfigPaths({ projects: ["./tsconfig.json"] }),
       nitro({ defaultPreset: "cloudflare-module", compatibilityDate: "2026-08-01" }),
       viteReact(),
+      ...(process.env["ANALYZE"]
+        ? [visualizer({ open: true, filename: "bundle-stats.html" })]
+        : []),
     ],
   };
 });
