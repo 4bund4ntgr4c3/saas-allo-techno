@@ -15,6 +15,9 @@ type CartContextValue = {
   setQty: (slug: string, qty: number) => void;
   remove: (slug: string) => void;
   clear: () => void;
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -22,6 +25,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -80,6 +84,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clear = useCallback(() => setLines([]), []);
 
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
   const value = useMemo<CartContextValue>(() => {
     const items = lines
       .map((l) => {
@@ -97,8 +104,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setQty,
       remove,
       clear,
+      drawerOpen,
+      openDrawer,
+      closeDrawer,
     };
-  }, [lines, add, setQty, remove, clear]);
+  }, [lines, add, setQty, remove, clear, drawerOpen, openDrawer, closeDrawer]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
@@ -112,8 +122,8 @@ export function useCart() {
 export const DELIVERY_OPTIONS = [
   { id: "retrait", label: "Retrait en boutique (Zogbadjè)", fee: 0, eta: "sous 2 h" },
   { id: "calavi", label: "Livraison Abomey-Calavi", fee: 1000, eta: "même journée" },
-  { id: "cotonou", label: "Livraison Cotonou / Godomey", fee: 2000, eta: "24 h" },
-  { id: "interieur", label: "Envoi intérieur du pays", fee: 3500, eta: "48 à 72 h" },
+  { id: "cotonou", label: "Livraison Cotonou et environ", fee: 2000, eta: "24 h" },
+  { id: "interieur", label: "Envoi intérieur du pays", fee: 2000, eta: "48 à 72 h" },
 ] as const;
 
 export const FREE_DELIVERY_FROM = 50000;

@@ -2,6 +2,7 @@ import { registerSegments } from "@/lib/i18n/dictionaries";
 
 const fr = {
   // Panier — meta
+  "panier.hero": "Validez votre commande d'accessoires : retrait en boutique à Abomey-Calavi ou livraison au Bénin.",
   "panier.meta.title": "Panier & commande d'accessoires — Allô Techno",
   "panier.meta.description":
     "Validez votre commande d'accessoires : retrait en boutique à Abomey-Calavi ou livraison, paiement MTN MoMo, Moov Money ou espèces.",
@@ -80,6 +81,7 @@ const fr = {
 
 const en = {
   // Panier — meta
+  "panier.hero": "Finalize your accessory order: in-store pickup in Abomey-Calavi or delivery in Benin.",
   "panier.meta.title": "Cart & accessory order — Allô Techno",
   "panier.meta.description":
     "Finalize your accessory order: in-store pickup in Abomey-Calavi or delivery, MTN MoMo, Moov Money or cash payment.",

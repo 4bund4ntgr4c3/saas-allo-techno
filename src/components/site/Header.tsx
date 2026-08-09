@@ -62,13 +62,12 @@ function ThemeToggle() {
 }
 
 function CartButton() {
-  const { count } = useCart();
-  const { locale } = useI18n();
+  const { count, openDrawer } = useCart();
+  const { t } = useI18n();
   return (
-    <Link
-      to="/$locale/panier"
-      params={{ locale }}
-      aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+    <button
+      onClick={openDrawer}
+      aria-label={t("nav.panier") + `, ${count} article${count > 1 ? "s" : ""}`}
       className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       <ShoppingBag className="size-4" />
@@ -77,7 +76,7 @@ function CartButton() {
           {count}
         </span>
       )}
-    </Link>
+    </button>
   );
 }
 

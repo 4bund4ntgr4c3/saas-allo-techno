@@ -22,6 +22,7 @@ import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
+import { CartDrawer } from "@/components/shop/CartDrawer";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 
@@ -237,6 +238,7 @@ function RootComponent() {
           </Suspense>
           <Toaster />
           <AddToCartWidget />
+          <CartDrawer />
           <PwaInstallBanner />
           <OfflineIndicator />
           <AuthErrorHandler />
