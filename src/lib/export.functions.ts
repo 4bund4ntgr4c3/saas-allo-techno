@@ -159,3 +159,70 @@ export const exportPaymentsCsv = createServerFn({ method: "POST" }).handler(asyn
 
   return { csv: toCsv(header, rows) };
 });
+
+/** Export du dashboard complet en Excel (.xlsx), réservé au personnel. */
+export const exportDashboardXlsx = createServerFn({ method: "POST" }).handler(async () => {
+  const XLSX = await import("xlsx");
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+  if (!rateLimit("admin-export", 5))
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: Réservations
+  const { data: reservations } = await supabaseAdmin
+    .from("reservations")
+    .select("reference, customer_name, phone, device, issue, status, slot_date, payment, created_at")
+    .order("created_at", { ascending: false })
+    .limit(2000);
+  const resRows = (reservations ?? []).map((r) => ({
+    Reference: r.reference,
+    Client: r.customer_name,
+    Telephone: r.phone,
+    Appareil: r.device,
+    Panne: r.issue,
+    Statut: r.status,
+    "Date RDV": r.slot_date,
+    Paiement: r.payment,
+    "Cree le": r.created_at,
+  }));
+  const wsRes = XLSX.utils.json_to_sheet(resRows);
+  XLSX.utils.book_append_sheet(wb, wsRes, "Reservations");
+
+  // Sheet 2: Paiements
+  const { data: payments } = await supabaseAdmin
+    .from("payments")
+    .select("amount, status, method, created_at")
+    .order("created_at", { ascending: false })
+    .limit(5000);
+  const payRows = (payments ?? []).map((p) => ({
+    Date: p.created_at,
+    Montant: p.amount,
+    Methode: p.method,
+    Statut: p.status,
+  }));
+  const wsPay = XLSX.utils.json_to_sheet(payRows);
+  XLSX.utils.book_append_sheet(wb, wsPay, "Payments");
+
+  // Sheet 3: Leads
+  const { data: leads } = await supabaseAdmin
+    .from("leads")
+    .select("source, name, phone, email, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(2000);
+  const leadRows = (leads ?? []).map((l) => ({
+    Source: l.source,
+    Nom: l.name,
+    Telephone: l.phone,
+    Email: l.email,
+    Statut: l.status,
+    "Cree le": l.created_at,
+  }));
+  const wsLeads = XLSX.utils.json_to_sheet(leadRows);
+  XLSX.utils.book_append_sheet(wb, wsLeads, "Leads");
+
+  const buf = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+  return { base64, filename: `dashboard-allotechno-${new Date().toISOString().slice(0, 10)}.xlsx` };
+});

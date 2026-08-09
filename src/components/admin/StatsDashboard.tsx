@@ -2,8 +2,9 @@
 // calculées depuis la base (réservations, leads), agrégées côté client.
 // Aucune librairie de graphique : barres et grilles en divs Tailwind.
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { TrendingDown, TrendingUp, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
 import { computeEstimate } from "@/lib/estimate";
@@ -16,7 +17,20 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { LineChart, Line, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { Button } from "@/components/ui/button";
+import { exportDashboardXlsx } from "@/lib/export.functions";
 import "@/lib/i18n/segments/admin";
 
 type Status = Enums<"reservation_status">;
@@ -156,12 +170,40 @@ function formatShortDate(iso: string, locale: string): string {
   }
 }
 
-function KpiCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function KpiCard({
+  label,
+  value,
+  sub,
+  trend,
+  visible = true,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  trend?: { value: number; label: string } | null;
+  visible?: boolean;
+}) {
+  if (!visible) return null;
+  const up = trend && trend.value > 0;
+  const down = trend && trend.value < 0;
   return (
     <div className="border border-border bg-card p-4">
       <p className="at-eyebrow">{label}</p>
       <p className="mt-2 text-2xl font-semibold tabular-nums">{value}</p>
-      {sub ? <p className="mt-1 text-xs text-muted-foreground">{sub}</p> : null}
+      <div className="mt-1 flex items-center gap-2">
+        {sub ? <span className="text-xs text-muted-foreground">{sub}</span> : null}
+        {trend ? (
+          <span
+            className={`inline-flex items-center gap-0.5 text-[11px] font-semibold ${
+              up ? "text-green-600" : down ? "text-red-500" : "text-muted-foreground"
+            }`}
+          >
+            {up ? <TrendingUp className="size-3" /> : down ? <TrendingDown className="size-3" /> : null}
+            {up ? "+" : ""}
+            {trend.value}%
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -336,6 +378,59 @@ export function StatsDashboard() {
       fill: STATUS_COLORS[status],
     })).filter((r) => r.count > 0);
 
+    // Weekly revenue trend (last 8 weeks)
+    const weeklyRevenue = new Map<string, number>();
+    for (let i = 7; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - (i * 7 + d.getDay()));
+      const weekStart = d.toISOString().slice(0, 10);
+      weeklyRevenue.set(weekStart, 0);
+    }
+    for (const p of paymentsData) {
+      if (p.status !== "success" && p.status !== "paid") continue;
+      const d = new Date(p.created_at);
+      d.setDate(d.getDate() - d.getDay());
+      const key = d.toISOString().slice(0, 10);
+      if (weeklyRevenue.has(key)) {
+        weeklyRevenue.set(key, (weeklyRevenue.get(key) ?? 0) + p.amount);
+      }
+    }
+    const weeklyRevenueData = [...weeklyRevenue.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([week, revenue]) => {
+        const parts = week.split("-");
+        const label = `${parts[2]}/${parts[1]}`;
+        return { week: label, revenue };
+      });
+
+    // Trend calculations (current vs previous month)
+    const currentMonth = monthlyRevenueData[monthlyRevenueData.length - 1]?.revenue ?? 0;
+    const prevMonth = monthlyRevenueData[monthlyRevenueData.length - 2]?.revenue ?? 0;
+    const revenueTrend =
+      prevMonth > 0
+        ? { value: Math.round(((currentMonth - prevMonth) / prevMonth) * 100), label: "vs mois précédent" }
+        : null;
+
+    const currentMonthReservations = reservations.filter((r) => isSameMonth(r.created_at, nowIso)).length;
+    const prevMonthDate = new Date();
+    prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+    const prevMonthReservations = reservations.filter((r) => {
+      const d = new Date(r.created_at);
+      return (
+        d.getMonth() === prevMonthDate.getMonth() &&
+        d.getFullYear() === prevMonthDate.getFullYear()
+      );
+    }).length;
+    const repairsTrend =
+      prevMonthReservations > 0
+        ? {
+            value: Math.round(
+              ((currentMonthReservations - prevMonthReservations) / prevMonthReservations) * 100,
+            ),
+            label: "vs mois précédent",
+          }
+        : null;
+
     const brandRows = [...brandCounts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8)
@@ -370,7 +465,10 @@ export function StatsDashboard() {
       peakMax,
       recent: reservations.slice(0, 10),
       monthlyRevenueData,
+      weeklyRevenueData,
       statusDistribution,
+      revenueTrend,
+      repairsTrend,
     };
   }, [reservationsQuery.data, leadsQuery.data, paymentsQuery.data, nowIso]);
 
@@ -380,12 +478,85 @@ export function StatsDashboard() {
 
   const unmatched = Math.max(0, stats.repairsThisMonth - repairRevenue.matched);
 
+  // Configurable KPI visibility (stored in localStorage)
+  const [kpiConfig, setKpiConfig] = useState({
+    repairs: true,
+    boutiqueOrders: true,
+    repairRevenue: true,
+    boutiqueRevenue: true,
+  });
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("at-admin-kpis");
+      if (stored) setKpiConfig(JSON.parse(stored));
+    } catch { /* ignore */ }
+  }, []);
+
+  const toggleKpi = useCallback((key: keyof typeof kpiConfig) => {
+    setKpiConfig((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem("at-admin-kpis", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const handleExportXlsx = useCallback(async () => {
+    try {
+      const result = await exportDashboardXlsx();
+      const binary = atob(result.base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = result.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      /* silent */
+    }
+  }, []);
+
   return (
     <div className="space-y-8">
-      <div>
-        <p className="at-eyebrow">{t("admin.stats.eyebrow")}</p>
-        <h2 className="mt-1 text-xl font-semibold">{t("admin.stats.title")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t("admin.stats.intro")}</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.stats.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.stats.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.stats.intro")}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="technicalOutline" size="sm" onClick={handleExportXlsx}>
+            <Download className="mr-1 size-3" />
+            Export Excel
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {([
+          ["repairs", t("admin.stats.kpi.repairs")],
+          ["boutiqueOrders", t("admin.stats.kpi.boutiqueOrders")],
+          ["repairRevenue", t("admin.stats.kpi.repairRevenue")],
+          ["boutiqueRevenue", t("admin.stats.kpi.boutiqueRevenue")],
+        ] as const).map(([key, lbl]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => toggleKpi(key)}
+            className={`rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              kpiConfig[key]
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-surface text-muted-foreground"
+            }`}
+          >
+            {lbl}
+          </button>
+        ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -393,21 +564,27 @@ export function StatsDashboard() {
           label={t("admin.stats.kpi.repairs")}
           value={String(stats.repairsThisMonth)}
           sub={t("admin.stats.month")}
+          trend={stats.repairsTrend}
+          visible={kpiConfig.repairs}
         />
         <KpiCard
           label={t("admin.stats.kpi.boutiqueOrders")}
           value={String(stats.boutiqueOrdersThisMonth)}
           sub={t("admin.stats.month")}
+          visible={kpiConfig.boutiqueOrders}
         />
         <KpiCard
           label={t("admin.stats.kpi.repairRevenue")}
           value={revenueReady ? formatFcfa(repairRevenue.total) : "…"}
           sub={t("admin.stats.month")}
+          trend={stats.revenueTrend}
+          visible={kpiConfig.repairRevenue}
         />
         <KpiCard
           label={t("admin.stats.kpi.boutiqueRevenue")}
           value={formatFcfa(stats.boutiqueRevenue)}
           sub={t("admin.stats.month")}
+          visible={kpiConfig.boutiqueRevenue}
         />
       </div>
 
@@ -552,6 +729,46 @@ export function StatsDashboard() {
                   dot={false}
                 />
               </LineChart>
+            </ChartContainer>
+          )}
+        </section>
+
+        <section className="border border-border bg-card p-4">
+          <h3 className="mb-4 text-sm font-semibold">Tendance hebdomadaire (8 semaines)</h3>
+          {stats.weeklyRevenueData.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {t("admin.stats.revenue_monthly.empty")}
+            </p>
+          ) : (
+            <ChartContainer config={REVENUE_MONTHLY_CONFIG} className="aspect-auto h-64">
+              <AreaChart data={stats.weeklyRevenueData}>
+                <defs>
+                  <linearGradient id="weeklyGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="week" tickLine={false} axisLine={false} fontSize={10} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={10}
+                  width={60}
+                  tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent formatter={(value) => formatFcfa(Number(value))} />}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="var(--color-revenue)"
+                  strokeWidth={2}
+                  fill="url(#weeklyGrad)"
+                />
+              </AreaChart>
             </ChartContainer>
           )}
         </section>

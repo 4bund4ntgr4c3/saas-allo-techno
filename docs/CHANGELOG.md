@@ -7,6 +7,21 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.09] — 2026-08-09 (Batch 24)
+
+### Added
+
+- **Tendances hebdomadaires** : AreaChart Recharts (8 dernières semaines) dans le dashboard stats, avec dégradé rempli et tooltips FCFA.
+- **Indicateurs de tendance** : KPI cards avec flèches TrendingUp/TrendingDown + pourcentage de variation vs mois précédent (réparations, revenus).
+- **KPI configurables** : boutons toggle pour afficher/masquer chaque KPI (repairs, boutique, repair revenue, boutique revenue), persisté dans localStorage.
+- **Export Excel** : `exportDashboardXlsx` serveur — génère un fichier `.xlsx` avec 3 onglets (Réservations, Paiements, Leads). Bouton "Export Excel" dans le header du dashboard.
+
+### Changed
+
+- **Dashboard stats enrichi** : ajout d'un AreaChart hebdomadaire à côté du LineChart mensuel, section KPI avec toggles, header avec bouton export.
+
+---
+
 ## [2026.08.09] — 2026-08-09 (Batch 23)
 
 ### Added
