@@ -2,11 +2,12 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.09 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.10 — [Changelog](./CHANGELOG.md)
 
 ## Fonctionnalités
 
 ### Côté client
+
 - **Recherche intelligente** : assistant de diagnostic en 9 étapes (type → marque → série → famille → modèle → pannes → créneau → photos → contact). Moteur de recherche amélioré avec fuzzy matching (tolérance aux fautes de frappe), scoring par pertinence, historique des recherches récentes.
 - **Widget panier animé** : toast flottant en bas à droite avec animation slide-in, affiche le dernier article ajouté, prix, boutons "Voir le panier" / "Continuer". Auto-masquage après 4 secondes.
 - **Sidebar filtres shop** : filtres latéraux (catégorie, fourchettes de prix, disponibilité, livraison gratuite) avec drawer mobile pour les petits écrans — intégrée boutique et reconditionnés.
@@ -15,6 +16,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Page Rejoindre l'équipe** : avantages, postes ouverts, processus de candidature, CTA.
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
 - **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape, photos d'atelier, commentaires client en temps réel.
+- **Historique appareils** : page publique `/historique` — recherche par téléphone ou email, stats de réparation, résultats vers le suivi.
 - **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.
 - **Acompte 50%** : paiement partiel pour confirmer la réservation.
 - **Programme de fidélité** : points gagnés, 3 niveaux (Bronze/Argent/Or), utilisation (100 pts = 500 FCFA).
@@ -26,14 +28,15 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **PWA installable** : manifeste + service worker.
 
 ### Côté atelier / admin (25 onglets)
+
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
 - **Atelier** : tableau kanban des réparations en cours, assignment technicien.
 - **Équipe** : gestion des rôles (staff, technicien).
 - **Leads** : suivi des demandes de devis.
 - **Réclamations** : tickets de garantie avec statuts.
 - **Analytics** : événements récents + compteurs.
-- **Statistiques** : Recharts (LineChart + PieChart), 4 onglets (Revenus, Clients, Appareils, Temps).
-- **KPI avancés** : métriques de performance en temps réel.
+- **Statistiques** : Recharts (AreaChart + PieChart), 4 onglets (Revenus, Clients, Appareils, Temps), tendances hebdomadaires avec indicateurs, export Excel.
+- **KPI avancés** : métriques de performance en temps réel, KPIs configurables via panneau de config.
 - **Sécurité** : OTP 2FA, historique des connexions.
 - **Contenu** : blog, guides, mentions légales.
 - **Catalogue** : gestion des appareils, marques, pannes.
@@ -63,12 +66,14 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Garantie étendue** : upsell 6/12/24 mois, suivi statut.
 
 ### Contenu et SEO
+
 - **Pages** : Accueil, Réparations (par marque/appareil), Catalogue, Tarifs, Services, Boutique, Promotions, Magasins, Suivi, Devis, Reprise, Reconditionnés, FAQ, Blog, Avis, Contact, Engagements, Entreprises, Garantie, Réclamation, Guides, Quartiers, Mentions légales.
 - **SEO** : Schema.org LocalBusiness, OpenGraph, Twitter Cards, sitemap dynamique, meta par page.
 - **Blog** : articles bilingues FR/EN avec catégories et temps de lecture.
 - **i18n** : routage bilingue `/fr` + `/en`, 27 segments traduits.
 
 ### Infrastructure
+
 - **CI/CD** : GitHub Actions (lint + test + build + deploy + backup hebdomadaire).
 - **Monitoring** : Plausible Analytics, endpoint `/api/healthz`, métriques temps réel.
 - **Logging structuré** : JSON avec contexte (module, user, reservation).
@@ -78,31 +83,31 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 
 ## Stack technique
 
-| Couche | Technologie | Version |
-|---|---|---|
-| Framework | [TanStack Start](https://tanstack.com/start) (React 19 SSR) | ^1.168.32 |
-| Routing | [TanStack Router](https://tanstack.com/router) (file-based) | ^1.170.18 |
-| State | [TanStack Query](https://tanstack.com/query) | ^5.101.1 |
-| Build | [Vite](https://vite.dev) | ^8.1.5 |
-| Langage | [TypeScript](https://www.typescriptlang.org) | ^5.8.3 |
-| CSS | [Tailwind CSS](https://tailwindcss.com) v4 | ^4.2.1 |
-| UI | [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://www.radix-ui.com) | 22 primitives |
-| Base de données | [Supabase](https://supabase.com) (PostgreSQL, Auth, Realtime, RLS) | ^2.111.0 |
-| Validation | [react-hook-form](https://react-hook-form.com) + [Zod](https://zod.dev) | ^7.71.2 / ^3.24.2 |
-| Déploiement | [Cloudflare Workers](https://workers.cloudflare.com) (Wrangler) | ^4.120.0 |
-| SSR / Server | [Nitro](https://nitro.build) | ^3.0.260610-beta |
-| Testing | [Vitest](https://vitest.dev) (unit) + [Playwright](https://playwright.dev) (E2E) | ^4.1.10 / ^1.62.1 |
-| CI/CD | [GitHub Actions](https://github.com/features/actions) | — |
-| Monitoring | [Plausible Analytics](https://plausible.io) | — |
-| Notifications | [Resend](https://resend.com) (email) + WhatsApp Cloud API | — |
-| Paiements | [Flutterwave](https://flutterwave.com), [FedaPay](https://fedapay.com), [KKiaPay](https://kkiapay.me) | — |
-| PDF | [jsPDF](https://www.npmjs.com/package/jspdf) + jspdf-autotable | ^4.2.1 |
-| QR Codes | [qrcode](https://www.npmjs.com/package/qrcode) | ^1.5.4 |
-| Animation | [Motion](https://motion.dev) (ex-Framer Motion) | ^12.43.0 |
-| Charts | [Recharts](https://recharts.org) | ^2.15.4 |
-| Icons | [Lucide React](https://lucide.dev) | ^0.575.0 |
-| Toasts | [Sonner](https://sonner.emilkowal.ski) | ^2.0.7 |
-| Linting | ESLint 9 + typescript-eslint + Prettier | ^9.32.0 |
+| Couche          | Technologie                                                                                           | Version           |
+| --------------- | ----------------------------------------------------------------------------------------------------- | ----------------- |
+| Framework       | [TanStack Start](https://tanstack.com/start) (React 19 SSR)                                           | ^1.168.32         |
+| Routing         | [TanStack Router](https://tanstack.com/router) (file-based)                                           | ^1.170.18         |
+| State           | [TanStack Query](https://tanstack.com/query)                                                          | ^5.101.1          |
+| Build           | [Vite](https://vite.dev)                                                                              | ^8.1.5            |
+| Langage         | [TypeScript](https://www.typescriptlang.org)                                                          | ^5.8.3            |
+| CSS             | [Tailwind CSS](https://tailwindcss.com) v4                                                            | ^4.2.1            |
+| UI              | [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://www.radix-ui.com)                             | 22 primitives     |
+| Base de données | [Supabase](https://supabase.com) (PostgreSQL, Auth, Realtime, RLS)                                    | ^2.111.0          |
+| Validation      | [react-hook-form](https://react-hook-form.com) + [Zod](https://zod.dev)                               | ^7.71.2 / ^3.24.2 |
+| Déploiement     | [Cloudflare Workers](https://workers.cloudflare.com) (Wrangler)                                       | ^4.120.0          |
+| SSR / Server    | [Nitro](https://nitro.build)                                                                          | ^3.0.260610-beta  |
+| Testing         | [Vitest](https://vitest.dev) (unit) + [Playwright](https://playwright.dev) (E2E)                      | ^4.1.10 / ^1.62.1 |
+| CI/CD           | [GitHub Actions](https://github.com/features/actions)                                                 | —                 |
+| Monitoring      | [Plausible Analytics](https://plausible.io)                                                           | —                 |
+| Notifications   | [Resend](https://resend.com) (email) + WhatsApp Cloud API                                             | —                 |
+| Paiements       | [Flutterwave](https://flutterwave.com), [FedaPay](https://fedapay.com), [KKiaPay](https://kkiapay.me) | —                 |
+| PDF             | [jsPDF](https://www.npmjs.com/package/jspdf) + jspdf-autotable                                        | ^4.2.1            |
+| QR Codes        | [qrcode](https://www.npmjs.com/package/qrcode)                                                        | ^1.5.4            |
+| Animation       | [Motion](https://motion.dev) (ex-Framer Motion)                                                       | ^12.43.0          |
+| Charts          | [Recharts](https://recharts.org)                                                                      | ^2.15.4           |
+| Icons           | [Lucide React](https://lucide.dev)                                                                    | ^0.575.0          |
+| Toasts          | [Sonner](https://sonner.emilkowal.ski)                                                                | ^2.0.7            |
+| Linting         | ESLint 9 + typescript-eslint + Prettier                                                               | ^9.32.0           |
 
 ## Structure du projet
 

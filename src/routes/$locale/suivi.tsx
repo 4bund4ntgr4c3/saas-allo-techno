@@ -346,9 +346,11 @@ function StatusResult({
     result.slot_period === "matin" ? t("suivi.period.matin") : t("suivi.period.apresmidi");
 
   const milestoneDates = new Map<string, string>();
+  const milestoneNotes = new Map<string, string | null>();
   for (const e of timeline) {
     if (e.new_status && !milestoneDates.has(e.new_status)) {
       milestoneDates.set(e.new_status, e.created_at);
+      milestoneNotes.set(e.new_status, e.note ?? null);
     }
   }
 
@@ -458,6 +460,7 @@ function StatusResult({
               const done = i < activeIndex;
               const current = i === activeIndex;
               const reachedAt = milestoneDates.get(milestone.key);
+              const note = milestoneNotes.get(milestone.key);
               return (
                 <li key={milestone.key} className="relative flex gap-5 pb-10 last:pb-0">
                   {i < MILESTONES.length - 1 && (
@@ -489,6 +492,9 @@ function StatusResult({
                         {t(milestone.label)}
                       </p>
                       <p className="mt-0.5 text-sm text-muted-foreground">{t(milestone.detail)}</p>
+                      {note && (done || current) && (
+                        <p className="mt-1 text-xs italic text-muted-foreground/80">{note}</p>
+                      )}
                     </div>
                     {current ? (
                       <span className="rounded-full border border-primary/50 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary">

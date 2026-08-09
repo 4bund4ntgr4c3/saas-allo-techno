@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { rateLimit } from "@/lib/security";
 
 export interface DeviceHistoryEntry {
   id: string;
@@ -19,6 +20,13 @@ export const getDeviceHistory = createServerFn({ method: "POST" })
     return { phone, email, device };
   })
   .handler(async ({ data }) => {
+    if (!rateLimit("device-history", 10)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const hasQuery = data.phone || data.email || data.device;
+    if (!hasQuery) throw new Error("Renseignez un numéro, un email ou un appareil.");
+
     let query = supabaseAdmin
       .from("reservations")
       .select("id, reference, device, issue, status, created_at, phone, email");
@@ -67,6 +75,14 @@ export const getDeviceStats = createServerFn({ method: "POST" })
     return { phone, email };
   })
   .handler(async ({ data }) => {
+    if (!rateLimit("device-stats", 10)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    if (!data.phone && !data.email) {
+      throw new Error("Renseignez un numéro ou un email.");
+    }
+
     let query = supabaseAdmin.from("reservations").select("device, status, created_at");
     if (data.phone) query = query.eq("phone", data.phone);
     else if (data.email) query = query.eq("email", data.email);

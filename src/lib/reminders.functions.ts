@@ -156,7 +156,12 @@ function tomorrowIso(): string {
   return isoDateInTz(new Date(Date.now() + DAY_MS));
 }
 
-function buildRdvReminder(r: Candidate): { subject: string; html: string; waBody: string } {
+function buildRdvReminder(r: Candidate): {
+  subject: string;
+  html: string;
+  waBody: string;
+  smsBody: string;
+} {
   const sujet = `Rappel : rendez-vous ${r.reference} demain`;
   const creneau = `${formatDateFr(r.slot_date)} à ${r.slot_hour ?? PERIOD_LABEL[r.slot_period].toLowerCase()}`;
   const waBody = [
@@ -165,16 +170,22 @@ function buildRdvReminder(r: Candidate): { subject: string; html: string; waBody
     `Suivez votre dossier : ${trackingLink(r.reference)}`,
     `${COMPANY.name} — ${COMPANY.phone}`,
   ].join("\n");
+  const smsBody = `Allô Techno : Rappel rdv ${r.reference} (${r.device}) demain ${creneau}. Suivez ${trackingLink(r.reference)}`;
   const html = shell(sujet, [
     `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, votre dossier est confirmé :</p>`,
     `<p style="font-size:14px">Rendez-vous <strong>demain</strong>, ${creneau}.</p>`,
     `<p style="font-size:14px"><a href="${trackingLink(r.reference)}">Suivre mon dossier</a></p>`,
     `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
   ]);
-  return { subject: sujet, html, waBody };
+  return { subject: sujet, html, waBody, smsBody };
 }
 
-function buildQuoteRelance(r: Candidate): { subject: string; html: string; waBody: string } {
+function buildQuoteRelance(r: Candidate): {
+  subject: string;
+  html: string;
+  waBody: string;
+  smsBody: string;
+} {
   const amount = `${(r.quote_amount ?? 0).toLocaleString("fr-FR")} FCFA`;
   const decisionUrl = r.quote_token ? quoteDecisionLink(r.quote_token) : trackingLink(r.reference);
   const sujet = `Dossier ${r.reference} — votre devis ${amount} attend votre réponse`;
@@ -183,6 +194,7 @@ function buildQuoteRelance(r: Candidate): { subject: string; html: string; waBod
     `Validez ou refusez le devis ici : ${decisionUrl}`,
     `${COMPANY.name} — ${COMPANY.phone}`,
   ].join("\n");
+  const smsBody = `Allô Techno : Votre devis ${amount} pour ${r.device} (${r.reference}) attend votre réponse. Validez : ${decisionUrl}`;
   const html = shell(sujet, [
     `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, votre devis pour le dossier ${r.reference} (${r.device}) n'a pas encore reçu de réponse :</p>`,
     `<p style="font-size:20px;font-weight:700;margin:10px 0">${amount}</p>`,
@@ -193,10 +205,15 @@ function buildQuoteRelance(r: Candidate): { subject: string; html: string; waBod
     </p>`,
     `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
   ]);
-  return { subject: sujet, html, waBody };
+  return { subject: sujet, html, waBody, smsBody };
 }
 
-function buildReadyAlert(r: Candidate): { subject: string; html: string; waBody: string } {
+function buildReadyAlert(r: Candidate): {
+  subject: string;
+  html: string;
+  waBody: string;
+  smsBody: string;
+} {
   const sujet = `Dossier ${r.reference} — votre appareil est prêt`;
   const waBody = [
     `Bonjour ${r.customer_name}, bonne nouvelle : votre ${r.device} (dossier ${r.reference}) est réparé et prêt à récupérer !`,
@@ -204,6 +221,7 @@ function buildReadyAlert(r: Candidate): { subject: string; html: string; waBody:
     `Suivez votre dossier : ${trackingLink(r.reference)}`,
     `${COMPANY.name} — ${COMPANY.phone}`,
   ].join("\n");
+  const smsBody = `Allô Techno : Votre ${r.device} (${r.reference}) est prêt ! Récupérez-le au ${COMPANY.address}.`;
   const html = shell(sujet, [
     `<p style="font-size:14px">Bonjour <strong>${r.customer_name}</strong>, bonne nouvelle : votre <strong>${r.device}</strong> (dossier ${r.reference}) est réparé et prêt à récupérer !</p>`,
     `<p style="font-size:14px">Venez le récupérer à l'atelier : ${COMPANY.address}.</p>`,
@@ -211,7 +229,7 @@ function buildReadyAlert(r: Candidate): { subject: string; html: string; waBody:
     `<p style="font-size:14px"><a href="${trackingLink(r.reference)}">Suivre mon dossier</a></p>`,
     `<p style="margin-top:20px;font-size:12px;color:#6b7280">${COMPANY.address} — ${COMPANY.phone}</p>`,
   ]);
-  return { subject: sujet, html, waBody };
+  return { subject: sujet, html, waBody, smsBody };
 }
 
 type AdminClient = {
@@ -330,9 +348,9 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
   return counters;
 }
 
-/** E-mail en repli + WhatsApp (best-effort, jamais d'exception propagée). */
+/** E-mail + WhatsApp + SMS en repli (best-effort, jamais d'exception propagée). */
 async function sendBoth(
-  message: { subject: string; html: string; waBody: string },
+  message: { subject: string; html: string; waBody: string; smsBody?: string },
   r: Candidate,
 ): Promise<void> {
   if (r.email) {
@@ -342,10 +360,21 @@ async function sendBoth(
       console.error(`[reminders] e-mail échoué (${r.reference})`, err);
     }
   }
+  let waOk = false;
   try {
     await sendWhatsApp(r.phone, message.waBody);
+    waOk = true;
   } catch (err) {
     console.error(`[reminders] WhatsApp échoué (${r.reference})`, err);
+  }
+  // Fallback SMS si WhatsApp échoue
+  if (!waOk && message.smsBody) {
+    try {
+      const { sendSimpleSms } = await import("@/lib/sms");
+      await sendSimpleSms(r.phone, message.smsBody);
+    } catch (err) {
+      console.error(`[reminders] SMS échoué (${r.reference})`, err);
+    }
   }
 }
 

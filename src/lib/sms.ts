@@ -110,3 +110,7 @@ export async function sendPaymentSms(
   ].join("\n");
   return sendSms({ to: formatPhone(phone), message });
 }
+
+export async function sendSimpleSms(phone: string, message: string): Promise<boolean> {
+  return sendSms({ to: formatPhone(phone), message });
+}

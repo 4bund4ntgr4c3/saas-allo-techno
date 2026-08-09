@@ -7,6 +7,28 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 26)
+
+### Added
+
+- **Page historique appareils** : `/historique` — page publique permettant de rechercher l'historique de réparation par téléphone ou email, avec stats (réparations totales, terminées, taux complétion), résultats cliquables vers le suivi. 21 clés i18n `historique.*` FR/EN.
+- **Export Excel dashboard** : `exportDashboardXlsx` — exporte réservations, paiements et leads en 3 onglets Excel (package `xlsx`), bouton "Exporter Excel" dans `StatsDashboard`.
+- **Tendances hebdomadaires** : `AreaChart` 8 semaines + indicateurs de tendance (TrendingUp/TrendingDown + %) dans les KPIs dashboard.
+- **KPIs configurables** : sélection des 4 KPIs visibles via `localStorage` (`admin.dashboard.kpis`), panneau de configuration avec 8 métriques disponibles.
+- **SMS fallback reminders** : `sendBoth` tente WhatsApp d'abord, puis bascule sur SMS (`sendSimpleSms`) si WhatsApp échoue.
+
+### Changed
+
+- **Dashboard stats enrichi** : AreaChart remplace les stats simples, tendances avec flèches colorées, panneau de configuration KPI.
+- **Export multi-format** : CSV (existants) + Excel (nouveau) pour les données du dashboard.
+
+### Fixed
+
+- **TypeScript error** : `sendReservationSms` remplacé par `sendSimpleSms` dans les reminders (correction signature).
+- **Unused import** : `useMemo` supprimé de `historique.tsx`.
+
+---
+
 ## [2026.08.09] — 2026-08-09 (Batch 25)
 
 ### Added

@@ -27,6 +27,7 @@ import { Route as LocaleEntreprisesRouteImport } from './routes/$locale/entrepri
 import { Route as LocaleFaqRouteImport } from './routes/$locale/faq'
 import { Route as LocaleGarantieRouteImport } from './routes/$locale/garantie'
 import { Route as LocaleGuidesRouteImport } from './routes/$locale/guides'
+import { Route as LocaleHistoriqueRouteImport } from './routes/$locale/historique'
 import { Route as LocaleMagasinsRouteImport } from './routes/$locale/magasins'
 import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
 import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
@@ -148,6 +149,11 @@ const LocaleGarantieRoute = LocaleGarantieRouteImport.update({
 const LocaleGuidesRoute = LocaleGuidesRouteImport.update({
   id: '/guides',
   path: '/guides',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleHistoriqueRoute = LocaleHistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleMagasinsRoute = LocaleMagasinsRouteImport.update({
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
   '/$locale/guides': typeof LocaleGuidesRoute
+  '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -385,6 +392,7 @@ export interface FileRoutesByTo {
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
   '/$locale/guides': typeof LocaleGuidesRoute
+  '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -439,6 +447,7 @@ export interface FileRoutesById {
   '/$locale/faq': typeof LocaleFaqRoute
   '/$locale/garantie': typeof LocaleGarantieRoute
   '/$locale/guides': typeof LocaleGuidesRoute
+  '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -493,6 +502,7 @@ export interface FileRouteTypes {
     | '/$locale/faq'
     | '/$locale/garantie'
     | '/$locale/guides'
+    | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
@@ -544,6 +554,7 @@ export interface FileRouteTypes {
     | '/$locale/faq'
     | '/$locale/garantie'
     | '/$locale/guides'
+    | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
@@ -597,6 +608,7 @@ export interface FileRouteTypes {
     | '/$locale/faq'
     | '/$locale/garantie'
     | '/$locale/guides'
+    | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
@@ -776,6 +788,13 @@ declare module '@tanstack/react-router' {
       path: '/guides'
       fullPath: '/$locale/guides'
       preLoaderRoute: typeof LocaleGuidesRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/historique': {
+      id: '/$locale/historique'
+      path: '/historique'
+      fullPath: '/$locale/historique'
+      preLoaderRoute: typeof LocaleHistoriqueRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/magasins': {
@@ -1040,6 +1059,7 @@ interface LocaleRouteChildren {
   LocaleFaqRoute: typeof LocaleFaqRoute
   LocaleGarantieRoute: typeof LocaleGarantieRoute
   LocaleGuidesRoute: typeof LocaleGuidesRoute
+  LocaleHistoriqueRoute: typeof LocaleHistoriqueRoute
   LocaleMagasinsRoute: typeof LocaleMagasinsRoute
   LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
   LocalePanierRoute: typeof LocalePanierRoute
@@ -1077,6 +1097,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleFaqRoute: LocaleFaqRoute,
   LocaleGarantieRoute: LocaleGarantieRoute,
   LocaleGuidesRoute: LocaleGuidesRoute,
+  LocaleHistoriqueRoute: LocaleHistoriqueRoute,
   LocaleMagasinsRoute: LocaleMagasinsRoute,
   LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
   LocalePanierRoute: LocalePanierRoute,
