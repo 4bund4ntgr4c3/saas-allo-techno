@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Clock, Download, ShieldCheck } from "lucide-react";
+import { ArrowRight, Clock, Download, Plus, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
+import { DevisComparison } from "@/components/DevisComparison";
 import { Button } from "@/components/ui/button";
 import { BRANDS, DEVICES, devicesOfBrand, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
@@ -37,6 +38,9 @@ function Devis() {
   const [faultSlug, setFaultSlug] = useState<string>("");
   const [sourceDetail, setSourceDetail] = useState<string | undefined>(undefined);
   const [leadSent, setLeadSent] = useState(false);
+  const [compareItems, setCompareItems] = useState<
+    { id: string; device: string; fault: string; price: number; duration: string; warranty: string; parts: string[] }[]
+  >([]);
   const { locale, t } = useI18n();
 
   // Attribution : ?src= ou ?utm_source= (ex. "quartier-zogbadje") transmis au
@@ -213,12 +217,53 @@ function Devis() {
                     {t("devis.lead.sent")}
                   </span>
                 )}
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    const id = `${device.slug}||${fault.slug}`;
+                    if (compareItems.some((c) => c.id === id)) {
+                      toast.info(t("devis.compare.added"));
+                      return;
+                    }
+                    setCompareItems((prev) => [
+                      ...prev,
+                      {
+                        id,
+                        device: device.name,
+                        fault: t(fault.label),
+                        price: fault.price,
+                        duration: t(fault.duration),
+                        warranty: t(fault.warranty),
+                        parts: [],
+                      },
+                    ]);
+                    toast.success(t("devis.compare.added"));
+                  }}
+                >
+                  <Plus className="mr-1 size-4" />
+                  {t("devis.compare.addTo")}
+                </Button>
               </div>
             </div>
           ) : (
             <p className="mt-8 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
               {t("devis.emptyHint")}
             </p>
+          )}
+
+          {compareItems.length >= 2 && (
+            <div className="mt-8">
+              <DevisComparison
+                devis={compareItems}
+                onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}
+              />
+            </div>
+          )}
+          {compareItems.length === 1 && (
+            <div className="mt-8 rounded-sm border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
+              {t("devis.compare.empty")}
+            </div>
           )}
 
           <div className="mt-8">

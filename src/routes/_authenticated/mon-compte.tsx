@@ -135,7 +135,7 @@ function Dashboard() {
       const { data, error } = await supabase
         .from("reservations")
         .select(
-          "id, reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, message, created_at, quote_amount, quote_status, payment_status",
+          "id, reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, message, created_at, quote_amount, quote_status, payment_status, warranty_months",
         )
         .order("slot_date", { ascending: false });
       if (error) throw error;
@@ -312,6 +312,7 @@ function Dashboard() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-8">
               <TabsTrigger value="dossiers">{t("mc.tab.dossiers")}</TabsTrigger>
+              <TabsTrigger value="devis">{t("mc.tab.devis")}</TabsTrigger>
               <TabsTrigger value="fidelite">{t("mc.tab.fidelite")}</TabsTrigger>
               <TabsTrigger value="parrainer">{t("mc.tab.parrainer")}</TabsTrigger>
               <TabsTrigger value="avis">{t("mc.tab.avis")}</TabsTrigger>
@@ -789,6 +790,84 @@ function Dashboard() {
                     ))}
                   </ul>
                 </>
+              )}
+            </TabsContent>
+
+            {/* ── ONGLET: Mes devis ──────────────────────────────────────── */}
+            <TabsContent value="devis">
+              <h2 className="at-display mb-2 text-2xl">{t("mc.devis.title")}</h2>
+              <p className="mb-6 text-sm text-muted-foreground">{t("mc.devis.intro")}</p>
+              {reservations.isLoading ? (
+                <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+              ) : rows.length === 0 ? (
+                <div className="border border-border bg-card p-8">
+                  <p className="text-sm text-muted-foreground">{t("mc.devis.empty")}</p>
+                </div>
+              ) : (
+                <ul className="space-y-4">
+                  {rows
+                    .filter((r) => r.quote_status !== "none" && r.quote_amount !== null)
+                    .map((r) => (
+                      <li key={r.id} className="border border-border bg-card p-6">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div>
+                            <p className="font-mono text-xs uppercase text-muted-foreground">
+                              {t("mc.dossiers.reference", [r.reference])}
+                            </p>
+                            <p className="mt-1 text-sm font-semibold">{r.device}</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">{r.issue}</p>
+                          </div>
+                          <span
+                            className={`rounded-sm border px-3 py-1 font-mono text-[10px] uppercase ${
+                              r.quote_status === "approved"
+                                ? "border-green-300 bg-green-50 text-green-700"
+                                : r.quote_status === "declined"
+                                  ? "border-red-300 bg-red-50 text-red-700"
+                                  : r.quote_status === "sent"
+                                    ? "border-amber-300 bg-amber-50 text-amber-700"
+                                    : "border-border"
+                            }`}
+                          >
+                            {t(`mc.devis.status.${r.quote_status}`)}
+                          </span>
+                        </div>
+                        <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
+                          <div>
+                            <dt className="at-eyebrow mb-1">{t("mc.devis.amount")}</dt>
+                            <dd className="font-semibold">
+                              {r.quote_amount?.toLocaleString("fr-FR")} FCFA
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="at-eyebrow mb-1">{t("mc.devis.warranty")}</dt>
+                            <dd>
+                              {r.warranty_months > 0
+                                ? t("mc.devis.warrantyMonths", [r.warranty_months])
+                                : t("mc.devis.warrantyStandard")}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="at-eyebrow mb-1">{t("mc.devis.date")}</dt>
+                            <dd>{formatDateFr(r.created_at)}</dd>
+                          </div>
+                        </dl>
+                        {r.quote_status === "approved" && (
+                          <div className="mt-4">
+                            <ReservationPayBlock
+                              reference={r.reference}
+                              amount={r.quote_amount ?? 0}
+                            />
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  {rows.filter((r) => r.quote_status !== "none" && r.quote_amount !== null)
+                    .length === 0 && (
+                    <div className="border border-border bg-card p-8">
+                      <p className="text-sm text-muted-foreground">{t("mc.devis.empty")}</p>
+                    </div>
+                  )}
+                </ul>
               )}
             </TabsContent>
 

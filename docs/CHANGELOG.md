@@ -7,6 +7,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.09] — 2026-08-09 (Batch 25)
+
+### Added
+
+- **Comparateur devis public** : `DevisComparison.tsx` intégré à la page `/devis`. Bouton "Comparer" sur chaque estimation, grille de comparaison côte à côte (prix, délai, garantie, pièces), toggle "Afficher/masquer les différences", suppression individuelle. 12 clés i18n `devis.compare.*` FR/EN enregistrées.
+- **Onglet "Mes devis"** : dans `mon-compte.tsx`, nouvel onglet listant tous les devis reçus (montant, garantie, statut coloré, date), avec bouton de paiement si devis approuvé. 12 clés i18n `mc.devis.*` FR/EN.
+
+### Changed
+
+- **Devis page enrichie** : estimation instantanée + bouton "Comparer" pour ajouter à la comparaison multi-devis.
+- **Mon-compte enrichi** : 7 onglets (dossiers, devis, fidélité, parrainer, avis, paiements, profil).
+
+---
+
 ## [2026.08.09] — 2026-08-09 (Batch 24)
 
 ### Added

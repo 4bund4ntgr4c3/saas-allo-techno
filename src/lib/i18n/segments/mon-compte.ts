@@ -3,11 +3,26 @@ import { registerSegments } from "@/lib/i18n/dictionaries";
 const fr = {
   // Mon compte — onglets
   "mc.tab.dossiers": "Mes dossiers",
+  "mc.tab.devis": "Mes devis",
   "mc.tab.fidelite": "Fidélité",
   "mc.tab.parrainer": "Parrainer",
   "mc.tab.avis": "Mes avis",
   "mc.tab.paiements": "Mes paiements",
   "mc.tab.profil": "Profil",
+
+  // Mon compte — devis
+  "mc.devis.title": "Mes devis",
+  "mc.devis.intro": "Historique de tous les devis reçus pour vos réparations.",
+  "mc.devis.empty": "Vous n'avez pas encore reçu de devis.",
+  "mc.devis.amount": "Montant",
+  "mc.devis.warranty": "Garantie",
+  "mc.devis.warrantyStandard": "Standard (6 mois)",
+  "mc.devis.warrantyMonths": "Étendue : {0} mois",
+  "mc.devis.date": "Date",
+  "mc.devis.status.none": "En attente",
+  "mc.devis.status.sent": "Envoyé",
+  "mc.devis.status.approved": "Approuvé",
+  "mc.devis.status.declined": "Refusé",
 
   // Mon compte — en-tête
   "mc.header.eyebrow": "Espace client",
@@ -96,11 +111,26 @@ const fr = {
 const en = {
   // My account — tabs
   "mc.tab.dossiers": "My cases",
+  "mc.tab.devis": "My quotes",
   "mc.tab.fidelite": "Loyalty",
   "mc.tab.parrainer": "Refer",
   "mc.tab.avis": "My reviews",
   "mc.tab.paiements": "My payments",
   "mc.tab.profil": "Profile",
+
+  // My account — devis
+  "mc.devis.title": "My quotes",
+  "mc.devis.intro": "History of all quotes received for your repairs.",
+  "mc.devis.empty": "You have not received any quotes yet.",
+  "mc.devis.amount": "Amount",
+  "mc.devis.warranty": "Warranty",
+  "mc.devis.warrantyStandard": "Standard (6 months)",
+  "mc.devis.warrantyMonths": "Extended: {0} months",
+  "mc.devis.date": "Date",
+  "mc.devis.status.none": "Pending",
+  "mc.devis.status.sent": "Sent",
+  "mc.devis.status.approved": "Approved",
+  "mc.devis.status.declined": "Declined",
 
   // My account — header
   "mc.header.eyebrow": "Customer area",
