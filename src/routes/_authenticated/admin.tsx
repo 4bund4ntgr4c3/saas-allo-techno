@@ -62,6 +62,7 @@ import { ContentSection } from "@/components/admin/AdminContent";
 import { KpisSection } from "@/components/admin/AdminKpis";
 import { CatalogSection } from "@/components/admin/AdminCatalog";
 import { OrdersSection } from "@/components/admin/AdminOrders";
+import { RefundsSection } from "@/components/admin/AdminRefunds";
 import { ReturnsSection } from "@/components/admin/AdminReturns";
 import { AtelierBoard } from "@/components/admin/AdminAtelier";
 import { AuditSection } from "@/components/admin/AdminAudit";
@@ -133,6 +134,7 @@ function AdminPage() {
     | "kpis"
     | "catalogue"
     | "commandes"
+    | "remboursements"
     | "retours"
     | "audit"
   >("dossiers");
@@ -585,6 +587,14 @@ function AdminPage() {
           Commandes
         </Button>
         <Button
+          variant={tab === "remboursements" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("remboursements")}
+        >
+          <RotateCcw className="mr-2 size-4" />
+          Remboursements
+        </Button>
+        <Button
           variant={tab === "retours" ? "technical" : "outline"}
           size="sm"
           onClick={() => setTab("retours")}
@@ -869,6 +879,7 @@ function AdminPage() {
       {tab === "kpis" && <KpisSection />}
       {tab === "catalogue" && <CatalogSection />}
       {tab === "commandes" && <OrdersSection />}
+      {tab === "remboursements" && <RefundsSection />}
       {tab === "retours" && <ReturnsSection />}
       {tab === "audit" && <AuditSection />}
     </div>

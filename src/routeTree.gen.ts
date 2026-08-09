@@ -44,6 +44,7 @@ import { Route as ApiFedapayWebhookRouteImport } from './routes/api.fedapay-webh
 import { Route as ApiFlutterwaveWebhookRouteImport } from './routes/api.flutterwave-webhook'
 import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
 import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
+import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
 import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
@@ -230,6 +231,11 @@ const ApiKkiapayWebhookRoute = ApiKkiapayWebhookRouteImport.update({
   path: '/api/kkiapay-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPushSubscribeRoute = ApiPushSubscribeRouteImport.update({
+  id: '/api/push-subscribe',
+  path: '/api/push-subscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSitemapRoute = ApiSitemapRouteImport.update({
   id: '/api/sitemap',
   path: '/api/sitemap',
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -360,6 +367,7 @@ export interface FileRoutesByTo {
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -408,6 +416,7 @@ export interface FileRoutesById {
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -456,6 +465,7 @@ export interface FileRouteTypes {
     | '/api/flutterwave-webhook'
     | '/api/healthz'
     | '/api/kkiapay-webhook'
+    | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale/'
     | '/$locale/appareil/$slug'
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/api/flutterwave-webhook'
     | '/api/healthz'
     | '/api/kkiapay-webhook'
+    | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale'
     | '/$locale/appareil/$slug'
@@ -548,6 +559,7 @@ export interface FileRouteTypes {
     | '/api/flutterwave-webhook'
     | '/api/healthz'
     | '/api/kkiapay-webhook'
+    | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale/'
     | '/$locale/appareil/$slug'
@@ -573,6 +585,7 @@ export interface RootRouteChildren {
   ApiFlutterwaveWebhookRoute: typeof ApiFlutterwaveWebhookRoute
   ApiHealthzRoute: typeof ApiHealthzRoute
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
+  ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
 }
 
@@ -823,6 +836,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiKkiapayWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/push-subscribe': {
+      id: '/api/push-subscribe'
+      path: '/api/push-subscribe'
+      fullPath: '/api/push-subscribe'
+      preLoaderRoute: typeof ApiPushSubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/sitemap': {
       id: '/api/sitemap'
       path: '/api/sitemap'
@@ -992,6 +1012,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiFlutterwaveWebhookRoute: ApiFlutterwaveWebhookRoute,
   ApiHealthzRoute: ApiHealthzRoute,
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
+  ApiPushSubscribeRoute: ApiPushSubscribeRoute,
   ApiSitemapRoute: ApiSitemapRoute,
 }
 export const routeTree = rootRouteImport
