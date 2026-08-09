@@ -1,6 +1,6 @@
 import type { Fault } from "@/data/catalog";
 
-export const SERVICE_FEE = 2000; // diagnostic + nettoyage + test complet
+export const SERVICE_FEE = 800; // diagnostic + nettoyage + test complet
 export const WARRANTY_RATE = 0.05; // garantie 6 mois pièces & main-d'œuvre
 const PARTS_RATE = 0.68;
 

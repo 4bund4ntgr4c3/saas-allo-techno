@@ -11,9 +11,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2015,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3100 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 12000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3100 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 4800, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -24,9 +24,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2016,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -37,9 +37,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 45000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 18000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 18000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 7200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -50,9 +50,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 42000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3200 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 16800, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3200 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -63,9 +63,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 45000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3400 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 18000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3400 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -76,9 +76,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 40000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3400 mAh", 17000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 13000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3400 mAh", 6800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 5200, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -89,9 +89,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 52000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3750 mAh", 20000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 20800, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3750 mAh", 8000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -102,9 +102,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 60000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 16000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 24000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -115,9 +115,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 42000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3400 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 13000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 16800, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3400 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 5200, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -128,9 +128,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran AMOLED complet", 52000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 20000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 20800, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 8000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -141,9 +141,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran OLED complet", 62000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 17000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 24800, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -154,9 +154,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 45000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 18000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -167,9 +167,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran OLED complet", 58000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4300 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 16000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 23200, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4300 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -180,9 +180,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 48000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4300 mAh", 20000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 19200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4300 mAh", 8000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -193,9 +193,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran OLED complet", 62000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4300 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 17000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 24800, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4300 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -206,9 +206,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran OLED complet", 78000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4800 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 20000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 31200, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4800 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -219,9 +219,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran OLED complet", 65000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4800 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 17000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 26000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4800 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -232,9 +232,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran OLED complet", 82000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 20000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 32800, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -245,9 +245,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 70000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4800 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 18000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 28000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4800 mAh", 10400, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 7200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -258,9 +258,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 85000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4800 mAh", 30000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 22000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 34000, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4800 mAh", 12000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -271,9 +271,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED complet", 55000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4300 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 16000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 22000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4300 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -284,9 +284,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 75000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 20000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 30000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -297,9 +297,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 92000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 24000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 36800, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 9600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -310,9 +310,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 80000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 30000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 22000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 32000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 12000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -323,9 +323,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 98000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 22000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 39200, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -336,9 +336,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 85000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5200 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 24000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 34000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5200 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 9600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -349,9 +349,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 110000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5200 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 28000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 44000, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5200 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 11200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -362,9 +362,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran OLED complet", 92000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5300 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 24000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 36800, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5300 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 9600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -375,9 +375,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran OLED complet", 118000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5300 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 28000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 47200, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5300 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 11200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -388,9 +388,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2016,
     faults: [
-      f("ecran", "Écran AMOLED complet", 55000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 2900 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 16000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 22000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 2900 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -401,9 +401,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran AMOLED complet", 62000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3500 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 18000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 24800, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3500 mAh", 10000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 7200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -414,9 +414,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran OLED complet", 72000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4600 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 20000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 28800, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4600 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 8000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -427,9 +427,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran OLED complet", 88000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4600 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 24000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 35200, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4600 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 9600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -440,9 +440,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran OLED complet", 88000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4800 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 24000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 35200, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4800 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 9600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -453,9 +453,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran OLED complet", 108000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4600 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 28000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 43200, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4600 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 11200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -466,9 +466,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 92000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5100 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 25000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 36800, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5100 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 10000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -479,9 +479,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran OLED complet", 120000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5100 mAh", 42000, "45 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 30000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 48000, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5100 mAh", 16800, "45 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -492,9 +492,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 100000, "55 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5450 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 28000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 40000, "55 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5450 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 11200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -505,9 +505,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 125000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5600 mAh", 42000, "45 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 30000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 50000, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5600 mAh", 16800, "45 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -518,9 +518,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran OLED complet", 130000, "60 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5850 mAh", 45000, "45 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 32000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran OLED complet", 52000, "60 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5850 mAh", 18000, "45 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 12800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -531,9 +531,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -544,9 +544,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 11000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 4400, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -557,9 +557,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -570,9 +570,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 6000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 6000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -583,9 +583,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 33000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 11000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 13200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 4400, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -596,9 +596,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 25000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 10000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 10000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 5200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 4000, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -609,9 +609,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 23000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5200 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 10000, "30 min", "3 mois", "Connecteur Micro-USB"),
+      f("ecran", "Écran IPS LCD complet", 9200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5200 mAh", 4800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 4000, "30 min", "3 mois", "Connecteur Micro-USB"),
     ],
   },
   {
@@ -622,9 +622,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -635,9 +635,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 17000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 6800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -648,9 +648,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 33000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 6000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 13200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 6000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -661,9 +661,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 40000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -674,9 +674,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED complet", 45000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 19000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 18000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 7600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -687,9 +687,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 42000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran IPS LCD complet", 16800, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -700,9 +700,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran AMOLED complet", 50000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5800 mAh", 20000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "30 min", "3 mois", "Connecteur USB-C"),
+      f("ecran", "Écran AMOLED complet", 20000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5800 mAh", 8000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "30 min", "3 mois", "Connecteur USB-C"),
     ],
   },
 ];

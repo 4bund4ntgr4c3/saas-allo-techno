@@ -18,11 +18,11 @@ const BIG: Record<
   "micro-ondes": { moteur: 20000, carte: 28000, compresseur: 0, resistance: 0, joint: 12000 },
   four: { moteur: 0, carte: 30000, compresseur: 0, resistance: 24000, joint: 15000 },
   "lave-vaisselle": {
-    moteur: 42000,
-    carte: 35000,
+    moteur: 16800,
+    carte: 14000,
     compresseur: 0,
-    resistance: 25000,
-    joint: 16000,
+    resistance: 10000,
+    joint: 6400,
   },
 };
 

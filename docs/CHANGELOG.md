@@ -11,6 +11,8 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Added
 
+- **Moteur de recherche amélioré** : `search-fulltext.ts` — scoring avancé avec Levenshtein, fuzzy matching (tolérance aux fautes de frappe), préfixe de mots, bonus de position. `catalog-search.ts` — fuzzy matching ajouté. `SearchModal.tsx` — classement par score, historique des recherches récentes (localStorage), suggestions.
+- **Baisse des prix de 60%** : tous les tarifs réparations, services, accessoires et frais de service réduits de 60%. Ex: écran Galaxy S6 de 55000→22000 FCFA, diagnostic de 2000→800 FCFA.
 - **Multi-ateliers** : table `workshops`, `workshops.functions.ts`, `AdminWorkshops.tsx` — CRUD ateliers avec adresse, ville, téléphone, timezone.
 - **Gestion fournisseurs** : tables `suppliers` + `supplier_orders`, `suppliers.functions.ts`, `AdminSuppliers.tsx` — ajout fournisseurs, suivi commandes pièces, statuts (pending→ordered→shipped→received).
 - **Programme de parrainage** : table `referrals`, `referral-advanced.ts`, `AdminReferrals.tsx` — stats parrainage, niveaux Bronze/Argent/Or, historique entrées.

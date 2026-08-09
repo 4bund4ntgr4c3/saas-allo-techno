@@ -7,7 +7,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 ## Fonctionnalités
 
 ### Côté client
-- **Recherche intelligente** : assistant de diagnostic en 9 étapes (type → marque → série → famille → modèle → pannes → créneau → photos → contact).
+- **Recherche intelligente** : assistant de diagnostic en 9 étapes (type → marque → série → famille → modèle → pannes → créneau → photos → contact). Moteur de recherche amélioré avec fuzzy matching (tolérance aux fautes de frappe), scoring par pertinence, historique des recherches récentes.
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
 - **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape.
 - **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.

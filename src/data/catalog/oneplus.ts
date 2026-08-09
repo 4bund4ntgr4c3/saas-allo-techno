@@ -11,9 +11,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2015,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 45000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3300 mAh", 18000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Connecteur Micro-USB", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 18000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3300 mAh", 7200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Connecteur Micro-USB", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -24,9 +24,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2016,
     faults: [
-      f("ecran", "Écran AMOLED complet", 50000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3000 mAh", 20000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 20000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3000 mAh", 8000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -37,9 +37,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2016,
     faults: [
-      f("ecran", "Écran AMOLED complet", 55000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3400 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 22000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3400 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -50,9 +50,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran AMOLED complet", 55000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3300 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 22000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3300 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -63,9 +63,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran AMOLED complet", 60000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3300 mAh", 23000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 24000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3300 mAh", 9200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -76,9 +76,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran AMOLED complet", 60000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3300 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 24000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3300 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -89,9 +89,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran AMOLED complet", 68000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3700 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 27200, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3700 mAh", 10000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -102,9 +102,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran AMOLED 90 Hz", 65000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3700 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED 90 Hz", 26000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3700 mAh", 10400, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -115,9 +115,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 90 Hz", 95000, "55 min", "6 mois", "Écran d'origine OnePlus"),
-      f("batterie", "Batterie 4000 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran Fluid AMOLED 90 Hz", 38000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f("batterie", "Batterie 4000 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -128,9 +128,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 90 Hz", 70000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 3800 mAh", 28000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran Fluid AMOLED 90 Hz", 28000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 3800 mAh", 11200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -141,9 +141,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 90 Hz", 100000, "55 min", "6 mois", "Écran d'origine OnePlus"),
-      f("batterie", "Batterie 4085 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran Fluid AMOLED 90 Hz", 40000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f("batterie", "Batterie 4085 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -154,9 +154,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 90 Hz", 72000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4300 mAh", 28000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran Fluid AMOLED 90 Hz", 28800, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4300 mAh", 11200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -175,8 +175,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran d'origine OnePlus",
       ),
-      f("batterie", "Batterie 4510 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 4510 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -195,8 +195,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran compatible grade A",
       ),
-      f("batterie", "Batterie 4500 mAh", 30000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 4500 mAh", 12000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -215,8 +215,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran compatible grade A",
       ),
-      f("batterie", "Batterie 4500 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 4500 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -227,9 +227,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran LTPO AMOLED 120 Hz", 110000, "55 min", "6 mois", "Écran d'origine OnePlus"),
-      f("batterie", "Batterie 4500 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran LTPO AMOLED 120 Hz", 44000, "55 min", "6 mois", "Écran d'origine OnePlus"),
+      f("batterie", "Batterie 4500 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -240,9 +240,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 120 Hz", 75000, "50 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 30000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED 120 Hz", 30000, "50 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 12000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -261,8 +261,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran d'origine OnePlus",
       ),
-      f("batterie", "Batterie 5000 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 5000 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -281,8 +281,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran compatible grade A",
       ),
-      f("batterie", "Batterie 4800 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 13000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 4800 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5200, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -293,9 +293,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran LTPO3 AMOLED 120 Hz", 95000, "50 min", "6 mois", "Écran d'origine OnePlus"),
-      f("batterie", "Batterie 5000 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran LTPO3 AMOLED 120 Hz", 38000, "50 min", "6 mois", "Écran d'origine OnePlus"),
+      f("batterie", "Batterie 5000 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -314,8 +314,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran d'origine OnePlus",
       ),
-      f("batterie", "Batterie 5400 mAh", 38000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 5400 mAh", 15200, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -326,9 +326,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -339,9 +339,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD 90 Hz", 38000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 4300 mAh", 19000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 90 Hz", 15200, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 4300 mAh", 7600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -352,9 +352,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD 90 Hz", 40000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 90 Hz", 16000, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -365,9 +365,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 90 Hz", 42000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 90 Hz", 16800, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -378,9 +378,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 48000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 19200, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -391,9 +391,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 120 Hz", 45000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 120 Hz", 18000, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -404,9 +404,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED 90 Hz", 45000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4115 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED 90 Hz", 18000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4115 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -417,9 +417,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED 90 Hz", 50000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED 90 Hz", 20000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 8800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -430,9 +430,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD 120 Hz", 38000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 120 Hz", 15200, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -443,9 +443,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran AMOLED 120 Hz", 55000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED 120 Hz", 22000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -456,9 +456,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD 120 Hz", 40000, "40 min", "6 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD 120 Hz", 16000, "40 min", "6 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -469,9 +469,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran Fluid AMOLED 90 Hz", 55000, "45 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 4500 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 11000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran Fluid AMOLED 90 Hz", 22000, "45 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 4500 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4400, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -490,8 +490,8 @@ export const DEVICES: Device[] = [
         "6 mois",
         "Écran compatible grade A",
       ),
-      f("batterie", "Batterie 5000 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "40 min", "1 mois", "Nappe de charge"),
+      f("batterie", "Batterie 5000 mAh", 10400, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
 ];

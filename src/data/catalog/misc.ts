@@ -11,9 +11,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 38000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Connecteur de charge", 9000, "40 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 15200, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Connecteur de charge", 3600, "40 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -24,8 +24,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran OLED complet", 88000, "50 min", "6 mois", "Écran d'origine Google"),
-      f("batterie", "Batterie 4355 mAh", 38000, "40 min", "6 mois", "Batterie certifiée"),
+      f("ecran", "Écran OLED complet", 35200, "50 min", "6 mois", "Écran d'origine Google"),
+      f("batterie", "Batterie 4355 mAh", 15200, "40 min", "6 mois", "Batterie certifiée"),
     ],
   },
   {
@@ -36,7 +36,7 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2020,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 45000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("hdmi", "Port HDMI (micro-soudure)", 18000, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique liquide",
@@ -45,8 +45,8 @@ export const DEVICES: Device[] = [
         "1 mois",
         "Metal thermal compound",
       ),
-      f("lecteur", "Lecteur Blu-ray", 65000, "48 h", "3 mois", "Bloc optique"),
-      f("manette", "Réparation drift manette DualSense", 12000, "6 h", "3 mois", "Joystick neuf"),
+      f("lecteur", "Lecteur Blu-ray", 26000, "48 h", "3 mois", "Bloc optique"),
+      f("manette", "Réparation drift manette DualSense", 4800, "6 h", "3 mois", "Joystick neuf"),
     ],
   },
   {
@@ -57,8 +57,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran OLED complet", 62000, "50 min", "6 mois", "Écran compatible grade A+"),
-      f("batterie", "Batterie 3800 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran OLED complet", 24800, "50 min", "6 mois", "Écran compatible grade A+"),
+      f("batterie", "Batterie 3800 mAh", 10400, "35 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -69,9 +69,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran AMOLED LTPO", 92000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5240 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED LTPO", 36800, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5240 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -82,10 +82,10 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran AMOLED complet", 46000, "40 min", "6 mois", "Écran compatible grade A"),
-      f("batterie", "Batterie 5500 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Connecteur de charge", 10000, "40 min", "1 mois", "Nappe de charge"),
-      f("desoxydation", "Désoxydation", 15000, "48 h", "—", "Bain ultrasons"),
+      f("ecran", "Écran AMOLED complet", 18400, "40 min", "6 mois", "Écran compatible grade A"),
+      f("batterie", "Batterie 5500 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Connecteur de charge", 4000, "40 min", "1 mois", "Nappe de charge"),
+      f("desoxydation", "Désoxydation", 6000, "48 h", "—", "Bain ultrasons"),
     ],
   },
   {
@@ -96,9 +96,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran complet", 21000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 11000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Connecteur de charge", 8000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran complet", 8400, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 4400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Connecteur de charge", 3200, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -109,9 +109,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran Super Actua OLED", 135000, "50 min", "6 mois", "Écran d'origine Google"),
-      f("batterie", "Batterie 4870 mAh", 46000, "40 min", "6 mois", "Batterie certifiée"),
-      f("vitre-arriere", "Vitre arrière", 48000, "90 min", "3 mois", "Verre + adhésif"),
+      f("ecran", "Écran Super Actua OLED", 54000, "50 min", "6 mois", "Écran d'origine Google"),
+      f("batterie", "Batterie 4870 mAh", 18400, "40 min", "6 mois", "Batterie certifiée"),
+      f("vitre-arriere", "Vitre arrière", 19200, "90 min", "3 mois", "Verre + adhésif"),
     ],
   },
   {
@@ -122,8 +122,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran AMOLED complet", 68000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5600 mAh", 24000, "35 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran AMOLED complet", 27200, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5600 mAh", 9600, "35 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -134,8 +134,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran OLED LTPO", 105000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5650 mAh", 32000, "40 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran OLED LTPO", 42000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5650 mAh", 12800, "40 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -146,8 +146,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran OLED complet", 98000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4900 mAh", 34000, "35 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran OLED complet", 39200, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4900 mAh", 13600, "35 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -158,8 +158,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran pOLED complet", 72000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5000 mAh", 26000, "35 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran pOLED complet", 28800, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5000 mAh", 10400, "35 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -170,8 +170,8 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2025,
     faults: [
-      f("ecran", "Écran AMOLED 2K", 112000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 6000 mAh", 35000, "40 min", "3 mois", "Batterie compatible"),
+      f("ecran", "Écran AMOLED 2K", 44800, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 6000 mAh", 14000, "40 min", "3 mois", "Batterie compatible"),
     ],
   },
   {
@@ -182,9 +182,9 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2025,
     faults: [
-      f("ecran", "Dalle LCD complète", 88000, "24 h", "3 mois", "Dalle + vitre tactile"),
-      f("joycon", "Réparation drift Joy-Con", 14000, "6 h", "3 mois", "Joystick neuf"),
-      f("connecteur", "Port USB-C de charge", 22000, "24 h", "3 mois", "Carte fille USB-C"),
+      f("ecran", "Dalle LCD complète", 35200, "24 h", "3 mois", "Dalle + vitre tactile"),
+      f("joycon", "Réparation drift Joy-Con", 5600, "6 h", "3 mois", "Joystick neuf"),
+      f("connecteur", "Port USB-C de charge", 8800, "24 h", "3 mois", "Carte fille USB-C"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -203,7 +203,7 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2023,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 48000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("hdmi", "Port HDMI (micro-soudure)", 19200, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique liquide",
@@ -212,8 +212,8 @@ export const DEVICES: Device[] = [
         "1 mois",
         "Metal thermal compound",
       ),
-      f("ssd", "Upgrade SSD NVMe 1 To", 105000, "6 h", "1 an", "SSD NVMe Gen4"),
-      f("manette", "Réparation drift DualSense", 12000, "6 h", "3 mois", "Joystick neuf"),
+      f("ssd", "Upgrade SSD NVMe 1 To", 42000, "6 h", "1 an", "SSD NVMe Gen4"),
+      f("manette", "Réparation drift DualSense", 4800, "6 h", "3 mois", "Joystick neuf"),
     ],
   },
   {
@@ -224,8 +224,8 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2020,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 45000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("lecteur", "Lecteur Blu-ray 4K", 62000, "48 h", "3 mois", "Bloc optique"),
+      f("hdmi", "Port HDMI (micro-soudure)", 18000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("lecteur", "Lecteur Blu-ray 4K", 24800, "48 h", "3 mois", "Bloc optique"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -245,8 +245,8 @@ export const DEVICES: Device[] = [
     year: 2024,
     faults: [
       f("ecran", 'Dalle 14" FHD', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
-      f("carte-mere", "Micro-soudure carte mère", 75000, "72 h", "3 mois", "Composants CMS"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
+      f("carte-mere", "Micro-soudure carte mère", 30000, "72 h", "3 mois", "Composants CMS"),
     ],
   },
   {
@@ -258,7 +258,7 @@ export const DEVICES: Device[] = [
     year: 2024,
     faults: [
       f("ecran", 'Dalle 13,4" InfinityEdge', 165000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie 55 Wh", 68000, "3 h", "1 an", "Batterie certifiée"),
+      f("batterie", "Batterie 55 Wh", 27200, "3 h", "1 an", "Batterie certifiée"),
       f(
         "nettoyage",
         "Nettoyage + pâte thermique",
@@ -277,7 +277,7 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2016,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 35000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("hdmi", "Port HDMI (micro-soudure)", 14000, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -294,7 +294,7 @@ export const DEVICES: Device[] = [
         "3 mois",
         "Alimentation compatible",
       ),
-      f("lecteur", "Lecteur Blu-ray", 55000, "48 h", "3 mois", "Bloc optique"),
+      f("lecteur", "Lecteur Blu-ray", 22000, "48 h", "3 mois", "Bloc optique"),
     ],
   },
   {
@@ -305,7 +305,7 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2017,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 42000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("hdmi", "Port HDMI (micro-soudure)", 16800, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -322,7 +322,7 @@ export const DEVICES: Device[] = [
         "3 mois",
         "Alimentation compatible",
       ),
-      f("lecteur", "Lecteur Blu-ray 4K", 62000, "48 h", "3 mois", "Bloc optique"),
+      f("lecteur", "Lecteur Blu-ray 4K", 24800, "48 h", "3 mois", "Bloc optique"),
     ],
   },
   {
@@ -333,7 +333,7 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2020,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 38000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("hdmi", "Port HDMI (micro-soudure)", 15200, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -342,7 +342,7 @@ export const DEVICES: Device[] = [
         "1 mois",
         "Pâte thermique premium",
       ),
-      f("connecteur", "Port USB-C manette", 22000, "24 h", "3 mois", "Connecteur USB-C"),
+      f("connecteur", "Port USB-C manette", 8800, "24 h", "3 mois", "Connecteur USB-C"),
     ],
   },
   {
@@ -353,8 +353,8 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2013,
     faults: [
-      f("lecteur", "Lecteur Blu-ray", 55000, "48 h", "3 mois", "Bloc optique"),
-      f("hdmi", "Port HDMI (micro-soudure)", 45000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("lecteur", "Lecteur Blu-ray", 22000, "48 h", "3 mois", "Bloc optique"),
+      f("hdmi", "Port HDMI (micro-soudure)", 18000, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -381,8 +381,8 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2016,
     faults: [
-      f("lecteur", "Lecteur Blu-ray", 62000, "48 h", "3 mois", "Bloc optique"),
-      f("hdmi", "Port HDMI (micro-soudure)", 48000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("lecteur", "Lecteur Blu-ray", 24800, "48 h", "3 mois", "Bloc optique"),
+      f("hdmi", "Port HDMI (micro-soudure)", 19200, "48 h", "3 mois", "Port HDMI + reflow"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -418,7 +418,7 @@ export const DEVICES: Device[] = [
         "1 mois",
         "Kit X-clamp + pâte thermique",
       ),
-      f("lecteur-dvd", "Lecteur DVD", 40000, "48 h", "3 mois", "Bloc optique"),
+      f("lecteur-dvd", "Lecteur DVD", 16000, "48 h", "3 mois", "Bloc optique"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -437,11 +437,11 @@ export const DEVICES: Device[] = [
     category: "Console de jeux",
     year: 2017,
     faults: [
-      f("hdmi", "Port HDMI (micro-soudure)", 35000, "48 h", "3 mois", "Port HDMI + reflow"),
-      f("joycon", "Réparation drift Joy-Con", 14000, "6 h", "3 mois", "Joystick neuf"),
-      f("batterie", "Batterie 4310 mAh", 20000, "40 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C de charge", 22000, "24 h", "3 mois", "Carte fille USB-C"),
-      f("ecran", "Écran LCD complet", 48000, "24 h", "3 mois", "Dalle + vitre tactile"),
+      f("hdmi", "Port HDMI (micro-soudure)", 14000, "48 h", "3 mois", "Port HDMI + reflow"),
+      f("joycon", "Réparation drift Joy-Con", 5600, "6 h", "3 mois", "Joystick neuf"),
+      f("batterie", "Batterie 4310 mAh", 8000, "40 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C de charge", 8800, "24 h", "3 mois", "Carte fille USB-C"),
+      f("ecran", "Écran LCD complet", 19200, "24 h", "3 mois", "Dalle + vitre tactile"),
     ],
   },
   {
@@ -453,8 +453,8 @@ export const DEVICES: Device[] = [
     year: 2015,
     faults: [
       f("ecran", 'Dalle 12,3" PixelSense', 95000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 38 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 38 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Port Surface Connect", 14000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -474,8 +474,8 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("ecran", 'Dalle 12,3" PixelSense', 100000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 45 Wh", 60000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 45 Wh", 24000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Port Surface Connect", 14000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -495,8 +495,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 12,3" PixelSense', 105000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,4 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port Surface Connect", 35000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 47,4 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Port Surface Connect", 14000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -516,8 +516,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 12,3" PixelSense', 110000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 43,2 Wh", 60000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C / Surface Connect", 38000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 43,2 Wh", 24000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C / Surface Connect", 15200, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -537,8 +537,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 12,3" PixelSense', 115000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 49,9 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C / Surface Connect", 38000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 49,9 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C / Surface Connect", 15200, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -558,7 +558,7 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 13" PixelSense Flow', 130000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,7 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
+      f("batterie", "Batterie interne 47,7 Wh", 27200, "3 h", "6 mois", "Batterie compatible"),
       f(
         "connecteur",
         "Port Thunderbolt 4 / Surface Connect",
@@ -586,7 +586,7 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 13" PixelSense Flow', 135000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,7 Wh", 70000, "3 h", "6 mois", "Batterie compatible"),
+      f("batterie", "Batterie interne 47,7 Wh", 28000, "3 h", "6 mois", "Batterie compatible"),
       f(
         "connecteur",
         "Port Thunderbolt 4 / Surface Connect",
@@ -614,7 +614,7 @@ export const DEVICES: Device[] = [
     year: 2024,
     faults: [
       f("ecran", 'Dalle 13" PixelSense Flow', 145000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,7 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
+      f("batterie", "Batterie interne 47,7 Wh", 30000, "3 h", "6 mois", "Batterie compatible"),
       f(
         "connecteur",
         "Port Thunderbolt 4 / Surface Connect",
@@ -642,8 +642,8 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 95000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 45 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier Alcantara", 42000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 45 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier Alcantara", 16800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -663,8 +663,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 100000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,4 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier Alcantara", 42000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 47,4 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier Alcantara", 16800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -684,8 +684,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 105000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 45,8 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier metal", 45000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 45,8 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier metal", 18000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -705,8 +705,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 115000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,4 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier metal", 45000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 47,4 Wh", 27200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier metal", 18000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -726,8 +726,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 120000, "24 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,4 Wh", 70000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier metal", 48000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 47,4 Wh", 28000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier metal", 19200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -747,8 +747,8 @@ export const DEVICES: Device[] = [
     year: 2024,
     faults: [
       f("ecran", 'Dalle 13,5" / 15" PixelSense Flow', 155000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 47,4 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier metal", 48000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 47,4 Wh", 30000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier metal", 19200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -768,8 +768,8 @@ export const DEVICES: Device[] = [
     year: 2015,
     faults: [
       f("ecran", 'Dalle 13,5" PixelSense', 120000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 51 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 51 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Surface Connect + tablette", 18000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -789,8 +789,8 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("ecran", 'Dalle 13,5" / 15" PixelSense', 140000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 67 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 67 Wh", 30000, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Surface Connect + tablette", 18000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -810,8 +810,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 13,5" / 15" PixelSense', 185000, "48 h", "6 mois", "Dalle complète"),
-      f("batterie", "Batterie interne 74 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
-      f("connecteur", "Surface Connect + tablette", 45000, "24 h", "3 mois", "Carte connecteur"),
+      f("batterie", "Batterie interne 74 Wh", 32800, "3 h", "6 mois", "Batterie compatible"),
+      f("connecteur", "Surface Connect + tablette", 18000, "24 h", "3 mois", "Carte connecteur"),
       f(
         "ventilation",
         "Nettoyage + pâte thermique",
@@ -831,8 +831,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 88000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 72 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 72 Wh", 16800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -852,8 +852,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 92000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 50 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 50 Wh", 18000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -873,8 +873,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 102000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 50 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 50 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -894,8 +894,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 50000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 20000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -915,8 +915,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 14" WUXGA IPS', 115000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 50 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 50 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -936,8 +936,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" WUXGA IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52,5 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52,5 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -957,8 +957,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" WUXGA IPS', 145000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52,5 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52,5 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -978,8 +978,8 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("ecran", 'Dalle 14" WQHD IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -999,8 +999,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 14" WQHD IPS', 130000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1020,8 +1020,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 14" WQHD IPS', 140000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 51 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 51 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1041,8 +1041,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" WQHD IPS', 150000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 51 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 51 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1062,8 +1062,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED', 170000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 57 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 27200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1083,8 +1083,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED', 175000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 57 Wh", 72000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 28800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1104,8 +1104,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED', 180000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 57 Wh", 75000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 30000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1125,8 +1125,8 @@ export const DEVICES: Device[] = [
     year: 2024,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED', 185000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 57 Wh", 78000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 31200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1146,8 +1146,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 13,3" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 48 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 48 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1167,8 +1167,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 13,3" FHD IPS', 100000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 48 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 48 Wh", 18000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1188,8 +1188,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 55000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 45 Wh", 32000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 45 Wh", 12800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1209,8 +1209,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 17,3" FHD IPS', 65000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 45 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 45 Wh", 14000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1230,8 +1230,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 62000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 56,5 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 56,5 Wh", 15200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1251,8 +1251,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 68000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 56,5 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 56,5 Wh", 15200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1272,8 +1272,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 16" 2.5K IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 75 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 75 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1293,8 +1293,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED', 92000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 61 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 61 Wh", 16800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1314,8 +1314,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 58000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 47 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 47 Wh", 14000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1335,8 +1335,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" WUXGA IPS', 72000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 25000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 16800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 10000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1356,8 +1356,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 16" WUXGA IPS', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 76 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 25000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 76 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 10000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1377,8 +1377,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" 2.8K OLED tactile', 115000, "48 h", "6 mois", "Dalle OLED tactile"),
-      f("batterie", "Batterie interne 71 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 71 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1398,8 +1398,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 16" WQXGA IPS tactile', 125000, "48 h", "6 mois", "Dalle tactile IPS"),
-      f("batterie", "Batterie interne 75 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 75 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1419,8 +1419,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" 4K OLED tactile', 145000, "48 h", "6 mois", "Dalle OLED tactile"),
-      f("batterie", "Batterie interne 75 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 75 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1440,8 +1440,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" 4K OLED tactile', 155000, "48 h", "6 mois", "Dalle OLED tactile"),
-      f("batterie", "Batterie interne 75 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 75 Wh", 27200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1461,8 +1461,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 38000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 15200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1482,8 +1482,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 90000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 16800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1503,8 +1503,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 98000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 63 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 63 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1524,8 +1524,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 105000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 58 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 58 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1545,8 +1545,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" WUXGA IPS', 118000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 63 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1566,8 +1566,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 102000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 63 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 63 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1587,8 +1587,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 110000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 58 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 58 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1608,8 +1608,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 15,6" WUXGA IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 30000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 63 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 12000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1629,8 +1629,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 112000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1650,8 +1650,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 118000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1671,8 +1671,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 14" FHD IPS', 125000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 63 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 63 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1692,8 +1692,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" FHD+ IPS', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 58 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 58 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1713,8 +1713,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" QHD+ IPS', 145000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 62000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 24800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1734,8 +1734,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 14" QHD+ IPS', 155000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 57 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 57 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1755,8 +1755,8 @@ export const DEVICES: Device[] = [
     year: 2015,
     faults: [
       f("ecran", 'Dalle 13,3" FHD InfinityEdge', 115000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 52000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 20800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1776,8 +1776,8 @@ export const DEVICES: Device[] = [
     year: 2016,
     faults: [
       f("ecran", 'Dalle 13,3" QHD+ InfinityEdge', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 60 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 60 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1797,8 +1797,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 13,3" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1818,8 +1818,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 13,3" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 58000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 23200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1839,8 +1839,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 13,3" FHD+ InfinityEdge', 135000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 55000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 32000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 22000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 12800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1860,8 +1860,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 13,4" OLED', 175000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 55 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 55 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1881,8 +1881,8 @@ export const DEVICES: Device[] = [
     year: 2016,
     faults: [
       f("ecran", 'Dalle 15,6" 4K InfinityEdge', 165000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 65000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 26000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1902,8 +1902,8 @@ export const DEVICES: Device[] = [
     year: 2017,
     faults: [
       f("ecran", 'Dalle 15,6" 4K InfinityEdge', 170000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 68000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 27200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1923,8 +1923,8 @@ export const DEVICES: Device[] = [
     year: 2018,
     faults: [
       f("ecran", 'Dalle 15,6" 4K InfinityEdge', 180000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 72000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 35000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 28800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 14000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1944,8 +1944,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 15,6" 3.5K OLED', 210000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 86 Wh", 78000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 86 Wh", 31200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1965,8 +1965,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 15,6" 3.5K OLED', 210000, "48 h", "6 mois", "Dalle OLED"),
-      f("batterie", "Batterie interne 86 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 86 Wh", 32800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -1986,8 +1986,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 17" 4K InfinityEdge', 195000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 82000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 32800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2007,8 +2007,8 @@ export const DEVICES: Device[] = [
     year: 2021,
     faults: [
       f("ecran", 'Dalle 17" 4K InfinityEdge', 205000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 85000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 34000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2028,8 +2028,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 17" 4K InfinityEdge', 210000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 88000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 35200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2049,8 +2049,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 17" 4K InfinityEdge', 210000, "48 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 97 Wh", 90000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 38000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 97 Wh", 36000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 15200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2070,8 +2070,8 @@ export const DEVICES: Device[] = [
     year: 2019,
     faults: [
       f("ecran", 'Dalle 15,6" FHD TN', 52000, "24 h", "6 mois", "Dalle compatible"),
-      f("batterie", "Batterie interne 42 Wh", 28000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 22000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 42 Wh", 11200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 8800, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2091,8 +2091,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 65000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 52 Wh", 35000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 25000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 52 Wh", 14000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 10000, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2112,8 +2112,8 @@ export const DEVICES: Device[] = [
     year: 2020,
     faults: [
       f("ecran", 'Dalle 15,6" FHD IPS', 82000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 56 Wh", 42000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 56 Wh", 16800, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2133,8 +2133,8 @@ export const DEVICES: Device[] = [
     year: 2022,
     faults: [
       f("ecran", 'Dalle 14" FHD+ IPS tactile', 78000, "24 h", "6 mois", "Dalle tactile IPS"),
-      f("batterie", "Batterie interne 64 Wh", 45000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 64 Wh", 18000, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2154,8 +2154,8 @@ export const DEVICES: Device[] = [
     year: 2023,
     faults: [
       f("ecran", 'Dalle 16" WUXGA IPS', 85000, "24 h", "6 mois", "Dalle IPS neuve"),
-      f("batterie", "Batterie interne 64 Wh", 48000, "3 h", "6 mois", "Batterie compatible"),
-      f("clavier", "Clavier AZERTY rétroéclairé", 28000, "6 h", "6 mois", "Clavier compatible"),
+      f("batterie", "Batterie interne 64 Wh", 19200, "3 h", "6 mois", "Batterie compatible"),
+      f("clavier", "Clavier AZERTY rétroéclairé", 11200, "6 h", "6 mois", "Clavier compatible"),
       f(
         "nettoyage",
         "Nettoyage complet + pâte thermique",
@@ -2174,9 +2174,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2016,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 22000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 8800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 4800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2187,9 +2187,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 24000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 2800 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 9600, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 2800 mAh", 4800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2200,9 +2200,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 28000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 11200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 5200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2213,9 +2213,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2017,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 28000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 11200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 5200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2226,9 +2226,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2239,9 +2239,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3200 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3200 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2252,9 +2252,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2265,9 +2265,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2278,9 +2278,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2291,9 +2291,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 4000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 4000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2304,9 +2304,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2317,9 +2317,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2330,9 +2330,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2343,9 +2343,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2356,9 +2356,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2369,9 +2369,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2382,9 +2382,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 6000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 6000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2395,9 +2395,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2408,9 +2408,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 40000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 6000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 6000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2421,9 +2421,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 45000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 18000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2434,9 +2434,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 48000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 22000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 19200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2447,9 +2447,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2460,9 +2460,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2473,9 +2473,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 42000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 16800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2486,9 +2486,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 45000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 18000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2499,9 +2499,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 42000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 16800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2512,9 +2512,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 45000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 18000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2525,9 +2525,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2538,9 +2538,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2551,9 +2551,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2564,9 +2564,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran OLED complet", 65000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4500 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran OLED complet", 26000, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4500 mAh", 10000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2577,9 +2577,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran OLED complet", 85000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5000 mAh", 30000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran OLED complet", 34000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5000 mAh", 12000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2590,9 +2590,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED complet", 72000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4000 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 28800, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4000 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2603,9 +2603,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED complet", 85000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4500 mAh", 32000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 34000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4500 mAh", 12800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2616,9 +2616,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran AMOLED complet", 65000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5000 mAh", 25000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 26000, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5000 mAh", 10000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2629,9 +2629,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran pOLED complet", 78000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4020 mAh", 28000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 31200, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4020 mAh", 11200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2642,9 +2642,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran pOLED complet", 95000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4800 mAh", 35000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 14000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 38000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4800 mAh", 14000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 5600, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2655,9 +2655,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran pOLED complet", 105000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4610 mAh", 38000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 42000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4610 mAh", 15200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2668,9 +2668,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran pOLED complet", 85000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4400 mAh", 32000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 34000, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4400 mAh", 12800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2681,9 +2681,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran pOLED complet", 110000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4600 mAh", 38000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 44000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4600 mAh", 15200, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2694,9 +2694,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran pOLED complet", 115000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4500 mAh", 40000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 46000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4500 mAh", 16000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2707,9 +2707,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran pOLED complet", 125000, "50 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4500 mAh", 42000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 15000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 50000, "50 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4500 mAh", 16800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 6000, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2720,9 +2720,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2024,
     faults: [
-      f("ecran", "Écran pOLED complet", 78000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 5000 mAh", 30000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran pOLED complet", 31200, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 5000 mAh", 12000, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2733,9 +2733,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 25000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5050 mAh", 12000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 8000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 10000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5050 mAh", 4800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 3200, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2746,9 +2746,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 28000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5050 mAh", 13000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 8000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 11200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5050 mAh", 5200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 3200, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2759,9 +2759,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2772,9 +2772,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5050 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5050 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2785,9 +2785,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 32000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5050 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 9000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5050 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 3600, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2798,9 +2798,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5000 mAh", 16000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5000 mAh", 6400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2811,9 +2811,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2023,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 40000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 4500 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 4500 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2824,9 +2824,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 15000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 2500 mAh", 7000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 6000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 2500 mAh", 2800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2837,9 +2837,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 15000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 2500 mAh", 7000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 6000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 2500 mAh", 2800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2850,9 +2850,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2020,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 2400 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 6400, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 2400 mAh", 3200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2863,9 +2863,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 18000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 2400 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 7200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 2400 mAh", 3200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2876,9 +2876,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2019,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 18000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3040 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 7200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3040 mAh", 3200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2889,9 +2889,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 15000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 7000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 6000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 2800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2902,9 +2902,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 16000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 7000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 6400, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 2800, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2915,9 +2915,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 18000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 5000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 7200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 3200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2928,9 +2928,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 20000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3000 mAh", 9000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 6000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 8000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3000 mAh", 3600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2400, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2941,9 +2941,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 22000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 4000 mAh", 10000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 6000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 8800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 4000 mAh", 4000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2400, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2954,9 +2954,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 20000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 6000 mAh", 10000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 6000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 8000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 6000 mAh", 4000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 2400, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2967,9 +2967,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 22000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 5050 mAh", 11000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 7000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 8800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 5050 mAh", 4400, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 2800, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2980,9 +2980,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 35000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3060 mAh", 15000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 14000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3060 mAh", 6000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -2993,9 +2993,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2018,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 30000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 3060 mAh", 14000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port Micro-USB", 8000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 12000, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 3060 mAh", 5600, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port Micro-USB", 3200, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -3006,9 +3006,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 38000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 4470 mAh", 18000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 15200, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 4470 mAh", 7200, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -3019,9 +3019,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2021,
     faults: [
-      f("ecran", "Écran IPS LCD complet", 42000, "40 min", "3 mois", "Écran compatible"),
-      f("batterie", "Batterie 4470 mAh", 20000, "30 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 10000, "45 min", "1 mois", "Nappe de charge"),
+      f("ecran", "Écran IPS LCD complet", 16800, "40 min", "3 mois", "Écran compatible"),
+      f("batterie", "Batterie 4470 mAh", 8000, "30 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4000, "45 min", "1 mois", "Nappe de charge"),
     ],
   },
   {
@@ -3032,9 +3032,9 @@ export const DEVICES: Device[] = [
     category: "Smartphone",
     year: 2022,
     faults: [
-      f("ecran", "Écran AMOLED complet", 52000, "45 min", "6 mois", "Écran grade A+"),
-      f("batterie", "Batterie 4200 mAh", 22000, "35 min", "3 mois", "Batterie compatible"),
-      f("connecteur", "Port USB-C", 12000, "45 min", "3 mois", "Nappe de charge"),
+      f("ecran", "Écran AMOLED complet", 20800, "45 min", "6 mois", "Écran grade A+"),
+      f("batterie", "Batterie 4200 mAh", 8800, "35 min", "3 mois", "Batterie compatible"),
+      f("connecteur", "Port USB-C", 4800, "45 min", "3 mois", "Nappe de charge"),
     ],
   },
 ];
