@@ -17,6 +17,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
 import { Route as LocaleAvisRouteImport } from './routes/$locale/avis'
 import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
+import { Route as LocaleChangelogRouteImport } from './routes/$locale/changelog'
 import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
 import { Route as LocaleDevisRouteImport } from './routes/$locale/devis'
 import { Route as LocaleEngagementsRouteImport } from './routes/$locale/engagements'
@@ -93,6 +94,11 @@ const LocaleAvisRoute = LocaleAvisRouteImport.update({
 const LocaleCatalogueRoute = LocaleCatalogueRouteImport.update({
   id: '/catalogue',
   path: '/catalogue',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleChangelogRoute = LocaleChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleContactRoute = LocaleContactRouteImport.update({
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -389,6 +397,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
+  '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -438,6 +447,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/$locale/avis'
     | '/$locale/catalogue'
+    | '/$locale/changelog'
     | '/$locale/contact'
     | '/$locale/devis'
     | '/$locale/engagements'
@@ -484,6 +494,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/$locale/avis'
     | '/$locale/catalogue'
+    | '/$locale/changelog'
     | '/$locale/contact'
     | '/$locale/devis'
     | '/$locale/engagements'
@@ -532,6 +543,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/$locale/avis'
     | '/$locale/catalogue'
+    | '/$locale/changelog'
     | '/$locale/contact'
     | '/$locale/devis'
     | '/$locale/engagements'
@@ -645,6 +657,13 @@ declare module '@tanstack/react-router' {
       path: '/catalogue'
       fullPath: '/$locale/catalogue'
       preLoaderRoute: typeof LocaleCatalogueRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/changelog': {
+      id: '/$locale/changelog'
+      path: '/changelog'
+      fullPath: '/$locale/changelog'
+      preLoaderRoute: typeof LocaleChangelogRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/contact': {
@@ -934,6 +953,7 @@ const AuthenticatedRouteRouteWithChildren =
 interface LocaleRouteChildren {
   LocaleAvisRoute: typeof LocaleAvisRoute
   LocaleCatalogueRoute: typeof LocaleCatalogueRoute
+  LocaleChangelogRoute: typeof LocaleChangelogRoute
   LocaleContactRoute: typeof LocaleContactRoute
   LocaleDevisRoute: typeof LocaleDevisRoute
   LocaleEngagementsRoute: typeof LocaleEngagementsRoute
@@ -967,6 +987,7 @@ interface LocaleRouteChildren {
 const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleAvisRoute: LocaleAvisRoute,
   LocaleCatalogueRoute: LocaleCatalogueRoute,
+  LocaleChangelogRoute: LocaleChangelogRoute,
   LocaleContactRoute: LocaleContactRoute,
   LocaleDevisRoute: LocaleDevisRoute,
   LocaleEngagementsRoute: LocaleEngagementsRoute,

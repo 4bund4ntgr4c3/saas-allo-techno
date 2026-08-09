@@ -145,6 +145,7 @@ export function Footer() {
                 { to: "/avis", label: t("nav.avis") },
                 { to: "/faq", label: t("nav.faq") },
                 { to: "/blog", label: t("nav.blog") },
+                { to: "/changelog", label: "Changelog" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
