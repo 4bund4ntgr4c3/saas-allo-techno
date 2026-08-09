@@ -3,8 +3,13 @@
 // tout le catalogue d'appareils (~500 Ko) au premier rendu.
 
 import type { Brand } from "./types";
+import { BRAND_ICONS } from "./brand-icons";
 
 export { type Brand } from "./types";
+
+function brandIcon(slug: string): string | undefined {
+  return BRAND_ICONS[slug];
+}
 
 export const BRANDS: Brand[] = [
   {
@@ -12,6 +17,7 @@ export const BRANDS: Brand[] = [
     name: "Apple",
     tag: "iPhone · iPad · MacBook · iMac · Watch",
     devices: ["iPhone", "iPad", "MacBook", "Mac mini", "iMac", "Apple Watch"],
+    icon: brandIcon("apple"),
   },
   {
     slug: "samsung",
@@ -30,50 +36,57 @@ export const BRANDS: Brand[] = [
       "Galaxy Watch",
       "Galaxy Book",
     ],
+    icon: brandIcon("samsung"),
   },
   {
     slug: "xiaomi",
     name: "Xiaomi",
     tag: "Xiaomi 15 · Redmi Note 14",
     devices: ["Xiaomi Série", "Redmi Note", "Redmi", "Poco"],
+    icon: brandIcon("xiaomi"),
   },
-  { slug: "huawei", name: "Huawei", tag: "Pura · Mate · Nova", devices: ["Pura", "Mate", "Nova"] },
-  { slug: "oppo", name: "Oppo", tag: "Reno 13 · A Series", devices: ["Reno", "A Series", "Find"] },
-  { slug: "google", name: "Google Pixel", tag: "Pixel 6 à 10", devices: ["Pixel"] },
-  { slug: "oneplus", name: "OnePlus", tag: "Nord · Série 13", devices: ["Nord", "Série 13"] },
+  { slug: "huawei", name: "Huawei", tag: "Pura · Mate · Nova", devices: ["Pura", "Mate", "Nova"], icon: brandIcon("huawei") },
+  { slug: "oppo", name: "Oppo", tag: "Reno 13 · A Series", devices: ["Reno", "A Series", "Find"], icon: brandIcon("oppo") },
+  { slug: "google", name: "Google Pixel", tag: "Pixel 6 à 10", devices: ["Pixel"], icon: brandIcon("google") },
+  { slug: "oneplus", name: "OnePlus", tag: "Nord · Série 13", devices: ["Nord", "Série 13"], icon: brandIcon("oneplus") },
   {
     slug: "tecno",
     name: "Tecno",
     tag: "Camon 50 · Spark 40 · Phantom",
     devices: ["Camon", "Spark", "Phantom", "Pova", "Pop"],
+    icon: brandIcon("tecno"),
   },
   {
     slug: "infinix",
     name: "Infinix",
     tag: "Note 60 · Hot 70 · Zero 40",
     devices: ["Note", "Hot", "Zero", "Smart", "GT"],
+    icon: brandIcon("infinix"),
   },
   {
     slug: "itel",
     name: "Itel",
     tag: "A · S · P Series",
     devices: ["A Series", "S Series", "P Series"],
+    icon: brandIcon("itel"),
   },
-  { slug: "nokia", name: "Nokia", tag: "G · X · C Series", devices: ["G Series", "C Series"] },
-  { slug: "motorola", name: "Motorola", tag: "Moto G · Edge 50", devices: ["Moto G", "Edge"] },
-  { slug: "honor", name: "Honor", tag: "Magic 7 · X Series", devices: ["Magic", "X Series"] },
+  { slug: "nokia", name: "Nokia", tag: "G · X · C Series", devices: ["G Series", "C Series"], icon: brandIcon("nokia") },
+  { slug: "motorola", name: "Motorola", tag: "Moto G · Edge 50", devices: ["Moto G", "Edge"], icon: brandIcon("motorola") },
+  { slug: "honor", name: "Honor", tag: "Magic 7 · X Series", devices: ["Magic", "X Series"], icon: brandIcon("honor") },
   {
     slug: "sony",
     name: "Sony",
     tag: "PlayStation 4 · 5 · Xperia",
     devices: ["PlayStation", "Xperia"],
+    icon: brandIcon("sony"),
   },
-  { slug: "nintendo", name: "Nintendo", tag: "Switch · Switch 2", devices: ["Switch"] },
+  { slug: "nintendo", name: "Nintendo", tag: "Switch · Switch 2", devices: ["Switch"], icon: brandIcon("nintendo") },
   {
     slug: "microsoft",
     name: "Microsoft",
     tag: "Xbox Series X|S · Surface",
     devices: ["Xbox", "Surface"],
+    icon: brandIcon("microsoft"),
   },
   {
     slug: "hp",
@@ -90,14 +103,16 @@ export const BRANDS: Brand[] = [
       "HP Laptop",
       "HP 200/300",
     ],
+    icon: brandIcon("hp"),
   },
   {
     slug: "lenovo",
     name: "Lenovo",
     tag: "IdeaPad · ThinkPad · Tab",
     devices: ["IdeaPad", "ThinkPad"],
+    icon: brandIcon("lenovo"),
   },
-  { slug: "dell", name: "Dell", tag: "XPS · Latitude · Inspiron", devices: ["XPS", "Latitude"] },
+  { slug: "dell", name: "Dell", tag: "XPS · Latitude · Inspiron", devices: ["XPS", "Latitude"], icon: brandIcon("dell") },
   {
     slug: "realme",
     name: "Realme",

@@ -8,9 +8,20 @@ import { useCart } from "@/components/shop/cart";
 import { useSession } from "@/hooks/useSession";
 import { openSearch } from "@/lib/search-events";
 import { useI18n } from "@/lib/i18n/context";
-import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { PushNotificationToggle } from "@/components/site/PushNotificationToggle";
 import { prefetchRoute } from "@/lib/prefetch";
+
+const TOP_LEFT = [
+  { to: "/$locale/entreprises", label: "nav.about" },
+  { to: "/$locale/contact", label: "nav.work-at" },
+  { to: "/$locale/blog", label: "nav.blog" },
+] as const;
+
+const TOP_RIGHT = [
+  { to: "/$locale/boutique", label: "nav.store" },
+  { to: "/$locale/suivi", label: "nav.track" },
+  { to: "/$locale/contact", label: "nav.contact" },
+] as const;
 
 const NAV = [
   { to: "/$locale/reparations", label: "nav.reparations" },
@@ -21,8 +32,6 @@ const NAV = [
   { to: "/$locale/promotions", label: "nav.promotions" },
   { to: "/$locale/suivi", label: "nav.suivi" },
   { to: "/$locale/magasins", label: "nav.magasins" },
-  { to: "/$locale/entreprises", label: "nav.entreprises" },
-  { to: "/$locale/blog", label: "nav.blog" },
 ] as const;
 
 function ThemeToggle() {
@@ -48,7 +57,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? "Activer le mode clair" : "Activer le mode sombre"}
-      className="grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+      className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </button>
@@ -63,7 +72,7 @@ function CartButton() {
       to="/$locale/panier"
       params={{ locale }}
       aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
-      className="relative grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+      className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       <ShoppingBag className="size-4" />
       {count > 0 && (
@@ -80,14 +89,49 @@ export function Header() {
   const { t, locale } = useI18n();
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      {/* Top utility bar */}
+      <div className="border-b border-border bg-surface">
+        <div className="mx-auto flex h-8 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <nav className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
+            {TOP_LEFT.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                params={{ locale }}
+                className="transition-colors hover:text-foreground"
+                onMouseEnter={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
+                onFocus={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
+              >
+                {t(item.label)}
+              </Link>
+            ))}
+          </nav>
+          <nav className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
+            {TOP_RIGHT.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                params={{ locale }}
+                className="transition-colors hover:text-foreground"
+                onMouseEnter={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
+                onFocus={() => prefetchRoute(`/${locale}${item.to.replace("/$locale", "")}`)}
+              >
+                {t(item.label)}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* Main nav bar */}
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-8">
           <Link to="/" className="at-display text-xl">
             Allô Techno
           </Link>
           <nav
             aria-label={t("header.desktop-nav")}
-            className="hidden gap-6 text-sm font-medium text-muted-foreground lg:flex"
+            className="hidden gap-5 text-sm font-medium text-muted-foreground lg:flex"
           >
             {NAV.map((item) => (
               <Link
@@ -105,8 +149,7 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
           <div className="hidden flex-col items-end sm:flex">
             <span className="at-eyebrow">{COMPANY.city}</span>
             <a
@@ -119,7 +162,7 @@ export function Header() {
           <button
             onClick={openSearch}
             aria-label={t("header.search")}
-            className="grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+            className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
           >
             <Search className="size-4" />
           </button>
@@ -145,7 +188,7 @@ export function Header() {
             <SheetTrigger asChild>
               <button
                 aria-label={t("header.open-menu")}
-                className="grid size-11 place-items-center rounded-sm border border-border lg:hidden"
+                className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
               >
                 <Menu className="size-4" />
               </button>
@@ -155,6 +198,8 @@ export function Header() {
               <nav className="mt-6 flex flex-col gap-1" aria-label={t("header.mobile-nav")}>
                 {[
                   ...NAV,
+                  ...TOP_LEFT,
+                  ...TOP_RIGHT.filter((r) => !TOP_LEFT.some((l) => l.to === r.to)),
                   { to: "/panier", label: t("nav.panier") },
                   { to: "/reservation", label: t("nav.reservation") },
                   {
@@ -170,7 +215,6 @@ export function Header() {
                   { to: "/reclamation", label: t("nav.reclamation") },
                   { to: "/engagements", label: t("nav.engagements") },
                   { to: "/faq", label: t("nav.faq") },
-                  { to: "/contact", label: t("nav.contact") },
                 ].map((i) => (
                   <Link
                     key={i.to}

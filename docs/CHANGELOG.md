@@ -11,8 +11,15 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Added
 
+- **Header restructuré** : barre utilitaire supérieure (À propos, Rejoindre l'équipe, Blog à gauche ; Boutique, Suivi, Contact à droite), nav principale avec 8 liens, LanguageSwitcher supprimé du header.
+- **Footer restructuré** : grille 5 colonnes — Marque+Contact fusionnée (col-span-2), Services (14 liens), Entreprises (6 liens), Boutique (4 liens). LanguageSwitcher déplacé dans la barre inférieure.
+- **Icônes SVG marques** : `brand-icons.ts` avec SVG inline pour 27 marques (Apple, Samsung, Xiaomi, Huawei, Oppo, Google, OnePlus, Tecno, Infinix, Itel, Nokia, Motorola, Honor, Sony, Nintendo, Microsoft, HP, Lenovo, Dell, Realme, LG, Philips, Hisense, TCL, Bosch, JBL, Bose, Whirlpool). `BrandLogo.tsx` pour le rendu.
+- **Widget panier animé** : `AddToCartWidget.tsx` — toast flottant en bas à droite avec animation slide-in, affiche le dernier article ajouté, prix, boutons "Voir le panier" / "Continuer". Auto-masquage après 4 secondes. Monté dans `__root.tsx`.
+- **Sidebar filtres shop** : `ShopFilterSidebar.tsx` — filtres latéraux pour la page boutique avec catégorie, fourchettes de prix (5 plages), disponibilité, indice livraison gratuite. Drawer mobile. Intégré à `boutique.index.tsx`.
+- **Timeline dots changelog** : `changelog.tsx` — ligne verticale de connexion avec dots animés (le premier est primary, les autres muted). Chaque entrée a un point pulsant.
+- **i18n extensions** : `nav.about`, `nav.work-at`, `nav.store`, `nav.track` (FR/EN). Clés panier widget (`cart.widget.added/checkout/continue`). Clés filtres shop (`shop.filter.title/open/category/all/price/availability/in-stock-only/free-delivery/free-delivery.hint`).
 - **Moteur de recherche amélioré** : `search-fulltext.ts` — scoring avancé avec Levenshtein, fuzzy matching (tolérance aux fautes de frappe), préfixe de mots, bonus de position. `catalog-search.ts` — fuzzy matching ajouté. `SearchModal.tsx` — classement par score, historique des recherches récentes (localStorage), suggestions.
-- **Baisse des prix de 60%** : tous les tarifs réparations, services, accessoires et frais de service réduits de 60%. Ex: écran Galaxy S6 de 55000→22000 FCFA, diagnostic de 2000→800 FCFA.
+- **Baisse des prix de 60%** : tous les tarifs réparations (pannes) réduits de 60%. Services, accessoires et frais de service inchangés.
 - **Multi-ateliers** : table `workshops`, `workshops.functions.ts`, `AdminWorkshops.tsx` — CRUD ateliers avec adresse, ville, téléphone, timezone.
 - **Gestion fournisseurs** : tables `suppliers` + `supplier_orders`, `suppliers.functions.ts`, `AdminSuppliers.tsx` — ajout fournisseurs, suivi commandes pièces, statuts (pending→ordered→shipped→received).
 - **Programme de parrainage** : table `referrals`, `referral-advanced.ts`, `AdminReferrals.tsx` — stats parrainage, niveaux Bronze/Argent/Or, historique entrées.

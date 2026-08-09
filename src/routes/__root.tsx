@@ -21,6 +21,7 @@ import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
+import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 
@@ -235,6 +236,7 @@ function RootComponent() {
             <SearchModal />
           </Suspense>
           <Toaster />
+          <AddToCartWidget />
           <PwaInstallBanner />
           <OfflineIndicator />
           <AuthErrorHandler />

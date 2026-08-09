@@ -8,6 +8,9 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 
 ### Côté client
 - **Recherche intelligente** : assistant de diagnostic en 9 étapes (type → marque → série → famille → modèle → pannes → créneau → photos → contact). Moteur de recherche amélioré avec fuzzy matching (tolérance aux fautes de frappe), scoring par pertinence, historique des recherches récentes.
+- **Widget panier animé** : toast flottant en bas à droite avec animation slide-in, affiche le dernier article ajouté, prix, boutons "Voir le panier" / "Continuer". Auto-masquage après 4 secondes.
+- **Sidebar filtres shop** : filtres latéraux (catégorie, fourchettes de prix, disponibilité, livraison gratuite) avec drawer mobile pour les petits écrans.
+- **Icônes SVG marques** : 27 marques avec logos vectoriels inline pour un rendu net sur tous les écrans.
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
 - **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape.
 - **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.

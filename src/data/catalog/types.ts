@@ -22,6 +22,7 @@ export type Brand = {
   name: string;
   tag: string;
   devices: string[];
+  icon?: string | undefined;
 };
 
 /** Factory de panne (définition compacte des tarifs catalogue). */

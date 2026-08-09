@@ -17,7 +17,11 @@ const fr: Dictionary = {
   "nav.magasins": "Magasins",
   "nav.suivi": "Suivi",
   "nav.entreprises": "Entreprises",
+  "nav.about": "À propos",
+  "nav.work-at": "Rejoindre l'équipe",
   "nav.blog": "Blog",
+  "nav.store": "Boutique",
+  "nav.track": "Suivi",
   "nav.panier": "Panier",
   "nav.reservation": "Réserver",
   "nav.mon-compte": "Mon compte",
@@ -34,6 +38,22 @@ const fr: Dictionary = {
   "nav.reclamation": "Réclamation",
   "nav.reconditionnes": "Reconditionnés",
   "nav.quartiers": "Quartiers",
+
+  // Cart widget
+  "cart.widget.added": "Ajouté au panier",
+  "cart.widget.checkout": "Voir le panier",
+  "cart.widget.continue": "Continuer",
+
+  // Shop filters
+  "shop.filter.title": "Filtres",
+  "shop.filter.open": "Filtres",
+  "shop.filter.category": "Catégorie",
+  "shop.filter.all": "Toutes",
+  "shop.filter.price": "Prix",
+  "shop.filter.availability": "Disponibilité",
+  "shop.filter.in-stock-only": "En stock uniquement",
+  "shop.filter.free-delivery": "Livraison gratuite",
+  "shop.filter.free-delivery.hint": "Dès 50 000 FCFA d'achat",
 
   // Actions / liens génériques
   "action.explorer": "Explorer",
@@ -236,7 +256,11 @@ const en: Dictionary = {
   "nav.magasins": "Stores",
   "nav.suivi": "Track",
   "nav.entreprises": "Business",
+  "nav.about": "About",
+  "nav.work-at": "Work at",
   "nav.blog": "Blog",
+  "nav.store": "Store",
+  "nav.track": "Track",
   "nav.panier": "Cart",
   "nav.reservation": "Book now",
   "nav.mon-compte": "My account",
@@ -253,6 +277,22 @@ const en: Dictionary = {
   "nav.reclamation": "Warranty claim",
   "nav.reconditionnes": "Refurbished",
   "nav.quartiers": "Areas",
+
+  // Cart widget
+  "cart.widget.added": "Added to cart",
+  "cart.widget.checkout": "View cart",
+  "cart.widget.continue": "Continue shopping",
+
+  // Shop filters
+  "shop.filter.title": "Filters",
+  "shop.filter.open": "Filters",
+  "shop.filter.category": "Category",
+  "shop.filter.all": "All",
+  "shop.filter.price": "Price",
+  "shop.filter.availability": "Availability",
+  "shop.filter.in-stock-only": "In stock only",
+  "shop.filter.free-delivery": "Free delivery",
+  "shop.filter.free-delivery.hint": "From 50,000 FCFA purchase",
 
   // Actions
   "action.explorer": "Explore",

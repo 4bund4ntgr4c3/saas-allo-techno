@@ -227,19 +227,39 @@ function ChangelogPage() {
 
       <section className="py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <div className="space-y-12">
-            {ENTRIES.map((entry) => (
-              <article key={entry.version} className="border-b border-border pb-12 last:border-b-0">
-                <div className="flex flex-wrap items-baseline gap-3">
-                  <h2 className="text-2xl font-bold tracking-tight">{entry.version}</h2>
-                  <time dateTime={entry.date} className="font-mono text-xs text-muted-foreground">
-                    {new Date(entry.date).toLocaleDateString("fr-BJ", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </time>
-                </div>
+          <div className="relative">
+            {/* Vertical timeline line */}
+            <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
+
+            <div className="space-y-12">
+              {ENTRIES.map((entry, idx) => (
+                <article key={entry.version} className="relative pl-10">
+                  {/* Timeline dot */}
+                  <div className="absolute left-0 top-1 flex items-center">
+                    <span className="relative flex size-6 items-center justify-center">
+                      <span
+                        className={`absolute inline-flex size-full animate-ping rounded-full opacity-20 ${
+                          idx === 0 ? "bg-primary" : "bg-muted-foreground"
+                        }`}
+                      />
+                      <span
+                        className={`relative inline-flex size-3 rounded-full ${
+                          idx === 0 ? "bg-primary" : "bg-muted-foreground/50"
+                        }`}
+                      />
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-baseline gap-3">
+                    <h2 className="text-2xl font-bold tracking-tight">{entry.version}</h2>
+                    <time dateTime={entry.date} className="font-mono text-xs text-muted-foreground">
+                      {new Date(entry.date).toLocaleDateString("fr-BJ", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </time>
+                  </div>
 
                 <div className="mt-6 space-y-6">
                   {entry.added && entry.added.length > 0 && (
@@ -307,7 +327,8 @@ function ChangelogPage() {
                   )}
                 </div>
               </article>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
