@@ -27,6 +27,8 @@ import {
   type ReservationStatus,
   type SlaForecast,
   type TimelineEntry,
+  getReservationComments,
+  addReservationComment,
 } from "@/lib/suivi.functions";
 import { decideOnQuote, getQuoteStatus } from "@/lib/quote.functions";
 import { getReservationAttachments } from "@/lib/photos.functions";
@@ -585,6 +587,8 @@ function StatusResult({
 
       {!isCancelled && <PhotosBlock reference={ref} code={code} />}
 
+      {!isCancelled && <CommentsBlock reference={ref} code={code} />}
+
       <div className="mt-8 flex flex-wrap gap-3">
         {reschedulable && (
           <Button variant="outline" onClick={() => setRescheduling((v) => !v)}>
@@ -901,6 +905,121 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
           />
         </div>
       )}
+    </div>
+  );
+}
+
+function CommentsBlock({ reference, code }: { reference: string; code: string }) {
+  const { t } = useI18n();
+  const fetchComments = useServerFn(getReservationComments);
+  const addComment = useServerFn(addReservationComment);
+  const queryClient = useQueryClient();
+  const [body, setBody] = useState("");
+  const [name, setName] = useState("");
+  const [sending, setSending] = useState(false);
+  const [flash, setFlash] = useState<"ok" | "err" | null>(null);
+
+  const comments = useQuery({
+    queryKey: ["suivi-comments", reference, code],
+    enabled: Boolean(reference) && Boolean(code),
+    refetchInterval: 30_000,
+    queryFn: () => fetchComments({ data: { reference, code } }),
+  });
+
+  const items = comments.data ?? [];
+
+  const submit = async () => {
+    const trimmed = body.trim();
+    if (!trimmed || sending) return;
+    setSending(true);
+    setFlash(null);
+    try {
+      await addComment({
+        data: { reference, code, body: trimmed, author_name: name.trim() || undefined },
+      });
+      setBody("");
+      setFlash("ok");
+      void queryClient.invalidateQueries({ queryKey: ["suivi-comments", reference, code] });
+    } catch {
+      setFlash("err");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="mt-8 border-t border-border pt-8">
+      <span className="at-eyebrow">{t("suivi.comments.title")}</span>
+
+      {items.length === 0 && !comments.isLoading && (
+        <p className="mt-4 text-sm text-muted-foreground">{t("suivi.comments.empty")}</p>
+      )}
+
+      {items.length > 0 && (
+        <div className="mt-4 space-y-4">
+          {items.map((c) => (
+            <div
+              key={c.id}
+              className="rounded-sm border border-border bg-surface p-4"
+            >
+              <p className="text-sm">{c.body}</p>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                {c.author_name
+                  ? t("suivi.comments.by", [c.author_name])
+                  : c.author === "staff"
+                    ? "Atelier"
+                    : ""}
+                {c.author_name || c.author === "staff" ? " · " : ""}
+                {new Date(c.created_at).toLocaleString("fr-FR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 space-y-3">
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t("suivi.comments.name")}
+          className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+        />
+        <div className="flex gap-2">
+          <input
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void submit();
+              }
+            }}
+            placeholder={t("suivi.comments.input")}
+            className="flex-1 border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="technical"
+            disabled={sending || !body.trim()}
+            onClick={() => void submit()}
+          >
+            {sending ? t("suivi.comments.sending") : t("suivi.comments.send")}
+          </Button>
+        </div>
+        {flash === "ok" && (
+          <p className="text-xs text-green-600">{t("suivi.comments.success")}</p>
+        )}
+        {flash === "err" && (
+          <p className="text-xs text-destructive">{t("suivi.comments.error")}</p>
+        )}
+      </div>
     </div>
   );
 }

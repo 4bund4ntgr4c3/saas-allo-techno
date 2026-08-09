@@ -7,6 +7,21 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.09] — 2026-08-09 (Batch 23)
+
+### Added
+
+- **Commentaires suivi enrichi** : `/$locale/suivi` — section commentaires client après timeline + photos. Les clients peuvent laisser des messages (nom + texte) sur leur dossier de réparation, avec auto-refresh 30s et validation côté serveur. Table `reservation_comments` + RPC `get_reservation_comments` / `add_reservation_comment`.
+- **Devis public** : `/$locale/devis` (existant) — page publique sans login, estimateur instantané marque→appareil→panne, demande de devis personnalisée.
+- **Garantie client** : `/$locale/garantie` (existant) — page publique avec 3 niveaux de garantie (3/6/12 mois), liste couvert/non-couvert, étapes réclamation, FAQ.
+- **i18n commentaires** : 9 clés FR/EN `suivi.comments.*` ajoutées.
+
+### Changed
+
+- **Batch 23 complet** : devis public, garantie client, suivi enrichi (timeline + photos + commentaires).
+
+---
+
 ## [2026.08.09] — 2026-08-09
 
 ### Added

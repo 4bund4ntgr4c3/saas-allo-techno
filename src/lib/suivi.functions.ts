@@ -309,3 +309,64 @@ export const getReservationTracking = createServerFn({ method: "POST" })
       };
     },
   );
+
+// ── Comments ──────────────────────────────────────────
+
+export type Comment = {
+  id: string;
+  author: string;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+};
+
+export const getReservationComments = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => lookupSchema.parse(data))
+  .handler(async ({ data }): Promise<Comment[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: rows, error } = await supabaseAdmin.rpc("get_reservation_comments", {
+      _reference: data.reference,
+      _code: data.code,
+    });
+
+    if (error) {
+      console.error("[suivi] comments fetch failed", error);
+      return [];
+    }
+
+    return (rows ?? []) as Comment[];
+  });
+
+export const addReservationComment = createServerFn({ method: "POST" })
+  .inputValidator(
+    (data: unknown) =>
+      lookupSchema
+        .extend({
+          body: z.string().trim().min(1, "Message requis").max(1000),
+          author_name: z.string().trim().max(100).optional(),
+        })
+        .parse(data),
+  )
+  .handler(async ({ data }): Promise<{ id: string }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("suivi-comment", 10)) {
+      throw new Error("Trop de commentaires. Réessayez dans une minute.");
+    }
+
+    const { data: id, error } = await supabaseAdmin.rpc("add_reservation_comment", {
+      _reference: data.reference,
+      _code: data.code,
+      _author: "customer",
+      _author_name: data.author_name ?? null,
+      _body: data.body,
+    });
+
+    if (error) {
+      console.error("[suivi] comment add failed", error);
+      throw new Error("Impossible d'ajouter le commentaire. Réessayez.");
+    }
+
+    return { id: id as string };
+  });

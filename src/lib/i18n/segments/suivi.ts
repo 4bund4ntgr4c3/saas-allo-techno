@@ -131,6 +131,16 @@ const fr = {
     "Votre réponse a bien été enregistrée. L'atelier revient vers vous rapidement.",
   "suivi.quote.invalid": "Ce devis n'est plus valide ou a déjà été traité.",
   "suivi.quote.loading": "Chargement du devis",
+  // Suivi — comments
+  "suivi.comments.title": "Commentaires",
+  "suivi.comments.empty": "Aucun commentaire pour le moment.",
+  "suivi.comments.input": "Écrire un commentaire…",
+  "suivi.comments.send": "Envoyer",
+  "suivi.comments.sending": "Envoi…",
+  "suivi.comments.success": "Commentaire ajouté.",
+  "suivi.comments.error": "Impossible d'envoyer le commentaire.",
+  "suivi.comments.name": "Votre nom",
+  "suivi.comments.by": "par {0}",
 };
 
 const en = {
@@ -260,6 +270,16 @@ const en = {
   "suivi.quote.done": "Your answer has been recorded. The workshop will get back to you shortly.",
   "suivi.quote.invalid": "This quote is no longer valid or has already been processed.",
   "suivi.quote.loading": "Loading quote",
+  // Suivi — comments
+  "suivi.comments.title": "Comments",
+  "suivi.comments.empty": "No comments yet.",
+  "suivi.comments.input": "Write a comment…",
+  "suivi.comments.send": "Send",
+  "suivi.comments.sending": "Sending…",
+  "suivi.comments.success": "Comment added.",
+  "suivi.comments.error": "Unable to send the comment.",
+  "suivi.comments.name": "Your name",
+  "suivi.comments.by": "by {0}",
 };
 
 registerSegments({ fr, en });

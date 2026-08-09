@@ -1009,6 +1009,26 @@ export type Database = {
           old_status: Database["public"]["Enums"]["reservation_status"];
         }[];
       };
+      get_reservation_comments: {
+        Args: { _reference: string; _code: string };
+        Returns: {
+          id: string;
+          author: string;
+          author_name: string | null;
+          body: string;
+          created_at: string;
+        }[];
+      };
+      add_reservation_comment: {
+        Args: {
+          _reference: string;
+          _code: string;
+          _author?: string;
+          _author_name?: string | null;
+          _body: string;
+        };
+        Returns: string;
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

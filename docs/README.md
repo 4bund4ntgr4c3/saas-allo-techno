@@ -14,7 +14,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Page À propos** : histoire, mission, valeurs, timeline chronologique, chiffres clés, localisation.
 - **Page Rejoindre l'équipe** : avantages, postes ouverts, processus de candidature, CTA.
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
-- **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape.
+- **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape, photos d'atelier, commentaires client en temps réel.
 - **Paiement en ligne** : 3 providers Mobile Money (Flutterwave, FedaPay, KKiaPay) — MTN MoMo, Moov Money, Celtiis.
 - **Acompte 50%** : paiement partiel pour confirmer la réservation.
 - **Programme de fidélité** : points gagnés, 3 niveaux (Bronze/Argent/Or), utilisation (100 pts = 500 FCFA).
