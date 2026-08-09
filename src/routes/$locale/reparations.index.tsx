@@ -4,6 +4,7 @@ import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
 import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
+import { BrandLogo } from "@/components/site/BrandLogo";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -178,6 +179,7 @@ function Reparations() {
                 params={{ locale, brand: b.slug }}
                 className="group bg-card p-8 transition-colors hover:bg-surface"
               >
+                <BrandLogo slug={b.slug} name={b.name} className="mb-4 block size-10 text-primary" />
                 <h2 className="text-xl font-extrabold uppercase tracking-tight">{b.name}</h2>
                 <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">
                   {t(b.tag)}

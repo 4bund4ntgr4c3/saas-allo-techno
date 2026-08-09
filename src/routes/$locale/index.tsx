@@ -11,6 +11,7 @@ import {
 } from "@/components/site/Blocks";
 import { BRANDS, REVIEWS } from "@/data/catalog/static";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
+import { BrandLogo } from "@/components/site/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -367,6 +368,7 @@ function Home() {
                 params={{ locale, brand: b.slug }}
                 className="group bg-card p-6 transition-colors hover:bg-foreground hover:text-background"
               >
+                <BrandLogo slug={b.slug} name={b.name} className="mb-3 block size-8 text-foreground group-hover:text-background" />
                 <span className="block text-sm font-extrabold uppercase tracking-tight">
                   {b.name}
                 </span>
