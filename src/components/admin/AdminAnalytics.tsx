@@ -1,0 +1,96 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+function AnalyticsSection() {
+  const events = useQuery({
+    queryKey: ["analytics-events"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("analytics_events")
+        .select("event, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const counts = useQuery({
+    queryKey: ["analytics-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("analytics_events").select("event");
+      if (error) throw error;
+      const map = new Map<string, number>();
+      for (const row of data ?? []) {
+        map.set(row.event, (map.get(row.event) ?? 0) + 1);
+      }
+      return [...map.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([event, count]) => ({ event, count }));
+    },
+  });
+
+  const EVENT_LABEL: Record<string, string> = {
+    step_viewed: "Étape consultée",
+    estimation_shown: "Estimation affichée",
+    reservation_created: "Réservation créée",
+  };
+
+  if (events.isLoading) {
+    return <p className="mt-6 text-sm text-muted-foreground">Chargement…</p>;
+  }
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">Vue d'ensemble</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {(counts.data ?? []).map((c) => (
+            <div key={c.event} className="border border-border bg-card p-4 text-center">
+              <p className="text-2xl font-bold">{c.count}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {EVENT_LABEL[c.event] ?? c.event}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">Événements récents</h2>
+        <div className="overflow-x-auto border border-border bg-card">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                <th className="px-4 py-2 text-left">Événement</th>
+                <th className="px-4 py-2 text-left">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(events.data ?? []).slice(0, 50).map((e, i) => (
+                <tr key={i} className="border-b border-border last:border-b-0 hover:bg-surface">
+                  <td className="px-4 py-2">
+                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      {EVENT_LABEL[e.event] ?? e.event}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-muted-foreground">
+                    {new Date(e.created_at).toLocaleString("fr-FR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export { AnalyticsSection };

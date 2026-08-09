@@ -1,0 +1,91 @@
+import { registerSegments } from "@/lib/i18n/dictionaries";
+
+const fr = {
+  "auth.meta.title": "Espace client — Allô Techno Abomey-Calavi",
+  "auth.meta.description":
+    "Connectez-vous à votre espace client Allô Techno pour suivre vos réservations de réparation et gérer vos rendez-vous.",
+  "auth.og.title": "Espace client — Allô Techno",
+  "auth.og.description": "Connexion et création de compte pour suivre vos réparations.",
+  "auth.eyebrow": "Espace client",
+  "auth.login.title": "Se connecter",
+  "auth.signup.title": "Créer un compte",
+  "auth.subtitle":
+    "Suivez vos réparations, retrouvez vos numéros de dossier et gérez vos rendez-vous.",
+  "auth.name": "Nom complet *",
+  "auth.phone": "Téléphone / WhatsApp *",
+  "auth.email": "E-mail *",
+  "auth.password": "Mot de passe *",
+  "auth.login.btn": "Se connecter",
+  "auth.signup.btn": "Créer mon compte",
+  "auth.or": "ou",
+  "auth.google": "Continuer avec Google",
+  "auth.noAccount": "Pas encore de compte ?",
+  "auth.hasAccount": "Vous avez déjà un compte ?",
+  "auth.createAccount": "Créer un compte",
+  "auth.signIn": "Se connecter",
+  "auth.confirmEmail.title": "Vérifiez votre boîte mail.",
+  "auth.confirmEmail.body":
+    "Nous avons envoyé un lien de confirmation à {email}. Cliquez dessus pour activer votre compte, puis revenez vous connecter.",
+  "auth.error.login": "Connexion impossible",
+  "auth.error.google": "Connexion Google impossible",
+  "auth.guest": "Vous pouvez aussi",
+  "auth.guest.link": "réserver sans compte",
+  "auth.forgotPassword": "Mot de passe oublié ?",
+  "auth.resetPassword.title": "Réinitialiser le mot de passe",
+  "auth.resetPassword.subtitle":
+    "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+  "auth.resetPassword.btn": "Envoyer le lien",
+  "auth.resetPassword.sent.title": "Lien envoyé.",
+  "auth.resetPassword.sent.body":
+    "Vérifiez votre boîte mail. Cliquez sur le lien pour créer un nouveau mot de passe.",
+  "auth.resetPassword.back": "Retour à la connexion",
+  "auth.updatePassword.title": "Nouveau mot de passe",
+  "auth.updatePassword.btn": "Mettre à jour",
+  "auth.updatePassword.success": "Mot de passe mis à jour. Vous allez être redirigé.",
+  "auth.updatePassword.error": "Impossible de mettre à jour le mot de passe.",
+};
+
+const en = {
+  "auth.meta.title": "Customer account — Allô Techno Abomey-Calavi",
+  "auth.meta.description":
+    "Sign in to your Allô Techno customer account to track your repair reservations and manage your appointments.",
+  "auth.og.title": "Customer account — Allô Techno",
+  "auth.og.description": "Sign in and account creation to track your repairs.",
+  "auth.eyebrow": "Customer account",
+  "auth.login.title": "Sign in",
+  "auth.signup.title": "Create an account",
+  "auth.subtitle": "Track your repairs, find your case numbers and manage your appointments.",
+  "auth.name": "Full name *",
+  "auth.phone": "Phone / WhatsApp *",
+  "auth.email": "Email *",
+  "auth.password": "Password *",
+  "auth.login.btn": "Sign in",
+  "auth.signup.btn": "Create my account",
+  "auth.or": "or",
+  "auth.google": "Continue with Google",
+  "auth.noAccount": "Don't have an account?",
+  "auth.hasAccount": "Already have an account?",
+  "auth.createAccount": "Create an account",
+  "auth.signIn": "Sign in",
+  "auth.confirmEmail.title": "Check your inbox.",
+  "auth.confirmEmail.body":
+    "We sent a confirmation link to {email}. Click it to activate your account, then come back to sign in.",
+  "auth.error.login": "Login failed",
+  "auth.error.google": "Google login failed",
+  "auth.guest": "You can also",
+  "auth.guest.link": "book without an account",
+  "auth.forgotPassword": "Forgot password?",
+  "auth.resetPassword.title": "Reset your password",
+  "auth.resetPassword.subtitle":
+    "Enter your email address and we'll send you a link to reset your password.",
+  "auth.resetPassword.btn": "Send the link",
+  "auth.resetPassword.sent.title": "Link sent.",
+  "auth.resetPassword.sent.body": "Check your inbox. Click the link to create a new password.",
+  "auth.resetPassword.back": "Back to sign in",
+  "auth.updatePassword.title": "New password",
+  "auth.updatePassword.btn": "Update",
+  "auth.updatePassword.success": "Password updated. You'll be redirected.",
+  "auth.updatePassword.error": "Failed to update password.",
+};
+
+registerSegments({ fr, en });
