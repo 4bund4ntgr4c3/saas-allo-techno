@@ -73,6 +73,7 @@ const fr = {
   "devis.lead.success": "Demande de devis envoyée ! Nous vous recontacterons rapidement.",
   "devis.lead.error": "Impossible d'envoyer la demande. Réessayez.",
   "devis.lead.sent": "Demande envoyée",
+  "devis.estimateLabel": "Estimation :",
 
   // Contact — meta
   "contact.meta.title": "Contact & atelier — Allô Techno Abomey-Calavi",
@@ -90,6 +91,10 @@ const fr = {
   "contact.whatsapp": "WhatsApp",
   "contact.email": "E-mail",
   "contact.hours": "Horaires",
+  "contact.hours.monfri": "Lundi — Vendredi",
+  "contact.hours.sat": "Samedi",
+  "contact.hours.sun": "Dimanche",
+  "contact.hours.closed": "Fermé",
   "contact.startChat": "Démarrer une conversation",
   "contact.mapTitle": "Carte de l'atelier Allô Techno à Abomey-Calavi",
   "contact.form.eyebrow": "Écrivez-nous",
@@ -301,6 +306,7 @@ const en = {
   "devis.lead.success": "Quote request sent! We will contact you shortly.",
   "devis.lead.error": "Failed to send request. Please try again.",
   "devis.lead.sent": "Request sent",
+  "devis.estimateLabel": "Estimate:",
 
   // Contact — contact
   "contact.meta.title": "Contact & workshop — Allô Techno Abomey-Calavi",
@@ -318,6 +324,10 @@ const en = {
   "contact.whatsapp": "WhatsApp",
   "contact.email": "Email",
   "contact.hours": "Opening hours",
+  "contact.hours.monfri": "Monday — Friday",
+  "contact.hours.sat": "Saturday",
+  "contact.hours.sun": "Sunday",
+  "contact.hours.closed": "Closed",
   "contact.startChat": "Start a conversation",
   "contact.mapTitle": "Map of the Allô Techno workshop in Abomey-Calavi",
   "contact.form.eyebrow": "Write to us",

@@ -48,6 +48,12 @@ const fr = {
   "faq.catalogue.q3": "Comment sont fixés les prix du catalogue ?",
   "faq.catalogue.a3":
     "Chaque intervention affiche un tarif ferme, pièce et main-d'œuvre incluses, avec le délai et la garantie appliqués en atelier.",
+  "faq.all": "Toutes",
+  "faq.cat.repair": "Réparation",
+  "faq.cat.warranty": "Garantie",
+  "faq.cat.payment": "Paiement",
+  "faq.cat.data": "Données",
+  "faq.cat.tracking": "Suivi",
 };
 
 const en = {
@@ -94,6 +100,11 @@ const en = {
   "faq.catalogue.q3": "How are the catalogue prices set?",
   "faq.catalogue.a3":
     "Each service shows a fixed price, parts and labor included, with the turnaround time and warranty applied at the workshop.",
+  "faq.cat.repair": "Repair",
+  "faq.cat.warranty": "Warranty",
+  "faq.cat.payment": "Payment",
+  "faq.cat.data": "Data",
+  "faq.cat.tracking": "Tracking",
 };
 
 registerSegments({ fr, en });

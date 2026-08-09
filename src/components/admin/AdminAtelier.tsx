@@ -1,13 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw, Calendar, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog";
 import { STATUS_LABEL } from "@/lib/reservation-schema";
+import { AdminCalendar } from "@/components/admin/AdminCalendar";
 import {
   ATELIER_STATUSES,
   assignTechnician,
@@ -88,30 +89,69 @@ export function AtelierBoard() {
   const cards = board.data?.reservations ?? [];
   const technicians = board.data?.technicians ?? [];
   const busy = move.isPending || assign.isPending;
+  const [view, setView] = useState<"kanban" | "calendar">("kanban");
+
+  const calendarEvents = cards.map((c) => ({
+    id: c.id,
+    date: c.slot_date ?? "",
+    period: c.slot_hour ?? "",
+    reference: c.reference,
+    device: c.device,
+    customerName: c.customer_name,
+    status: c.status,
+  }));
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Atelier — kanban</h2>
+          <h2 className="text-lg font-semibold">Atelier — {view === "kanban" ? "kanban" : "calendrier"}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au
             client.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={board.isFetching}
-          onClick={() => queryClient.invalidateQueries({ queryKey: ["atelier-board"] })}
-        >
-          <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
-          Rafraîchir
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-md border border-border">
+            <button
+              onClick={() => setView("kanban")}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
+                view === "kanban"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <LayoutGrid className="size-3" />
+              Kanban
+            </button>
+            <button
+              onClick={() => setView("calendar")}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
+                view === "calendar"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Calendar className="size-3" />
+              Calendrier
+            </button>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={board.isFetching}
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["atelier-board"] })}
+          >
+            <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
+            Rafraîchir
+          </Button>
+        </div>
       </div>
 
       {board.isLoading ? (
         <p className="text-sm text-muted-foreground">Chargement de l'atelier…</p>
+      ) : view === "calendar" ? (
+        <AdminCalendar events={calendarEvents} />
       ) : (
         <div className="overflow-x-auto pb-4">
           <div className="grid min-w-[72rem] grid-cols-6 gap-px border border-border bg-border">

@@ -91,6 +91,12 @@ const fr = {
 
   // Admin — Calendar
   "admin.calendar.title": "Calendrier des réservations",
+
+  // Admin — Roles
+  "admin.roles.title": "Gestion des rôles",
+
+  // Admin — Notification center
+  "admin.notifications.title": "Centre de notifications",
 };
 
 const en = {
@@ -183,6 +189,12 @@ const en = {
 
   // Admin — Calendar
   "admin.calendar.title": "Reservation Calendar",
+
+  // Admin — Roles
+  "admin.roles.title": "Role Management",
+
+  // Admin — Notification center
+  "admin.notifications.title": "Notification Center",
 };
 
 registerSegments({ fr, en });

@@ -42,16 +42,25 @@ export const Route = createFileRoute("/$locale/faq")({
   component: Faq,
 });
 
-const CATS = ["Toutes", ...Array.from(new Set(FAQ.map((f) => f.cat)))];
+const ALL = "__all__";
+const CATS = [ALL, ...Array.from(new Set(FAQ.map((f) => f.cat)))];
+
+const CAT_I18N: Record<string, string> = {
+  Reparation: "faq.cat.repair",
+  Garantie: "faq.cat.warranty",
+  Paiement: "faq.cat.payment",
+  Donnees: "faq.cat.data",
+  Suivi: "faq.cat.tracking",
+};
 
 function Faq() {
-  const [cat, setCat] = useState("Toutes");
+  const [cat, setCat] = useState(ALL);
   const [q, setQ] = useState("");
   const { t } = useI18n();
 
   const items = FAQ.filter(
     (f) =>
-      (cat === "Toutes" || f.cat === cat) &&
+      (cat === ALL || f.cat === cat) &&
       (q.trim() === "" || `${f.q} ${f.a}`.toLowerCase().includes(q.toLowerCase())),
   );
 
@@ -85,7 +94,7 @@ function Faq() {
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {c === "Toutes" ? t("faq.all") : c}
+                {c === ALL ? t("faq.all") : (CAT_I18N[c] ? t(CAT_I18N[c]) : c)}
               </button>
             ))}
           </div>

@@ -58,6 +58,9 @@ const RESEND_FROM =
   process.env["RESEND_FROM"] ?? `Allô Techno <noreply@${COMPANY.email.split("@")[1]}>`;
 const WHATSAPP_TOKEN = process.env["WHATSAPP_TOKEN"];
 const WHATSAPP_PHONE_NUMBER_ID = process.env["WHATSAPP_PHONE_NUMBER_ID"];
+const AT_API_KEY = process.env["AT_API_KEY"];
+const AT_USERNAME = process.env["AT_USERNAME"] ?? "sandbox";
+const AT_SENDER_ID = process.env["AT_SENDER_ID"] ?? "ALLOTECH";
 
 /** Préfixe téléphonique du pays (Bénin = 229). Configurable via PHONE_COUNTRY_PREFIX. */
 const PHONE_PREFIX = process.env["PHONE_COUNTRY_PREFIX"] ?? "229";
@@ -123,6 +126,37 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
     }
   } catch (err) {
     logger.error("WhatsApp échec réseau", err as Error);
+  }
+}
+
+async function sendSms(to: string, message: string): Promise<void> {
+  if (!AT_API_KEY) {
+    logger.warn("AT_API_KEY manquante — SMS ignoré");
+    return;
+  }
+  try {
+    const res = await fetchWithRetry("https://api.africastalking.com/version1/messaging", {
+      method: "POST",
+      headers: {
+        apiKey: AT_API_KEY,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      body: new URLSearchParams({
+        username: AT_USERNAME,
+        to: normalizePhone(to),
+        message,
+        from: AT_SENDER_ID,
+      }).toString(),
+    });
+    if (!res.ok) {
+      logger.error("SMS error", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        body: await res.text(),
+      });
+    }
+  } catch (err) {
+    logger.error("SMS échec réseau", err as Error);
   }
 }
 
@@ -307,6 +341,11 @@ export async function notifyReservationStatusChanged(r: ReservationEvent): Promi
     await sendEmail(r.email, sujet, html);
   }
   await sendWhatsApp(r.phone, waBody);
+
+  if (r.status === "pret" || r.status === "livre" || r.status === "terminee") {
+    const smsBody = `${r.reference} — ${STATUS_LABEL[r.status]} — ${r.device}\nSuivi : ${trackingLink(r)}`;
+    await sendSms(r.phone, smsBody);
+  }
 }
 
 /** Changement du statut de livraison (dossier en enlèvement à domicile). */

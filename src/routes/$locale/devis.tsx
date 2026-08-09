@@ -65,7 +65,7 @@ function Devis() {
           phone: "",
           email: "",
           reference: "",
-          message: `${device.name} — ${t(fault.label)}\nEstimation : ${formatFcfa(fault.price)}`,
+          message: `${device.name} — ${t(fault.label)}\n${t("devis.estimateLabel")} ${formatFcfa(fault.price)}`,
           website: "",
         },
       });

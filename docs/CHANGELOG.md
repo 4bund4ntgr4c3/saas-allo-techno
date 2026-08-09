@@ -28,6 +28,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Export PDF devis** : `devis-pdf.ts` — génération PDF avec jsPDF + QR code, en-tête branded, tableau détaillé, footer légal.
 - **DB migration** : tables `feature_flags` et `webhook_configs` avec RLS staff-only.
 
+### Changed
+
+- **FAQ i18n** : catégories traduites via `CAT_I18N` mapping (Réparation, Garantie, Paiement, Données, Suivi).
+- **Contact i18n** : horaires traduits (Lundi—Vendredi, Samedi, Dimanche, Fermé).
+- **Devis i18n** : "Estimation :" → `t("devis.estimateLabel")`.
+- **Admin atelier** : vue calendrier ajoutée (toggle kanban/calendrier).
+- **Notifications** : SMS intégré (Africa's Talking) pour statuts critiques (pret, livre, terminee).
+- **Search avancée** : filtres marque/catégorie + tri (relevance, nom) dans `search-fulltext.ts`.
+- **Admin rôles** : `AdminRoles.tsx` — UI d'assignation de rôles (admin/staff/technicien/user).
+- **Live dashboard** : `LiveDashboard.tsx` — métriques temps réel (réparations actives, réservations, CA).
+- **Facture PDF** : `invoice-pdf.ts` — facture finale avec QR code, détails, garantie.
+- **Audit enrichi** : `AdminAuditEnriched.tsx` — filtres par action/entité, export CSV, pagination.
+- **Performance monitoring** : `PerfMonitoring.tsx` — temps de réponse, taux d'erreur, uptime, requêtes/min.
+
 ### Added
 
 - **Password reset flow** : mot de passe oublié → email → mise à jour (4 modes auth).
