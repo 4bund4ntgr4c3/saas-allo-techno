@@ -38,15 +38,39 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.11 — Fix CI/CD",
+    date: "2026-08-11",
+    fixed: [
+      "CI: pin Node 20 + ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION pour wrangler deploy",
+      "bun.lock régénéré avec zustand pour Cloudflare build",
+    ],
+  },
+  {
+    version: "2026.08.11 — Batch 36",
+    date: "2026-08-11",
+    added: [
+      "Search analytics: enregistrement des requêtes de recherche dans Supabase",
+      "Skeleton loading: composants de chargement pour les pages boutique",
+      "Mobile filter drawer: touche Escape + focus trap (accessibilité)",
+      "Zoom image produit: zoom x2 au survol, overlay plein écran, Escape pour fermer",
+      "Breadcrumbs sur toutes les pages: composant PageBreadcrumb réutilisable",
+      "Cookie consent banner: bannière RGPD avec Accepter/Refuser, localStorage",
+    ],
+  },
+  {
+    version: "2026.08.11 — Breadcrumbs consistency",
+    date: "2026-08-11",
+    changed: [
+      "Toutes les pages utilisent maintenant le même pattern de breadcrumb: eyebrow à gauche, breadcrumb à droite dans un flex container",
+    ],
+  },
+  {
     version: "2026.08.11 — Batch 35",
     date: "2026-08-11",
     added: [
       "Newsletter signup: formulaire inscription footer avec validation email + table Supabase",
       "Comparateur accessoires: bouton Comparer, barre flottante max 3 produits, page /boutique/comparer",
       "Filtres boutique persistés URL: catégorie, prix, disponibilité, tri et recherche sauvegardés dans l'URL",
-    ],
-    changed: [
-      "Boutique filtres synchronisés avec l'URL (liens partageables, back/forward natif)",
     ],
   },
   {

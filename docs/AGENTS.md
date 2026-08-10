@@ -27,6 +27,8 @@
 
 6. **Vérifier les doublons** avant d'implémenter une feature : consulter le CHANGELOG et README pour voir si elle existe déjà.
 
+7. **Lockfile sync** : si un package est ajouté/supprimé dans `package.json`, toujours exécuter `npx bun install` pour régénérer `bun.lock` AVANT de commiter. Le build Cloudflare échoue silencieusement si `bun.lock` est désynchronisé (`bun install --frozen-lockfile`). Vérifier avec `npx bun install --dry-run` que le lockfile est à jour.
+
 ## Règles de qualité
 
 - Toujours exécuter `npx tsc --noEmit` après modification de fichiers `.ts`/`.tsx`.

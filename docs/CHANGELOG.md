@@ -7,6 +7,15 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Fix CI/CD)
+
+### Fixed
+
+- **CI/CD** : pin Node 20 + `ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true` pour le deploy Cloudflare via GitHub Actions.
+- **bun.lock** : régénéré avec `zustand` inclu pour que `bun install --frozen-lockfile` passe sur Cloudflare.
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Batch 36)
 
 ### Added
