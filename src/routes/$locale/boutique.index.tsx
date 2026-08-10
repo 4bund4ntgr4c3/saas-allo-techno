@@ -131,11 +131,13 @@ function Boutique() {
                   placeholder={t("boutique.search.placeholder")}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
+                  aria-label={t("boutique.search.placeholder")}
                   className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 />
                 <select
                   value={filters.sort}
                   onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+                  aria-label={t("boutique.sort")}
                   className="w-44 shrink-0 rounded-sm border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
                 >
                   {SORTS.map((s) => (

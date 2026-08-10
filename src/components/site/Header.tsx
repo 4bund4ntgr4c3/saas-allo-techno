@@ -88,7 +88,7 @@ export function Header() {
       {/* Top utility bar */}
       <div className="border-b border-border bg-surface">
         <div className="mx-auto flex h-8 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <nav className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
+          <nav aria-label="Utility" className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
             {TOP_LEFT.map((item) => (
               <Link
                 key={item.to}
@@ -102,7 +102,7 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <nav className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
+          <nav aria-label="Utility" className="hidden items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:flex">
             {TOP_RIGHT.map((item) => (
               <Link
                 key={item.to}

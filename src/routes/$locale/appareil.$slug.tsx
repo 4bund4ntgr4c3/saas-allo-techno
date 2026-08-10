@@ -95,7 +95,7 @@ function DevicePage() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <nav className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             <Link to="/$locale/reparations" params={{ locale }} className="hover:text-primary">
               {t("appareil.breadcrumb.reparations")}
             </Link>{" "}

@@ -56,7 +56,7 @@ export function GoogleReviewsWidget() {
           <div key={i} className="border-t border-border pt-3">
             <div className="flex items-center gap-2 mb-1">
               {review.profile_photo_url ? (
-                <img src={review.profile_photo_url} alt="" className="size-6 rounded-full" />
+                <img src={review.profile_photo_url} alt="" loading="lazy" className="size-6 rounded-full" />
               ) : (
                 <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">
                   {review.author_name[0]}

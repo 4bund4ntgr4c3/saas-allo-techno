@@ -7,6 +7,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 33)
+
+### Added
+
+- **Back-to-top** : bouton flottant "Retour en haut de page" — apparaît après 400px de scroll, smooth scroll, aria-label accessible.
+- **prefers-reduced-motion** : CSS global — désactive toutes les animations (`animate-pulse`, `animate-spin`, transitions, Sheet/Dialog animations) pour les utilisateurs qui le demandent.
+
+### Fixed
+
+- **ARIA labels** : 3 breadcrumb `<nav>` (appareil, quartiers, réparations) + 2 nav utility (Header) + input recherche boutique + select tri boutique — tous labellisés.
+- **Lazy loading** : photos de profil Google Reviews avec `loading="lazy"`.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 32)
 
 ### Added
