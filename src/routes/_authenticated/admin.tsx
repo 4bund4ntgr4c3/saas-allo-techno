@@ -62,6 +62,7 @@ import { CsvExportButton, LeadsSection, ClaimsSection } from "@/components/admin
 import { TeamSection } from "@/components/admin/AdminTeam";
 import { SecuritySection } from "@/components/admin/AdminSecurity";
 import { AnalyticsSection } from "@/components/admin/AdminAnalytics";
+import { AnalyticsAdvanced } from "@/components/admin/AdminAnalyticsAdvanced";
 import { ContentSection } from "@/components/admin/AdminContent";
 import { KpisSection } from "@/components/admin/AdminKpis";
 import { CatalogSection } from "@/components/admin/AdminCatalog";
@@ -143,6 +144,7 @@ function AdminPage() {
     | "leads"
     | "reclamations"
     | "analytics"
+    | "analytics-advanced"
     | "securite"
     | "contenu"
     | "stats"
@@ -564,6 +566,14 @@ function AdminPage() {
         >
           <BarChart3 className="mr-2 size-4" />
           Analytics
+        </Button>
+        <Button
+          variant={tab === "analytics-advanced" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("analytics-advanced")}
+        >
+          <TrendingUp className="mr-2 size-4" />
+          Funnel
         </Button>
         <Button
           variant={tab === "stats" ? "technical" : "outline"}
@@ -992,6 +1002,7 @@ function AdminPage() {
       {tab === "leads" && <LeadsSection />}
       {tab === "reclamations" && <ClaimsSection />}
       {tab === "analytics" && <AnalyticsSection />}
+      {tab === "analytics-advanced" && <AnalyticsAdvanced />}
       {tab === "securite" && <SecuritySection />}
       {tab === "contenu" && <ContentSection />}
       {tab === "stats" && (

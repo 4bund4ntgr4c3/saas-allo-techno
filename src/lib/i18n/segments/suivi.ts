@@ -158,6 +158,12 @@ const fr = {
   "suivi.handoff.title": "Remise de l'appareil",
   "suivi.handoff.description": "Le client signe pour confirmer la réception de l'appareil.",
   "suivi.handoff.signed": "Appareil remis — signature capturée.",
+  // Batch 32 — PWA & Analytics
+  "suivi.pwa.update": "Mise à jour disponible",
+  "suivi.pwa.refresh": "Actualiser",
+  "suivi.pwa.offline": "Vous êtes hors ligne",
+  "suivi.pwa.cache": "Données en cache",
+  "suivi.pwa.sync": "Sync",
 };
 
 const en = {
@@ -314,6 +320,12 @@ const en = {
   "suivi.handoff.title": "Device handoff",
   "suivi.handoff.description": "The customer signs to confirm receipt of the device.",
   "suivi.handoff.signed": "Device handed over — signature captured.",
+  // Batch 32 — PWA & Analytics
+  "suivi.pwa.update": "Update available",
+  "suivi.pwa.refresh": "Refresh",
+  "suivi.pwa.offline": "You are offline",
+  "suivi.pwa.cache": "Cached data",
+  "suivi.pwa.sync": "Sync",
 };
 
 registerSegments({ fr, en });

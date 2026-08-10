@@ -19,6 +19,7 @@ import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { OfflineIndicator } from "@/components/site/OfflineIndicator";
+import { PwaUpdatePrompt } from "@/components/site/PwaUpdatePrompt";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { WishlistProvider } from "@/components/shop/wishlist";
@@ -242,6 +243,7 @@ function RootComponent() {
             <AddToCartWidget />
             <CartDrawer />
             <PwaInstallBanner />
+            <PwaUpdatePrompt />
             <OfflineIndicator />
             <AuthErrorHandler />
           </I18nProvider>

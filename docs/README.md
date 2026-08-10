@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.10-b31 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.10-b32 — [Changelog](./CHANGELOG.md)
 
 ## Fonctionnalités
 
@@ -26,12 +26,12 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Espace client** (6 onglets) : Dossiers, Fidélité, Parrainage, Avis, Paiements, Profil.
 - **Demande de devis** : soumission en ligne avec calcul automatique.
 - **Notifications push** : toggle dans l'espace client.
-- **Mode hors-ligne** : cache localStorage avec TTL 5 min, background sync pour formulaires.
-- **PWA installable** : manifeste + service worker v3 (cache-first, network-first, stale-while-revalidate).
+- **Mode hors-ligne** : cache localStorage avec TTL 5 min, background sync pour formulaires, indicateur offline avec état cache.
+- **PWA installable** : manifeste + service worker v3 (cache-first, network-first, stale-while-revalidate), prompt de mise à jour automatique.
 - **Scanner QR/Barcode** : scan par caméra pour lecture de codes de dossiers (html5-qrcode).
 - **Signature numérique** : capture canvas haute résolution pour confirmation de remise (signature_pad).
 
-### Côté atelier / admin (27 onglets)
+### Côté atelier / admin (28 onglets)
 
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
 - **Atelier** : tableau kanban des réparations en cours, assignment technicien, scan QR/barcode pour intake, signature de remise client.
@@ -40,6 +40,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Réclamations** : tickets de garantie avec statuts.
 - **Analytics** : événements récents + compteurs.
 - **Statistiques** : Recharts (AreaChart + PieChart), 4 onglets (Revenus, Clients, Appareils, Temps), tendances hebdomadaires avec indicateurs, export Excel.
+- **Funnel conversion** : onglet "Funnel" avec barres de conversion (estimations → réservations → terminées), sources d'acquisition, erreurs récentes 24h.
 - **KPI avancés** : métriques de performance en temps réel, KPIs configurables via panneau de config.
 - **Sécurité** : OTP 2FA, historique des connexions.
 - **Contenu** : blog, guides, mentions légales.
@@ -77,7 +78,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Pages** : Accueil, Réparations (par marque/appareil), Catalogue, Tarifs, Services, Boutique, Promotions, Magasins, Suivi, Devis, Reprise, Reconditionnés, FAQ, Blog, Avis, Contact, Engagements, Entreprises, Garantie, Réclamation, Guides, Quartiers, Mentions légales.
 - **SEO** : Schema.org LocalBusiness, OpenGraph, Twitter Cards, sitemap dynamique, meta par page.
 - **Blog** : articles bilingues FR/EN avec catégories et temps de lecture.
-- **i18n** : routage bilingue `/fr` + `/en`, 29 segments traduits.
+- **i18n** : routage bilingue `/fr` + `/en`, 30 segments traduits.
 
 ### Infrastructure
 

@@ -7,6 +7,21 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 32)
+
+### Added
+
+- **Analytics avancées** : onglet "Funnel" dans l'admin avec funnel de conversion (estimations → réservations → terminées), graphique barres sources d'acquisition (10 sources top), erreurs récentes 24h avec compteur. Server functions `getConversionFunnel`, `getSourceStats`, `getRecentErrors`.
+- **PWA Update Prompt** : composant `PwaUpdatePrompt` détecte l'installation d'un nouveau service worker et propose un bouton "Actualiser" pour appliquer la mise à jour (skipWaiting + reload).
+- **Offline Indicator amélioré** : affiche l'état du cache localStorage, le dernier timestamp de sync, et des icônes contextualisées (amber theme pour offline).
+- **i18n** : 10 clés `suivi.pwa.*` FR/EN pour les indicateurs PWA.
+
+### Changed
+
+- **Admin enrichi** : 28 onglets dont "Funnel" (analytics avancées).
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 31)
 
 ### Added
