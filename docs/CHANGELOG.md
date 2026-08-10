@@ -7,6 +7,14 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Boutique polish)
+
+### Changed
+
+- **Breadcrumb boutique** : déplacé sur la même ligne que l'eyebrow, aligné à droite avec `justify-between`. Breadcrumb avec bord fine arrondie (`rounded-sm border border-border`).
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 34)
 
 ### Added
