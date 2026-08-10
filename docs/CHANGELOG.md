@@ -7,6 +7,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 34)
+
+### Added
+
+- **Breadcrumbs boutique** : navigation breadcrumb sur la page index boutique et la page produit (Accueil > Boutique > Produit), utilise le composant `Breadcrumb` shadcn/ui existant.
+- **Récemment consultés produit** : la page détail produit affiche maintenant les 5 derniers produits consultés (section déjà trackée mais non affichée).
+- **Escape QuickView** : la modale aperçu rapide se ferme avec la touche Escape (accessibilité clavier).
+
+### Changed
+
+- **Breadcrumbs activés** : le composant `Breadcrumb` shadcn/ui (défini mais jamais importé) est maintenant utilisé sur les pages boutique.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 33)
 
 ### Added

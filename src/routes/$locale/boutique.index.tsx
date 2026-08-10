@@ -3,6 +3,14 @@ import { useMemo, useState } from "react";
 import { Check, Eye, Heart, Plus, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { ShopFilterSidebar, type ShopFilters } from "@/components/shop/ShopFilterSidebar";
 import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
@@ -93,6 +101,19 @@ function Boutique() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <Breadcrumb className="mb-6">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{t("boutique.title")}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <span className="at-eyebrow mb-4 block">{t("boutique.eyebrow")}</span>
           <h1 className="at-display text-4xl md:text-6xl">{t("boutique.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">

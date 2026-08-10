@@ -14,6 +14,14 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { MobileMoneyBar } from "@/components/site/Blocks";
 import { FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { useWishlist } from "@/components/shop/wishlist";
@@ -61,7 +69,7 @@ function Produit() {
   const [qty, setQty] = useState(1);
   const cart = useCart();
   const wishlist = useWishlist();
-  const { track } = useRecentlyViewed();
+  const { track, items: recentItems } = useRecentlyViewed();
   const { locale, t } = useI18n();
   const related = ACCESSORIES.filter(
     (a) => a.category === product.category && a.slug !== product.slug,
@@ -81,13 +89,25 @@ function Produit() {
     <>
       <section className="border-b border-border py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Link
-            to="/$locale/boutique"
-            params={{ locale }}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="size-3" /> {t("boutique.back")}
-          </Link>
+          <Breadcrumb className="mb-6">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{product.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <div className="mt-8 grid gap-px border border-border bg-border lg:grid-cols-2">
             <div className="at-grid-lines grid min-h-[280px] place-items-center bg-surface p-10">
               <span className="at-display text-5xl text-muted-foreground/50">
@@ -272,6 +292,33 @@ function Produit() {
                   <div className="mt-3 font-mono text-base text-primary">{formatFcfa(r.price)}</div>
                 </Link>
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {recentItems.length > 1 && (
+        <section className="border-t border-border py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <h2 className="at-display text-xl">{t("boutique.recently-viewed")}</h2>
+            <div className="mt-6 grid gap-px border border-border bg-border sm:grid-cols-3 lg:grid-cols-5">
+              {recentItems
+                .filter((r) => r.slug !== product.slug)
+                .slice(0, 5)
+                .map((r) => (
+                  <Link
+                    key={r.slug}
+                    to="/$locale/boutique/$slug"
+                    params={{ locale, slug: r.slug }}
+                    className="bg-card p-4 transition-colors hover:bg-surface"
+                  >
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">
+                      {r.category}
+                    </span>
+                    <h3 className="mt-1 text-xs font-bold tracking-tight">{r.name}</h3>
+                    <div className="mt-1 font-mono text-xs text-primary">{formatFcfa(r.price)}</div>
+                  </Link>
+                ))}
             </div>
           </div>
         </section>
