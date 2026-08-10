@@ -37,6 +37,134 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.11 — Batch 35",
+    date: "2026-08-11",
+    added: [
+      "Newsletter signup: formulaire inscription footer avec validation email + table Supabase",
+      "Comparateur accessoires: bouton Comparer, barre flottante max 3 produits, page /boutique/comparer",
+      "Filtres boutique persistés URL: catégorie, prix, disponibilité, tri et recherche sauvegardés dans l'URL",
+    ],
+    changed: [
+      "Boutique filtres synchronisés avec l'URL (liens partageables, back/forward natif)",
+    ],
+  },
+  {
+    version: "2026.08.11 — Boutique polish",
+    date: "2026-08-11",
+    changed: [
+      "Breadcrumb boutique: même ligne que l'eyebrow, aligné à droite avec bord fine arrondie",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 34",
+    date: "2026-08-10",
+    added: [
+      "Breadcrumbs boutique: navigation sur page index et page produit (Accueil > Boutique > Produit)",
+      "Récemment consultés produit: 5 derniers produits consultés affichés sur la fiche produit",
+      "Escape QuickView: modale aperçu rapide fermable avec Escape (accessibilité clavier)",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 33",
+    date: "2026-08-10",
+    added: [
+      "Bouton retour en haut (BackToTop): apareît après 400px de scroll",
+      " prefers-reduced-motion: animations désactivées pour les utilisateurs sensibles",
+      "Corrections accessibilité: ARIA labels, focus management, skip-to-content",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 32",
+    date: "2026-08-10",
+    added: [
+      "Funnel de conversion: analytics du parcours client (Diagnostic → RDV → Paiement)",
+      "PWA Update Prompt: bannière de mise à jour automatique du service worker",
+      "Indicateur offline: badge discret quand la connexion est perdue",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 31",
+    date: "2026-08-10",
+    added: [
+      "Service Worker v3: strategies de cache optimisées pour le offline",
+      "Scanner QR/barcode: lecture de codes-barres pour identifier les appareils",
+      "Signatures numériques: capture de signature sur tablette pour les réparations",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 30",
+    date: "2026-08-10",
+    added: [
+      "Flux iCal: export des rendez-vous au format iCal pour Google Calendar",
+      "Webhooks sortants: notifications webhook pour les événements importants",
+      "Intégration Google Calendar: synchronisation des créneaux disponibles",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 29",
+    date: "2026-08-10",
+    added: [
+      "Campagnes marketing: création et gestion de campagnes email/SMS",
+      "Segmentation RFM: classification des clients par Récence, Fréquence, Montant",
+      "Analytics marketing: suivi des taux d'ouverture et de clic",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 28",
+    date: "2026-08-10",
+    added: [
+      "Transferts multi-atelier: transfert de dossiers entre ateliers",
+      "Charge atelier: visualisation de la charge de travail par atelier",
+      "Gestion des priorités: files d'attente prioritaires par atelier",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 27",
+    date: "2026-08-10",
+    added: [
+      "Avis produits: système de notation et d'avis pour les accessoires boutique",
+      "Liste de souhaits: ajout/suppression d'accessoires en favoris",
+      "QuickView: aperçu rapide des produits sans quitter la page boutique",
+      "Badges stock: affichage du statut de stock (en stock, stock limité, sur commande)",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 26",
+    date: "2026-08-10",
+    added: [
+      "Historique appareils: suivi de tous les appareils réparés par client",
+      "Export Excel: export des données en format Excel (.xlsx)",
+      "KPIs avancés: indicateurs de performance en temps réel",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 25",
+    date: "2026-08-10",
+    added: [
+      "Devis instantané: estimation en ligne avec calcul automatique des prix",
+      "Garantie étendue: options 6/12 mois avec tarification",
+      "Promotions étudiant/enseignant: réductions spéciales",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 24",
+    date: "2026-08-10",
+    added: [
+      "Checkout wizard: processus de commande en 3 étapes",
+      "Panier amélioré: mise à jour quantitative, suppression, résumé",
+      "Mobile Money: intégration paiement par téléphone",
+    ],
+  },
+  {
+    version: "2026.08.10 — Batch 23",
+    date: "2026-08-10",
+    added: [
+      "Checkout wizard: processus de commande en 3 étapes",
+      "Paiement intégré: Flutterwave + Mobile Money",
+      "Résumé commande: récapitulatif avant confirmation",
+    ],
+  },
+  {
     version: "2026.08.09",
     date: "2026-08-09",
     added: [

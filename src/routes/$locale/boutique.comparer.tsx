@@ -67,7 +67,7 @@ function ComparePage() {
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</BreadcrumbLink>
+                    <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />

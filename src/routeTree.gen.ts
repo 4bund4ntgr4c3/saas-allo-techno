@@ -57,6 +57,7 @@ import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
 import { Route as LocaleBoutiqueIndexRouteImport } from './routes/$locale/boutique.index'
 import { Route as LocaleBoutiqueSlugRouteImport } from './routes/$locale/boutique.$slug'
+import { Route as LocaleBoutiqueComparerRouteImport } from './routes/$locale/boutique.comparer'
 import { Route as LocaleQuartiersIndexRouteImport } from './routes/$locale/quartiers.index'
 import { Route as LocaleQuartiersSlugRouteImport } from './routes/$locale/quartiers.$slug'
 import { Route as LocaleReparationsIndexRouteImport } from './routes/$locale/reparations.index'
@@ -303,6 +304,11 @@ const LocaleBoutiqueSlugRoute = LocaleBoutiqueSlugRouteImport.update({
   path: '/boutique/$slug',
   getParentRoute: () => LocaleRoute,
 } as any)
+const LocaleBoutiqueComparerRoute = LocaleBoutiqueComparerRouteImport.update({
+  id: '/boutique/comparer',
+  path: '/boutique/comparer',
+  getParentRoute: () => LocaleRoute,
+} as any)
 const LocaleQuartiersIndexRoute = LocaleQuartiersIndexRouteImport.update({
   id: '/quartiers/',
   path: '/quartiers/',
@@ -375,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -428,6 +435,7 @@ export interface FileRoutesByTo {
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -484,6 +492,7 @@ export interface FileRoutesById {
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
+  '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -540,6 +549,7 @@ export interface FileRouteTypes {
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
+    | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
     | '/api/v1/$'
@@ -593,6 +603,7 @@ export interface FileRouteTypes {
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
+    | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
     | '/api/v1/$'
@@ -648,6 +659,7 @@ export interface FileRouteTypes {
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
+    | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
     | '/api/v1/$'
@@ -1013,6 +1025,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleBoutiqueSlugRouteImport
       parentRoute: typeof LocaleRoute
     }
+    '/$locale/boutique/comparer': {
+      id: '/$locale/boutique/comparer'
+      path: '/boutique/comparer'
+      fullPath: '/$locale/boutique/comparer'
+      preLoaderRoute: typeof LocaleBoutiqueComparerRouteImport
+      parentRoute: typeof LocaleRoute
+    }
     '/$locale/quartiers/': {
       id: '/$locale/quartiers/'
       path: '/quartiers'
@@ -1096,6 +1115,7 @@ interface LocaleRouteChildren {
   LocaleAppareilSlugRoute: typeof LocaleAppareilSlugRoute
   LocaleBlogSlugRoute: typeof LocaleBlogSlugRoute
   LocaleBoutiqueSlugRoute: typeof LocaleBoutiqueSlugRoute
+  LocaleBoutiqueComparerRoute: typeof LocaleBoutiqueComparerRoute
   LocaleQuartiersSlugRoute: typeof LocaleQuartiersSlugRoute
   LocaleReparationsBrandRoute: typeof LocaleReparationsBrandRoute
   LocaleBlogIndexRoute: typeof LocaleBlogIndexRoute
@@ -1134,6 +1154,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleAppareilSlugRoute: LocaleAppareilSlugRoute,
   LocaleBlogSlugRoute: LocaleBlogSlugRoute,
   LocaleBoutiqueSlugRoute: LocaleBoutiqueSlugRoute,
+  LocaleBoutiqueComparerRoute: LocaleBoutiqueComparerRoute,
   LocaleQuartiersSlugRoute: LocaleQuartiersSlugRoute,
   LocaleReparationsBrandRoute: LocaleReparationsBrandRoute,
   LocaleBlogIndexRoute: LocaleBlogIndexRoute,
