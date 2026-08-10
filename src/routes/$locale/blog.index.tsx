@@ -55,8 +55,10 @@ function BlogIndex() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <PageBreadcrumb items={[{ label: t("nav.blog") }]} />
-          <span className="at-eyebrow mb-4 block">{t("blog.eyebrow")}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("blog.eyebrow")}</span>
+            <PageBreadcrumb items={[{ label: t("nav.blog") }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">{t("blog.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("blog.subtitle")}</p>
         </div>

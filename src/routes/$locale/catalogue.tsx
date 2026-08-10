@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
 import { searchDevices } from "@/lib/catalog-search";
 import { Button } from "@/components/ui/button";
@@ -107,7 +108,10 @@ function Catalogue() {
     <>
       <section className="border-b border-border py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">{t("catalogue.eyebrow", [DEVICES.length])}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("catalogue.eyebrow", [DEVICES.length])}</span>
+            <PageBreadcrumb items={[{ label: t("nav.catalogue") }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-5xl">{t("catalogue.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("catalogue.intro")}</p>
         </div>

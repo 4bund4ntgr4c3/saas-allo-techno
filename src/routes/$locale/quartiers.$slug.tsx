@@ -3,6 +3,7 @@ import { BadgeCheck, Clock, Home } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { BRANDS } from "@/data/catalog";
 import { QUARTIERS, quartierBySlug, type QuartierInfo } from "@/data/local-seo";
@@ -87,17 +88,10 @@ function QuartierPage() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <Link to="/$locale/reparations" params={{ locale }} className="hover:text-primary">
-              {t("reparations.brand.breadcrumb")}
-            </Link>{" "}
-            /{" "}
-            <Link to="/$locale/quartiers" params={{ locale }} className="hover:text-primary">
-              {t("quartiers.breadcrumb")}
-            </Link>{" "}
-            / {quartier.name}
-          </nav>
-          <span className="at-eyebrow mb-4 block">{t("quartiers.page.eyebrow")}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("quartiers.page.eyebrow")}</span>
+            <PageBreadcrumb items={[{ to: `/$locale/quartiers`, label: t("nav.quartiers") }, { label: quartier.name }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">
             {t("quartiers.slug.title", [quartier.name])}
           </h1>

@@ -48,8 +48,10 @@ function Services() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <PageBreadcrumb items={[{ label: t("nav.services") }]} />
-          <span className="at-eyebrow mb-4 block">{t("services.eyebrow")}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("services.eyebrow")}</span>
+            <PageBreadcrumb items={[{ label: t("nav.services") }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">{t("services.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("services.hero")}</p>
           <div className="mt-8">

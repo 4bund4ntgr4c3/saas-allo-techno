@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BadgeCheck, Clock, Home, ShieldCheck, Store, Wallet } from "lucide-react";
 import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
 import { categoryMedia } from "@/data/device-media";
 import { BrandLogo } from "@/components/site/BrandLogo";
@@ -90,7 +91,10 @@ function Reparations() {
       <section className="border-b border-border py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="max-w-3xl">
-            <span className="at-eyebrow mb-4 block">{t("reparations.index.eyebrow")}</span>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <span className="at-eyebrow">{t("reparations.index.eyebrow")}</span>
+              <PageBreadcrumb items={[{ label: t("nav.reparations") }]} />
+            </div>
             <h1 className="at-display text-4xl md:text-5xl">{t("reparations.index.title")}</h1>
             <p className="mt-6 max-w-xl text-muted-foreground">
               {t("reparations.index.hero", [DEVICES.length, BRANDS.length])}

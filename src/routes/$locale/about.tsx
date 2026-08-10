@@ -49,8 +49,10 @@ function About() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <PageBreadcrumb items={[{ label: t("nav.about") }]} />
-          <span className="at-eyebrow mb-4 block">{t("about.eyebrow")}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("about.eyebrow")}</span>
+            <PageBreadcrumb items={[{ label: t("nav.about") }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">{t("about.title")}</h1>
           <p className="mt-6 max-w-2xl text-muted-foreground">{t("about.hero")}</p>
         </div>

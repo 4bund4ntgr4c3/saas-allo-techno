@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import {
   BRANDS,
   brandBySlug,
@@ -92,16 +93,10 @@ function BrandPage() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <Link to="/$locale/reparations" params={{ locale }} className="hover:text-primary">
-              {t("reparations.brand.breadcrumb")}
-            </Link>{" "}
-            /{" "}
-            <Link to="/$locale/catalogue" params={{ locale }} className="hover:text-primary">
-              {t("reparations.brand.breadcrumbCatalog")}
-            </Link>{" "}
-            / {brand.name}
-          </nav>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("reparations.brand.eyebrow")}</span>
+            <PageBreadcrumb items={[{ to: `/$locale/reparations`, label: t("nav.reparations") }, { label: brand.name }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">
             {t("reparations.brand.title", [brand.name])}
           </h1>

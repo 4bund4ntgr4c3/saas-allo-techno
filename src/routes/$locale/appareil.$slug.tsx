@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Clock, Package, ShieldCheck } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { brandName, deviceBySlug, devicesOfBrand, formatFcfa, type Device } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -95,20 +96,10 @@ function DevicePage() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <Link to="/$locale/reparations" params={{ locale }} className="hover:text-primary">
-              {t("appareil.breadcrumb.reparations")}
-            </Link>{" "}
-            /{" "}
-            <Link
-              to="/$locale/reparations/$brand"
-              params={{ locale, brand: device.brand }}
-              className="hover:text-primary"
-            >
-              {brandName(device.brand)}
-            </Link>{" "}
-            / {device.name}
-          </nav>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("appareil.eyebrow")}</span>
+            <PageBreadcrumb items={[{ to: `/$locale/catalogue`, label: t("nav.catalogue") }, { label: device.name }]} />
+          </div>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
               <h1 className="at-display text-4xl md:text-6xl">{device.name}</h1>

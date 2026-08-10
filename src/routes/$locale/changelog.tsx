@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CtaBand } from "@/components/site/Blocks";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
@@ -347,7 +348,10 @@ function ChangelogPage() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">{t("changelog.eyebrow")}</span>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="at-eyebrow">{t("changelog.eyebrow")}</span>
+            <PageBreadcrumb items={[{ label: t("nav.changelog") }]} />
+          </div>
           <h1 className="at-display text-4xl md:text-6xl">{t("changelog.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("changelog.subtitle")}</p>
         </div>
