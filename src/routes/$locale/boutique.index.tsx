@@ -102,8 +102,8 @@ function Boutique() {
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <span className="at-eyebrow rounded-sm border border-primary px-2 py-1">{t("boutique.eyebrow")}</span>
-            <Breadcrumb>
+            <span className="at-eyebrow">{t("boutique.eyebrow")}</span>
+            <Breadcrumb className="rounded-sm border border-border px-2 py-1">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
