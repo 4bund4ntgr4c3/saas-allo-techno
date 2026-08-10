@@ -184,6 +184,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon français.
   const lang = useRouterState({ select: (s) => s.location.pathname.split("/")[1] ?? "fr" });
+  const locale = normalizeLocale(lang);
   return (
     <html lang={lang === "en" ? "en" : "fr"}>
       <head>
@@ -191,7 +192,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script defer data-domain="allotechno.africa" src="https://plausible.io/js/script.js" />
       </head>
       <body>
-        {children}
+        <I18nProvider initialLocale={locale}>{children}</I18nProvider>
         <Scripts />
       </body>
     </html>
@@ -201,11 +202,6 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  // La locale est portée par le premier segment d'URL (/fr, /en). Pour les
-  // chemins hors locale (auth, admin, sitemap…), on retombe sur le navigateur.
-  const locale = normalizeLocale(pathname.split("/")[1] ?? "");
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
@@ -233,37 +229,35 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <WishlistProvider>
-          <I18nProvider initialLocale={locale}>
-            <a
-              href="#contenu-principal"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-sm focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:uppercase focus:tracking-widest focus:text-primary-foreground"
-            >
-              Aller au contenu principal
-            </a>
-            <Header />
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
-              <Outlet />
-            </main>
-            <Footer />
-            <Suspense fallback={null}>
-              <SearchModal />
-            </Suspense>
-            <Toaster />
-            <AddToCartWidget />
-            <CartDrawer />
-            <Suspense fallback={null}>
-              <CompareBar />
-            </Suspense>
-            <PwaInstallBanner />
-            <PwaUpdatePrompt />
-            <BackToTop />
-            <OfflineIndicator />
-            <Suspense fallback={null}>
-              <CookieConsent />
-            </Suspense>
-            <AuthErrorHandler />
-          </I18nProvider>
+          <a
+            href="#contenu-principal"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-sm focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:uppercase focus:tracking-widest focus:text-primary-foreground"
+          >
+            Aller au contenu principal
+          </a>
+          <Header />
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
+            <Outlet />
+          </main>
+          <Footer />
+          <Suspense fallback={null}>
+            <SearchModal />
+          </Suspense>
+          <Toaster />
+          <AddToCartWidget />
+          <CartDrawer />
+          <Suspense fallback={null}>
+            <CompareBar />
+          </Suspense>
+          <PwaInstallBanner />
+          <PwaUpdatePrompt />
+          <BackToTop />
+          <OfflineIndicator />
+          <Suspense fallback={null}>
+            <CookieConsent />
+          </Suspense>
+          <AuthErrorHandler />
         </WishlistProvider>
       </CartProvider>
     </QueryClientProvider>
