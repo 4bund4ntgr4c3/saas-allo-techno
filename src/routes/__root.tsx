@@ -26,10 +26,17 @@ import { CartProvider } from "@/components/shop/cart";
 import { WishlistProvider } from "@/components/shop/wishlist";
 import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
-import { CompareBar } from "@/components/shop/CompareBar";
-import { CookieConsent } from "@/components/site/CookieConsent";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
+
+// Lazy-load components that could crash at import time (zustand, etc.)
+// Without lazy, an import failure in these kills the entire root → I18nProvider never renders.
+const CompareBar = lazy(() =>
+  import("@/components/shop/CompareBar").then((m) => ({ default: m.CompareBar })),
+);
+const CookieConsent = lazy(() =>
+  import("@/components/site/CookieConsent").then((m) => ({ default: m.CookieConsent })),
+);
 
 // La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
 // pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargée
@@ -245,12 +252,16 @@ function RootComponent() {
             <Toaster />
             <AddToCartWidget />
             <CartDrawer />
-            <CompareBar />
+            <Suspense fallback={null}>
+              <CompareBar />
+            </Suspense>
             <PwaInstallBanner />
             <PwaUpdatePrompt />
             <BackToTop />
             <OfflineIndicator />
-            <CookieConsent />
+            <Suspense fallback={null}>
+              <CookieConsent />
+            </Suspense>
             <AuthErrorHandler />
           </I18nProvider>
         </WishlistProvider>
