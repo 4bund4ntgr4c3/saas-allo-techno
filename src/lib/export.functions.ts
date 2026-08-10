@@ -20,7 +20,7 @@ function toCsv(header: string[], rows: unknown[][]): string {
 export const exportReservationsCsv = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-  if (!rateLimit("admin-export", 5))
+  if (!(await rateLimit("admin-export", 5)))
     throw new Error("Trop de demandes. Réessayez dans une minute.");
 
   const { data, error } = await supabaseAdmin
@@ -72,7 +72,7 @@ export const exportReservationsCsv = createServerFn({ method: "POST" }).handler(
 export const exportLeadsCsv = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-  if (!rateLimit("admin-export", 5))
+  if (!(await rateLimit("admin-export", 5)))
     throw new Error("Trop de demandes. Réessayez dans une minute.");
 
   const { data, error } = await supabaseAdmin
@@ -114,7 +114,7 @@ export const exportLeadsCsv = createServerFn({ method: "POST" }).handler(async (
 export const exportPaymentsCsv = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisee");
-  if (!rateLimit("admin-export", 5))
+  if (!(await rateLimit("admin-export", 5)))
     throw new Error("Trop de demandes. Reessayez dans une minute.");
 
   const { data, error } = await supabaseAdmin
@@ -165,7 +165,7 @@ export const exportDashboardXlsx = createServerFn({ method: "POST" }).handler(as
   const XLSX = await import("xlsx");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-  if (!rateLimit("admin-export", 5))
+  if (!(await rateLimit("admin-export", 5)))
     throw new Error("Trop de demandes. Réessayez dans une minute.");
 
   const wb = XLSX.utils.book_new();

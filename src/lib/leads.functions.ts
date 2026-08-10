@@ -31,7 +31,7 @@ export const submitLead = createServerFn({ method: "POST" })
       return true;
     }
 
-    if (!rateLimit("lead-submit", 3)) {
+    if (!(await rateLimit("lead-submit", 3))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

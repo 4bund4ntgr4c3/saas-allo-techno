@@ -107,7 +107,7 @@ export const CAMPAIGN_TEMPLATES = [
 export const listCampaigns = createServerFn({ method: "GET" }).handler(
   async (): Promise<Campaign[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("list-campaigns", 20)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("list-campaigns", 20))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin
       .from("marketing_campaigns" as never)
       .select("*")
@@ -126,7 +126,7 @@ export const listCampaignSends = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<CampaignSend[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("list-campaign-sends", 20)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("list-campaign-sends", 20))) throw new Error("Trop de demandes.");
     const { data: rows, error } = await supabaseAdmin
       .from("campaign_sends" as never)
       .select("*")
@@ -153,7 +153,7 @@ export const createCampaign = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("create-campaign", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("create-campaign", 10))) throw new Error("Trop de demandes.");
     const { data: row, error } = await supabaseAdmin
       .from("marketing_campaigns" as never)
       .insert({
@@ -179,7 +179,7 @@ export const deleteCampaign = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("delete-campaign", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("delete-campaign", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("marketing_campaigns" as never)
       .delete()
@@ -197,7 +197,7 @@ export const updateCampaign = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("update-campaign", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("update-campaign", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("marketing_campaigns" as never)
       .update(data.updates as never)
@@ -214,7 +214,7 @@ export const sendCampaign = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("send-campaign", 5)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("send-campaign", 5))) throw new Error("Trop de demandes.");
 
     // Récupérer la campagne
     const { data: campaign, error: cErr } = await supabaseAdmin
@@ -282,7 +282,7 @@ export const sendCampaign = createServerFn({ method: "POST" })
 export const getClientSegments = createServerFn({ method: "GET" }).handler(
   async (): Promise<ClientSegment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("client-segments", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("client-segments", 10))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin.rpc("get_client_segments" as never);
     if (error) throw new Error(error.message);
     return (data as ClientSegment[]) ?? [];
@@ -293,7 +293,7 @@ export const getClientSegments = createServerFn({ method: "GET" }).handler(
 export const getSegmentCounts = createServerFn({ method: "GET" }).handler(
   async (): Promise<SegmentCounts> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("segment-counts", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("segment-counts", 10))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin.rpc("get_segment_counts" as never);
     if (error) throw new Error(error.message);
     return (

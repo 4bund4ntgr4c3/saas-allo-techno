@@ -138,7 +138,7 @@ export const listCatalog = createServerFn({ method: "POST" })
   .handler(async (): Promise<CatalogData> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-read", 30)) {
+    if (!(await rateLimit("catalog-read", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -210,7 +210,7 @@ export const upsertBrand = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -243,7 +243,7 @@ export const upsertCategory = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -279,7 +279,7 @@ export const upsertDevice = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -320,7 +320,7 @@ export const upsertFault = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -354,7 +354,7 @@ export const deleteDevice = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -376,7 +376,7 @@ export const deleteBrand = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -398,7 +398,7 @@ export const deleteCategory = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -424,7 +424,7 @@ export const deleteFault = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -453,7 +453,7 @@ export const addCatalogPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -482,7 +482,7 @@ export const deleteCatalogPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-write", 20)) {
+    if (!(await rateLimit("catalog-write", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -519,7 +519,7 @@ export const getCatalogUpload = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("catalog-upload", 20)) {
+    if (!(await rateLimit("catalog-upload", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

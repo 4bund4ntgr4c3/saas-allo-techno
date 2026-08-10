@@ -1,5 +1,6 @@
 const SUPABASE_URL = process.env["SUPABASE_URL"] ?? "";
 const SUPABASE_ORIGIN = SUPABASE_URL ? new URL(SUPABASE_URL).origin : "";
+const IS_PROD = import.meta.env.PROD;
 
 // En-têtes statiques, indépendants de la requête. Le CSP n'est PAS dans cette
 // liste : il est strict et dépend d'un nonce généré par requête (voir
@@ -32,7 +33,9 @@ export function buildContentSecurityPolicy(nonce: string): string {
     `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com`,
     "font-src 'self' data: https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    `script-src 'self' 'strict-dynamic' 'nonce-${nonce}' 'unsafe-eval'`,
+    // 'unsafe-eval' nécessaire uniquement en dev (Vite HMR). En production,
+    // le nonce + strict-dynamic suffisent et renforcent la sécurité CSP.
+    `script-src 'self' 'strict-dynamic' 'nonce-${nonce}'${IS_PROD ? "" : " 'unsafe-eval'"}`,
     // Carte OpenStreetMap embarquée sur /contact
     "frame-src 'self' https://www.openstreetmap.org",
     // Empêche d'embarquer le site dans une <iframe> externe

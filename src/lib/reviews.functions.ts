@@ -268,7 +268,7 @@ export const getReviewInvite = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<GetReviewInviteResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("review-invite-check", 15)) {
+    if (!(await rateLimit("review-invite-check", 15))) {
       return { ok: false, error: "Trop de demandes. Réessayez dans une minute." };
     }
 
@@ -328,7 +328,7 @@ export const listCustomerReviews = createServerFn({ method: "POST" })
   .handler(async (): Promise<CustomerReview[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("customer-reviews-list", 20)) {
+    if (!(await rateLimit("customer-reviews-list", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -387,7 +387,7 @@ export const submitReview = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<SubmitReviewResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("review-submit", 3)) {
+    if (!(await rateLimit("review-submit", 3))) {
       return { ok: false, error: "Trop de demandes. Réessayez dans une minute." };
     }
 
@@ -460,7 +460,7 @@ export const listPublishedReviews = createServerFn({ method: "POST" })
   .handler(async (): Promise<PublishedReview[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("reviews-list", 30)) {
+    if (!(await rateLimit("reviews-list", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -507,7 +507,7 @@ export const sendReviewInvite = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<SendReviewInviteResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("review-invite-send", 20)) {
+    if (!(await rateLimit("review-invite-send", 20))) {
       return { ok: false, error: "Trop de demandes. Réessayez dans une minute." };
     }
 
@@ -591,7 +591,7 @@ export const adminListReviews = createServerFn({ method: "POST" })
   .handler(async (): Promise<AdminReviewRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("admin-reviews-list", 20)) {
+    if (!(await rateLimit("admin-reviews-list", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -654,7 +654,7 @@ export const adminSetReviewStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("admin-review-status", 20)) {
+    if (!(await rateLimit("admin-review-status", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

@@ -6,9 +6,17 @@
 import { getRequestIP } from "@tanstack/react-start/server";
 
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // sans 0/O/1/I/L
-// Poivre pour l'empreinte du code de suivi. Un repli stable est utilisé en
-// développement / test ; en production, définir TRACKING_CODE_PEPPER.
-const PEPPER = process.env["TRACKING_CODE_PEPPER"] ?? "at-tracking-code-pepper-v1";
+// Poivre pour l'empreinte du code de suivi. En développement / test, un repli
+// stable est autorisé. En production, TRACKING_CODE_PEPPER DOIT être défini
+// via `wrangler secret put` pour garantir l'unicité des empreintes.
+const PEPPER = process.env["TRACKING_CODE_PEPPER"];
+if (!PEPPER && import.meta.env.PROD) {
+  console.error(
+    "[security] TRACKING_CODE_PEPPER manquant en production — les codes de suivi seront compromis. " +
+      "Définir la variable via `wrangler secret put TRACKING_CODE_PEPPER`.",
+  );
+}
+const EFFECTIVE_PEPPER = PEPPER ?? "at-tracking-code-pepper-dev-fallback";
 
 const encoder = new TextEncoder();
 
@@ -21,7 +29,7 @@ function toHex(bytes: Uint8Array): string {
 async function hmacSha256(message: string): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
-    encoder.encode(PEPPER),
+    encoder.encode(EFFECTIVE_PEPPER),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
@@ -65,22 +73,25 @@ export async function verifyTrackingCode(
 }
 
 // ---------------------------------------------------------------------------
-// Limiteur de débit (fenêtre glissante en mémoire).
-// Sur Cloudflare Workers, la mémoire est partagée par isolat : la limite n'est
-// donc pas globale, mais elle suffit à ralentir l'énumération côté API.
-//
-// TODO: Pour une persistance entre les déploiements, utiliser Cloudflare KV :
-// 1. Créer un namespace KV via `wrangler kv:namespace create RATE_LIMIT`
-// 2. Ajouter la binding dans wrangler.jsonc :
-//    "kv_namespaces": [
-//      { "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }
-//    ]
-// 3. Implémenter la logique KV dans rateLimit() avec TTL de 60 secondes
-// 4. En développement, fallback sur la Map en mémoire
+// Limiteur de débit (fenêtre glissante, 60 secondes).
+// Si un binding Cloudflare KV nommé RATE_LIMIT_KV est disponible, la limite
+// est persistée entre les requêtes / isolats. Sinon, fallback sur une Map en
+// mémoire (suffisant pour ralentir l'énumération, mais pas persistant).
 // ---------------------------------------------------------------------------
 
 const WINDOW_MS = 60_000;
-const buckets = new Map<string, { count: number; resetAt: number }>();
+const KV_NAMESPACE = (() => {
+  try {
+    // @ts-expect-error — Cloudflare KV binding injecté par Nitro/Wrangler
+    const ns = process.env.RATE_LIMIT_KV as KVNamespace | undefined;
+    return ns && typeof ns.get === "function" ? ns : null;
+  } catch {
+    return null;
+  }
+})();
+
+// Fallback mémoire utilisé quand KV n'est pas disponible
+const memBuckets = new Map<string, { count: number; resetAt: number }>();
 
 /** IP du client si disponible, sinon une clé stable de repli. */
 export function clientIp(): string {
@@ -95,13 +106,43 @@ export function clientIp(): string {
  * Vrai si la requête est autorisée (compteur < max sur la fenêtre).
  * `key` doit être stable par action, ex. "suivi-lookup".
  */
-export function rateLimit(key: string, max: number): boolean {
+export async function rateLimit(key: string, max: number): Promise<boolean> {
   const ip = clientIp();
-  const now = Date.now();
   const bucketKey = `${ip}:${key}`;
-  const bucket = buckets.get(bucketKey);
+
+  if (KV_NAMESPACE) {
+    return rateLimitKV(bucketKey, max);
+  }
+  return rateLimitMemory(bucketKey, max);
+}
+
+/** Rate limiting via Cloudflare KV (persistant entre isolats/déploiements). */
+async function rateLimitKV(bucketKey: string, max: number): Promise<boolean> {
+  const now = Date.now();
+  const ttlSec = Math.ceil(WINDOW_MS / 1000);
+
+  const raw = await KV_NAMESPACE.get(bucketKey, { type: "json" });
+  const bucket = raw as { count: number; resetAt: number } | null;
+
   if (!bucket || now > bucket.resetAt) {
-    buckets.set(bucketKey, { count: 1, resetAt: now + WINDOW_MS });
+    await KV_NAMESPACE.put(bucketKey, JSON.stringify({ count: 1, resetAt: now + WINDOW_MS }), {
+      expirationTtl: ttlSec,
+    });
+    return true;
+  }
+  if (bucket.count >= max) return false;
+
+  bucket.count += 1;
+  await KV_NAMESPACE.put(bucketKey, JSON.stringify(bucket), { expirationTtl: ttlSec });
+  return true;
+}
+
+/** Rate limiting en mémoire (fallback sans KV). */
+function rateLimitMemory(bucketKey: string, max: number): boolean {
+  const now = Date.now();
+  const bucket = memBuckets.get(bucketKey);
+  if (!bucket || now > bucket.resetAt) {
+    memBuckets.set(bucketKey, { count: 1, resetAt: now + WINDOW_MS });
     return true;
   }
   if (bucket.count >= max) return false;
@@ -109,19 +150,35 @@ export function rateLimit(key: string, max: number): boolean {
   return true;
 }
 
-/** Statistiques des buckets de limite de débit (admin/debug). */
-export function getRateLimitStats(): {
+/**
+ * Retourne l'état actuel des buckets de limite de débit pour le tableau de bord admin.
+ * Lecture seule — pas d'impact sur les compteurs.
+ */
+export async function getRateLimitStats(): Promise<{
   totalBuckets: number;
   activeBuckets: number;
   blockedBuckets: number;
+  storage: "kv" | "memory";
   buckets: Array<{ key: string; count: number; resetIn: number }>;
-} {
+}> {
   const now = Date.now();
+
+  if (KV_NAMESPACE) {
+    // KV ne permet pas de lister efficacement — on retourne un aperçu limité
+    return {
+      totalBuckets: -1,
+      activeBuckets: -1,
+      blockedBuckets: -1,
+      storage: "kv",
+      buckets: [],
+    };
+  }
+
   const allBuckets: Array<{ key: string; count: number; resetIn: number }> = [];
   let active = 0;
   let blocked = 0;
 
-  for (const [key, bucket] of buckets.entries()) {
+  for (const [key, bucket] of memBuckets.entries()) {
     if (now > bucket.resetAt) continue;
     const resetIn = Math.ceil((bucket.resetAt - now) / 1000);
     allBuckets.push({ key, count: bucket.count, resetIn });
@@ -130,27 +187,30 @@ export function getRateLimitStats(): {
   }
 
   return {
-    totalBuckets: buckets.size,
+    totalBuckets: memBuckets.size,
     activeBuckets: active,
     blockedBuckets: blocked,
+    storage: "memory",
     buckets: allBuckets.sort((a, b) => b.count - a.count).slice(0, 50),
   };
 }
 
 /**
- * Retourne l'état actuel des buckets de limite de débit pour le tableau de bord admin.
- * Utile pour montrer les tentatives de requêtes en temps réel.
+ * Retourne l'état des buckets pour le tableau de bord admin (lecture seule).
  */
-export function getRateLimitBuckets(): Array<{
+export async function getRateLimitBuckets(): Promise<Array<{
   key: string;
   count: number;
   resetIn: number;
   isBlocked: boolean;
-}> {
+}>> {
   const now = Date.now();
+
+  if (KV_NAMESPACE) return [];
+
   const result: Array<{ key: string; count: number; resetIn: number; isBlocked: boolean }> = [];
 
-  for (const [key, bucket] of buckets.entries()) {
+  for (const [key, bucket] of memBuckets.entries()) {
     if (now > bucket.resetAt) continue;
     const resetIn = Math.ceil((bucket.resetAt - now) / 1000);
     result.push({

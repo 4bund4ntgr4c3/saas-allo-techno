@@ -137,7 +137,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
 
-    if (!rateLimit("fw-init", 5)) {
+    if (!(await rateLimit("fw-init", 5))) {
       throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
@@ -210,7 +210,7 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("fw-status", 10)) {
+    if (!(await rateLimit("fw-status", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -247,7 +247,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
 
-    if (!rateLimit("fw-res-init", 5)) {
+    if (!(await rateLimit("fw-res-init", 5))) {
       throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
@@ -362,7 +362,7 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("fw-res-status", 10)) {
+    if (!(await rateLimit("fw-res-status", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -455,7 +455,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
 
-    if (!rateLimit("fedapay-res-init", 5)) {
+    if (!(await rateLimit("fedapay-res-init", 5))) {
       throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
@@ -587,7 +587,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
 
-    if (!rateLimit("kkiapay-res-init", 5)) {
+    if (!(await rateLimit("kkiapay-res-init", 5))) {
       throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
@@ -716,7 +716,7 @@ export const listCustomerPayments = createServerFn({ method: "POST" }).handler(
   async (): Promise<CustomerPayment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("customer-payments-list", 20)) {
+    if (!(await rateLimit("customer-payments-list", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

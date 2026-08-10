@@ -14,11 +14,11 @@
   //   { "pattern": "www.allotechno.africa", "custom_domain": true }
   // ]
   //
-  // TODO: Pour activer la persistance du rate limiting avec Cloudflare KV :
-  // 1. Créer un namespace KV : wrangler kv:namespace create RATE_LIMIT
-  // 2. Ajouter cette configuration (remplacer VOTRE_NAMESPACE_ID par l'ID obtenu) :
+  // Rate limiting persistant via Cloudflare KV.
+  // 1. Créer le namespace : wrangler kv:namespace create RATE_LIMIT
+  // 2. Remplacer VOTRE_NAMESPACE_ID par l'ID obtenu :
   // "kv_namespaces": [
   //   { "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }
   // ]
-  // 3. Le code dans src/lib/security.ts utilisera automatiquement KV si disponible
+  // Le code src/lib/security.ts utilisera KV automatiquement si le binding existe.
 }

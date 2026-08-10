@@ -135,7 +135,7 @@ export const createReturn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ reference: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("return-create", 10)) {
+    if (!(await rateLimit("return-create", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -179,7 +179,7 @@ export const listReturns = createServerFn({ method: "POST" })
   .handler(async (): Promise<ReturnRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("returns-read", 30)) {
+    if (!(await rateLimit("returns-read", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -254,7 +254,7 @@ export const setReturnStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("return-update", 20)) {
+    if (!(await rateLimit("return-update", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

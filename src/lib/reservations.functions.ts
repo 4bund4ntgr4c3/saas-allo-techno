@@ -17,7 +17,7 @@ export const createReservation = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("reservation-create", 8)) {
+    if (!(await rateLimit("reservation-create", 8))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

@@ -58,7 +58,7 @@ export const submitShopOrder = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("shop-order", 3)) {
+    if (!(await rateLimit("shop-order", 3))) {
       throw new Error("Trop de commandes. Réessayez dans une minute.");
     }
 
@@ -152,7 +152,7 @@ const validatePromoSchema = z.object({
 export const validatePromoCode = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => validatePromoSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!rateLimit("promo-validate", 20)) {
+    if (!(await rateLimit("promo-validate", 20))) {
       throw new Error("Trop de tentatives. Réessayez dans une minute.");
     }
 

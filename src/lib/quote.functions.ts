@@ -52,7 +52,7 @@ export const sendQuote = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("quote-send", 20)) {
+    if (!(await rateLimit("quote-send", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -104,7 +104,7 @@ export const decideOnQuote = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("quote-decide", 10)) {
+    if (!(await rateLimit("quote-decide", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -143,7 +143,7 @@ export const getQuoteStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ found: true; quote: QuoteStatus } | { found: false }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("quote-status", 10)) {
+    if (!(await rateLimit("quote-status", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

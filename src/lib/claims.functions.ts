@@ -68,7 +68,7 @@ export const submitWarrantyClaim = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ reference: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("claim-submit", 5)) {
+    if (!(await rateLimit("claim-submit", 5))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -113,7 +113,7 @@ export const listWarrantyClaims = createServerFn({ method: "POST" })
   .handler(async (): Promise<WarrantyClaimRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("claims-read", 30)) {
+    if (!(await rateLimit("claims-read", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -141,7 +141,7 @@ export const setWarrantyClaimStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("claim-update", 20)) {
+    if (!(await rateLimit("claim-update", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

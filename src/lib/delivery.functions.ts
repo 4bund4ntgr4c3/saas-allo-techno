@@ -34,7 +34,7 @@ export const setDeliveryStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("delivery-status", 20)) {
+    if (!(await rateLimit("delivery-status", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

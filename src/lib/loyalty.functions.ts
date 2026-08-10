@@ -102,7 +102,7 @@ export type LoyaltySummary = {
 export const getLoyaltySummary = createServerFn({ method: "POST" }).handler(
   async (): Promise<LoyaltySummary> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("loyalty-summary", 30)) {
+    if (!(await rateLimit("loyalty-summary", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -162,7 +162,7 @@ export const getLoyaltySummary = createServerFn({ method: "POST" }).handler(
 /** Génère le code de parrainage de l'utilisateur (ou renvoie l'existant). */
 export const ensureReferralCode = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  if (!rateLimit("loyalty-ensure", 10)) {
+  if (!(await rateLimit("loyalty-ensure", 10))) {
     throw new Error("Trop de demandes. Réessayez dans une minute.");
   }
 
@@ -195,7 +195,7 @@ export const applyReferralCode = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => applyCodeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("loyalty-apply", 10)) {
+    if (!(await rateLimit("loyalty-apply", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -268,7 +268,7 @@ export const calculateLoyaltyDiscount = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("loyalty-discount-calc", 20)) {
+    if (!(await rateLimit("loyalty-discount-calc", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -304,7 +304,7 @@ export const applyLoyaltyDiscount = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("loyalty-discount-apply", 10)) {
+    if (!(await rateLimit("loyalty-discount-apply", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

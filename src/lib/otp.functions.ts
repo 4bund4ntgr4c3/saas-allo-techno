@@ -119,7 +119,7 @@ export const verifyOtpLogin = createServerFn({ method: "POST" })
       return false;
     }
 
-    if (!rateLimit("otp-verify", 10)) return false;
+    if (!(await rateLimit("otp-verify", 10))) return false;
 
     const { data: row } = await supabaseAdmin
       .from("admin_otp")

@@ -47,7 +47,7 @@ export const listRefundablePayments = createServerFn({ method: "POST" })
   .handler(async (): Promise<RefundablePayment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("refund-list", 20)) {
+    if (!(await rateLimit("refund-list", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -124,7 +124,7 @@ export const initiateRefund = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("refund-init", 5)) {
+    if (!(await rateLimit("refund-init", 5))) {
       throw new Error("Trop de demandes de remboursement. Réessayez dans une minute.");
     }
 

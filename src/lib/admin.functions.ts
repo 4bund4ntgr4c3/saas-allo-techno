@@ -65,7 +65,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("admin-status", 30)) {
+    if (!(await rateLimit("admin-status", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -175,7 +175,7 @@ export const getReservationQuote = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ReservationQuote | null> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("admin-quote", 30)) {
+    if (!(await rateLimit("admin-quote", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -257,7 +257,7 @@ export const getAtelierBoard = createServerFn({ method: "POST" })
   .handler(async (): Promise<AtelierBoardData> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("atelier-board", 20)) {
+    if (!(await rateLimit("atelier-board", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -354,7 +354,7 @@ export const assignTechnician = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("atelier-assign", 20)) {
+    if (!(await rateLimit("atelier-assign", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -401,7 +401,7 @@ export const getAdminKpis = createServerFn({ method: "POST" })
   .handler(async (): Promise<AdminKpis> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("admin-kpis", 10)) {
+    if (!(await rateLimit("admin-kpis", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -526,7 +526,7 @@ export const transferReservation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<TransferResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("transfer-reservation", 10)) {
+    if (!(await rateLimit("transfer-reservation", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -570,7 +570,7 @@ export const getWorkshopLoad = createServerFn({ method: "GET" }).handler(
   async (): Promise<WorkshopLoad[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("workshop-load", 20)) {
+    if (!(await rateLimit("workshop-load", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

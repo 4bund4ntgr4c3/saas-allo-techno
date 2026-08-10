@@ -121,7 +121,7 @@ export const getDevicePhotoUpload = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("photo-upload", 10)) {
+    if (!(await rateLimit("photo-upload", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -175,7 +175,7 @@ export const getStaffPhotoUpload = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("staff-photo-upload", 20)) {
+    if (!(await rateLimit("staff-photo-upload", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -213,7 +213,7 @@ export const addStagePhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("staff-add-photo", 20)) {
+    if (!(await rateLimit("staff-add-photo", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -264,7 +264,7 @@ export const registerDeviceAttachment = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("register-attachment", 30)) {
+    if (!(await rateLimit("register-attachment", 30))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -319,7 +319,7 @@ export const getReservationAttachments = createServerFn({ method: "POST" })
     }): Promise<{ found: true; attachments: ReservationAttachment[] } | { found: false }> => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-      if (!rateLimit("suivi-photos", 30)) {
+      if (!(await rateLimit("suivi-photos", 30))) {
         throw new Error("Trop de demandes. Réessayez dans une minute.");
       }
 

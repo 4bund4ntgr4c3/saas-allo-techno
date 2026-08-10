@@ -25,7 +25,7 @@ export const saveHandoffSignature = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("save-signature", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("save-signature", 10))) throw new Error("Trop de demandes.");
 
     const { error } = await supabaseAdmin.from("handoff_signatures" as never).insert({
       reservation_id: data.reservation_id,
@@ -44,7 +44,7 @@ export const getHandoffSignature = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<HandoffSignature | null> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("get-signature", 20)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("get-signature", 20))) throw new Error("Trop de demandes.");
 
     const { data: row, error } = await supabaseAdmin
       .from("handoff_signatures" as never)

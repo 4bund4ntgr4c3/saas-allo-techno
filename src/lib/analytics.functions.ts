@@ -19,7 +19,7 @@ const trackSchema = z.object({
 export const trackEvent = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => trackSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!rateLimit("analytics", 60)) return;
+    if (!(await rateLimit("analytics", 60))) return;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("analytics_events").insert({
       event: data.event,

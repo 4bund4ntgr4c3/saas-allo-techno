@@ -135,7 +135,7 @@ export const getReservationStatus = createServerFn({ method: "POST" })
     }): Promise<{ found: true; reservation: ReservationStatus } | { found: false }> => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-      if (!rateLimit("suivi-lookup", 30)) {
+      if (!(await rateLimit("suivi-lookup", 30))) {
         throw new Error("Trop de demandes. Réessayez dans une minute.");
       }
 
@@ -171,7 +171,7 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ReservationStatus> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("suivi-reschedule", 5)) {
+    if (!(await rateLimit("suivi-reschedule", 5))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -265,7 +265,7 @@ export const getReservationTracking = createServerFn({ method: "POST" })
     > => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-      if (!rateLimit("suivi-lookup", 30)) {
+      if (!(await rateLimit("suivi-lookup", 30))) {
         throw new Error("Trop de demandes. Réessayez dans une minute.");
       }
 
@@ -351,7 +351,7 @@ export const addReservationComment = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ id: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    if (!rateLimit("suivi-comment", 10)) {
+    if (!(await rateLimit("suivi-comment", 10))) {
       throw new Error("Trop de commentaires. Réessayez dans une minute.");
     }
 

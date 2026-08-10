@@ -14,7 +14,7 @@ export const logSearchQuery = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     if (!data) return;
-    if (!rateLimit("search", 10)) return;
+    if (!(await rateLimit("search", 10))) return;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin.from("search_queries" as never).insert({

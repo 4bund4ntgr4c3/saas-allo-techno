@@ -61,16 +61,16 @@ describe("safeEqual", () => {
 });
 
 describe("rateLimit", () => {
-  it("allows requests up to the limit and blocks after", () => {
+  it("allows requests up to the limit and blocks after", async () => {
     const ok = [];
-    for (let i = 0; i < 3; i++) ok.push(rateLimit("rate-test-key", 3));
+    for (let i = 0; i < 3; i++) ok.push(await rateLimit("rate-test-key", 3));
     expect(ok).toEqual([true, true, true]);
-    expect(rateLimit("rate-test-key", 3)).toBe(false);
+    expect(await rateLimit("rate-test-key", 3)).toBe(false);
   });
 
-  it("uses independent buckets per key", () => {
-    expect(rateLimit("rate-other-key", 1)).toBe(true);
-    expect(rateLimit("rate-other-key", 1)).toBe(false);
-    expect(rateLimit("rate-test-key", 3)).toBe(false);
+  it("uses independent buckets per key", async () => {
+    expect(await rateLimit("rate-other-key", 1)).toBe(true);
+    expect(await rateLimit("rate-other-key", 1)).toBe(false);
+    expect(await rateLimit("rate-test-key", 3)).toBe(false);
   });
 });

@@ -181,7 +181,7 @@ export const upsertBlogPost = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-    if (!rateLimit("content-write", 10))
+    if (!(await rateLimit("content-write", 10)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
 
     const { error } = await supabaseAdmin.from("blog_posts").upsert(
@@ -210,7 +210,7 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-    if (!rateLimit("content-write", 10))
+    if (!(await rateLimit("content-write", 10)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     let query = supabaseAdmin.from("blog_posts").delete().eq("slug", data.slug);
     if (data.locale) query = query.eq("locale", data.locale);
@@ -224,7 +224,7 @@ export const upsertReview = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-    if (!rateLimit("content-write", 10))
+    if (!(await rateLimit("content-write", 10)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
 
     const payload = {
@@ -251,7 +251,7 @@ export const deleteReview = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-    if (!rateLimit("content-write", 10))
+    if (!(await rateLimit("content-write", 10)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     const { error } = await supabaseAdmin.from("reviews").delete().eq("id", data.id);
     if (error) throw new Error("Impossible de supprimer l'avis.");
@@ -291,7 +291,7 @@ export const setInventory = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
-    if (!rateLimit("inventory-write", 20))
+    if (!(await rateLimit("inventory-write", 20)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     const { error } = await supabaseAdmin
       .from("inventory")

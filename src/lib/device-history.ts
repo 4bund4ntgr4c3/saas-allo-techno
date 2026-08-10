@@ -20,7 +20,7 @@ export const getDeviceHistory = createServerFn({ method: "POST" })
     return { phone, email, device };
   })
   .handler(async ({ data }) => {
-    if (!rateLimit("device-history", 10)) {
+    if (!(await rateLimit("device-history", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
@@ -75,7 +75,7 @@ export const getDeviceStats = createServerFn({ method: "POST" })
     return { phone, email };
   })
   .handler(async ({ data }) => {
-    if (!rateLimit("device-stats", 10)) {
+    if (!(await rateLimit("device-stats", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 

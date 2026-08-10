@@ -48,7 +48,7 @@ export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 export const listWebhooks = createServerFn({ method: "GET" })
   .handler(async (): Promise<OutboundWebhook[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("list-webhooks", 20)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("list-webhooks", 20))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
       .select("*")
@@ -65,7 +65,7 @@ export const listWebhookLogs = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<WebhookLog[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("list-webhook-logs", 20)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("list-webhook-logs", 20))) throw new Error("Trop de demandes.");
     const { data: rows, error } = await supabaseAdmin
       .from("webhook_logs" as never)
       .select("*")
@@ -85,7 +85,7 @@ export const createWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("create-webhook", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("create-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin.from("outbound_webhooks" as never).insert({
       name: data.name,
       url: data.url,
@@ -106,7 +106,7 @@ export const updateWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("update-webhook", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("update-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
       .update(data.updates as never)
@@ -123,7 +123,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!rateLimit("delete-webhook", 10)) throw new Error("Trop de demandes.");
+    if (!(await rateLimit("delete-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
       .delete()
