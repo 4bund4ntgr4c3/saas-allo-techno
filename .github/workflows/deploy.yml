@@ -7,13 +7,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    needs: [ci]
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Cloudflare
-        run: echo "Deploy to Cloudflare Workers — configure with Wrangler"
-        # TODO: Add actual deployment step
-        # - uses: cloudflare/wrangler-action@v3
-        #   with:
-        #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        #     command: deploy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy --cwd .output/server
