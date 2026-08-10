@@ -7,6 +7,22 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 31)
+
+### Added
+
+- **Service Worker v3** : stratégies de cache avancées — stale-while-revalidate pour API publiques (suivi, catalogue), background sync pour soumissions hors-ligne via IndexedDB queue, cache séparé static/API/pages, cleanup des anciens caches.
+- **Scanner QR/Barcode** : composant `QrScanner` (html5-qrcode) — scan par caméra device, mode environment, détection QR + barcodes, gestion erreurs caméra (refusée, absente), overlay modal.
+- **Signature numérique** : composant `SignatureCapture` (signature_pad) — canvas haute résolution (devicePixelRatio), signature doigt/stylet, effacer/valider, export PNG data URL. Table `handoff_signatures` + RPCs `saveHandoffSignature`, `getHandoffSignature`, `has_handoff_signature`.
+- **Migration** : table `handoff_signatures` avec RLS + index + RPC vérification.
+- **i18n** : 16 clés `suivi.scan.*` + `suivi.signature.*` + `suivi.handoff.*` FR/EN.
+
+### Changed
+
+- **PWA** : service worker passé de v2 à v3 avec stratégies de cache différenciées et support background sync.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 30)
 
 ### Added

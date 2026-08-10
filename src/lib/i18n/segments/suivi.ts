@@ -142,6 +142,22 @@ const fr = {
   "suivi.comments.error": "Impossible d'envoyer le commentaire.",
   "suivi.comments.name": "Votre nom",
   "suivi.comments.by": "par {0}",
+  // Batch 31 — Scanner & Signature
+  "suivi.scan.title": "Scanner un code",
+  "suivi.scan.hint": "Alignez le code dans le cadre",
+  "suivi.scan.detected": "Code détecté !",
+  "suivi.scan.camera.error": "Caméra refusée. Autorisez l'accès dans les paramètres de votre navigateur.",
+  "suivi.scan.no.device": "Aucune caméra détectée.",
+  "suivi.scan.generic.error": "Impossible de démarrer le scanner.",
+  "suivi.signature.title": "Signature du client",
+  "suivi.signature.hint": "Signez ici avec le doigt ou le stylet",
+  "suivi.signature.clear": "Effacer",
+  "suivi.signature.validate": "Valider",
+  "suivi.signature.cancel": "Annuler",
+  "suivi.signature.saved": "Signature enregistrée.",
+  "suivi.handoff.title": "Remise de l'appareil",
+  "suivi.handoff.description": "Le client signe pour confirmer la réception de l'appareil.",
+  "suivi.handoff.signed": "Appareil remis — signature capturée.",
 };
 
 const en = {
@@ -282,6 +298,22 @@ const en = {
   "suivi.comments.error": "Unable to send the comment.",
   "suivi.comments.name": "Your name",
   "suivi.comments.by": "by {0}",
+  // Batch 31 — Scanner & Signature
+  "suivi.scan.title": "Scan a code",
+  "suivi.scan.hint": "Align the code within the frame",
+  "suivi.scan.detected": "Code detected!",
+  "suivi.scan.camera.error": "Camera denied. Allow access in your browser settings.",
+  "suivi.scan.no.device": "No camera detected.",
+  "suivi.scan.generic.error": "Unable to start the scanner.",
+  "suivi.signature.title": "Customer signature",
+  "suivi.signature.hint": "Sign here with your finger or stylus",
+  "suivi.signature.clear": "Clear",
+  "suivi.signature.validate": "Confirm",
+  "suivi.signature.cancel": "Cancel",
+  "suivi.signature.saved": "Signature saved.",
+  "suivi.handoff.title": "Device handoff",
+  "suivi.handoff.description": "The customer signs to confirm receipt of the device.",
+  "suivi.handoff.signed": "Device handed over — signature captured.",
 };
 
 registerSegments({ fr, en });
