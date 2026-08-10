@@ -6,6 +6,7 @@ import {
   AlertCircle,
   Boxes,
   CalendarClock,
+  CalendarDays,
   CheckCircle2,
   FileDown,
   Package,
@@ -316,6 +317,27 @@ function Suivi() {
   );
 }
 
+function buildGoogleCalendarUrl(r: {
+  reference: string;
+  device: string;
+  slot_date: string | null;
+  slot_hour: string | null;
+}): string {
+  const date = r.slot_date?.replace(/-/g, "") ?? "";
+  const [h, m] = (r.slot_hour ?? "09:00").split(":").map(Number);
+  const start = `${date}T${String(h ?? 9).padStart(2, "0")}${String(m ?? 0).padStart(2, "0")}00`;
+  const endH = (h ?? 9) + 1;
+  const end = `${date}T${String(endH).padStart(2, "0")}${String(m ?? 0).padStart(2, "0")}00`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `${r.reference} — ${r.device}`,
+    dates: `${start}/${end}`,
+    details: `Réparation ${r.device}\nRéf: ${r.reference}`,
+    location: "Allô Techno, Cotonou",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 function StatusResult({
   result,
   timeline,
@@ -397,6 +419,22 @@ function StatusResult({
             <FileDown className="mr-2 size-4" />
             {t("suivi.timelinePdf")}
           </Button>
+          {result.slot_date && (
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+            >
+              <a
+                href={buildGoogleCalendarUrl(result)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <CalendarDays className="mr-2 size-4" />
+                {t("suivi.addToCalendar")}
+              </a>
+            </Button>
+          )}
           {(result.quote_status === "approved" || result.quote_status === "sent") &&
             (result.quote_amount ?? 0) > 0 && (
               <Button

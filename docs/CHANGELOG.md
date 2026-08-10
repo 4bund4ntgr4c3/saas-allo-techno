@@ -7,6 +7,22 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 30)
+
+### Added
+
+- **iCal feed** : route `/api/ical` génère un fichier `.ics` des réservations actives — importable dans Google Calendar, Outlook, Apple Calendar. Inclut fuseau horaire Africa/Porto-Novo, statut et détails dossier.
+- **Webhooks sortants** : système complet d'outbound webhooks — tables `outbound_webhooks` + `webhook_logs`, 7 événements disponibles (reservation.created, reservation.status_changed, reservation.completed, payment.received, payment.failed, lead.new, review.submitted), signature HMAC SHA-256 optionnelle, logs avec status code + durée.
+- **Onglet Webhooks (admin)** : CRUD webhooks avec sélection d'événements, activation/désactivation, logs détaillés par webhook avec historique des 50 derniers appels.
+- **Ajout au calendrier** : bouton "Ajouter au calendrier" sur la page de suivi — génère un lien Google Calendar avec date, heure, référence et appareil.
+- **Migration** : tables `outbound_webhooks` + `webhook_logs` + RLS.
+
+### Changed
+
+- **Admin enrichi** : 27 onglets dont Webhooks avec gestion complète et logs.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 29)
 
 ### Added

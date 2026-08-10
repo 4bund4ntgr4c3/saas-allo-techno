@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.10-b29 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.10-b30 — [Changelog](./CHANGELOG.md)
 
 ## Fonctionnalités
 
@@ -15,7 +15,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Page À propos** : histoire, mission, valeurs, timeline chronologique, chiffres clés, localisation.
 - **Page Rejoindre l'équipe** : avantages, postes ouverts, processus de candidature, CTA.
 - **Réservation en ligne** : disponibilités en temps réel (créneaux par demi-journée et par heure), dépôt en boutique ou enlèvement à domicile.
-- **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape, photos d'atelier, commentaires client en temps réel.
+- **Suivi de réparation** : par numéro de dossier, historique des changements de statut avec notes et durée par étape, photos d'atelier, commentaires client en temps réel, bouton "Ajouter au calendrier" (Google Calendar).
 - **Historique appareils** : page publique `/historique` — recherche par téléphone ou email, stats de réparation, résultats vers le suivi.
 - **Boutique enrichie** : badges stock visuels (pulse sur stock limité), aperçu rapide (modal QuickView), liste de souhaits (coeur), récemment consultés, estimation livraison, partage WhatsApp, badges confiance.
 - **Avis produits** : notes 1-5 étoiles + texte sur chaque accessoire, affichage sur fiche produit avec formulaire.
@@ -29,7 +29,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Mode hors-ligne** : cache localStorage avec TTL 5 min.
 - **PWA installable** : manifeste + service worker.
 
-### Côté atelier / admin (25 onglets)
+### Côté atelier / admin (27 onglets)
 
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
 - **Atelier** : tableau kanban des réparations en cours, assignment technicien.
@@ -66,6 +66,8 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Notifications internes** : centre de notifications staff avec marquer lu.
 - **Knowledge base** : wiki interne techniciens (8 catégories, recherche full-text).
 - **Marketing** : campagnes email/SMS/WhatsApp, templates prédéfinis, segmentation RFM (VIP/Loyal/Actif/Nouveau/Inactif), tracking envois.
+- **Webhooks sortants** : CRUD webhooks, 7 événements, signature HMAC, logs détaillés.
+- **iCal** : feed `/api/ical` pour import Google Calendar des réservations actives.
 - **Garantie étendue** : upsell 6/12/24 mois, suivi statut.
 
 ### Contenu et SEO
@@ -73,7 +75,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Pages** : Accueil, Réparations (par marque/appareil), Catalogue, Tarifs, Services, Boutique, Promotions, Magasins, Suivi, Devis, Reprise, Reconditionnés, FAQ, Blog, Avis, Contact, Engagements, Entreprises, Garantie, Réclamation, Guides, Quartiers, Mentions légales.
 - **SEO** : Schema.org LocalBusiness, OpenGraph, Twitter Cards, sitemap dynamique, meta par page.
 - **Blog** : articles bilingues FR/EN avec catégories et temps de lecture.
-- **i18n** : routage bilingue `/fr` + `/en`, 27 segments traduits.
+- **i18n** : routage bilingue `/fr` + `/en`, 28 segments traduits.
 
 ### Infrastructure
 

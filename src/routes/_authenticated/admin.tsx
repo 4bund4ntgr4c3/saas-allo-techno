@@ -23,6 +23,7 @@ import {
   Wrench,
   BadgeCheck,
   TrendingUp,
+  Webhook,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,7 @@ import { AdminSLA } from "@/components/admin/AdminSLA";
 import { AdminSatisfaction } from "@/components/admin/AdminSatisfaction";
 import { AdminInternalNotifs } from "@/components/admin/AdminInternalNotifs";
 import { AdminKnowledgeBase } from "@/components/admin/AdminKnowledgeBase";
+import { AdminWebhooks } from "@/components/admin/AdminWebhooks";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -161,6 +163,7 @@ function AdminPage() {
     | "notif-interne"
     | "kb"
     | "marketing"
+    | "webhooks"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -722,6 +725,14 @@ function AdminPage() {
           <MailPlus className="mr-2 size-4" />
           Marketing
         </Button>
+        <Button
+          variant={tab === "webhooks" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("webhooks")}
+        >
+          <Webhook className="mr-2 size-4" />
+          Webhooks
+        </Button>
       </div>
 
       {tab === "dossiers" && (
@@ -1007,6 +1018,11 @@ function AdminPage() {
       {tab === "marketing" && (
         <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
           <AdminMarketing />
+        </Suspense>
+      )}
+      {tab === "webhooks" && (
+        <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
+          <AdminWebhooks />
         </Suspense>
       )}
     </div>

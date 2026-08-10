@@ -48,6 +48,7 @@ import { Route as ApiDocsRouteImport } from './routes/api.docs'
 import { Route as ApiFedapayWebhookRouteImport } from './routes/api.fedapay-webhook'
 import { Route as ApiFlutterwaveWebhookRouteImport } from './routes/api.flutterwave-webhook'
 import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
+import { Route as ApiIcalRouteImport } from './routes/api.ical'
 import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
 import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
 import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
@@ -257,6 +258,11 @@ const ApiHealthzRoute = ApiHealthzRouteImport.update({
   path: '/api/healthz',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiIcalRoute = ApiIcalRouteImport.update({
+  id: '/api/ical',
+  path: '/api/ical',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiKkiapayWebhookRoute = ApiKkiapayWebhookRouteImport.update({
   id: '/api/kkiapay-webhook',
   path: '/api/kkiapay-webhook',
@@ -361,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -413,6 +420,7 @@ export interface FileRoutesByTo {
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -468,6 +476,7 @@ export interface FileRoutesById {
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
   '/api/flutterwave-webhook': typeof ApiFlutterwaveWebhookRoute
   '/api/healthz': typeof ApiHealthzRoute
+  '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
@@ -523,6 +532,7 @@ export interface FileRouteTypes {
     | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
@@ -575,6 +585,7 @@ export interface FileRouteTypes {
     | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
@@ -629,6 +640,7 @@ export interface FileRouteTypes {
     | '/api/fedapay-webhook'
     | '/api/flutterwave-webhook'
     | '/api/healthz'
+    | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
@@ -656,6 +668,7 @@ export interface RootRouteChildren {
   ApiFedapayWebhookRoute: typeof ApiFedapayWebhookRoute
   ApiFlutterwaveWebhookRoute: typeof ApiFlutterwaveWebhookRoute
   ApiHealthzRoute: typeof ApiHealthzRoute
+  ApiIcalRoute: typeof ApiIcalRoute
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
   ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
@@ -937,6 +950,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthzRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ical': {
+      id: '/api/ical'
+      path: '/api/ical'
+      fullPath: '/api/ical'
+      preLoaderRoute: typeof ApiIcalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/kkiapay-webhook': {
       id: '/api/kkiapay-webhook'
       path: '/api/kkiapay-webhook'
@@ -1136,6 +1156,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiFedapayWebhookRoute: ApiFedapayWebhookRoute,
   ApiFlutterwaveWebhookRoute: ApiFlutterwaveWebhookRoute,
   ApiHealthzRoute: ApiHealthzRoute,
+  ApiIcalRoute: ApiIcalRoute,
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
   ApiPushSubscribeRoute: ApiPushSubscribeRoute,
   ApiSitemapRoute: ApiSitemapRoute,
