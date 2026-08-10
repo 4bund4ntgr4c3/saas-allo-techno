@@ -29,17 +29,6 @@ import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/boutique/")({
   loader: () => listInventory().then((stock) => ({ stock })),
-  search: (search) => {
-    const params = search as Record<string, string>;
-    return {
-      category: (params.category as string) ?? "toutes",
-      priceMin: Number(params.priceMin) || 0,
-      priceMax: Number(params.priceMax) || Infinity,
-      inStock: params.inStock === "1",
-      sort: (params.sort as string) ?? "populaire",
-      q: (params.q as string) ?? "",
-    };
-  },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     const suffix = "/boutique";
@@ -67,8 +56,6 @@ const SORTS = [
 
 function Boutique() {
   const { stock } = Route.useLoaderData();
-  const navigate = Route.useNavigate();
-  const searchParams = Route.useSearch();
 
   function stockOf(slug: string): number {
     return Object.prototype.hasOwnProperty.call(stock, slug)
@@ -76,32 +63,41 @@ function Boutique() {
       : (ACCESSORIES.find((a) => a.slug === slug)?.stock ?? 0);
   }
 
-  const [filters, setFiltersState] = useState<ShopFilters>({
-    category: (searchParams as Record<string, string>).category ?? "toutes",
-    priceRange: [
-      Number((searchParams as Record<string, string>).priceMin) || 0,
-      Number((searchParams as Record<string, string>).priceMax) || Infinity,
-    ],
-    inStock: (searchParams as Record<string, string>).inStock === "1",
-    sort: ((searchParams as Record<string, string>).sort as ShopFilters["sort"]) ?? "populaire",
+  const [sp] = useState(() => {
+    if (typeof window === "undefined") return {} as Record<string, string>;
+    return Object.fromEntries(new URLSearchParams(window.location.search));
   });
-  const [q, setQ] = useState((searchParams as Record<string, string>).q ?? "");
+
+  const [filters, setFiltersState] = useState<ShopFilters>({
+    category: sp["category"] ?? "toutes",
+    priceRange: [Number(sp["priceMin"]) || 0, Number(sp["priceMax"]) || Infinity],
+    inStock: sp["inStock"] === "1",
+    sort: (sp["sort"] as ShopFilters["sort"]) ?? "populaire",
+  });
+  const [q, setQ] = useState(sp["q"] ?? "");
   const [quickViewSlug, setQuickViewSlug] = useState<string | null>(null);
+  const cart = useCart();
+  const wishlist = useWishlist();
+  const compare = useCompare();
+  const { items: recentItems } = useRecentlyViewed();
+  const { locale, t } = useI18n();
 
   const setFilters = useCallback(
     (next: ShopFilters | ((prev: ShopFilters) => ShopFilters)) => {
       const resolved = typeof next === "function" ? next(filters) : next;
       setFiltersState(resolved);
-      const sp: Record<string, string> = {};
-      if (resolved.category !== "toutes") sp.category = resolved.category;
-      if (resolved.priceRange[0] > 0) sp.priceMin = String(resolved.priceRange[0]);
-      if (resolved.priceRange[1] < Infinity) sp.priceMax = String(resolved.priceRange[1]);
-      if (resolved.inStock) sp.inStock = "1";
-      if (resolved.sort !== "populaire") sp.sort = resolved.sort;
-      if (q.trim()) sp.q = q.trim();
-      navigate({ search: () => sp, replace: true });
+      const params = new URLSearchParams();
+      if (resolved.category !== "toutes") params.set("category", resolved.category);
+      if (resolved.priceRange[0] > 0) params.set("priceMin", String(resolved.priceRange[0]));
+      if (resolved.priceRange[1] < Infinity) params.set("priceMax", String(resolved.priceRange[1]));
+      if (resolved.inStock) params.set("inStock", "1");
+      if (resolved.sort !== "populaire") params.set("sort", resolved.sort);
+      if (q.trim()) params.set("q", q.trim());
+      const qs = params.toString();
+      const url = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+      window.history.replaceState(null, "", url);
     },
-    [filters, q, navigate],
+    [filters, q],
   );
 
   const quickViewProduct = quickViewSlug ? ACCESSORIES.find((a) => a.slug === quickViewSlug) : null;
@@ -187,14 +183,16 @@ function Boutique() {
                   onChange={(e) => {
                     const val = e.target.value;
                     setQ(val);
-                    const sp: Record<string, string> = {};
-                    if (filters.category !== "toutes") sp.category = filters.category;
-                    if (filters.priceRange[0] > 0) sp.priceMin = String(filters.priceRange[0]);
-                    if (filters.priceRange[1] < Infinity) sp.priceMax = String(filters.priceRange[1]);
-                    if (filters.inStock) sp.inStock = "1";
-                    if (filters.sort !== "populaire") sp.sort = filters.sort;
-                    if (val.trim()) sp.q = val.trim();
-                    navigate({ search: () => sp, replace: true });
+                    const params = new URLSearchParams();
+                    if (filters.category !== "toutes") params.set("category", filters.category);
+                    if (filters.priceRange[0] > 0) params.set("priceMin", String(filters.priceRange[0]));
+                    if (filters.priceRange[1] < Infinity) params.set("priceMax", String(filters.priceRange[1]));
+                    if (filters.inStock) params.set("inStock", "1");
+                    if (filters.sort !== "populaire") params.set("sort", filters.sort);
+                    if (val.trim()) params.set("q", val.trim());
+                    const qs = params.toString();
+                    const url = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+                    window.history.replaceState(null, "", url);
                   }}
                   aria-label={t("boutique.search.placeholder")}
                   className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"

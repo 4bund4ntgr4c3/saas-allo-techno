@@ -145,7 +145,7 @@ function ComparePage() {
                 <Button asChild variant="technical">
                   <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.compare.browse")}</Link>
                 </Button>
-                <Button variant="destructiveOutline" onClick={clear}>
+                <Button variant="technicalOutline" onClick={clear}>
                   <Trash2 className="size-4" /> {t("boutique.compare.clear")}
                 </Button>
               </div>

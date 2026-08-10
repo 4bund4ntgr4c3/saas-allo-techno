@@ -15,14 +15,14 @@ export const useCompare = create<CompareStore>()(
   persist(
     (set, get) => ({
       slugs: [],
-      add: (slug) => {
+      add: (slug: string) => {
         const { slugs } = get();
         if (slugs.length >= MAX_COMPARE || slugs.includes(slug)) return;
         set({ slugs: [...slugs, slug] });
       },
-      remove: (slug) => set({ slugs: get().slugs.filter((s) => s !== slug) }),
+      remove: (slug: string) => set({ slugs: get().slugs.filter((s: string) => s !== slug) }),
       clear: () => set({ slugs: [] }),
-      has: (slug) => get().slugs.includes(slug),
+      has: (slug: string) => get().slugs.includes(slug),
     }),
     { name: "at-compare" },
   ),

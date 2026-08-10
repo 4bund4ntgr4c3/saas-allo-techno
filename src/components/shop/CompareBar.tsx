@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { X, ArrowRight } from "lucide-react";
 import { useCompare, MAX_COMPARE } from "@/components/shop/compare";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
+import type { Accessory } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 
 export function CompareBar() {
@@ -10,7 +11,7 @@ export function CompareBar() {
 
   if (slugs.length === 0) return null;
 
-  const products = slugs.map((s) => ACCESSORIES.find((a) => a.slug === s)).filter(Boolean);
+  const products = slugs.map((s) => ACCESSORIES.find((a) => a.slug === s)).filter((p): p is Accessory => p !== undefined);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 shadow-[0_-4px_16px_rgba(0,0,0,.08)] backdrop-blur">
@@ -21,15 +22,15 @@ export function CompareBar() {
         <div className="flex flex-1 gap-2 overflow-x-auto">
           {products.map((p) => (
             <div
-              key={p!.slug}
+              key={p.slug}
               className="flex shrink-0 items-center gap-2 rounded-sm border border-border bg-surface px-3 py-1.5"
             >
-              <span className="text-xs font-bold line-clamp-1">{p!.name}</span>
-              <span className="font-mono text-[10px] text-primary">{formatFcfa(p!.price)}</span>
+              <span className="text-xs font-bold line-clamp-1">{p.name}</span>
+              <span className="font-mono text-[10px] text-primary">{formatFcfa(p.price)}</span>
               <button
-                onClick={() => remove(p!.slug)}
+                onClick={() => remove(p.slug)}
                 className="ml-1 text-muted-foreground hover:text-destructive"
-                aria-label={`Retirer ${p!.name}`}
+                aria-label={`Retirer ${p.name}`}
               >
                 <X className="size-3" />
               </button>
