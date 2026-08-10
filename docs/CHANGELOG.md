@@ -7,6 +7,20 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Batch 35)
+
+### Added
+
+- **Newsletter signup** : formulaire d'inscription newsletter dans le footer, avec validation email et toast de confirmation. Table `newsletter_subscribers` créée en migration.
+- **Comparateur accessoires** : bouton "Comparer" sur chaque produit, barre flottante avec max 3 produits, page `/boutique/comparer` avec tableau de comparaison (prix, stock, grade, stockage, garantie).
+- **Filtres boutique persistés URL** : catégorie, prix, disponibilité, tri et recherche sont sauvegardés dans les paramètres d'URL — liens partageables, navigation retour/restauration automatique.
+
+### Changed
+
+- **Boutique filtres → URL** : les filtres boutique sync dans l'URL (`?category=...&sort=...&inStock=1`), rendant les vues partageables et le back/forward natif fonctionnel.
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Boutique polish)
 
 ### Changed

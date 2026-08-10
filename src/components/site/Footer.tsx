@@ -5,6 +5,7 @@ import { COMPANY } from "@/data/catalog/company";
 import { OPEN_SCHEDULE, isOpenNow } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
+import { NewsletterForm } from "@/components/site/NewsletterForm";
 import { prefetchRoute } from "@/lib/prefetch";
 
 function OpenNow() {
@@ -229,6 +230,11 @@ export function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Newsletter */}
+        <div className="mt-12 max-w-md">
+          <NewsletterForm />
         </div>
       </div>
 

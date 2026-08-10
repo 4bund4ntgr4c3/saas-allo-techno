@@ -93,6 +93,14 @@ const fr: Dictionary = {
   "footer.garanties": "Garanties",
   "footer.mentions-legales": "Mentions légales",
 
+  // Newsletter
+  "footer.newsletter.title": "Restez informé",
+  "footer.newsletter.description": "Nouveautés boutique, guides techniques et offres promotionnelles — max 2 mails/mois.",
+  "footer.newsletter.placeholder": "votre@email.com",
+  "footer.newsletter.cta": "S'inscrire",
+  "footer.newsletter.success": "Merci ! Vous recevrez nos prochaines nouveautés.",
+  "footer.newsletter.error": "Une erreur est survenue. Réessayez.",
+
   // Status atelier
   "status.open": "Ouvert",
   "status.closed": "Fermé",
@@ -334,6 +342,14 @@ const en: Dictionary = {
   "footer.rights": "Allô Techno Benin. All rights reserved.",
   "footer.garanties": "Warranties",
   "footer.mentions-legales": "Legal notice",
+
+  // Newsletter
+  "footer.newsletter.title": "Stay updated",
+  "footer.newsletter.description": "Shop arrivals, tech guides and deals — max 2 emails/month.",
+  "footer.newsletter.placeholder": "your@email.com",
+  "footer.newsletter.cta": "Subscribe",
+  "footer.newsletter.success": "Thanks! You'll receive our next updates.",
+  "footer.newsletter.error": "Something went wrong. Please try again.",
 
   // Status atelier
   "status.open": "Open",

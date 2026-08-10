@@ -26,6 +26,7 @@ import { CartProvider } from "@/components/shop/cart";
 import { WishlistProvider } from "@/components/shop/wishlist";
 import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
+import { CompareBar } from "@/components/shop/CompareBar";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 
@@ -243,6 +244,7 @@ function RootComponent() {
             <Toaster />
             <AddToCartWidget />
             <CartDrawer />
+            <CompareBar />
             <PwaInstallBanner />
             <PwaUpdatePrompt />
             <BackToTop />

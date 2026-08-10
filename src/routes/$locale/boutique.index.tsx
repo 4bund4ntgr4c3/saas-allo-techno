@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Check, Eye, Heart, Plus, ShoppingBag } from "lucide-react";
+import { useMemo, useState, useCallback } from "react";
+import { Check, Eye, Heart, Plus, ShoppingBag, GitCompareArrows } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import { ShopFilterSidebar, type ShopFilters } from "@/components/shop/ShopFilte
 import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
 import { useWishlist } from "@/components/shop/wishlist";
 import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
+import { useCompare, MAX_COMPARE } from "@/components/shop/compare";
 import { QuickView } from "@/components/shop/QuickView";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
@@ -28,6 +29,17 @@ import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/boutique/")({
   loader: () => listInventory().then((stock) => ({ stock })),
+  search: (search) => {
+    const params = search as Record<string, string>;
+    return {
+      category: (params.category as string) ?? "toutes",
+      priceMin: Number(params.priceMin) || 0,
+      priceMax: Number(params.priceMax) || Infinity,
+      inStock: params.inStock === "1",
+      sort: (params.sort as string) ?? "populaire",
+      q: (params.q as string) ?? "",
+    };
+  },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     const suffix = "/boutique";
@@ -55,23 +67,42 @@ const SORTS = [
 
 function Boutique() {
   const { stock } = Route.useLoaderData();
+  const navigate = Route.useNavigate();
+  const searchParams = Route.useSearch();
+
   function stockOf(slug: string): number {
     return Object.prototype.hasOwnProperty.call(stock, slug)
       ? (stock[slug] ?? 0)
       : (ACCESSORIES.find((a) => a.slug === slug)?.stock ?? 0);
   }
-  const [filters, setFilters] = useState<ShopFilters>({
-    category: "toutes",
-    priceRange: [0, Infinity],
-    inStock: false,
-    sort: "populaire",
+
+  const [filters, setFiltersState] = useState<ShopFilters>({
+    category: (searchParams as Record<string, string>).category ?? "toutes",
+    priceRange: [
+      Number((searchParams as Record<string, string>).priceMin) || 0,
+      Number((searchParams as Record<string, string>).priceMax) || Infinity,
+    ],
+    inStock: (searchParams as Record<string, string>).inStock === "1",
+    sort: ((searchParams as Record<string, string>).sort as ShopFilters["sort"]) ?? "populaire",
   });
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState((searchParams as Record<string, string>).q ?? "");
   const [quickViewSlug, setQuickViewSlug] = useState<string | null>(null);
-  const cart = useCart();
-  const wishlist = useWishlist();
-  const { items: recentItems } = useRecentlyViewed();
-  const { locale, t } = useI18n();
+
+  const setFilters = useCallback(
+    (next: ShopFilters | ((prev: ShopFilters) => ShopFilters)) => {
+      const resolved = typeof next === "function" ? next(filters) : next;
+      setFiltersState(resolved);
+      const sp: Record<string, string> = {};
+      if (resolved.category !== "toutes") sp.category = resolved.category;
+      if (resolved.priceRange[0] > 0) sp.priceMin = String(resolved.priceRange[0]);
+      if (resolved.priceRange[1] < Infinity) sp.priceMax = String(resolved.priceRange[1]);
+      if (resolved.inStock) sp.inStock = "1";
+      if (resolved.sort !== "populaire") sp.sort = resolved.sort;
+      if (q.trim()) sp.q = q.trim();
+      navigate({ search: () => sp, replace: true });
+    },
+    [filters, q, navigate],
+  );
 
   const quickViewProduct = quickViewSlug ? ACCESSORIES.find((a) => a.slug === quickViewSlug) : null;
 
@@ -153,13 +184,27 @@ function Boutique() {
                   type="search"
                   placeholder={t("boutique.search.placeholder")}
                   value={q}
-                  onChange={(e) => setQ(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setQ(val);
+                    const sp: Record<string, string> = {};
+                    if (filters.category !== "toutes") sp.category = filters.category;
+                    if (filters.priceRange[0] > 0) sp.priceMin = String(filters.priceRange[0]);
+                    if (filters.priceRange[1] < Infinity) sp.priceMax = String(filters.priceRange[1]);
+                    if (filters.inStock) sp.inStock = "1";
+                    if (filters.sort !== "populaire") sp.sort = filters.sort;
+                    if (val.trim()) sp.q = val.trim();
+                    navigate({ search: () => sp, replace: true });
+                  }}
                   aria-label={t("boutique.search.placeholder")}
                   className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 />
                 <select
                   value={filters.sort}
-                  onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFilters({ ...filters, sort: val as ShopFilters["sort"] });
+                  }}
                   aria-label={t("boutique.sort")}
                   className="w-44 shrink-0 rounded-sm border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
                 >
@@ -259,6 +304,23 @@ function Boutique() {
                             onClick={() => setQuickViewSlug(p.slug)}
                           >
                             <Eye className="size-3" /> {t("boutique.quick-view")}
+                          </Button>
+                          <Button
+                            variant="technicalOutline"
+                            size="sm"
+                            disabled={compare.has(p.slug) || compare.slugs.length >= MAX_COMPARE}
+                            onClick={() => {
+                              if (compare.has(p.slug)) {
+                                toast.info(t("boutique.toast.compare-exists"));
+                              } else if (compare.slugs.length >= MAX_COMPARE) {
+                                toast.info(t("boutique.toast.compare-max"));
+                              } else {
+                                compare.add(p.slug);
+                                toast.success(t("boutique.toast.compare-added", [p.name]));
+                              }
+                            }}
+                          >
+                            <GitCompareArrows className="size-3" /> {t("boutique.compare")}
                           </Button>
                           <Button asChild variant="technicalOutline" size="sm">
                             <Link to="/$locale/boutique/$slug" params={{ locale, slug: p.slug }}>
