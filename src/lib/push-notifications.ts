@@ -14,6 +14,7 @@ const PUSH_STORAGE_KEY = "at-push-subscription";
  * Check if the browser supports push notifications.
  */
 export function isPushSupported(): boolean {
+  if (typeof window === "undefined") return false;
   return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 }
 
@@ -41,8 +42,9 @@ export async function subscribePush(
     const existing = await registration.pushManager.getSubscription();
     if (existing) return existing;
 
-    // TODO: Replace with actual VAPID public key from server
-    const vapidPublicKey = process.env["VAPID_PUBLIC_KEY"] ?? "";
+    // Clé publique VAPID pour l'abonnement push (doit être définie côté client
+    // via VITE_VAPID_PUBLIC_KEY dans .env, exposée par Vite au build).
+    const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY ?? "";
 
     if (!vapidPublicKey) {
       console.warn("[push] VAPID_PUBLIC_KEY not configured — subscription skipped");
@@ -111,6 +113,7 @@ export function getPushPermissionState(): NotificationPermission | "unsupported"
 // ---------------------------------------------------------------------------
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  if (typeof window === "undefined") return new Uint8Array(0);
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
   const rawData = window.atob(base64);

@@ -48,7 +48,6 @@ import {
   type DepositMode,
   type ReservationInput,
 } from "@/lib/reservation-schema";
-import "@/lib/i18n/segments/reservation";
 
 const STEPS = [
   "wizard.step.type",

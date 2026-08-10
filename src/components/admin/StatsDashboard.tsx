@@ -31,7 +31,6 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { exportDashboardXlsx } from "@/lib/export.functions";
-import "@/lib/i18n/segments/admin";
 
 type Status = Enums<"reservation_status">;
 type SlotPeriod = Enums<"slot_period">;

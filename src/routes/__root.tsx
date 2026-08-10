@@ -11,8 +11,6 @@ import {
 import { useEffect, Suspense, lazy, type ReactNode } from "react";
 import { I18nProvider } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/notfound";
-
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";

@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { useI18n } from "@/lib/i18n/context";
 import { contactSchema, type ContactInput } from "@/lib/reservation-schema";
-import "@/lib/i18n/segments/reservation";
 
 type Props = {
   defaultValues: Partial<ContactInput>;

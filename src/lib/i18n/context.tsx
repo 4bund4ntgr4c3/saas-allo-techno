@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { translate } from "./dictionaries";
 import { isLocale, normalizeLocale, type Locale } from "./locales";
-import "@/lib/i18n/segments/catalog";
+// Import unique de TOUS les segments — garantit l'enregistrement avant tout
+// rendu, y compris sur Cloudflare Workers.
+import "./segments/index";
 
 type I18nContextValue = {
   locale: Locale;

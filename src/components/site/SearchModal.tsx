@@ -185,15 +185,19 @@ const GROUP_CLASS =
 export function SearchModal() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem("at-recent-searches") ?? "[]");
-    } catch {
-      return [];
-    }
-  });
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const navigate = useNavigate();
   const { locale, t } = useI18n();
+
+  // Hydrate from localStorage after mount (SSR-safe)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("at-recent-searches");
+      if (stored) setRecentSearches(JSON.parse(stored));
+    } catch {
+      // malformed data or localStorage unavailable
+    }
+  }, []);
 
   const labelOf = (item: Item) => (item.labelKey ? t(item.labelKey, item.labelArgs) : item.label);
   const hintOf = (item: Item) =>

@@ -10,8 +10,6 @@ import type { Locale } from "@/lib/i18n/locales";
 import { getDeviceHistory, getDeviceStats, type DeviceHistoryEntry } from "@/lib/device-history";
 import { formatDateFr } from "@/lib/reservation-schema";
 import { STATUS_LABEL } from "@/lib/reservation-schema";
-import "@/lib/i18n/segments/historique";
-
 export const Route = createFileRoute("/$locale/historique")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;

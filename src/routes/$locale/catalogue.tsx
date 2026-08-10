@@ -9,8 +9,6 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/reparations";
-import "@/lib/i18n/segments/faq-seo";
 import { faqSchema, localeSeo } from "@/lib/seo";
 import {
   Select,

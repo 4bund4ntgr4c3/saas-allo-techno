@@ -7,9 +7,6 @@ import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import { useSession } from "@/hooks/useSession";
-import "@/lib/i18n/segments/suivi";
-import "@/lib/i18n/segments/reservation";
-import "@/lib/i18n/segments/loyalty";
 import {
   getReservationPaymentStatus,
   initiateFedaPayReservationPayment,

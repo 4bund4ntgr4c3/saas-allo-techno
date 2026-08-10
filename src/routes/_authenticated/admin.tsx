@@ -45,8 +45,6 @@ const AdminMarketing = lazy(() =>
 );
 import { useI18n } from "@/lib/i18n/context";
 import { exportReservationsCsv } from "@/lib/export.functions";
-import "@/lib/i18n/segments/admin";
-import "@/lib/i18n/segments/reservation";
 import type { Enums } from "@/integrations/supabase/types";
 import {
   KanbanBoard,

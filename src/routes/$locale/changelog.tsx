@@ -5,7 +5,6 @@ import { useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
 import { translate } from "@/lib/i18n/dictionaries";
-import "@/lib/i18n/segments/changelog";
 import type { Locale } from "@/lib/i18n/locales";
 
 export const Route = createFileRoute("/$locale/changelog")({

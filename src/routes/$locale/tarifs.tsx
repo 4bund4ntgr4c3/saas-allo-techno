@@ -8,8 +8,6 @@ import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { localeSeo, faqSchema } from "@/lib/seo";
-import "@/lib/i18n/segments/info";
-import "@/lib/i18n/segments/faq-seo";
 
 export const Route = createFileRoute("/$locale/tarifs")({
   head: ({ params }) => {

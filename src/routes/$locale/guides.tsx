@@ -7,7 +7,6 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/guides";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { localeSeo } from "@/lib/seo";
 

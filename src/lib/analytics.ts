@@ -26,6 +26,7 @@ let sessionId: string | null = null;
 
 function session(): string {
   if (sessionId) return sessionId;
+  if (typeof window === "undefined") return "ssr";
   const KEY = "at-analytics-session";
   const stored = localStorage.getItem(KEY);
   if (stored) {

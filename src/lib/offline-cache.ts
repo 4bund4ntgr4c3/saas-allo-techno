@@ -45,5 +45,6 @@ export function getOfflineCacheTimestamp(): number | null {
 }
 
 export function clearOfflineData() {
+  if (typeof window === "undefined") return;
   localStorage.removeItem(CACHE_KEY);
 }

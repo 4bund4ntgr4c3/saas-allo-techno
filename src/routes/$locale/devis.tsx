@@ -13,7 +13,6 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
 import { submitLead } from "@/lib/leads.functions";
-import "@/lib/i18n/segments/info";
 
 export const Route = createFileRoute("/$locale/devis")({
   head: ({ params }) => {

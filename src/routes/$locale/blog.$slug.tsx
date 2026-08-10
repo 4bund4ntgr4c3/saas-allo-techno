@@ -7,7 +7,6 @@ import { POSTS } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/blog";
 import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
 

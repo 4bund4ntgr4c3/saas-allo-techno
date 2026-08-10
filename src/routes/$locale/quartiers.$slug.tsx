@@ -10,7 +10,6 @@ import { QUARTIERS, quartierBySlug, type QuartierInfo } from "@/data/local-seo";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/quartiers";
 import { breadcrumbSchema, localeSeo, localeUrl, localBusinessSchema } from "@/lib/seo";
 
 const QUARTIER_BRAND_SLUGS = ["apple", "samsung", "tecno", "infinix"];

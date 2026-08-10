@@ -15,8 +15,6 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import { trackPlausibleEvent } from "@/lib/analytics";
-import "@/lib/i18n/segments/checkout";
-import "@/lib/i18n/segments/panier";
 import type { Locale } from "@/lib/i18n/locales";
 
 const PAYMENTS = ["MTN MoMo", "Moov Money", "Celtiis", "Espèces à la remise"] as const;

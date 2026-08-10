@@ -15,7 +15,6 @@ import { listCustomerReviews, type CustomerReview } from "@/lib/reviews.function
 import { listCustomerPayments, type CustomerPayment } from "@/lib/payments.functions";
 import { saveOfflineData } from "@/lib/offline-cache";
 import { useI18n } from "@/lib/i18n/context";
-import "@/lib/i18n/segments/mon-compte";
 import {
   PERIOD_LABEL,
   STATUS_LABEL,

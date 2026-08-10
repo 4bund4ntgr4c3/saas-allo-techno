@@ -6,7 +6,6 @@ import { QUARTIERS, QUARTIER_INFO, type QuartierInfo } from "@/data/local-seo";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale, type Locale } from "@/lib/i18n/locales";
-import "@/lib/i18n/segments/quartiers";
 import { localeSeo, localeUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/quartiers/")({
