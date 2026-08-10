@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, RefreshCw, Calendar, LayoutGrid } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  Calendar,
+  LayoutGrid,
+  ArrowRightLeft,
+  Building2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -14,8 +22,11 @@ import {
   assignTechnician,
   getAtelierBoard,
   setReservationStatus,
+  transferReservation,
+  getWorkshopLoad,
   type AtelierCard as AtelierCardType,
   type AtelierTechnician,
+  type WorkshopLoad,
 } from "@/lib/admin.functions";
 
 type Status = Enums<"reservation_status">;
@@ -38,11 +49,20 @@ export function AtelierBoard() {
   const queryClient = useQueryClient();
   const getBoardFn = useServerFn(getAtelierBoard);
   const assignFn = useServerFn(assignTechnician);
+  const transferFn = useServerFn(transferReservation);
+  const getLoadFn = useServerFn(getWorkshopLoad);
 
   const board = useQuery({
     queryKey: ["atelier-board"],
     queryFn: () => getBoardFn({ data: {} }),
   });
+
+  const workshopLoad = useQuery({
+    queryKey: ["workshop-load"],
+    queryFn: () => getLoadFn(),
+  });
+
+  const [workshopFilter, setWorkshopFilter] = useState<string>("all");
 
   const move = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: Status }) => {
@@ -74,11 +94,33 @@ export function AtelierBoard() {
       toast.error(err instanceof Error ? err.message : "Assignation impossible"),
   });
 
+  const transfer = useMutation({
+    mutationFn: async ({
+      reservationId,
+      targetWorkshopId,
+    }: {
+      reservationId: string;
+      targetWorkshopId: string;
+    }) => transferFn({ data: { reservationId, targetWorkshopId } }),
+    onSuccess: (result) => {
+      if (result?.ok) {
+        toast.success(`Dossier transféré vers ${result.target_name}`);
+        queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+        queryClient.invalidateQueries({ queryKey: ["workshop-load"] });
+      } else {
+        toast.error(result?.error ?? "Transfert impossible");
+      }
+    },
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Transfert impossible"),
+  });
+
   useEffect(() => {
     const channel = supabase
       .channel("atelier-board-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "reservations" }, () => {
         queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+        queryClient.invalidateQueries({ queryKey: ["workshop-load"] });
       })
       .subscribe();
     return () => {
@@ -86,10 +128,18 @@ export function AtelierBoard() {
     };
   }, [queryClient]);
 
-  const cards = board.data?.reservations ?? [];
+  const allCards = board.data?.reservations ?? [];
   const technicians = board.data?.technicians ?? [];
-  const busy = move.isPending || assign.isPending;
+  const workshops = workshopLoad.data ?? [];
+  const busy = move.isPending || assign.isPending || transfer.isPending;
   const [view, setView] = useState<"kanban" | "calendar">("kanban");
+
+  const cards =
+    workshopFilter === "all"
+      ? allCards
+      : allCards.filter(
+          (c) => (c as AtelierCardType & { workshop_id?: string }).workshop_id === workshopFilter,
+        );
 
   const calendarEvents = cards.map((c) => ({
     id: c.id,
@@ -105,13 +155,27 @@ export function AtelierBoard() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Atelier — {view === "kanban" ? "kanban" : "calendrier"}</h2>
+          <h2 className="text-lg font-semibold">
+            Atelier — {view === "kanban" ? "kanban" : "calendrier"}
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au
             client.
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <select
+            value={workshopFilter}
+            onChange={(e) => setWorkshopFilter(e.target.value)}
+            className="h-9 rounded-sm border border-border bg-card px-3 text-xs font-medium focus:outline-none"
+          >
+            <option value="all">Tous les ateliers</option>
+            {workshops.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.name} ({w.active_count})
+              </option>
+            ))}
+          </select>
           <div className="flex rounded-md border border-border">
             <button
               onClick={() => setView("kanban")}
@@ -140,13 +204,42 @@ export function AtelierBoard() {
             variant="outline"
             size="sm"
             disabled={board.isFetching}
-            onClick={() => queryClient.invalidateQueries({ queryKey: ["atelier-board"] })}
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
+              queryClient.invalidateQueries({ queryKey: ["workshop-load"] });
+            }}
           >
             <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
             Rafraîchir
           </Button>
         </div>
       </div>
+
+      {workshops.length > 0 && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {workshops.map((w) => (
+            <button
+              key={w.id}
+              onClick={() => setWorkshopFilter(w.id === workshopFilter ? "all" : w.id)}
+              className={`rounded-sm border p-3 text-left transition-colors ${
+                w.id === workshopFilter
+                  ? "border-primary bg-primary/5"
+                  : "border-border bg-card hover:bg-surface"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Building2 className="size-3 text-muted-foreground" />
+                <span className="text-xs font-bold">{w.name}</span>
+              </div>
+              <div className="mt-2 flex gap-3 font-mono text-[10px] text-muted-foreground">
+                <span>{w.active_count} actifs</span>
+                <span>{w.in_progress_count} en cours</span>
+                <span>{w.pending_count} en attente</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
 
       {board.isLoading ? (
         <p className="text-sm text-muted-foreground">Chargement de l'atelier…</p>
@@ -175,10 +268,14 @@ export function AtelierBoard() {
                         key={card.id}
                         card={card}
                         technicians={technicians}
+                        workshops={workshops}
                         busy={busy}
                         onMove={(status) => move.mutate({ id: card.id, status })}
                         onAssign={(technicianId) =>
                           assign.mutate({ reservationId: card.id, technicianId })
+                        }
+                        onTransfer={(targetWorkshopId) =>
+                          transfer.mutate({ reservationId: card.id, targetWorkshopId })
                         }
                       />
                     ))}
@@ -205,15 +302,19 @@ export function shortDate(iso: string): string {
 export function AtelierCard({
   card,
   technicians,
+  workshops,
   busy,
   onMove,
   onAssign,
+  onTransfer,
 }: {
   card: AtelierCardType;
   technicians: AtelierTechnician[];
+  workshops: WorkshopLoad[];
   busy: boolean;
   onMove: (status: Status) => void;
   onAssign: (technicianId: string) => void;
+  onTransfer: (targetWorkshopId: string) => void;
 }) {
   const index = ATELIER_STATUSES.findIndex((s) => s === card.status);
   const prev = index > 0 ? (ATELIER_STATUSES[index - 1] ?? null) : null;
@@ -223,6 +324,8 @@ export function AtelierCard({
       : null;
   const paid = card.payment_status === "paid";
   const quotePending = card.quote_status === "approved" && !paid;
+  const cardWorkshopId = (card as AtelierCardType & { workshop_id?: string }).workshop_id;
+  const otherWorkshops = workshops.filter((w) => w.id !== cardWorkshopId && w.active);
 
   return (
     <div
@@ -289,6 +392,27 @@ export function AtelierCard({
           </option>
         ))}
       </select>
+
+      {otherWorkshops.length > 0 && (
+        <div className="mt-2 flex items-center gap-1">
+          <ArrowRightLeft className="size-3 text-muted-foreground" />
+          <select
+            className="h-7 flex-1 rounded-sm border border-border bg-card px-1.5 text-[10px] focus:outline-none"
+            value=""
+            disabled={busy}
+            onChange={(e) => {
+              if (e.target.value) onTransfer(e.target.value);
+            }}
+          >
+            <option value="">Transférer…</option>
+            {otherWorkshops.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.name} ({w.active_count})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="mt-2 flex items-center justify-between">
         <Button

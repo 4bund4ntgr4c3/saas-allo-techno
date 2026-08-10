@@ -502,3 +502,80 @@ export const getAdminKpis = createServerFn({ method: "POST" })
       topFaults,
     };
   });
+
+// ---------------------------------------------------------------------------
+// Transfert d'atelier
+// ---------------------------------------------------------------------------
+
+export type TransferResult = {
+  ok: boolean;
+  error?: string;
+  old_workshop?: string;
+  new_workshop?: string;
+  target_name?: string;
+};
+
+const transferSchema = z.object({
+  reservationId: z.string().uuid(),
+  targetWorkshopId: z.string().uuid(),
+});
+
+/** Transfère un dossier vers un autre atelier (staff uniquement). */
+export const transferReservation = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => transferSchema.parse(data))
+  .handler(async ({ data }): Promise<TransferResult> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("transfer-reservation", 10)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) throw new Error("Action non autorisée");
+
+    const { data: result, error } = await supabaseAdmin.rpc(
+      "transfer_reservation" as never,
+      {
+        _reservation_id: data.reservationId,
+        _target_workshop_id: data.targetWorkshopId,
+      } as never,
+    );
+
+    if (error) {
+      console.error("[admin] transfer failed", error);
+      throw new Error("Transfert impossible.");
+    }
+
+    return (result as TransferResult) ?? { ok: false, error: "Erreur inconnue." };
+  });
+
+// ---------------------------------------------------------------------------
+// Charge de travail par atelier
+// ---------------------------------------------------------------------------
+
+export type WorkshopLoad = {
+  id: string;
+  name: string;
+  city: string;
+  active: boolean;
+  active_count: number;
+  in_progress_count: number;
+  pending_count: number;
+};
+
+/** Charge de travail de chaque atelier (dossiers actifs). */
+export const getWorkshopLoad = createServerFn({ method: "GET" }).handler(
+  async (): Promise<WorkshopLoad[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!rateLimit("workshop-load", 20)) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const { data, error } = await supabaseAdmin.rpc("get_workshop_load" as never);
+    if (error) throw new Error(error.message);
+    return (data as WorkshopLoad[]) ?? [];
+  },
+);

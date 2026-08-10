@@ -7,6 +7,23 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 28)
+
+### Added
+
+- **Transfert d'atelier** : bouton "Transférer…" sur chaque carte du kanban, sélection du workshop cible, RPC `transfer_reservation` côté serveur avec historique dans `status_history`.
+- **Filtre atelier** : dropdown "Tous les ateliers" dans le header du kanban, filtrage des cartes par workshop, cards cliquables pour filtrer/défiltrer.
+- **Charge de travail** : panel de 4 cards au-dessus du kanban (actifs, en cours, en attente) par atelier, RPC `get_workshop_load` + `WorkshopLoad` type.
+- **Migration** : colonne `workshop_id` sur `reservations` + index + 2 RPCs (`transfer_reservation`, `get_workshop_load`).
+- **i18n** : 7 clés `admin.atelier.*` FR/EN.
+
+### Changed
+
+- **Atelier kanban enrichi** : filtre par workshop, transfert inter-ateliers, charge de travail visible, real-time refresh inclut les transferts.
+- **AtelierCard enrichie** : dropdown transfert vers autres ateliers actifs.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 27)
 
 ### Added

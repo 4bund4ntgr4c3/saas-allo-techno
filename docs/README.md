@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.10-b27 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.10-b28 — [Changelog](./CHANGELOG.md)
 
 ## Fonctionnalités
 
@@ -46,7 +46,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Remboursements** : flow de remboursement avec audit.
 - **Retours** : gestion des retours produits.
 - **Audit** : journal d'audit enrichi avec filtres et export.
-- **Ateliers** : multi-ateliers avec CRUD complet.
+- **Ateliers** : multi-ateliers avec CRUD complet, transfert inter-ateliers, filtre kanban par atelier, charge de travail par atelier.
 - **Fournisseurs** : gestion fournisseurs et commandes pièces.
 - **Parrainage** : programme de parrainage avec niveaux.
 - **Chat** : messagerie client-staff en temps réel.

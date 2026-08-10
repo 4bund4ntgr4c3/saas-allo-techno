@@ -124,6 +124,15 @@ const fr = {
   "admin.scheduled-reports": "Rapports programmés",
   "admin.escalation": "Escalade automatique",
   "admin.kb": "Knowledge base",
+
+  // Batch 28 — Multi-ateliers avancé
+  "admin.atelier.filter.all": "Tous les ateliers",
+  "admin.atelier.transfer": "Transférer…",
+  "admin.atelier.transfer.success": "Dossier transféré vers {0}",
+  "admin.atelier.transfer.error": "Transfert impossible",
+  "admin.atelier.load.active": "actifs",
+  "admin.atelier.load.progress": "en cours",
+  "admin.atelier.load.pending": "en attente",
 };
 
 const en = {
@@ -249,6 +258,15 @@ const en = {
   "admin.scheduled-reports": "Scheduled reports",
   "admin.escalation": "Auto escalation",
   "admin.kb": "Knowledge base",
+
+  // Batch 28 — Multi-workshop advanced
+  "admin.atelier.filter.all": "All workshops",
+  "admin.atelier.transfer": "Transfer…",
+  "admin.atelier.transfer.success": "Reservation transferred to {0}",
+  "admin.atelier.transfer.error": "Transfer failed",
+  "admin.atelier.load.active": "active",
+  "admin.atelier.load.progress": "in progress",
+  "admin.atelier.load.pending": "pending",
 };
 
 registerSegments({ fr, en });
