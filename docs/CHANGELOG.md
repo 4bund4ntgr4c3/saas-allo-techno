@@ -7,6 +7,23 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.10] — 2026-08-10 (Batch 29)
+
+### Added
+
+- **Campagnes marketing** : CRUD complet (create, update, delete, send), types email/SMS/WhatsApp, statuts (draft/sending/sent/failed), tracking envois individuels. Table `marketing_campaigns` + `campaign_sends`.
+- **Templates prédéfinis** : 5 templates (Bienvenue, Réactivation, Promotion, Demander un avis, Rappel maintenance) avec variables dynamiques ({name}, {device}, {company}, {code}, etc.).
+- **Segmentation RFM** : analyse Récence/Fréquence/Montant de tous les clients, 5 segments (VIP, Loyal, Actif, Nouveau, Inactif). RPCs `get_client_segments` + `get_segment_counts`.
+- **Onglet Marketing** : dans l'admin, onglet "Marketing" avec vue campagnes, formulaire création avec template, segment filter, vue clients RFM avec tableau.
+- **Migration** : tables `marketing_campaigns` + `campaign_sends` + 2 RPCs RFM + RLS.
+- **i18n** : 16 clés `admin.marketing.*` FR/EN.
+
+### Changed
+
+- **Admin enrichi** : 26 onglets dont Marketing avec segmentation et campagnes.
+
+---
+
 ## [2026.08.10] — 2026-08-10 (Batch 28)
 
 ### Added

@@ -133,6 +133,24 @@ const fr = {
   "admin.atelier.load.active": "actifs",
   "admin.atelier.load.progress": "en cours",
   "admin.atelier.load.pending": "en attente",
+
+  // Batch 29 — Marketing
+  "admin.marketing.tab": "Marketing",
+  "admin.marketing.campaigns": "Campagnes",
+  "admin.marketing.new": "Nouvelle campagne",
+  "admin.marketing.segments": "Segmentation clients",
+  "admin.marketing.rfm": "RFM (Récence, Fréquence, Montant)",
+  "admin.marketing.vip": "VIP",
+  "admin.marketing.loyal": "Loyal",
+  "admin.marketing.active": "Actif",
+  "admin.marketing.new-client": "Nouveau",
+  "admin.marketing.inactive": "Inactif",
+  "admin.marketing.send": "Envoyer",
+  "admin.marketing.draft": "Brouillon",
+  "admin.marketing.sent": "Envoyé",
+  "admin.marketing.template": "Template",
+  "admin.marketing.custom": "Personnalisé",
+  "admin.marketing.recipients": "destinataires",
 };
 
 const en = {
@@ -267,6 +285,24 @@ const en = {
   "admin.atelier.load.active": "active",
   "admin.atelier.load.progress": "in progress",
   "admin.atelier.load.pending": "pending",
+
+  // Batch 29 — Marketing
+  "admin.marketing.tab": "Marketing",
+  "admin.marketing.campaigns": "Campaigns",
+  "admin.marketing.new": "New campaign",
+  "admin.marketing.segments": "Client segmentation",
+  "admin.marketing.rfm": "RFM (Recency, Frequency, Monetary)",
+  "admin.marketing.vip": "VIP",
+  "admin.marketing.loyal": "Loyal",
+  "admin.marketing.active": "Active",
+  "admin.marketing.new-client": "New",
+  "admin.marketing.inactive": "Inactive",
+  "admin.marketing.send": "Send",
+  "admin.marketing.draft": "Draft",
+  "admin.marketing.sent": "Sent",
+  "admin.marketing.template": "Template",
+  "admin.marketing.custom": "Custom",
+  "admin.marketing.recipients": "recipients",
 };
 
 registerSegments({ fr, en });

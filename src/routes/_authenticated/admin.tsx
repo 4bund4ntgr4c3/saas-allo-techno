@@ -39,6 +39,9 @@ import { logAudit } from "@/lib/audit";
 const StatsDashboard = lazy(() =>
   import("@/components/admin/StatsDashboard").then((m) => ({ default: m.StatsDashboard })),
 );
+const AdminMarketing = lazy(() =>
+  import("@/components/admin/AdminMarketing").then((m) => ({ default: m.AdminMarketing })),
+);
 import { useI18n } from "@/lib/i18n/context";
 import { exportReservationsCsv } from "@/lib/export.functions";
 import "@/lib/i18n/segments/admin";
@@ -157,6 +160,7 @@ function AdminPage() {
     | "satisfaction"
     | "notif-interne"
     | "kb"
+    | "marketing"
   >("dossiers");
   const [otpCode, setOtpCode] = useState("");
   const [otpUnlockedAt, setOtpUnlockedAt] = useState(() =>
@@ -710,6 +714,14 @@ function AdminPage() {
           <FileText className="mr-2 size-4" />
           KB
         </Button>
+        <Button
+          variant={tab === "marketing" ? "technical" : "outline"}
+          size="sm"
+          onClick={() => setTab("marketing")}
+        >
+          <MailPlus className="mr-2 size-4" />
+          Marketing
+        </Button>
       </div>
 
       {tab === "dossiers" && (
@@ -992,6 +1004,11 @@ function AdminPage() {
       {tab === "satisfaction" && <AdminSatisfaction />}
       {tab === "notif-interne" && <AdminInternalNotifs />}
       {tab === "kb" && <AdminKnowledgeBase />}
+      {tab === "marketing" && (
+        <Suspense fallback={<Loader2 className="size-4 animate-spin" />}>
+          <AdminMarketing />
+        </Suspense>
+      )}
     </div>
   );
 }
