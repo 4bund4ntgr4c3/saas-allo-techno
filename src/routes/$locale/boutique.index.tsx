@@ -101,13 +101,9 @@ function Boutique() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">{t("boutique.eyebrow")}</span>
-          <h1 className="at-display text-4xl md:text-6xl">{t("boutique.title")}</h1>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-            <p className="max-w-xl border-l-2 border-primary pl-3 text-muted-foreground">
-              {t("boutique.hero", [formatFcfa(FREE_DELIVERY_FROM)])}
-            </p>
-            <Breadcrumb>
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <span className="at-eyebrow">{t("boutique.eyebrow")}</span>
+            <Breadcrumb className="rounded-sm border border-border px-2 py-1">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
@@ -121,6 +117,10 @@ function Boutique() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+          <h1 className="at-display text-4xl md:text-6xl">{t("boutique.title")}</h1>
+          <p className="mt-6 max-w-xl text-muted-foreground">
+            {t("boutique.hero", [formatFcfa(FREE_DELIVERY_FROM)])}
+          </p>
           <div className="mt-8">
             <MobileMoneyBar />
           </div>

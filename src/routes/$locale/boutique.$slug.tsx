@@ -89,9 +89,9 @@ function Produit() {
     <>
       <section className="border-b border-border py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <span className="at-eyebrow border-l-2 border-primary pl-3">{product.category}</span>
-            <Breadcrumb>
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <span className="at-eyebrow">{product.category}</span>
+            <Breadcrumb className="rounded-sm border border-border px-2 py-1">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
