@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ACCESSORY_CATEGORIES, formatFcfa } from "@/data/catalog";
@@ -31,10 +31,49 @@ export function ShopFilterSidebar({
 }) {
   const { t } = useI18n();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const categories = mode === "refurbished"
     ? ["Reconditionnés"]
     : ACCESSORY_CATEGORIES;
+
+  // Focus trap + Escape for mobile drawer
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    // Focus the close button on open
+    closeRef.current?.focus();
+
+    // Trap focus inside drawer
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const focusable = drawer!.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen]);
 
   const content = (
     <div className="space-y-8">
@@ -136,10 +175,16 @@ export function ShopFilterSidebar({
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72 bg-background p-6 shadow-xl">
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("shop.filter.title")}
+            className="absolute inset-y-0 left-0 w-72 bg-background p-6 shadow-xl"
+          >
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-bold">{t("shop.filter.title")}</h2>
-              <button onClick={() => setMobileOpen(false)}>
+              <button ref={closeRef} onClick={() => setMobileOpen(false)} aria-label="Fermer">
                 <X className="size-5" />
               </button>
             </div>

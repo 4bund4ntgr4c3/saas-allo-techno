@@ -7,6 +7,19 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Batch 36)
+
+### Added
+
+- **Search analytics** : enregistrement des requêtes de recherche utilisateur dans Supabase (`search_queries` table) pour analytics populaires.
+- **Skeleton loading** : composants `ProductCardSkeleton`, `ProductGridSkeleton`, `ProductDetailSkeleton` pour les états de chargement boutique.
+- **Mobile filter drawer amélioré** : touche Escape pour fermer, focus trap (Tab reste dans le drawer), aria-modal sur le dialogue.
+- **Zoom image produit** : composant `ImageZoom` avec survol pour zoom x2, overlay plein écran au clic, Escape pour fermer.
+- **Breadcrumbs sur toutes les pages** : composant `PageBreadcrumb` réutilisable ajouté aux pages services, tarifs, blog, guides, FAQ, about.
+- **Cookie consent banner** : bannière RGPD dans le footer avec Accepter/Refuser, persisté dans localStorage.
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Batch 35)
 
 ### Added

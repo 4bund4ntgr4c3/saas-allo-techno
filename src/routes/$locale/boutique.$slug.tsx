@@ -27,6 +27,7 @@ import { FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { useWishlist } from "@/components/shop/wishlist";
 import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
 import { ProductReviewsSection } from "@/components/shop/ProductReviews";
+import { ImageZoom } from "@/components/shop/ImageZoom";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -112,10 +113,11 @@ function Produit() {
             </Breadcrumb>
           </div>
           <div className="mt-8 grid gap-px border border-border bg-border lg:grid-cols-2">
-            <div className="at-grid-lines grid min-h-[280px] place-items-center bg-surface p-10">
-              <span className="at-display text-5xl text-muted-foreground/50">
-                {product.name.slice(0, 2).toUpperCase()}
-              </span>
+            <div className="bg-surface p-6">
+              <ImageZoom
+                src={`https://placehold.co/600x600/f8f9fa/adb5bd?text=${encodeURIComponent(product.name.slice(0, 12))}`}
+                alt={product.name}
+              />
             </div>
             <div className="bg-card p-8">
               <div className="flex items-start justify-between">

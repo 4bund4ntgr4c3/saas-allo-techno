@@ -27,6 +27,7 @@ import { WishlistProvider } from "@/components/shop/wishlist";
 import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { CompareBar } from "@/components/shop/CompareBar";
+import { CookieConsent } from "@/components/site/CookieConsent";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 
@@ -249,6 +250,7 @@ function RootComponent() {
             <PwaUpdatePrompt />
             <BackToTop />
             <OfflineIndicator />
+            <CookieConsent />
             <AuthErrorHandler />
           </I18nProvider>
         </WishlistProvider>

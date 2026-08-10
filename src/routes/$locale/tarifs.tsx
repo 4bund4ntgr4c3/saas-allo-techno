@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { localeSeo, faqSchema } from "@/lib/seo";
 import "@/lib/i18n/segments/info";
 import "@/lib/i18n/segments/faq-seo";
@@ -58,6 +59,7 @@ function Tarifs() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <PageBreadcrumb items={[{ label: t("nav.tarifs") }]} />
           <span className="at-eyebrow mb-4 block">{t("tarifs.eyebrow")}</span>
           <h1 className="at-display text-4xl md:text-6xl">{t("tarifs.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("tarifs.intro")}</p>

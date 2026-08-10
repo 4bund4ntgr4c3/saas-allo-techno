@@ -101,6 +101,12 @@ const fr: Dictionary = {
   "footer.newsletter.success": "Merci ! Vous recevrez nos prochaines nouveautés.",
   "footer.newsletter.error": "Une erreur est survenue. Réessayez.",
 
+  // Cookie consent
+  "cookie.title": "Cookies & confidentialité",
+  "cookie.text": "Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. En poursuivant votre navigation, vous acceptez l'utilisation des cookies.",
+  "cookie.accept": "Tout accepter",
+  "cookie.refuse": "Tout refuser",
+
   // Status atelier
   "status.open": "Ouvert",
   "status.closed": "Fermé",
@@ -350,6 +356,12 @@ const en: Dictionary = {
   "footer.newsletter.cta": "Subscribe",
   "footer.newsletter.success": "Thanks! You'll receive our next updates.",
   "footer.newsletter.error": "Something went wrong. Please try again.",
+
+  // Cookie consent
+  "cookie.title": "Cookies & privacy",
+  "cookie.text": "We use cookies to improve your experience, analyze traffic and personalize content. By continuing to browse, you accept the use of cookies.",
+  "cookie.accept": "Accept all",
+  "cookie.refuse": "Refuse all",
 
   // Status atelier
   "status.open": "Open",

@@ -8,6 +8,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/blog";
 import type { Locale } from "@/lib/i18n/locales";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/blog/")({
@@ -54,6 +55,7 @@ function BlogIndex() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <PageBreadcrumb items={[{ label: t("nav.blog") }]} />
           <span className="at-eyebrow mb-4 block">{t("blog.eyebrow")}</span>
           <h1 className="at-display text-4xl md:text-6xl">{t("blog.title")}</h1>
           <p className="mt-6 max-w-xl text-muted-foreground">{t("blog.subtitle")}</p>

@@ -6,6 +6,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
 import "@/lib/i18n/segments/about";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/about")({
@@ -48,6 +49,7 @@ function About() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <PageBreadcrumb items={[{ label: t("nav.about") }]} />
           <span className="at-eyebrow mb-4 block">{t("about.eyebrow")}</span>
           <h1 className="at-display text-4xl md:text-6xl">{t("about.title")}</h1>
           <p className="mt-6 max-w-2xl text-muted-foreground">{t("about.hero")}</p>
