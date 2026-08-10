@@ -101,24 +101,26 @@ function Boutique() {
     <>
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{t("boutique.title")}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
           <span className="at-eyebrow mb-4 block">{t("boutique.eyebrow")}</span>
           <h1 className="at-display text-4xl md:text-6xl">{t("boutique.title")}</h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
-            {t("boutique.hero", [formatFcfa(FREE_DELIVERY_FROM)])}
-          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+            <p className="max-w-xl border-l-2 border-primary pl-3 text-muted-foreground">
+              {t("boutique.hero", [formatFcfa(FREE_DELIVERY_FROM)])}
+            </p>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{t("boutique.title")}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           <div className="mt-8">
             <MobileMoneyBar />
           </div>

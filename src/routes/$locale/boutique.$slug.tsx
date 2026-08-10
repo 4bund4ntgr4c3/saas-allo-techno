@@ -89,25 +89,28 @@ function Produit() {
     <>
       <section className="border-b border-border py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{product.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <span className="at-eyebrow border-l-2 border-primary pl-3">{product.category}</span>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{product.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           <div className="mt-8 grid gap-px border border-border bg-border lg:grid-cols-2">
             <div className="at-grid-lines grid min-h-[280px] place-items-center bg-surface p-10">
               <span className="at-display text-5xl text-muted-foreground/50">
