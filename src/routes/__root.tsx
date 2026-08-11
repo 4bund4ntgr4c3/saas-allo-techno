@@ -202,6 +202,8 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = /^\/(en\/)?admin/.test(pathname);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
@@ -235,28 +237,34 @@ function RootComponent() {
           >
             Aller au contenu principal
           </a>
-          <Header />
+          {!isAdmin && <Header />}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
             <Outlet />
           </main>
-          <Footer />
-          <Suspense fallback={null}>
-            <SearchModal />
-          </Suspense>
+          {!isAdmin && <Footer />}
+          {!isAdmin && (
+            <Suspense fallback={null}>
+              <SearchModal />
+            </Suspense>
+          )}
           <Toaster />
-          <AddToCartWidget />
-          <CartDrawer />
-          <Suspense fallback={null}>
-            <CompareBar />
-          </Suspense>
-          <PwaInstallBanner />
-          <PwaUpdatePrompt />
-          <BackToTop />
-          <OfflineIndicator />
-          <Suspense fallback={null}>
-            <CookieConsent />
-          </Suspense>
+          {!isAdmin && (
+            <>
+              <AddToCartWidget />
+              <CartDrawer />
+              <Suspense fallback={null}>
+                <CompareBar />
+              </Suspense>
+              <PwaInstallBanner />
+              <PwaUpdatePrompt />
+              <BackToTop />
+              <OfflineIndicator />
+              <Suspense fallback={null}>
+                <CookieConsent />
+              </Suspense>
+            </>
+          )}
           <AuthErrorHandler />
         </WishlistProvider>
       </CartProvider>
