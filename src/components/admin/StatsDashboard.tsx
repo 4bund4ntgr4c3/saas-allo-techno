@@ -579,18 +579,15 @@ export function StatsDashboard() {
           ["repairRevenue", t("admin.stats.kpi.repairRevenue")],
           ["boutiqueRevenue", t("admin.stats.kpi.boutiqueRevenue")],
         ] as const).map(([key, lbl]) => (
-          <button
+          <Button
             key={key}
             type="button"
+            variant={kpiConfig[key] ? "secondary" : "ghost"}
+            size="sm"
             onClick={() => toggleKpi(key)}
-            className={`rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors ${
-              kpiConfig[key]
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-surface text-muted-foreground"
-            }`}
           >
             {lbl}
-          </button>
+          </Button>
         ))}
       </div>
 

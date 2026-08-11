@@ -123,8 +123,10 @@ export function AdminWebhooks() {
                       {w.last_status}
                     </span>
                   )}
-                  <button
-                    className="p-1 hover:bg-muted rounded-sm"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
                     onClick={() => toggleMut.mutate(w)}
                     title={w.active ? t("admin.webhooks.action.deactivate") : t("admin.webhooks.action.activate")}
                   >
@@ -133,9 +135,11 @@ export function AdminWebhooks() {
                     ) : (
                       <PowerOff className="size-4 text-muted-foreground" />
                     )}
-                  </button>
-                  <button
-                    className="p-1 hover:bg-muted rounded-sm"
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
                     onClick={() => setExpandedId(expandedId === w.id ? null : w.id)}
                   >
                     {expandedId === w.id ? (
@@ -143,13 +147,15 @@ export function AdminWebhooks() {
                     ) : (
                       <ChevronDown className="size-4" />
                     )}
-                  </button>
-                  <button
-                    className="p-1 hover:bg-destructive/10 rounded-sm"
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 text-destructive"
                     onClick={() => deleteMut.mutate(w.id)}
                   >
                     <Trash2 className="size-4 text-destructive" />
-                  </button>
+                  </Button>
                 </div>
               </div>
               {expandedId === w.id && logs && (
@@ -239,18 +245,15 @@ function WebhookForm({
         <p className="text-xs font-medium mb-1">{t("admin.webhooks.form.events_label")}</p>
         <div className="flex flex-wrap gap-1">
           {WEBHOOK_EVENTS.map((ev) => (
-            <button
+            <Button
               key={ev}
               type="button"
-              className={`rounded-sm px-2 py-1 text-[10px] font-medium border transition-colors ${
-                events.includes(ev)
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-muted-foreground border-border hover:border-primary/50"
-              }`}
+              variant={events.includes(ev) ? "secondary" : "outline"}
+              size="sm"
               onClick={() => toggle(ev)}
             >
               {EVENT_LABELS[ev] ?? ev}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

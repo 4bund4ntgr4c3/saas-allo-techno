@@ -174,9 +174,11 @@ function CategoriesPanel({
           >
             {c.label}
             {!c.active && <span className="text-muted-foreground">{t("admin.catalog.status.inactive")}</span>}
-            <button
+            <Button
               type="button"
-              className="text-muted-foreground hover:text-foreground"
+              variant="ghost"
+              size="icon"
+              className="size-8"
               aria-label={t("admin.catalog.aria.editItem", [c.label])}
               onClick={() => {
                 setEditing(c.slug);
@@ -184,16 +186,18 @@ function CategoriesPanel({
               }}
             >
               <Pencil className="size-3" />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="text-muted-foreground hover:text-destructive"
+              variant="ghost"
+              size="icon"
+              className="size-8 text-destructive"
               disabled={busy}
               aria-label={t("admin.catalog.aria.deleteItem", [c.label])}
               onClick={() => remove(c.slug)}
             >
               <Trash2 className="size-3" />
-            </button>
+            </Button>
           </span>
         ))}
         {categories.length === 0 && (
@@ -343,9 +347,11 @@ function BrandPanel({
                 selected ? "border-primary/60 bg-primary/5" : "border-border bg-surface"
               }`}
             >
-              <button
+              <Button
                 type="button"
-                className="min-w-0 flex-1 text-left"
+                variant={selected ? "secondary" : "outline"}
+                size="sm"
+                className="min-w-0 flex-1 justify-start text-left"
                 onClick={() => onSelect(selected ? null : b.slug)}
               >
                 <p className="truncate text-sm font-medium">{b.name}</p>
@@ -354,7 +360,7 @@ function BrandPanel({
                   {b.tag ? ` · ${b.tag}` : ""}
                   {b.active ? "" : ` · ${t("admin.catalog.status.inactive")}`}
                 </p>
-              </button>
+              </Button>
               <div className="flex shrink-0 gap-1">
                 <Button
                   variant="ghost"
@@ -588,9 +594,11 @@ function DevicePanel({
                 selected ? "border-primary/60 bg-primary/5" : "border-border bg-surface"
               }`}
             >
-              <button
+              <Button
                 type="button"
-                className="min-w-0 flex-1 text-left"
+                variant={selected ? "secondary" : "outline"}
+                size="sm"
+                className="min-w-0 flex-1 justify-start text-left"
                 onClick={() => onSelectDevice(selected ? null : d.slug)}
               >
                 <p className="truncate text-sm font-medium">{d.name}</p>
@@ -599,7 +607,7 @@ function DevicePanel({
                   {d.year ? ` · ${d.year}` : ""}
                   {d.active ? "" : ` · ${t("admin.catalog.status.inactive")}`}
                 </p>
-              </button>
+              </Button>
               <div className="flex shrink-0 gap-1">
                 <Button
                   variant="ghost"
@@ -1087,15 +1095,17 @@ function DeviceDetailPanel({
                 decoding="async"
                 className="h-16 w-16 rounded-sm border border-border object-cover"
               />
-              <button
+              <Button
                 type="button"
-                className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full border border-border bg-card text-destructive hover:bg-destructive/10"
+                variant="ghost"
+                size="icon"
+                className="absolute -right-2 -top-2 size-6 rounded-full border border-border bg-card text-destructive hover:bg-destructive/10"
                 disabled={busy}
                 aria-label={t("admin.catalog.aria.deletePhoto")}
                 onClick={() => removePhoto(p.id)}
               >
                 <Trash2 className="size-3" />
-              </button>
+              </Button>
             </div>
           ))}
           {photos.length === 0 && <p className="text-xs text-muted-foreground">{t("admin.catalog.photo.empty")}</p>}

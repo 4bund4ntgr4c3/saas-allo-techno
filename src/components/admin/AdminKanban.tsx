@@ -184,8 +184,10 @@ function KanbanBoard({
             </div>
             <div className="space-y-2">
               {columnRows.map((r) => (
-                <button
+                <Button
                   key={r.id}
+                  variant="ghost"
+                  size="sm"
                   draggable
                   onDragStart={() => setDragId(r.id)}
                   onDragEnd={() => {
@@ -201,7 +203,7 @@ function KanbanBoard({
                   <p className="mt-1 text-[11px] text-muted-foreground">
                     {formatDateFr(r.slot_date)} · {t("admin.period." + r.slot_period)} · {r.phone}
                   </p>
-                </button>
+                </Button>
               ))}
               {columnRows.length === 0 && (
                 <p className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">

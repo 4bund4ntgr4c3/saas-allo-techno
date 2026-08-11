@@ -175,28 +175,22 @@ export function AtelierBoard() {
             ))}
           </select>
           <div className="flex rounded-md border border-border">
-            <button
+            <Button
+              variant={view === "kanban" ? "secondary" : "ghost"}
+              size="sm"
               onClick={() => setView("kanban")}
-              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
-                view === "kanban"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
             >
               <LayoutGrid className="size-3" />
               {t("admin.atelier.view.kanban")}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant={view === "calendar" ? "secondary" : "ghost"}
+              size="sm"
               onClick={() => setView("calendar")}
-              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
-                view === "calendar"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
             >
               <Calendar className="size-3" />
               {t("admin.atelier.view.calendar")}
-            </button>
+            </Button>
           </div>
           <Button
             variant="outline"
@@ -216,14 +210,12 @@ export function AtelierBoard() {
       {workshops.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {workshops.map((w) => (
-            <button
+            <Button
               key={w.id}
+              variant={w.id === workshopFilter ? "secondary" : "outline"}
+              size="sm"
+              className="h-auto flex-col items-start p-3"
               onClick={() => setWorkshopFilter(w.id === workshopFilter ? "all" : w.id)}
-              className={`rounded-sm border p-3 text-left transition-colors ${
-                w.id === workshopFilter
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-card hover:bg-surface"
-              }`}
             >
               <div className="flex items-center gap-2">
                 <Building2 className="size-3 text-muted-foreground" />
@@ -234,7 +226,7 @@ export function AtelierBoard() {
                 <span>{w.in_progress_count} {t("admin.atelier.load.progress")}</span>
                 <span>{w.pending_count} {t("admin.atelier.load.pending")}</span>
               </div>
-            </button>
+            </Button>
           ))}
         </div>
       )}

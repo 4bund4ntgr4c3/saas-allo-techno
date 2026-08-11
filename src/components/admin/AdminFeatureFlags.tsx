@@ -85,16 +85,17 @@ export function AdminFeatureFlags() {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant={flag.enabled ? "secondary" : "ghost"}
+                  size="sm"
                   onClick={() => toggleMutation.mutate({ key: flag.key, enabled: !flag.enabled })}
-                  className="transition-colors"
                 >
                   {flag.enabled ? (
                     <ToggleRight className="size-6 text-success" />
                   ) : (
                     <ToggleLeft className="size-6 text-muted-foreground" />
                   )}
-                </button>
+                </Button>
                 <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(flag.key)}>
                   <Trash2 className="size-3 text-destructive" />
                 </Button>
