@@ -6,16 +6,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-const STATUS_LABEL: Record<string, string> = {
-  en_attente: "En attente",
-  en_cours: "En cours",
-  termine: "Terminé",
-  terminee: "Terminé",
-  annulee: "Annulée",
-};
 
 export function AdminDashboard() {
   const { t } = useI18n();
@@ -74,117 +65,122 @@ export function AdminDashboard() {
     },
   });
 
-  const kpis = [
-    {
-      title: t("admin.dash.activeRepairs"),
-      value: activeRepairs.data ?? 0,
-      icon: Wrench,
-      color: "text-chart-2",
-      loading: activeRepairs.isLoading,
-    },
-    {
-      title: t("admin.dash.todayReservations"),
-      value: todayReservations.data ?? 0,
-      icon: Calendar,
-      color: "text-chart-4",
-      loading: todayReservations.isLoading,
-    },
-    {
-      title: t("admin.dash.monthRevenue"),
-      value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
-      icon: DollarSign,
-      color: "text-chart-3",
-      loading: monthRevenue.isLoading,
-    },
-    {
-      title: t("admin.dash.onlineUsers"),
-      value: "—",
-      icon: Users,
-      color: "text-chart-5",
-      loading: false,
-    },
-  ];
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.dash.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.dash.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.dash.intro")}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="technicalOutline" size="sm" asChild>
+            <Link to="/admin/stats">
+              <Activity className="mr-1 size-3" />
+              {t("admin.stats.tab")}
+            </Link>
+          </Button>
+        </div>
+      </div>
+
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => (
-          <Card key={kpi.title}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
-                <kpi.icon className={`size-4 ${kpi.color}`} />
-              </div>
-              <div className="mt-2">
-                {kpi.loading ? (
-                  <Loader2 className="size-6 animate-spin text-muted-foreground" />
-                ) : (
-                  <p className="text-2xl font-bold">{kpi.value}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        {[
+          {
+            label: t("admin.dash.activeRepairs"),
+            value: activeRepairs.data ?? 0,
+            icon: Wrench,
+            loading: activeRepairs.isLoading,
+          },
+          {
+            label: t("admin.dash.todayReservations"),
+            value: todayReservations.data ?? 0,
+            icon: Calendar,
+            loading: todayReservations.isLoading,
+          },
+          {
+            label: t("admin.dash.monthRevenue"),
+            value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
+            icon: DollarSign,
+            loading: monthRevenue.isLoading,
+          },
+          {
+            label: t("admin.dash.onlineUsers"),
+            value: "—",
+            icon: Users,
+            loading: false,
+          },
+        ].map((kpi) => (
+          <div key={kpi.label} className="border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+              <p className="at-eyebrow">{kpi.label}</p>
+              <kpi.icon className="size-4 text-muted-foreground" />
+            </div>
+            <div className="mt-2">
+              {kpi.loading ? (
+                <Loader2 className="size-5 animate-spin text-muted-foreground" />
+              ) : (
+                <p className="text-2xl font-bold tabular-nums">{kpi.value}</p>
+              )}
+            </div>
+          </div>
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-7">
         {/* Recent Activity */}
-        <Card className="lg:col-span-4">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">{t("admin.dash.recentActivity")}</CardTitle>
+        <section className="border border-border bg-card p-4 lg:col-span-4">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">{t("admin.dash.recentActivity")}</h3>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/admin/dossiers">
                 <RadioTower className="mr-2 size-4" />
                 {t("admin.dash.viewDossiers")}
               </Link>
             </Button>
-          </CardHeader>
-          <CardContent>
-            {recentActivity.isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="size-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : (recentActivity.data ?? []).length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">
-                {t("admin.dash.noActivity")}
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {(recentActivity.data ?? []).map((entry) => {
-                  const reservation = Array.isArray(entry.reservations)
-                    ? entry.reservations[0]
-                    : entry.reservations;
-                  return (
-                    <div key={entry.id} className="flex items-center gap-4">
-                      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                        <Activity className="size-4 text-muted-foreground" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm">
-                          {t("admin.dash.repairFor", [reservation?.customer_name ?? "—"])}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {reservation?.reference ?? "—"} · {t("admin.dash.statusChanged", [STATUS_LABEL[entry.new_status] ?? entry.new_status])}
-                        </p>
-                      </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                        {new Date(entry.created_at).toLocaleTimeString("fr-FJ", { hour: "2-digit", minute: "2-digit" })}
-                      </span>
+          </div>
+          {recentActivity.isLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (recentActivity.data ?? []).length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              {t("admin.dash.noActivity")}
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {(recentActivity.data ?? []).map((entry) => {
+                const reservation = Array.isArray(entry.reservations)
+                  ? entry.reservations[0]
+                  : entry.reservations;
+                return (
+                  <div key={entry.id} className="flex items-center gap-3 rounded-sm border border-border p-3">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <Activity className="size-3.5 text-muted-foreground" />
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm">
+                        {t("admin.dash.repairFor", [reservation?.customer_name ?? "—"])}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {reservation?.reference ?? "—"} · {t("admin.dash.statusChanged", [entry.new_status])}
+                      </p>
+                    </div>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(entry.created_at).toLocaleTimeString(t("locale") as string, { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
         {/* Quick Actions */}
-        <Card className="lg:col-span-3">
-          <CardHeader>
-            <CardTitle className="text-base">{t("admin.dash.quickActions")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <section className="border border-border bg-card p-4 lg:col-span-3">
+          <h3 className="mb-4 text-sm font-semibold">{t("admin.dash.quickActions")}</h3>
+          <div className="space-y-2">
             <Button variant="technical" className="w-full justify-start" asChild>
               <Link to="/admin/dossiers">
                 <RadioTower className="mr-2 size-4" />
@@ -209,8 +205,8 @@ export function AdminDashboard() {
                 {t("admin.stats.tab")}
               </Link>
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -694,6 +694,9 @@ const fr = {
   "admin.dossier.deliveryUpdated": "Statut de livraison mis à jour",
   "admin.dossier.allTechs": "Tous les techniciens",
   "admin.dossier.unassigned": "Non assigné",
+  "admin.dossier.allTypes": "Particuliers et entreprises",
+  "admin.dossier.typeB2B": "Entreprises (B2B)",
+  "admin.dossier.typeRetail": "Particuliers",
   "admin.dossier.kanbanView": "Vue Kanban",
   "admin.dossier.listView": "Vue liste",
   "admin.dossier.empty": "Aucun dossier",
@@ -703,6 +706,9 @@ const fr = {
   "admin.dossier.notAssignedToYou": "Non assigné à vous",
 
   // Admin — Dashboard
+  "admin.dash.eyebrow": "Vue d'ensemble",
+  "admin.dash.title": "Tableau de bord",
+  "admin.dash.intro": "Vue d'ensemble de l'activité atelier et boutique.",
   "admin.dash.activeRepairs": "Réparations actives",
   "admin.dash.todayReservations": "Réservations aujourd'hui",
   "admin.dash.monthRevenue": "Revenus du mois",
@@ -1587,6 +1593,9 @@ const en = {
   "admin.dossier.deliveryUpdated": "Delivery status updated",
   "admin.dossier.allTechs": "All technicians",
   "admin.dossier.unassigned": "Unassigned",
+  "admin.dossier.allTypes": "Individuals and businesses",
+  "admin.dossier.typeB2B": "Businesses (B2B)",
+  "admin.dossier.typeRetail": "Individuals",
   "admin.dossier.kanbanView": "Kanban view",
   "admin.dossier.listView": "List view",
   "admin.dossier.empty": "No dossiers",
@@ -1596,6 +1605,9 @@ const en = {
   "admin.dossier.notAssignedToYou": "Not assigned to you",
 
   // Admin — Dashboard
+  "admin.dash.eyebrow": "Overview",
+  "admin.dash.title": "Dashboard",
+  "admin.dash.intro": "Overview of workshop and shop activity.",
   "admin.dash.activeRepairs": "Active repairs",
   "admin.dash.todayReservations": "Today's reservations",
   "admin.dash.monthRevenue": "Monthly revenue",
