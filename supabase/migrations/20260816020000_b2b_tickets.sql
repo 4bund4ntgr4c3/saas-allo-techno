@@ -31,15 +31,18 @@ create index if not exists idx_reservations_equipment on public.reservations (eq
 create index if not exists idx_reservations_ticket_type on public.reservations (ticket_type) where ticket_type is not null;
 
 -- 3. RLS : lecture/insertion par les membres de l'organisation
+drop policy if exists "reservations_org_member_read" on public.reservations;
 create policy "reservations_org_member_read"
 on public.reservations for select to authenticated
 using (org_id is not null and public.org_is_member(org_id));
 
+drop policy if exists "reservations_org_member_insert" on public.reservations;
 create policy "reservations_org_member_insert"
 on public.reservations for insert to authenticated
 with check (org_id is not null and public.org_is_member(org_id));
 
 -- Timeline : un membre de l'org voit l'historique des tickets de son org
+drop policy if exists "status_history_org_member_read" on public.reservation_status_history;
 create policy "status_history_org_member_read"
 on public.reservation_status_history for select to authenticated
 using (
@@ -52,6 +55,7 @@ using (
 );
 
 -- Pièces jointes : lecture + ajout pour les membres (via la réservation liée)
+drop policy if exists "attachments_org_member_read" on public.reservation_attachments;
 create policy "attachments_org_member_read"
 on public.reservation_attachments for select to authenticated
 using (
@@ -63,6 +67,7 @@ using (
   )
 );
 
+drop policy if exists "attachments_org_member_insert" on public.reservation_attachments;
 create policy "attachments_org_member_insert"
 on public.reservation_attachments for insert to authenticated
 with check (
@@ -77,10 +82,10 @@ with check (
 -- 4. RPC : création d'un ticket (validation org + equipment)
 create or replace function public.create_b2b_ticket(
   _org_id uuid,
+  _issue text,
   _equipment_id uuid default null,
   _ticket_type public.b2b_ticket_type default 'panne',
   _priority public.b2b_ticket_priority default 'normale',
-  _issue text,
   _location text default null,
   _contact_phone text default null,
   _contact_email text default null,
@@ -102,7 +107,7 @@ begin
     raise exception 'Non authentifié' using errcode = '42501';
   end if;
 
-  if not public.org_is_member(v_uid, _org_id) then
+  if not public.org_is_member(_org_id) then
     raise exception 'Accès refusé : vous n''êtes pas membre de cette organisation' using errcode = '42501';
   end if;
 
@@ -150,7 +155,7 @@ security definer
 set search_path = public
 as $$
 begin
-  if not public.org_is_member(auth.uid(), _org_id) then
+  if not public.org_is_member(_org_id) then
     raise exception 'Accès refusé : vous n''êtes pas membre de cette organisation' using errcode = '42501';
   end if;
 
@@ -203,7 +208,7 @@ begin
     raise exception 'Ticket introuvable' using errcode = 'P0001';
   end if;
 
-  if not public.org_is_member(auth.uid(), v_org_id) then
+  if not public.org_is_member(v_org_id) then
     raise exception 'Accès refusé : vous n''êtes pas membre de cette organisation' using errcode = '42501';
   end if;
 
@@ -254,10 +259,10 @@ end;
 $$;
 
 -- 7. Droits d'exécution
-revoke all on function public.create_b2b_ticket(uuid, uuid, public.b2b_ticket_type, public.b2b_ticket_priority, text, text, text, text, text, text) from public, anon;
+revoke all on function public.create_b2b_ticket(uuid, text, uuid, public.b2b_ticket_type, public.b2b_ticket_priority, text, text, text, text, text) from public, anon;
 revoke all on function public.get_org_tickets(uuid, public.reservation_status, public.b2b_ticket_priority, public.b2b_ticket_type, int) from public, anon;
 revoke all on function public.get_org_ticket(uuid) from public, anon;
 
-grant execute on function public.create_b2b_ticket(uuid, uuid, public.b2b_ticket_type, public.b2b_ticket_priority, text, text, text, text, text, text) to authenticated, service_role;
+grant execute on function public.create_b2b_ticket(uuid, text, uuid, public.b2b_ticket_type, public.b2b_ticket_priority, text, text, text, text, text) to authenticated, service_role;
 grant execute on function public.get_org_tickets(uuid, public.reservation_status, public.b2b_ticket_priority, public.b2b_ticket_type, int) to authenticated, service_role;
 grant execute on function public.get_org_ticket(uuid) to authenticated, service_role;
