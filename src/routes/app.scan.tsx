@@ -12,9 +12,10 @@ interface ScanSearch {
 
 export const Route = createFileRoute("/app/scan")({
   component: ScanPage,
-  validateSearch: (search: Record<string, unknown>): ScanSearch => ({
-    q: search.q ? String(search.q) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): ScanSearch => {
+    const q = typeof search["q"] === "string" ? search["q"] : undefined;
+    return q ? { q } : {};
+  },
 });
 
 function ScanPage() {
@@ -68,6 +69,13 @@ function ScanPage() {
           params={{ orgId: eq.org_id, equipmentId: eq.id }}
         >
           <Button variant="primaryBlock">{t("org.equipment.view")}</Button>
+        </Link>
+        <Link
+          to="/app/organizations/$orgId/tickets"
+          params={{ orgId: eq.org_id }}
+          search={{ equipment: eq.id }}
+        >
+          <Button variant="outline">{t("org.tickets.report")}</Button>
         </Link>
       </div>
     </div>
