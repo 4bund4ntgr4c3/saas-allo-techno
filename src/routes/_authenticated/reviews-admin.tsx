@@ -45,7 +45,6 @@ const STATUS_TONE: Record<ReviewStatus, string> = {
 
 function ReviewsAdminPage() {
   const { user } = Route.useRouteContext();
-  const { t, locale } = useI18n();
 
   const access = useQuery({
     queryKey: ["is-staff", user.id],
@@ -117,6 +116,7 @@ type ReservationRow = {
 };
 
 function InvitationsSection() {
+  const { t, locale } = useI18n();
   const queryClient = useQueryClient();
   const sendInvite = useServerFn(sendReviewInvite);
 
