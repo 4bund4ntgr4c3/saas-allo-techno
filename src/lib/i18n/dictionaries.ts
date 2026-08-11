@@ -256,6 +256,7 @@ const fr: Dictionary = {
   "search.page.entreprises.hint": "Prestations professionnelles",
   "search.page.contact.hint": "Atelier Abomey-Calavi",
   "search.page.panier.hint": "Votre commande boutique",
+  "search.clearHistory": "Effacer l'historique",
 
   // Auth
   "auth.session.expired": "Votre session a expiré. Veuillez vous reconnecter.",
@@ -511,6 +512,7 @@ const en: Dictionary = {
   "search.page.entreprises.hint": "Professional services",
   "search.page.contact.hint": "Abomey-Calavi workshop",
   "search.page.panier.hint": "Your shop order",
+  "search.clearHistory": "Clear history",
 
   // Auth
   "auth.session.expired": "Your session has expired. Please sign in again.",

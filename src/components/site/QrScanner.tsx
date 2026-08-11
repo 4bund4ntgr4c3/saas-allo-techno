@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode, type Html5QrcodeCameraConfig } from "html5-qrcode";
 import { Camera, X, ScanLine, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 
 interface QrScannerProps {
   onScan: (decodedText: string) => void;
@@ -17,6 +18,7 @@ const SCAN_CONFIG: Html5QrcodeCameraConfig = {
 };
 
 export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(true);
@@ -46,11 +48,11 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : String(err);
         if (msg.includes("NotAllowedError") || msg.includes("Permission")) {
-          setError("Caméra refusée. Autorisez l'accès dans les paramètres de votre navigateur.");
+          setError(t("qr.cameraDenied"));
         } else if (msg.includes("NotFound")) {
-          setError("Aucune caméra détectée.");
+          setError(t("qr.noCamera"));
         } else {
-          setError("Impossible de démarrer le scanner.");
+          setError(t("qr.startError"));
         }
       });
 
@@ -75,7 +77,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
         <div className="mb-3 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-sm font-bold">
             <Camera className="size-4" />
-            Scanner un code
+            {t("qr.title")}
           </h3>
           <button onClick={handleClose} className="p-1 hover:bg-muted rounded-sm">
             <X className="size-4" />
@@ -87,7 +89,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
             <AlertCircle className="mx-auto mb-2 size-6 text-destructive" />
             <p className="text-sm text-destructive">{error}</p>
             <Button variant="outline" size="sm" className="mt-3" onClick={handleClose}>
-              Fermer
+              {t("qr.close")}
             </Button>
           </div>
         ) : (
@@ -99,7 +101,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
             />
             <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <ScanLine className="size-3 animate-pulse" />
-              {scanning ? "Alignez le code dans le cadre…" : "Code détecté !"}
+              {scanning ? t("qr.scanning") : t("qr.detected")}
             </div>
           </>
         )}

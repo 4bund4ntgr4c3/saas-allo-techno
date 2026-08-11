@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MobileMoneyBar } from "@/components/site/Blocks";
 import { CheckoutStepper, type CheckoutStep } from "@/components/shop/CheckoutStepper";
 import { PricingSidebar } from "@/components/shop/PricingSidebar";
-import { DELIVERY_OPTIONS, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
+import { getDeliveryOptions, FREE_DELIVERY_FROM, useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { submitShopOrder, validatePromoCode } from "@/lib/shop.functions";
 import { getOrderPaymentStatus, initiateFlutterwavePayment } from "@/lib/payments.functions";
@@ -58,7 +58,7 @@ function Checkout() {
   const checkPromo = useServerFn(validatePromoCode);
 
   const [step, setStep] = useState<CheckoutStep>("address");
-  const [delivery, setDelivery] = useState<string>(DELIVERY_OPTIONS[0].id);
+  const [delivery, setDelivery] = useState<string>(getDeliveryOptions(t)[0].id);
   const [manualDelivery, setManualDelivery] = useState(false);
   const [payment, setPayment] = useState<string>(PAYMENTS[0]);
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", note: "" });
@@ -98,7 +98,7 @@ function Checkout() {
     setDelivery((prev) => (prev !== detected ? detected : prev));
   }, [form.address, altAddress, differentAddress, manualDelivery]);
 
-  const option = DELIVERY_OPTIONS.find((o) => o.id === delivery) ?? DELIVERY_OPTIONS[0];
+  const option = getDeliveryOptions(t).find((o) => o.id === delivery) ?? getDeliveryOptions(t)[0];
   const freeShipping = cart.subtotal >= FREE_DELIVERY_FROM;
   const shipping = freeShipping ? 0 : option.fee;
   const total = cart.subtotal + shipping;
@@ -566,7 +566,7 @@ function Checkout() {
                 continueLabel={t("checkout.address.continue")}
                 showCoupon={false}
                 showDelivery
-                deliveryOptions={DELIVERY_OPTIONS}
+                deliveryOptions={getDeliveryOptions(t)}
                 selectedDelivery={delivery}
                 onSelectDelivery={(id) => { setManualDelivery(true); setDelivery(id); }}
                 shippingFee={shipping}
@@ -689,7 +689,7 @@ function Checkout() {
                   continueLabel={t("checkout.payment.place-order", [formatFcfa(discountTotal)])}
                   showCoupon={false}
                   showDelivery
-                  deliveryOptions={DELIVERY_OPTIONS}
+                  deliveryOptions={getDeliveryOptions(t)}
                   selectedDelivery={delivery}
                 onSelectDelivery={(id) => { setManualDelivery(true); setDelivery(id); }}
                   shippingFee={shipping}

@@ -430,7 +430,7 @@ export function SearchModal() {
                 </CommandItem>
               ))}
               <CommandItem value="clear-recent" onSelect={clearRecent}>
-                <span className="text-xs text-destructive">Effacer l&apos;historique</span>
+                <span className="text-xs text-destructive">{t("search.clearHistory")}</span>
               </CommandItem>
             </CommandGroup>
           )}

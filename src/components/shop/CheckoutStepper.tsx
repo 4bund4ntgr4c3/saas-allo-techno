@@ -1,14 +1,17 @@
 import { Check, ShoppingBag, MapPin, CreditCard } from "lucide-react";
-
-const STEPS = [
-  { key: "cart", icon: ShoppingBag, label: "Panier" },
-  { key: "address", icon: MapPin, label: "Adresse" },
-  { key: "payment", icon: CreditCard, label: "Paiement" },
-] as const;
+import { useI18n } from "@/lib/i18n/context";
 
 export type CheckoutStep = "cart" | "address" | "payment";
 
 export function CheckoutStepper({ current }: { current: CheckoutStep }) {
+  const { t } = useI18n();
+
+  const STEPS = [
+    { key: "cart", icon: ShoppingBag, label: t("panier.title") },
+    { key: "address", icon: MapPin, label: t("checkout.address") },
+    { key: "payment", icon: CreditCard, label: t("checkout.payment") },
+  ] as const;
+
   const idx = STEPS.findIndex((s) => s.key === current);
   return (
     <div className="flex flex-wrap gap-1 rounded-sm border border-border bg-surface p-1">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SignaturePad from "signature_pad";
 import { Pen, RotateCcw, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SignaturePadProps {
   onSign: (dataUrl: string) => void;
@@ -16,6 +17,7 @@ export function SignatureCapture({
   width = 400,
   height = 200,
 }: SignaturePadProps) {
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const padRef = useRef<SignaturePad | null>(null);
   const [hasSignature, setHasSignature] = useState(false);
@@ -97,7 +99,7 @@ export function SignatureCapture({
         {!hasSignature && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <p className="text-xs text-muted-foreground">
-              Signez ici avec le doigt ou le stylet
+              {t("signature.instruction")}
             </p>
           </div>
         )}
@@ -105,7 +107,7 @@ export function SignatureCapture({
 
       <div className="mt-2 flex justify-end">
         <Button variant="ghost" size="sm" onClick={onCancel}>
-          Annuler
+          {t("signature.cancel")}
         </Button>
       </div>
     </div>

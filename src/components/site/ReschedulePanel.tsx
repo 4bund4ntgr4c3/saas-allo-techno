@@ -4,6 +4,7 @@ import { CalendarClock, Check, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
+import { useI18n } from "@/lib/i18n/context";
 import {
   HOURS_BY_PERIOD,
   formatDateFr,
@@ -31,6 +32,7 @@ type Props = {
  * authentifié, l'authentification tient lieu de preuve de propriété.
  */
 export function ReschedulePanel({ reference, code = "", mode, current, onDone }: Props) {
+  const { t } = useI18n();
   const submit = useServerFn(rescheduleReservation);
   const availability = useSlotAvailability(mode);
   const [date, setDate] = useState<string | null>(null);
@@ -58,12 +60,12 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
       await submit({
         data: { reference, code, date, creneau: periodOfHour(hour), heure: hour },
       });
-      toast.success("Rendez-vous reprogrammé", {
+      toast.success(t("reschedule.success"), {
         description: `${formatDateFr(date)} à ${hour} — confirmation envoyée.`,
       });
       onDone();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Reprogrammation impossible");
+      toast.error(error instanceof Error ? error.message : t("reschedule.error"));
     } finally {
       setSaving(false);
     }
@@ -75,31 +77,31 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
         <div>
           <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             <CalendarClock className="size-3.5 text-primary" strokeWidth={1.5} />
-            Reprogrammer — dossier {reference}
+            {t("reschedule.title")} {reference}
           </p>
           <p className="mt-1 text-sm font-bold">
-            Rendez-vous actuel : {formatDateFr(current.date)}
+            {t("reschedule.current")} {formatDateFr(current.date)}
             {current.hour ? ` à ${current.hour}` : ""}
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={onDone} disabled={saving}>
-          Fermer
+          {t("reschedule.close")}
         </Button>
       </div>
 
       <div className="mt-6 mb-2 flex items-center gap-2">
         <CalendarClock className="size-4 text-primary" strokeWidth={1.5} />
         <span id="rs-day-label" className="font-mono text-[10px] uppercase tracking-wider">
-          Nouveau jour
+          {t("reschedule.newDay")}
         </span>
       </div>
       {availability.isLoading ? (
         <p role="status" className="text-xs text-muted-foreground">
-          Chargement des disponibilités…
+          {t("reschedule.loading")}
         </p>
       ) : dateKeys.length === 0 ? (
         <p role="status" className="text-xs text-muted-foreground">
-          Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.
+          {t("reschedule.noSlots")}
         </p>
       ) : (
         <div
@@ -127,11 +129,11 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
                 }`}
               >
                 <span className="block font-mono text-[10px] uppercase">
-                  {dt.toLocaleDateString("fr-FR", { weekday: "short" })}
+                  {dt.toLocaleDateString(undefined, { weekday: "short" })}
                 </span>
                 <span className="block text-lg font-bold leading-tight">{dt.getDate()}</span>
                 <span className="block font-mono text-[10px] uppercase">
-                  {dt.toLocaleDateString("fr-FR", { month: "short" })}
+                  {dt.toLocaleDateString(undefined, { month: "short" })}
                 </span>
               </button>
             );
@@ -141,13 +143,13 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
 
       <div className="mt-6 mb-2 flex items-center gap-2">
         <Clock className="size-4 text-primary" strokeWidth={1.5} />
-        <span className="font-mono text-[10px] uppercase tracking-wider">Nouvelle heure</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider">{t("reschedule.newTime")}</span>
       </div>
       {!date ? (
-        <p className="text-xs text-muted-foreground">Choisissez d'abord un jour.</p>
+        <p className="text-xs text-muted-foreground">{t("reschedule.selectDay")}</p>
       ) : availableHours.length === 0 ? (
         <p className="text-xs text-muted-foreground">
-          Plus aucune heure libre ce jour-là — choisissez un autre jour.
+          {t("reschedule.noHours")}
         </p>
       ) : (
         <div
@@ -165,7 +167,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
                 role="radio"
                 aria-checked={on}
                 disabled={taken}
-                title={taken ? "Déjà réservé" : undefined}
+                title={taken ? t("reschedule.taken") : undefined}
                 onClick={() => setHour(h)}
                 className={`border px-3 py-2 font-mono text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                   taken
@@ -184,7 +186,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
         <p className="font-mono text-xs uppercase text-muted-foreground">
-          {date && hour ? `${formatDateFr(date)} à ${hour}` : "Sélectionnez un jour et une heure"}
+          {date && hour ? `${formatDateFr(date)} à ${hour}` : t("reschedule.selectSlot")}
         </p>
         <Button
           variant="primaryBlock"
@@ -193,7 +195,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
           onClick={() => void confirm()}
         >
           <Check className="size-3.5" />
-          Confirmer le nouveau créneau
+          {t("reschedule.confirm")}
         </Button>
       </div>
     </div>

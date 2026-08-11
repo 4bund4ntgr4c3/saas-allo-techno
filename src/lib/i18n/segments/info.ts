@@ -244,6 +244,51 @@ const fr = {
   "reprise.step2.x": "Test complet en 20 minutes : batterie, écran, ports, déverrouillage.",
   "reprise.step3.t": "Paiement immédiat",
   "reprise.step3.x": "MTN MoMo, Moov Money, Celtiis ou espèces, ou déduction sur une réparation.",
+
+  // Lead form
+  "lead.messageLabel": "Votre message",
+  "lead.messagePlaceholder": "Décrivez votre besoin…",
+  "lead.nameRequired": "Votre nom est requis.",
+  "lead.phoneInvalid": "Numéro de téléphone invalide.",
+  "lead.sendError": "Envoi impossible",
+  "lead.sent": "Message envoyé",
+  "lead.name": "Nom",
+  "lead.phone": "Téléphone (WhatsApp)",
+  "lead.email": "E-mail",
+  "lead.optional": "(facultatif)",
+  "lead.reference": "N° de dossier",
+  "lead.referenceHint": "(si connu)",
+  "lead.sending": "Envoi…",
+  "lead.send": "Envoyer",
+
+  // QR Scanner
+  "qr.title": "Scanner un code",
+  "qr.close": "Fermer",
+  "qr.scanning": "Alignez le code dans le cadre…",
+  "qr.detected": "Code détecté !",
+  "qr.cameraDenied": "Caméra refusée. Autorisez l'accès dans les paramètres de votre navigateur.",
+  "qr.noCamera": "Aucune caméra détectée.",
+  "qr.startError": "Impossible de démarrer le scanner.",
+
+  // Reschedule
+  "reschedule.title": "Reprogrammer — dossier",
+  "reschedule.current": "Rendez-vous actuel :",
+  "reschedule.close": "Fermer",
+  "reschedule.newDay": "Nouveau jour",
+  "reschedule.loading": "Chargement des disponibilités…",
+  "reschedule.noSlots": "Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.",
+  "reschedule.newTime": "Nouvelle heure",
+  "reschedule.selectDay": "Choisissez d'abord un jour.",
+  "reschedule.noHours": "Plus aucune heure libre ce jour-là — choisissez un autre jour.",
+  "reschedule.taken": "Déjà réservé",
+  "reschedule.selectSlot": "Sélectionnez un jour et une heure",
+  "reschedule.confirm": "Confirmer le nouveau créneau",
+  "reschedule.success": "Rendez-vous reprogrammé",
+  "reschedule.error": "Reprogrammation impossible",
+
+  // Signature
+  "signature.instruction": "Signez ici avec le doigt ou le stylet",
+  "signature.cancel": "Annuler",
 };
 
 const en = {
@@ -487,6 +532,51 @@ const en = {
   "reprise.step2.x": "Full test in 20 minutes: battery, screen, ports, unlock.",
   "reprise.step3.t": "Immediate payment",
   "reprise.step3.x": "MTN MoMo, Moov Money, Celtiis or cash, or a deduction from your repair.",
+
+  // Lead form
+  "lead.messageLabel": "Your message",
+  "lead.messagePlaceholder": "Describe your request…",
+  "lead.nameRequired": "Your name is required.",
+  "lead.phoneInvalid": "Invalid phone number.",
+  "lead.sendError": "Failed to send",
+  "lead.sent": "Message sent",
+  "lead.name": "Name",
+  "lead.phone": "Phone (WhatsApp)",
+  "lead.email": "Email",
+  "lead.optional": "(optional)",
+  "lead.reference": "Case number",
+  "lead.referenceHint": "(if known)",
+  "lead.sending": "Sending…",
+  "lead.send": "Send",
+
+  // QR Scanner
+  "qr.title": "Scan a code",
+  "qr.close": "Close",
+  "qr.scanning": "Align the code in the frame…",
+  "qr.detected": "Code detected!",
+  "qr.cameraDenied": "Camera denied. Please allow access in your browser settings.",
+  "qr.noCamera": "No camera detected.",
+  "qr.startError": "Unable to start the scanner.",
+
+  // Reschedule
+  "reschedule.title": "Reschedule — case",
+  "reschedule.current": "Current appointment:",
+  "reschedule.close": "Close",
+  "reschedule.newDay": "New day",
+  "reschedule.loading": "Loading availability…",
+  "reschedule.noSlots": "No slots available in the next 10 days — please call us directly.",
+  "reschedule.newTime": "New time",
+  "reschedule.selectDay": "Select a day first.",
+  "reschedule.noHours": "No hours left on this day — select another day.",
+  "reschedule.taken": "Already booked",
+  "reschedule.selectSlot": "Select a day and time",
+  "reschedule.confirm": "Confirm new slot",
+  "reschedule.success": "Appointment rescheduled",
+  "reschedule.error": "Reschedule failed",
+
+  // Signature
+  "signature.instruction": "Sign here with your finger or stylus",
+  "signature.cancel": "Cancel",
 };
 
 registerSegments({ fr, en });

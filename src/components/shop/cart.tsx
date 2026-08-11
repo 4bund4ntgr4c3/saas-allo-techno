@@ -119,11 +119,13 @@ export function useCart() {
   return ctx;
 }
 
-export const DELIVERY_OPTIONS = [
-  { id: "retrait", label: "Retrait en boutique (Zogbadjè)", fee: 0, eta: "sous 2 h" },
-  { id: "calavi", label: "Livraison Abomey-Calavi", fee: 1000, eta: "même journée" },
-  { id: "cotonou", label: "Livraison Cotonou et environ", fee: 2000, eta: "24 h" },
-  { id: "interieur", label: "Envoi intérieur du pays", fee: 2000, eta: "48 à 72 h" },
-] as const;
-
 export const FREE_DELIVERY_FROM = 50000;
+
+export function getDeliveryOptions(t: (key: string) => string) {
+  return [
+    { id: "retrait", label: t("shop.delivery.retrait"), fee: 0, eta: t("shop.delivery.eta.retrait") },
+    { id: "calavi", label: t("shop.delivery.calavi"), fee: 1000, eta: t("shop.delivery.eta.calavi") },
+    { id: "cotonou", label: t("shop.delivery.cotonou"), fee: 2000, eta: t("shop.delivery.eta.cotonou") },
+    { id: "interieur", label: t("shop.delivery.interior"), fee: 2000, eta: t("shop.delivery.eta.interior") },
+  ] as const;
+}

@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from "react";
 import { ZoomIn, ZoomOut, X } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export function ImageZoom({ src, alt }: { src: string; alt: string }) {
+  const { t } = useI18n();
   const [zoomed, setZoomed] = useState(false);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -36,7 +38,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
         onClick={toggleZoom}
         onMouseMove={handleMouseMove}
         role="button"
-        aria-label={zoomed ? "Réduire l'image" : "Agrandir l'image"}
+        aria-label={zoomed ? t("shop.zoom.out") : t("shop.zoom.in")}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -63,7 +65,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
         <div className="absolute bottom-3 right-3 flex gap-2">
           <span className="inline-flex items-center gap-1 rounded-sm bg-background/80 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground backdrop-blur">
             {zoomed ? <ZoomOut className="size-3" /> : <ZoomIn className="size-3" />}
-            {zoomed ? "Réduire" : "Zoom"}
+            {zoomed ? t("shop.zoom缩小") : t("shop.zoom.label")}
           </span>
         </div>
       </div>
@@ -77,7 +79,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
           <button
             className="absolute right-6 top-6 text-white hover:text-white/80"
             onClick={toggleZoom}
-            aria-label="Fermer le zoom"
+            aria-label={t("shop.zoom.close")}
           >
             <X className="size-6" />
           </button>

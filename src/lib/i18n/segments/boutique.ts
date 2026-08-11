@@ -101,6 +101,26 @@ const fr = {
   "boutique.toast.compare-added": "{0} ajouté à la comparaison",
   "boutique.toast.compare-max": "3 produits maximum dans le comparateur",
   "boutique.toast.compare-exists": "Déjà dans le comparateur",
+
+  // Checkout
+  "checkout.address": "Adresse",
+  "checkout.payment": "Paiement",
+
+  // Delivery options
+  "shop.delivery.retrait": "Retrait en boutique (Zogbadjè)",
+  "shop.delivery.calavi": "Livraison Abomey-Calavi",
+  "shop.delivery.cotonou": "Livraison Cotonou et environ",
+  "shop.delivery.interior": "Envoi intérieur du pays",
+  "shop.delivery.eta.retrait": "sous 2 h",
+  "shop.delivery.eta.calavi": "même journée",
+  "shop.delivery.eta.cotonou": "24 h",
+  "shop.delivery.eta.interior": "48 à 72 h",
+
+  // Image zoom
+  "shop.zoom.in": "Agrandir l'image",
+  "shop.zoom.out": "Réduire l'image",
+  "shop.zoom.label": "Zoom",
+  "shop.zoom.close": "Fermer le zoom",
 };
 
 const en = {
@@ -202,6 +222,26 @@ const en = {
   "boutique.toast.compare-added": "{0} added to comparison",
   "boutique.toast.compare-max": "3 products max in comparison",
   "boutique.toast.compare-exists": "Already in comparison",
+
+  // Checkout
+  "checkout.address": "Address",
+  "checkout.payment": "Payment",
+
+  // Delivery options
+  "shop.delivery.retrait": "Pickup at shop (Zogbadjè)",
+  "shop.delivery.calavi": "Delivery Abomey-Calavi",
+  "shop.delivery.cotonou": "Delivery Cotonou & surroundings",
+  "shop.delivery.interior": "Domestic shipping",
+  "shop.delivery.eta.retrait": "within 2h",
+  "shop.delivery.eta.calavi": "same day",
+  "shop.delivery.eta.cotonou": "24h",
+  "shop.delivery.eta.interior": "48 to 72h",
+
+  // Image zoom
+  "shop.zoom.in": "Zoom in",
+  "shop.zoom.out": "Zoom out",
+  "shop.zoom.label": "Zoom",
+  "shop.zoom.close": "Close zoom",
 };
 
 registerSegments({ fr, en });
