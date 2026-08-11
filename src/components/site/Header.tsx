@@ -171,6 +171,9 @@ export function Header() {
               {user ? t("nav.mon-compte") : t("nav.connexion")}
             </Link>
           </Button>
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <Link to="/demo">{t("nav.demo")}</Link>
+          </Button>
           <Button asChild variant="technical" size="sm" className="hidden sm:inline-flex">
             <Link
               to="/$locale/reservation"

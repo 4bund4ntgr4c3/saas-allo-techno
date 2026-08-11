@@ -14,6 +14,7 @@ import "./boutique";
 import "./catalog";
 import "./changelog";
 import "./checkout";
+import "./demo";
 import "./engagements";
 import "./entreprises";
 import "./faq-seo";

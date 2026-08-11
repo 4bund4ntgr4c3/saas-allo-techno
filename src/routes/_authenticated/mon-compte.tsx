@@ -15,6 +15,8 @@ import { listCustomerReviews, type CustomerReview } from "@/lib/reviews.function
 import { listCustomerPayments, type CustomerPayment } from "@/lib/payments.functions";
 import { saveOfflineData } from "@/lib/offline-cache";
 import { useI18n } from "@/lib/i18n/context";
+import { TourLauncher } from "@/components/tour/TourLauncher";
+import { TourOverlay } from "@/components/tour/TourOverlay";
 import {
   PERIOD_LABEL,
   STATUS_LABEL,
@@ -286,7 +288,9 @@ function Dashboard() {
       <section className="border-b border-border py-16">
         <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6 px-4 sm:px-6">
           <div>
-            <span className="at-eyebrow mb-4 block">{t("mc.header.eyebrow")}</span>
+            <span className="at-eyebrow mb-4 block" data-tour="account-header">
+              {t("mc.header.eyebrow")}
+            </span>
             <h1 className="at-display text-4xl md:text-6xl">{t("mc.header.title")}</h1>
             <p className="mt-4 text-sm text-muted-foreground">{user.email}</p>
           </div>
@@ -299,7 +303,7 @@ function Dashboard() {
             <Button asChild variant="outline" size="sm">
               <Link to="/admin">{t("mc.header.admin")}</Link>
             </Button>
-            <Button variant="outline" size="sm" onClick={signOut}>
+            <Button variant="outline" size="sm" onClick={signOut} data-tour="account-logout">
               {t("mc.header.logout")}
             </Button>
           </div>
@@ -309,7 +313,7 @@ function Dashboard() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-8">
+            <TabsList className="mb-8" data-tour="account-tabs">
               <TabsTrigger value="dossiers">{t("mc.tab.dossiers")}</TabsTrigger>
               <TabsTrigger value="devis">{t("mc.tab.devis")}</TabsTrigger>
               <TabsTrigger value="fidelite">{t("mc.tab.fidelite")}</TabsTrigger>
@@ -321,7 +325,9 @@ function Dashboard() {
 
             {/* ── ONGLET: Mes dossiers ────────────────────────────────── */}
             <TabsContent value="dossiers">
-              <h2 className="at-display mb-2 text-2xl">{t("mc.tab.dossiers")}</h2>
+              <h2 className="at-display mb-2 text-2xl" data-tour="account-reservations">
+                {t("mc.tab.dossiers")}
+              </h2>
               <p className="mb-8 text-sm text-muted-foreground">
                 {t("mc.dossiers.active", [active.length, rows.length])}
               </p>
@@ -912,6 +918,9 @@ function Dashboard() {
           </Tabs>
         </div>
       </section>
+
+      <TourLauncher />
+      <TourOverlay />
     </>
   );
 }

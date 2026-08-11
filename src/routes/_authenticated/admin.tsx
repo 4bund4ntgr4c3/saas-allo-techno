@@ -13,6 +13,8 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSectionTabs } from "@/components/admin/AdminSectionTabs";
 import { field } from "@/components/admin/primitives/AdminField";
+import { TourLauncher } from "@/components/tour/TourLauncher";
+import { TourOverlay } from "@/components/tour/TourOverlay";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -196,11 +198,13 @@ function AdminLayout() {
       <AdminSidebar user={user} />
       <SidebarInset>
         <AdminHeader />
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6" data-tour="admin-content">
           <AdminSectionTabs />
           <Outlet />
         </div>
       </SidebarInset>
+      <TourLauncher />
+      <TourOverlay />
     </SidebarProvider>
   );
 }
