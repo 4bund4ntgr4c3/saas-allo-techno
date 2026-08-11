@@ -666,13 +666,16 @@ export type Database = {
           delivery_status: Database["public"]["Enums"]["delivery_status"];
           device: string;
           email: string | null;
+          equipment_id: string | null;
           estimated_delivery: string | null;
           id: string;
           issue: string;
+          location: string | null;
           message: string | null;
           mode: string;
           payment: string;
           phone: string;
+          priority: Database["public"]["Enums"]["b2b_ticket_priority"];
           promo_amount: number | null;
           promo_code: string | null;
           quote_amount: number | null;
@@ -686,6 +689,7 @@ export type Database = {
           source: string | null;
           staff_notes: string | null;
           status: Database["public"]["Enums"]["reservation_status"];
+          ticket_type: Database["public"]["Enums"]["b2b_ticket_type"] | null;
           tracking_code_hash: string | null;
           updated_at: string;
           user_id: string | null;
@@ -701,12 +705,15 @@ export type Database = {
           delivery_status?: Database["public"]["Enums"]["delivery_status"];
           device: string;
           email?: string | null;
+          equipment_id?: string | null;
           id?: string;
           issue: string;
+          location?: string | null;
           message?: string | null;
           mode?: string;
           payment?: string;
           phone: string;
+          priority?: Database["public"]["Enums"]["b2b_ticket_priority"];
           promo_amount?: number | null;
           promo_code?: string | null;
           quote_amount?: number | null;
@@ -720,6 +727,7 @@ export type Database = {
           source?: string | null;
           staff_notes?: string | null;
           status?: Database["public"]["Enums"]["reservation_status"];
+          ticket_type?: Database["public"]["Enums"]["b2b_ticket_type"] | null;
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
@@ -735,14 +743,16 @@ export type Database = {
           delivery_status?: Database["public"]["Enums"]["delivery_status"];
           device?: string;
           email?: string | null;
+          equipment_id?: string | null;
           estimated_delivery?: string | null;
           id?: string;
           issue?: string;
+          location?: string | null;
           message?: string | null;
           mode?: string;
           payment?: string;
           phone?: string;
-          promo_amount?: number | null;
+          priority?: Database["public"]["Enums"]["b2b_ticket_priority"];
           promo_code?: string | null;
           quote_amount?: number | null;
           quote_decided_at?: string | null;
@@ -755,6 +765,7 @@ export type Database = {
           source?: string | null;
           staff_notes?: string | null;
           status?: Database["public"]["Enums"]["reservation_status"];
+          ticket_type?: Database["public"]["Enums"]["b2b_ticket_type"] | null;
           tracking_code_hash?: string | null;
           updated_at?: string;
           user_id?: string | null;
@@ -1450,6 +1461,32 @@ export type Database = {
         }[];
       };
       get_user_orgs: { Args: never; Returns: string };
+      create_b2b_ticket: {
+        Args: {
+          _org_id: string;
+          _issue: string;
+          _equipment_id?: string | null;
+          _ticket_type?: Database["public"]["Enums"]["b2b_ticket_type"];
+          _priority?: Database["public"]["Enums"]["b2b_ticket_priority"];
+          _location?: string | null;
+          _contact_phone?: string | null;
+          _contact_email?: string | null;
+          _message?: string | null;
+          _customer_name?: string | null;
+        };
+        Returns: Json;
+      };
+      get_org_tickets: {
+        Args: {
+          _org_id: string;
+          _status?: Database["public"]["Enums"]["reservation_status"] | null;
+          _priority?: Database["public"]["Enums"]["b2b_ticket_priority"] | null;
+          _ticket_type?: Database["public"]["Enums"]["b2b_ticket_type"] | null;
+          _limit?: number;
+        };
+        Returns: Json[];
+      };
+      get_org_ticket: { Args: { _ticket_id: string }; Returns: Json };
       get_org_members: { Args: { _org_id: string }; Returns: string };
       invite_org_member: {
         Args: { _org_id: string; _email: string; _role?: Database["public"]["Enums"]["org_role"] };
@@ -1635,6 +1672,13 @@ export type Database = {
     };
     Enums: {
       app_role: "admin" | "staff" | "technicien" | "user";
+      b2b_ticket_priority: "faible" | "normale" | "haute" | "critique";
+      b2b_ticket_type:
+        | "panne"
+        | "maintenance"
+        | "diagnostic"
+        | "installation"
+        | "autre";
       delivery_status: "non_applicable" | "a_planifier" | "en_route" | "livre";
       equipment_status: "actif" | "en_panne" | "maintenance" | "garantie" | "retire";
       org_role:
@@ -1778,6 +1822,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "staff", "technicien", "user"],
+      b2b_ticket_priority: ["faible", "normale", "haute", "critique"],
+      b2b_ticket_type: ["panne", "maintenance", "diagnostic", "installation", "autre"],
       equipment_status: ["actif", "en_panne", "maintenance", "garantie", "retire"],
       org_role: [
         "admin_org",

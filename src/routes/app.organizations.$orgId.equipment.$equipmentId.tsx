@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
+  AlertTriangle,
   ArrowLeft,
   CalendarDays,
   FileText,
@@ -161,6 +162,20 @@ function EquipmentDetail() {
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline">{t(`org.equipment.status.${eq.status}`)}</Badge>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                navigate({
+                  to: "/app/organizations/$orgId/tickets",
+                  params: { orgId },
+                  search: { equipment: equipmentId },
+                })
+              }
+            >
+              <AlertTriangle className="size-4" />
+              {t("org.tickets.report")}
+            </Button>
             <Button
               type="button"
               variant="ghost"

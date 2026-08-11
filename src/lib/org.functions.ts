@@ -589,3 +589,150 @@ export const deleteOrgSite = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { deleted: true };
   });
+
+// ---------------------------------------------------------------------------
+// Tickets (Phase 2 B2B)
+// ---------------------------------------------------------------------------
+
+export type B2BTicketType = Enums<"b2b_ticket_type">;
+export type B2BTicketPriority = Enums<"b2b_ticket_priority">;
+export type ReservationStatus = Enums<"reservation_status">;
+
+export const B2B_TICKET_TYPES: B2BTicketType[] = [
+  "panne",
+  "maintenance",
+  "diagnostic",
+  "installation",
+  "autre",
+];
+
+export const B2B_TICKET_PRIORITIES: B2BTicketPriority[] = [
+  "faible",
+  "normale",
+  "haute",
+  "critique",
+];
+
+export interface OrgTicketSummary {
+  id: string;
+  reference: string;
+  status: string;
+  ticket_type: B2BTicketType | null;
+  priority: B2BTicketPriority | null;
+  issue: string;
+  location: string | null;
+  customer_name: string | null;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+  equipment: {
+    id: string;
+    name: string;
+    brand: string | null;
+    model: string | null;
+    serial_number: string | null;
+    asset_tag: string | null;
+    type: string;
+    qr_id: string;
+    location: string | null;
+  } | null;
+}
+
+export interface OrgTicketDetail extends OrgTicketSummary {
+  email: string | null;
+  message: string | null;
+  staff_notes: string | null;
+  equipment: OrgTicketSummary["equipment"] & {
+    status: string;
+    warranty_expires_at: string | null;
+  } | null;
+  timeline: {
+    id: string;
+    old_status: string | null;
+    new_status: string;
+    note: string | null;
+    created_at: string;
+  }[];
+  attachments: {
+    id: string;
+    stage: string | null;
+    kind: string | null;
+    url: string;
+    caption: string | null;
+    uploaded_by: string | null;
+    created_at: string;
+  }[];
+}
+
+export interface B2BTicketInput {
+  org_id: string;
+  issue: string;
+  equipment_id?: string | null;
+  ticket_type?: B2BTicketType;
+  priority?: B2BTicketPriority;
+  location?: string | null;
+  contact_phone?: string | null;
+  contact_email?: string | null;
+  message?: string | null;
+  customer_name?: string | null;
+}
+
+export const createB2BTicket = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const input = data as B2BTicketInput;
+    if (!input.org_id) throw new Error("id d'organisation requis");
+    if (!input.issue?.trim()) throw new Error("La description du problème est requise");
+    return input;
+  })
+  .handler(async ({ data }) => {
+    const { data: ticket, error } = await orgClient().rpc("create_b2b_ticket", {
+      _org_id: data.org_id,
+      _issue: data.issue.trim(),
+      _equipment_id: data.equipment_id ?? null,
+      _ticket_type: data.ticket_type ?? "panne",
+      _priority: data.priority ?? "normale",
+      _location: data.location ?? null,
+      _contact_phone: data.contact_phone ?? null,
+      _contact_email: data.contact_email ?? null,
+      _message: data.message ?? null,
+      _customer_name: data.customer_name ?? null,
+    });
+    if (error) throw new Error(error.message);
+    return ticket as unknown as { id: string; reference: string };
+  });
+
+export const getOrgTickets = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const { org_id, status, priority, ticket_type } = data as {
+      org_id: string;
+      status?: ReservationStatus | null;
+      priority?: B2BTicketPriority | null;
+      ticket_type?: B2BTicketType | null;
+    };
+    if (!org_id) throw new Error("id d'organisation requis");
+    return { org_id, status: status ?? null, priority: priority ?? null, ticket_type: ticket_type ?? null };
+  })
+  .handler(async ({ data }) => {
+    const { data: rows, error } = await orgClient().rpc("get_org_tickets", {
+      _org_id: data.org_id,
+      _status: data.status,
+      _priority: data.priority,
+      _ticket_type: data.ticket_type,
+    });
+    if (error) throw new Error(error.message);
+    return (rows ?? []) as unknown as OrgTicketSummary[];
+  });
+
+export const getOrgTicket = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const { ticket_id } = data as { ticket_id: string };
+    if (!ticket_id) throw new Error("id de ticket requis");
+    return { ticket_id };
+  })
+  .handler(async ({ data }) => {
+    const { data: detail, error } = await orgClient().rpc("get_org_ticket", {
+      _ticket_id: data.ticket_id,
+    });
+    if (error) throw new Error(error.message);
+    return detail as unknown as OrgTicketDetail;
+  });

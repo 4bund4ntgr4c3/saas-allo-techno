@@ -54,6 +54,7 @@ import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webh
 import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
 import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppScanRouteImport } from './routes/app.scan'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
@@ -95,6 +96,11 @@ import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin/webhooks'
 import { Route as ApiV1SplatRouteImport } from './routes/api.v1.$'
 import { Route as AppOrganizationsOrgIdRouteImport } from './routes/app.organizations.$orgId'
+import { Route as AppOrganizationsOrgIdEquipmentRouteImport } from './routes/app.organizations.$orgId.equipment'
+import { Route as AppOrganizationsOrgIdSitesRouteImport } from './routes/app.organizations.$orgId.sites'
+import { Route as AppOrganizationsOrgIdTicketsRouteImport } from './routes/app.organizations.$orgId.tickets'
+import { Route as AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport } from './routes/app.organizations.$orgId.equipment.$equipmentId'
+import { Route as AppOrganizationsOrgIdTicketsTicketIdRouteImport } from './routes/app.organizations.$orgId.tickets.$ticketId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -319,6 +325,11 @@ const ApiSitemapRoute = ApiSitemapRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppScanRoute = AppScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
   getParentRoute: () => AppRoute,
 } as any)
 const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
@@ -547,6 +558,36 @@ const AppOrganizationsOrgIdRoute = AppOrganizationsOrgIdRouteImport.update({
   path: '/organizations/$orgId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrganizationsOrgIdEquipmentRoute =
+  AppOrganizationsOrgIdEquipmentRouteImport.update({
+    id: '/equipment',
+    path: '/equipment',
+    getParentRoute: () => AppOrganizationsOrgIdRoute,
+  } as any)
+const AppOrganizationsOrgIdSitesRoute =
+  AppOrganizationsOrgIdSitesRouteImport.update({
+    id: '/sites',
+    path: '/sites',
+    getParentRoute: () => AppOrganizationsOrgIdRoute,
+  } as any)
+const AppOrganizationsOrgIdTicketsRoute =
+  AppOrganizationsOrgIdTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => AppOrganizationsOrgIdRoute,
+  } as any)
+const AppOrganizationsOrgIdEquipmentEquipmentIdRoute =
+  AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport.update({
+    id: '/$equipmentId',
+    path: '/$equipmentId',
+    getParentRoute: () => AppOrganizationsOrgIdEquipmentRoute,
+  } as any)
+const AppOrganizationsOrgIdTicketsTicketIdRoute =
+  AppOrganizationsOrgIdTicketsTicketIdRouteImport.update({
+    id: '/$ticketId',
+    path: '/$ticketId',
+    getParentRoute: () => AppOrganizationsOrgIdTicketsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -591,6 +632,7 @@ export interface FileRoutesByFullPath {
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
+  '/app/scan': typeof AppScanRoute
   '/$locale/': typeof LocaleIndexRoute
   '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -628,12 +670,17 @@ export interface FileRoutesByFullPath {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
-  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRouteWithChildren
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
+  '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
+  '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -675,6 +722,7 @@ export interface FileRoutesByTo {
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
+  '/app/scan': typeof AppScanRoute
   '/$locale': typeof LocaleIndexRoute
   '/app': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -712,12 +760,17 @@ export interface FileRoutesByTo {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
-  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRouteWithChildren
   '/$locale/blog': typeof LocaleBlogIndexRoute
   '/$locale/boutique': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations': typeof LocaleReparationsIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
+  '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
+  '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -764,6 +817,7 @@ export interface FileRoutesById {
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
+  '/app/scan': typeof AppScanRoute
   '/$locale/': typeof LocaleIndexRoute
   '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -801,12 +855,17 @@ export interface FileRoutesById {
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
-  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRouteWithChildren
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
+  '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
+  '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -853,6 +912,7 @@ export interface FileRouteTypes {
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
+    | '/app/scan'
     | '/$locale/'
     | '/app/'
     | '/$locale/appareil/$slug'
@@ -896,6 +956,11 @@ export interface FileRouteTypes {
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
     | '/admin/'
+    | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/sites'
+    | '/app/organizations/$orgId/tickets'
+    | '/app/organizations/$orgId/equipment/$equipmentId'
+    | '/app/organizations/$orgId/tickets/$ticketId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -937,6 +1002,7 @@ export interface FileRouteTypes {
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
+    | '/app/scan'
     | '/$locale'
     | '/app'
     | '/$locale/appareil/$slug'
@@ -980,6 +1046,11 @@ export interface FileRouteTypes {
     | '/$locale/quartiers'
     | '/$locale/reparations'
     | '/admin'
+    | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/sites'
+    | '/app/organizations/$orgId/tickets'
+    | '/app/organizations/$orgId/equipment/$equipmentId'
+    | '/app/organizations/$orgId/tickets/$ticketId'
   id:
     | '__root__'
     | '/'
@@ -1025,6 +1096,7 @@ export interface FileRouteTypes {
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
     | '/api/sitemap'
+    | '/app/scan'
     | '/$locale/'
     | '/app/'
     | '/$locale/appareil/$slug'
@@ -1068,6 +1140,11 @@ export interface FileRouteTypes {
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
     | '/_authenticated/admin/'
+    | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/sites'
+    | '/app/organizations/$orgId/tickets'
+    | '/app/organizations/$orgId/equipment/$equipmentId'
+    | '/app/organizations/$orgId/tickets/$ticketId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1406,6 +1483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/scan': {
+      id: '/app/scan'
+      path: '/scan'
+      fullPath: '/app/scan'
+      preLoaderRoute: typeof AppScanRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/$locale/appareil/$slug': {
       id: '/$locale/appareil/$slug'
       path: '/appareil/$slug'
@@ -1693,6 +1777,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrganizationsOrgIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/organizations/$orgId/equipment': {
+      id: '/app/organizations/$orgId/equipment'
+      path: '/equipment'
+      fullPath: '/app/organizations/$orgId/equipment'
+      preLoaderRoute: typeof AppOrganizationsOrgIdEquipmentRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdRoute
+    }
+    '/app/organizations/$orgId/sites': {
+      id: '/app/organizations/$orgId/sites'
+      path: '/sites'
+      fullPath: '/app/organizations/$orgId/sites'
+      preLoaderRoute: typeof AppOrganizationsOrgIdSitesRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdRoute
+    }
+    '/app/organizations/$orgId/tickets': {
+      id: '/app/organizations/$orgId/tickets'
+      path: '/tickets'
+      fullPath: '/app/organizations/$orgId/tickets'
+      preLoaderRoute: typeof AppOrganizationsOrgIdTicketsRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdRoute
+    }
+    '/app/organizations/$orgId/equipment/$equipmentId': {
+      id: '/app/organizations/$orgId/equipment/$equipmentId'
+      path: '/$equipmentId'
+      fullPath: '/app/organizations/$orgId/equipment/$equipmentId'
+      preLoaderRoute: typeof AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdEquipmentRoute
+    }
+    '/app/organizations/$orgId/tickets/$ticketId': {
+      id: '/app/organizations/$orgId/tickets/$ticketId'
+      path: '/$ticketId'
+      fullPath: '/app/organizations/$orgId/tickets/$ticketId'
+      preLoaderRoute: typeof AppOrganizationsOrgIdTicketsTicketIdRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdTicketsRoute
+    }
   }
 }
 
@@ -1860,14 +1979,65 @@ const LocaleRouteChildren: LocaleRouteChildren = {
 const LocaleRouteWithChildren =
   LocaleRoute._addFileChildren(LocaleRouteChildren)
 
+interface AppOrganizationsOrgIdEquipmentRouteChildren {
+  AppOrganizationsOrgIdEquipmentEquipmentIdRoute: typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
+}
+
+const AppOrganizationsOrgIdEquipmentRouteChildren: AppOrganizationsOrgIdEquipmentRouteChildren =
+  {
+    AppOrganizationsOrgIdEquipmentEquipmentIdRoute:
+      AppOrganizationsOrgIdEquipmentEquipmentIdRoute,
+  }
+
+const AppOrganizationsOrgIdEquipmentRouteWithChildren =
+  AppOrganizationsOrgIdEquipmentRoute._addFileChildren(
+    AppOrganizationsOrgIdEquipmentRouteChildren,
+  )
+
+interface AppOrganizationsOrgIdTicketsRouteChildren {
+  AppOrganizationsOrgIdTicketsTicketIdRoute: typeof AppOrganizationsOrgIdTicketsTicketIdRoute
+}
+
+const AppOrganizationsOrgIdTicketsRouteChildren: AppOrganizationsOrgIdTicketsRouteChildren =
+  {
+    AppOrganizationsOrgIdTicketsTicketIdRoute:
+      AppOrganizationsOrgIdTicketsTicketIdRoute,
+  }
+
+const AppOrganizationsOrgIdTicketsRouteWithChildren =
+  AppOrganizationsOrgIdTicketsRoute._addFileChildren(
+    AppOrganizationsOrgIdTicketsRouteChildren,
+  )
+
+interface AppOrganizationsOrgIdRouteChildren {
+  AppOrganizationsOrgIdEquipmentRoute: typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  AppOrganizationsOrgIdSitesRoute: typeof AppOrganizationsOrgIdSitesRoute
+  AppOrganizationsOrgIdTicketsRoute: typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+}
+
+const AppOrganizationsOrgIdRouteChildren: AppOrganizationsOrgIdRouteChildren = {
+  AppOrganizationsOrgIdEquipmentRoute:
+    AppOrganizationsOrgIdEquipmentRouteWithChildren,
+  AppOrganizationsOrgIdSitesRoute: AppOrganizationsOrgIdSitesRoute,
+  AppOrganizationsOrgIdTicketsRoute:
+    AppOrganizationsOrgIdTicketsRouteWithChildren,
+}
+
+const AppOrganizationsOrgIdRouteWithChildren =
+  AppOrganizationsOrgIdRoute._addFileChildren(
+    AppOrganizationsOrgIdRouteChildren,
+  )
+
 interface AppRouteChildren {
+  AppScanRoute: typeof AppScanRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppOrganizationsOrgIdRoute: typeof AppOrganizationsOrgIdRoute
+  AppOrganizationsOrgIdRoute: typeof AppOrganizationsOrgIdRouteWithChildren
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppScanRoute: AppScanRoute,
   AppIndexRoute: AppIndexRoute,
-  AppOrganizationsOrgIdRoute: AppOrganizationsOrgIdRoute,
+  AppOrganizationsOrgIdRoute: AppOrganizationsOrgIdRouteWithChildren,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
