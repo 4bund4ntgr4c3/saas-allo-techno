@@ -4,25 +4,10 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog";
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
-
-const ORDER_STATUS_LABEL: Record<string, string> = {
-  nouveau: "Nouveau",
-  en_cours: "En cours",
-  livre: "Livré",
-  cloture: "Clôturé",
-};
+import { field } from "@/components/admin/primitives/AdminField";
+import { useI18n } from "@/lib/i18n/context";
 
 const ORDER_STATUS_OPTIONS = ["nouveau", "en_cours", "livre", "cloture"] as const;
-
-const PAYMENT_STATUS_LABEL: Record<string, string> = {
-  paid: "Payé",
-  pending: "En attente",
-  failed: "Échoué",
-  refunded: "Remboursé",
-};
 
 const PAYMENT_BADGE_TONE: Record<string, string> = {
   paid: "border-success/50 text-success",
@@ -53,6 +38,22 @@ type OrderRow = {
 };
 
 export function OrdersSection() {
+  const { t } = useI18n();
+
+  const ORDER_STATUS_LABEL: Record<string, string> = {
+    nouveau: t("admin.orders.status.new"),
+    en_cours: t("admin.orders.status.processing"),
+    livre: t("admin.orders.status.delivered"),
+    cloture: t("admin.orders.status.closed"),
+  };
+
+  const PAYMENT_STATUS_LABEL: Record<string, string> = {
+    paid: t("admin.orders.payment.paid"),
+    pending: t("admin.orders.payment.pending"),
+    failed: t("admin.orders.payment.failed"),
+    refunded: t("admin.orders.payment.refunded"),
+  };
+
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
 
@@ -93,7 +94,7 @@ export function OrdersSection() {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.orders.error.update")),
   });
 
   const rows = (orders.data?.orders ?? []).filter((o: OrderRow) => {
@@ -107,28 +108,28 @@ export function OrdersSection() {
   });
 
   if (orders.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des commandes…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.orders.loading")}</p>;
   }
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Commandes</h2>
+      <h2 className="text-lg font-semibold">{t("admin.orders.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Commandes boutique reçues via le site, avec le statut du paiement en ligne.
+        {t("admin.orders.description")}
       </p>
       <label htmlFor="orders-search" className="sr-only">
-        Rechercher une commande
+        {t("admin.orders.searchLabel")}
       </label>
       <input
         id="orders-search"
         className={`${field} mt-4`}
-        placeholder="Rechercher (référence, nom, téléphone)"
+        placeholder={t("admin.orders.search")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       {rows.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
-          Aucune commande boutique ne correspond à cette recherche.
+          {t("admin.orders.empty")}
         </p>
       ) : (
         <ul className="mt-6 space-y-3">
@@ -142,7 +143,7 @@ export function OrdersSection() {
                     <span className="rounded-full border border-primary/50 px-3 py-1 font-mono text-xs font-bold text-primary">
                       {o.reference ?? "—"}
                     </span>
-                    <p className="font-medium">{o.name ?? "Anonyme"}</p>
+                    <p className="font-medium">{o.name ?? t("admin.orders.anonymous")}</p>
                     <Badge
                       variant="outline"
                       className={
@@ -156,7 +157,7 @@ export function OrdersSection() {
                         ? `${PAYMENT_STATUS_LABEL[payment.status] ?? payment.status}${
                             payment.amount != null ? ` · ${formatFcfa(payment.amount)}` : ""
                           }`
-                        : "Non payé"}
+                        : t("admin.orders.unpaid")}
                     </Badge>
                   </div>
                   <select

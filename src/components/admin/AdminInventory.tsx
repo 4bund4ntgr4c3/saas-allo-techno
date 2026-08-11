@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   getInventory,
@@ -11,8 +12,8 @@ import {
   type StockMovement,
 } from "@/lib/inventory.functions";
 import { formatFcfa } from "@/data/catalog/company";
+import { field } from "@/components/admin/primitives/AdminField";
 import {
-  AlertTriangle,
   Plus,
   ArrowDown,
   ArrowUp,
@@ -140,58 +141,58 @@ export function AdminInventory() {
               placeholder={t("admin.inventory.form.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.sku")}
               value={form.sku}
               onChange={(e) => setForm({ ...form, sku: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.category")}
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.brand")}
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.model")}
               value={form.model}
               onChange={(e) => setForm({ ...form, model: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.quantity")}
               type="number"
               value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.minThreshold")}
               type="number"
               value={form.min_quantity}
               onChange={(e) => setForm({ ...form, min_quantity: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.unitPrice")}
               type="number"
               value={form.unit_price}
               onChange={(e) => setForm({ ...form, unit_price: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.inventory.form.location")}
               value={form.location}
               onChange={(e) => setForm({ ...form, location: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
           </div>
           <div className="flex gap-2">

@@ -15,6 +15,7 @@ import {
   Settings,
   CheckCheck,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
   sla_breach: AlertTriangle,
@@ -35,6 +36,7 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 export function AdminInternalNotifs() {
+  const { t } = useI18n();
   const [notifications, setNotifications] = useState<InternalNotification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +70,7 @@ export function AdminInternalNotifs() {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold flex items-center gap-2">
           <Bell className="size-5" />
-          Notifications internes
+          {t("admin.notifs.title")}
           {unread.length > 0 && (
             <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
               {unread.length}
@@ -77,7 +79,7 @@ export function AdminInternalNotifs() {
         </h3>
         {unread.length > 0 && (
           <Button size="sm" variant="outline" onClick={handleMarkAllRead}>
-            <CheckCheck className="mr-1 size-3" /> Tout marquer lu
+            <CheckCheck className="mr-1 size-3" /> {t("admin.notifs.markAllRead")}
           </Button>
         )}
       </div>
@@ -91,7 +93,7 @@ export function AdminInternalNotifs() {
       ) : notifications.length === 0 ? (
         <div className="rounded-lg border bg-card p-8 text-center">
           <Bell className="mx-auto size-8 text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">Aucune notification</p>
+          <p className="text-sm text-muted-foreground">{t("admin.notifs.empty")}</p>
         </div>
       ) : (
         <div className="space-y-2">

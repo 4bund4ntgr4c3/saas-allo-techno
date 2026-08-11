@@ -15,8 +15,6 @@ import {
   getConversionFunnel,
   getSourceStats,
   getRecentErrors,
-  type FunnelStep,
-  type SourceStat,
 } from "@/lib/analytics-advanced.functions";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -61,8 +59,9 @@ export function AnalyticsAdvanced() {
             {funnel.map((step, i) => {
               const maxCount = Math.max(...funnel.map((s) => s.count), 1);
               const width = Math.max((step.count / maxCount) * 100, 4);
-              const convRate = i > 0 && funnel[i - 1].count > 0
-                ? Math.round((step.count / funnel[i - 1].count) * 100)
+              const prevStep = funnel[i - 1];
+              const convRate = i > 0 && prevStep && prevStep.count > 0
+                ? Math.round((step.count / prevStep.count) * 100)
                 : 100;
               return (
                 <div key={step.step} className="space-y-1">

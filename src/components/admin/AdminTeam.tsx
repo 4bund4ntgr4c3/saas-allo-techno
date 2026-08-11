@@ -3,18 +3,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
+import { field } from "@/components/admin/primitives/AdminField";
+import { useI18n } from "@/lib/i18n/context";
 
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
-
-const ROLE_LABEL: Record<string, string> = {
-  admin: "Administrateur",
-  staff: "Personnel atelier",
-  technicien: "Technicien",
-  user: "Client",
+const ROLE_LABELS: Record<string, string> = {
+  admin: "admin.team.role.admin",
+  staff: "admin.team.role.workshop",
+  technicien: "admin.team.role.technician",
+  user: "admin.team.role.client",
 };
 
 export function TeamSection() {
+  const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
 
@@ -59,24 +59,24 @@ export function TeamSection() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Rôle mis à jour");
+      toast.success(t("admin.team.roleUpdated"));
       queryClient.invalidateQueries({ queryKey: ["team"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.team.updateError")),
   });
 
   if (members.isLoading || isAdmin.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement de l'équipe…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.team.loading")}</p>;
   }
 
   const rolesByUser = new Map((members.data?.roles ?? []).map((r) => [r.user_id, r.role]));
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Équipe</h2>
+      <h2 className="text-lg font-semibold">{t("admin.team.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Attribuez les rôles : administrateur, personnel atelier, technicien ou client.
+        {t("admin.team.description")}
       </p>
       <ul className="mt-6 space-y-3">
         {(members.data?.profiles ?? []).map((p) => {
@@ -87,7 +87,7 @@ export function TeamSection() {
               className="flex flex-wrap items-center justify-between gap-4 border border-border bg-card p-4"
             >
               <div className="min-w-0">
-                <p className="font-medium">{p.full_name ?? "Sans nom"}</p>
+                <p className="font-medium">{p.full_name ?? t("admin.team.noName")}</p>
                 <p className="text-xs text-muted-foreground">{p.email ?? p.phone ?? p.id}</p>
               </div>
               {isAdmin.data ? (
@@ -102,15 +102,15 @@ export function TeamSection() {
                     })
                   }
                 >
-                  {Object.entries(ROLE_LABEL).map(([value, label]) => (
+                  {Object.entries(ROLE_LABELS).map(([value, key]) => (
                     <option key={value} value={value}>
-                      {label}
+                      {t(key)}
                     </option>
                   ))}
                 </select>
               ) : (
                 <span className="rounded-full border border-border px-3 py-1 text-xs">
-                  {ROLE_LABEL[role] ?? role}
+                  {t(ROLE_LABELS[role] ?? "") || role}
                 </span>
               )}
             </li>

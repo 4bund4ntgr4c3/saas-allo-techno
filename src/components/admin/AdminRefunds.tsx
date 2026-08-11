@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 import {
   Dialog,
   DialogContent,
@@ -20,9 +21,6 @@ import {
   initiateRefund,
   type RefundablePayment,
 } from "@/lib/refund.functions";
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 export function RefundsSection() {
   const { t } = useI18n();

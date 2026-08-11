@@ -6,6 +6,7 @@ import { FileDown, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 import { exportLeadsCsv, exportReservationsCsv } from "@/lib/export.functions";
 import {
   listWarrantyClaims,
@@ -13,9 +14,6 @@ import {
   type ClaimStatus,
   type WarrantyClaimRow,
 } from "@/lib/claims.functions";
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 function downloadCsv(csv: string, filename: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });

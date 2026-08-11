@@ -10,11 +10,11 @@ import { QrCode } from "@/components/site/QrCode";
 import { confirmOtp, disableOtp, enrollOtp } from "@/lib/otp.functions";
 import { getSecurityStats } from "@/lib/security.functions";
 import { getMetrics } from "@/lib/monitoring.functions";
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+import { field } from "@/components/admin/primitives/AdminField";
+import { useI18n } from "@/lib/i18n/context";
 
 function SecuritySection() {
+  const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const [code, setCode] = useState("");
@@ -43,43 +43,43 @@ function SecuritySection() {
     onSuccess: (res) => {
       setPendingSecret(res.secret);
       setPendingUri(res.uri);
-      toast.success("Scanner le QR code dans votre application d'authentification.");
+      toast.success(t("admin.security.toast.scanQr"));
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Opération impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.security.toast.operationFailed")),
   });
 
   const confirm = useMutation({
     mutationFn: async () => confirmFn({ data: { code } }),
     onSuccess: () => {
-      toast.success("Double authentification activée");
+      toast.success(t("admin.security.toast.2faEnabled"));
       setPendingSecret(null);
       setPendingUri(null);
       setCode("");
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Code invalide"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
   });
 
   const disable = useMutation({
     mutationFn: async () => disableFn({ data: { code } }),
     onSuccess: () => {
-      toast.success("Double authentification désactivée");
+      toast.success(t("admin.security.toast.2faDisabled"));
       setCode("");
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Code invalide"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
   });
 
   const enrolling = pendingSecret !== null;
 
   return (
     <div className="max-w-xl">
-      <h2 className="text-lg font-semibold">Sécurité du compte</h2>
+      <h2 className="text-lg font-semibold">{t("admin.security.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        La double authentification (TOTP) protège l'accès à l'administration.
+        {t("admin.security.description")}
       </p>
 
       <RateLimitPanel />
@@ -89,16 +89,16 @@ function SecuritySection() {
       {enrolling ? (
         <div className="mt-6 space-y-5 border border-border bg-card p-6">
           <p className="text-sm">
-            1. Scannez le QR code avec Google Authenticator, Authy ou équivalent.
+            1. {t("admin.security.enroll.step1")}
           </p>
           <QrCode
             value={pendingUri ?? ""}
             size={180}
-            label="Clé TOTP"
-            caption="QR code d'activation de la double authentification"
+            label={t("admin.security.enroll.totpKey")}
+            caption={t("admin.security.enroll.qrCaption")}
           />
           <p className="break-all font-mono text-xs text-muted-foreground">{pendingSecret}</p>
-          <p className="text-sm">2. Saisissez le code à 6 chiffres affiché par l'application.</p>
+          <p className="text-sm">2. {t("admin.security.enroll.step2")}</p>
           <div className="flex gap-3">
             <input
               className={`${field} max-w-40 text-center font-mono tracking-widest`}
@@ -112,27 +112,27 @@ function SecuritySection() {
               disabled={confirm.isPending || code.length !== 6}
               onClick={() => confirm.mutate()}
             >
-              {confirm.isPending ? "Vérification…" : "Activer"}
+              {confirm.isPending ? t("admin.security.enroll.verifying") : t("admin.security.enroll.activate")}
             </Button>
           </div>
         </div>
       ) : otp.isLoading ? (
-        <p className="mt-6 text-sm text-muted-foreground">Chargement…</p>
+        <p className="mt-6 text-sm text-muted-foreground">{t("common.loading")}</p>
       ) : otp.data?.enabled ? (
         <div className="mt-6 space-y-4 border border-border bg-card p-6">
           <p className="flex items-center gap-2 text-sm font-semibold text-success">
             <ShieldCheck className="size-4" />
-            Double authentification active
+            {t("admin.security.status.active")}
           </p>
           <p className="text-sm text-muted-foreground">
-            À chaque session d'administration (24 h), un code à 6 chiffres sera demandé.
+            {t("admin.security.status.activeDesc")}
           </p>
           <div className="flex flex-wrap gap-3">
             <input
               className={`${field} max-w-40 text-center font-mono tracking-widest`}
               inputMode="numeric"
               maxLength={6}
-              placeholder="Code actuel"
+              placeholder={t("admin.security.status.currentCode")}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             />
@@ -141,7 +141,7 @@ function SecuritySection() {
               disabled={disable.isPending || code.length !== 6}
               onClick={() => disable.mutate()}
             >
-              Désactiver
+              {t("admin.security.status.disable")}
             </Button>
           </div>
         </div>
@@ -149,13 +149,13 @@ function SecuritySection() {
         <div className="mt-6 space-y-4 border border-border bg-card p-6">
           <p className="flex items-center gap-2 text-sm font-semibold">
             <KeyRound className="size-4" />
-            Double authentification désactivée
+            {t("admin.security.status.inactive")}
           </p>
           <p className="text-sm text-muted-foreground">
-            Recommandé pour protéger l'accès aux dossiers clients.
+            {t("admin.security.status.inactiveDesc")}
           </p>
           <Button disabled={enroll.isPending} onClick={() => enroll.mutate()}>
-            {enroll.isPending ? "Préparation…" : "Activer la double authentification"}
+            {enroll.isPending ? t("admin.security.enroll.preparing") : t("admin.security.enroll.enable2fa")}
           </Button>
         </div>
       )}
@@ -164,6 +164,7 @@ function SecuritySection() {
 }
 
 function RateLimitPanel() {
+  const { t } = useI18n();
   const getSecurityStatsFn = useServerFn(getSecurityStats);
   const stats = useQuery({
     queryKey: ["rate-limit-stats"],
@@ -173,22 +174,22 @@ function RateLimitPanel() {
 
   return (
     <div className="mt-6 rounded-sm border border-border bg-card p-5">
-      <h3 className="text-sm font-semibold">Limiteur de débit</h3>
+      <h3 className="text-sm font-semibold">{t("admin.security.rateLimit.title")}</h3>
       <p className="mt-1 text-xs text-muted-foreground">
-        Surveillance des requêtes par IP et action (fenêtre de 60 secondes).
+        {t("admin.security.rateLimit.description")}
       </p>
       {stats.isLoading ? (
-        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+        <p className="mt-4 text-sm text-muted-foreground">{t("common.loading")}</p>
       ) : stats.data ? (
         <div className="mt-4 space-y-4">
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-sm border border-border p-3 text-center">
               <p className="font-mono text-2xl font-bold">{stats.data.totalBuckets}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Buckets actifs</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.activeBuckets")}</p>
             </div>
             <div className="rounded-sm border border-border p-3 text-center">
               <p className="font-mono text-2xl font-bold">{stats.data.activeBuckets}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Dans la fenêtre</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.inWindow")}</p>
             </div>
             <div className="rounded-sm border border-border p-3 text-center">
               <p
@@ -196,7 +197,7 @@ function RateLimitPanel() {
               >
                 {stats.data.blockedBuckets}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">Proches du blocage</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.nearBlock")}</p>
             </div>
           </div>
           {stats.data.buckets.length > 0 && (
@@ -204,9 +205,9 @@ function RateLimitPanel() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
-                    <th className="px-3 py-2">Clé</th>
-                    <th className="px-3 py-2 text-right">Requêtes</th>
-                    <th className="px-3 py-2 text-right">Expire dans</th>
+                    <th className="px-3 py-2">{t("admin.security.rateLimit.key")}</th>
+                    <th className="px-3 py-2 text-right">{t("admin.security.rateLimit.requests")}</th>
+                    <th className="px-3 py-2 text-right">{t("admin.security.rateLimit.expiresIn")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -240,6 +241,7 @@ const METRIC_LABEL: Record<string, string> = {
 };
 
 function MetricsPanel() {
+  const { t } = useI18n();
   const getMetricsFn = useServerFn(getMetrics);
   const metrics = useQuery({
     queryKey: ["metrics-summary"],
@@ -249,19 +251,19 @@ function MetricsPanel() {
 
   return (
     <div className="mt-6 rounded-sm border border-border bg-card p-5">
-      <h3 className="text-sm font-semibold">Métriques en temps réel</h3>
+      <h3 className="text-sm font-semibold">{t("admin.security.metrics.title")}</h3>
       <p className="mt-1 text-xs text-muted-foreground">
-        Événements trackés depuis le dernier redémarrage de l'isolat.
+        {t("admin.security.metrics.description")}
       </p>
       {metrics.isLoading ? (
-        <p className="mt-4 text-sm text-muted-foreground">Chargement…</p>
+        <p className="mt-4 text-sm text-muted-foreground">{t("common.loading")}</p>
       ) : metrics.data && metrics.data.length > 0 ? (
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
-                <th className="px-3 py-2">Événement</th>
-                <th className="px-3 py-2 text-right">Nombre</th>
+                    <th className="px-3 py-2">{t("admin.security.metrics.event")}</th>
+                    <th className="px-3 py-2 text-right">{t("admin.security.metrics.count")}</th>
               </tr>
             </thead>
             <tbody>
@@ -279,7 +281,7 @@ function MetricsPanel() {
           </table>
         </div>
       ) : (
-        <p className="mt-4 text-sm text-muted-foreground">Aucune métrique enregistrée.</p>
+        <p className="mt-4 text-sm text-muted-foreground">{t("admin.security.metrics.empty")}</p>
       )}
     </div>
   );

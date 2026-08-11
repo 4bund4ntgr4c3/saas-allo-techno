@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { useState } from "react";
+import { field } from "@/components/admin/primitives/AdminField";
 import { Trash2, Plus, ToggleLeft, ToggleRight } from "lucide-react";
 
 export function AdminFeatureFlags() {
@@ -53,13 +54,13 @@ export function AdminFeatureFlags() {
           value={newKey}
           onChange={(e) => setNewKey(e.target.value)}
           placeholder="feature-key"
-          className="flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+          className={field}
         />
         <input
           value={newDesc}
           onChange={(e) => setNewDesc(e.target.value)}
           placeholder={t("admin.feature-flags.description")}
-          className="flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+          className={field}
         />
         <Button
           size="sm"

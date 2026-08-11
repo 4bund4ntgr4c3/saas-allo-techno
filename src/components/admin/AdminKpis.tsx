@@ -8,6 +8,7 @@ import { formatFcfa } from "@/data/catalog";
 import { STATUS_LABEL } from "@/lib/reservation-schema";
 import { getAdminKpis } from "@/lib/admin.functions";
 import { exportPaymentsCsv } from "@/lib/export.functions";
+import { useI18n } from "@/lib/i18n/context";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/chart";
 
 function ExportPaymentsButton() {
+  const { t } = useI18n();
   const fn = useServerFn(exportPaymentsCsv);
   const [pending, setPending] = useState(false);
 
@@ -27,7 +29,7 @@ function ExportPaymentsButton() {
       const date = new Date().toISOString().slice(0, 10);
       downloadCsv(res.csv, `paiements-allotechno-${date}.csv`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Export impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.export.error"));
     } finally {
       setPending(false);
     }
@@ -40,7 +42,7 @@ function ExportPaymentsButton() {
       ) : (
         <FileDown className="mr-2 size-4" />
       )}
-      Export paiements
+      {t("admin.kpis.exportPayments")}
     </Button>
   );
 }
@@ -59,11 +61,8 @@ function shortDate(iso: string): string {
   return `${iso.slice(8)}/${iso.slice(5, 7)}`;
 }
 
-const REVENUE_CHART_CONFIG = {
-  revenu: { label: "Revenus", color: "var(--primary)" },
-} satisfies ChartConfig;
-
 function KpisSection() {
+  const { t } = useI18n();
   const getKpisFn = useServerFn(getAdminKpis);
 
   const kpis = useQuery({
@@ -73,15 +72,15 @@ function KpisSection() {
   });
 
   if (kpis.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des indicateurs…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.kpis.loading")}</p>;
   }
 
   if (kpis.isError || !kpis.data) {
     return (
       <div>
-        <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
+        <h2 className="text-lg font-semibold">{t("admin.kpis.title")}</h2>
         <p className="mt-4 text-sm text-destructive">
-          Impossible de charger les indicateurs. Réessayez.
+          {t("admin.kpis.error")}
         </p>
       </div>
     );
@@ -95,13 +94,17 @@ function KpisSection() {
   const approvedShare = quotesSent > 0 ? Math.round((quotesApproved / quotesSent) * 100) : 0;
   const paidShare = quotesSent > 0 ? Math.round((paid / quotesSent) * 100) : 0;
 
+  const revenueChartConfig = {
+    revenu: { label: t("admin.kpis.chart.revenu"), color: "var(--primary)" },
+  } satisfies ChartConfig;
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Indicateurs avancés (KPI)</h2>
+          <h2 className="text-lg font-semibold">{t("admin.kpis.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.
+            {t("admin.kpis.description")}
           </p>
         </div>
         <ExportPaymentsButton />
@@ -109,46 +112,46 @@ function KpisSection() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="border border-border bg-card p-4">
-          <p className="at-eyebrow">Chiffre d'affaires (30 j)</p>
+          <p className="at-eyebrow">{t("admin.kpis.revenue")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{formatFcfa(totalRevenue)}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Paiements confirmés (atelier + boutique)
+            {t("admin.kpis.revenueDesc")}
           </p>
         </div>
         <div className="border border-border bg-card p-4">
-          <p className="at-eyebrow">Devis envoyés</p>
+          <p className="at-eyebrow">{t("admin.kpis.quotesSent")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{quotesSent}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Envoyés ou approuvés</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.quotesSentDesc")}</p>
         </div>
         <div className="border border-border bg-card p-4">
-          <p className="at-eyebrow">Devis approuvés</p>
+          <p className="at-eyebrow">{t("admin.kpis.quotesApproved")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{quotesApproved}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Acceptés par le client</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.quotesApprovedDesc")}</p>
         </div>
         <div className="border border-border bg-card p-4">
-          <p className="at-eyebrow">Paiements reçus</p>
+          <p className="at-eyebrow">{t("admin.kpis.paymentsReceived")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{paid}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Dossiers réparation payés</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.paymentsReceivedDesc")}</p>
         </div>
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="rounded-sm border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold">Conversion devis → paiement</h3>
+          <h3 className="text-sm font-semibold">{t("admin.kpis.conversion")}</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Part des devis envoyés qui aboutissent à un paiement.
+            {t("admin.kpis.conversionDesc")}
           </p>
           <p className="mt-4 text-3xl font-bold tabular-nums">{rate}%</p>
           <div className="mt-4 space-y-2">
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">Devis envoyés</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesSent")}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: "100%" }} />
               </div>
               <span className="w-12 text-right font-mono text-xs tabular-nums">{quotesSent}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">Devis approuvés</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesApproved")}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: `${approvedShare}%` }} />
               </div>
@@ -157,7 +160,7 @@ function KpisSection() {
               </span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">Paiements reçus</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.paymentsReceived")}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
                 <div className="h-full bg-success/70" style={{ width: `${paidShare}%` }} />
               </div>
@@ -167,8 +170,8 @@ function KpisSection() {
         </div>
 
         <div className="rounded-sm border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold">Revenus quotidiens (30 jours)</h3>
-          <ChartContainer config={REVENUE_CHART_CONFIG} className="mt-4 aspect-auto h-56">
+          <h3 className="text-sm font-semibold">{t("admin.kpis.dailyRevenue")}</h3>
+          <ChartContainer config={revenueChartConfig} className="mt-4 aspect-auto h-56">
             <BarChart data={data.dailyRevenue}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis
@@ -203,9 +206,9 @@ function KpisSection() {
 
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="rounded-sm border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold">Durée moyenne par étape</h3>
+          <h3 className="text-sm font-semibold">{t("admin.kpis.avgTimeByStage")}</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Temps passé dans chaque étape (historique des statuts).
+            {t("admin.kpis.avgTimeByStageDesc")}
           </p>
           <ul className="mt-4 space-y-2">
             {data.avgStageDuration.map((s) => (
@@ -227,15 +230,15 @@ function KpisSection() {
               </li>
             ))}
             {data.avgStageDuration.length === 0 && (
-              <li className="text-sm text-muted-foreground">Pas encore assez d'historique.</li>
+              <li className="text-sm text-muted-foreground">{t("admin.kpis.avgTimeByStageEmpty")}</li>
             )}
           </ul>
         </div>
 
         <div className="rounded-sm border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold">Pannes les plus estimées</h3>
+          <h3 className="text-sm font-semibold">{t("admin.kpis.topFaults")}</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Catégories de pannes consultées à l'étape estimation du devis en ligne.
+            {t("admin.kpis.topFaultsDesc")}
           </p>
           <ul className="mt-4 space-y-2">
             {data.topFaults.map((f) => (
@@ -255,7 +258,7 @@ function KpisSection() {
               </li>
             ))}
             {data.topFaults.length === 0 && (
-              <li className="text-sm text-muted-foreground">Pas encore de données.</li>
+              <li className="text-sm text-muted-foreground">{t("admin.kpis.topFaultsEmpty")}</li>
             )}
           </ul>
         </div>

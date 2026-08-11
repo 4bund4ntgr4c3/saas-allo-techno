@@ -11,6 +11,7 @@ import {
   type KBArticle,
 } from "@/lib/knowledge-base";
 import { BookOpen, Plus, Pencil, Trash2, Check, X, Search, Eye, ThumbsUp } from "lucide-react";
+import { field } from "@/components/admin/primitives/AdminField";
 
 export function AdminKnowledgeBase() {
   const { t } = useI18n();
@@ -111,7 +112,7 @@ export function AdminKnowledgeBase() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Search..."
-            className="rounded-md border bg-background px-3 py-2 text-sm flex-1"
+            className={`${field} flex-1`}
           />
           <Button size="sm" variant="outline" onClick={handleSearch}>
             <Search className="size-3" />
@@ -120,7 +121,7 @@ export function AdminKnowledgeBase() {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="rounded-md border bg-background px-3 py-2 text-sm"
+          className={field}
         >
           <option value="">{t("admin.kb.allCategories")}</option>
           {KB_CATEGORIES.map((c) => (
@@ -138,12 +139,12 @@ export function AdminKnowledgeBase() {
               placeholder={t("admin.kb.form.title")}
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             >
               {KB_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -157,13 +158,13 @@ export function AdminKnowledgeBase() {
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             rows={6}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            className={`${field} w-full`}
           />
           <input
             placeholder={t("admin.kb.form.tagsPlaceholder")}
             value={form.tags}
             onChange={(e) => setForm({ ...form, tags: e.target.value })}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            className={`${field} w-full`}
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={editingId ? handleUpdate : handleCreate}>

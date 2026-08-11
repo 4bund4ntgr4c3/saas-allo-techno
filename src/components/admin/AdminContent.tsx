@@ -17,9 +17,7 @@ import {
 import { logAudit } from "@/lib/audit";
 import { StockAdmin } from "@/components/admin/AdminStock";
 import { useI18n } from "@/lib/i18n/context";
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+import { field } from "@/components/admin/primitives/AdminField";
 
 type ContentTab = "blog" | "avis" | "stock";
 

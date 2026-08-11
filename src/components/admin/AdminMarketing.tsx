@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 import {
-  Plus,
   Send,
   Trash2,
   Mail,
   MessageSquare,
+  Plus,
   Smartphone,
   ChevronDown,
   ChevronUp,
@@ -32,14 +34,6 @@ const SEGMENT_COLORS: Record<string, string> = {
   inactive: "border-border text-muted-foreground",
 };
 
-const SEGMENT_LABELS: Record<string, string> = {
-  vip: "VIP",
-  loyal: "Loyal",
-  active: "Actif",
-  new: "Nouveau",
-  inactive: "Inactif",
-};
-
 const TYPE_ICONS: Record<string, typeof Mail> = {
   email: Mail,
   sms: MessageSquare,
@@ -54,6 +48,17 @@ const STATUS_TONE: Record<string, string> = {
 };
 
 export function AdminMarketing() {
+  const { t } = useI18n();
+  const segmentLabel = (key: string) => {
+    const map: Record<string, string> = {
+      vip: t("admin.marketing.vip"),
+      loyal: t("admin.marketing.loyal"),
+      active: t("admin.marketing.active"),
+      new: t("admin.marketing.new-client"),
+      inactive: t("admin.marketing.inactive"),
+    };
+    return map[key] ?? key;
+  };
   const queryClient = useQueryClient();
   const listFn = useServerFn(listCampaigns);
   const createFn = useServerFn(createCampaign);
@@ -102,30 +107,30 @@ export function AdminMarketing() {
       });
     },
     onSuccess: () => {
-      toast.success("Campagne créée");
+      toast.success(t("admin.marketing.toast.campaignCreated"));
       setShowCreate(false);
       setForm({ name: "", type: "email", subject: "", body: "", segment: "all", templateId: "" });
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   const handleSend = useMutation({
     mutationFn: async (id: string) => sendFn({ data: { id } }),
     onSuccess: (result) => {
-      toast.success(`${result?.sent ?? 0} envois lancés`);
+      toast.success(t("admin.marketing.toast.sendsLaunched", [result?.sent ?? 0]));
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   const handleDelete = useMutation({
     mutationFn: async (id: string) => deleteFn({ data: { id } }),
     onSuccess: () => {
-      toast.success("Campagne supprimée");
+      toast.success(t("admin.marketing.toast.campaignDeleted"));
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur"),
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   function applyTemplate(templateId: string) {
@@ -148,13 +153,13 @@ export function AdminMarketing() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Marketing</h2>
+          <h2 className="text-lg font-semibold">{t("admin.marketing.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Campagnes email/SMS/WhatsApp et segmentation clients (RFM).
+            {t("admin.marketing.description")}
           </p>
         </div>
         <Button variant="technical" size="sm" onClick={() => setShowCreate(!showCreate)}>
-          <Plus className="size-4" /> Nouvelle campagne
+          <Plus className="size-4" /> {t("admin.marketing.newCampaign")}
         </Button>
       </div>
 
@@ -164,33 +169,33 @@ export function AdminMarketing() {
             <span
               className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg]}`}
             >
-              {SEGMENT_LABELS[seg]}
+              {segmentLabel(seg)}
             </span>
             <p className="mt-2 font-mono text-2xl font-bold">{countData[seg] ?? 0}</p>
-            <p className="text-[10px] text-muted-foreground">clients</p>
+            <p className="text-[10px] text-muted-foreground">{t("admin.marketing.clients")}</p>
           </div>
         ))}
       </div>
 
       {showCreate && (
         <div className="border border-border bg-card p-6">
-          <h3 className="font-bold">Nouvelle campagne</h3>
+          <h3 className="font-bold">{t("admin.marketing.newCampaign")}</h3>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="at-eyebrow block">Nom</label>
+              <label className="at-eyebrow block">{t("admin.marketing.form.name")}</label>
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                placeholder="Campagne relance"
+                className={field}
+                placeholder={t("admin.marketing.form.namePlaceholder")}
               />
             </div>
             <div>
-              <label className="at-eyebrow block">Type</label>
+              <label className="at-eyebrow block">{t("admin.marketing.form.type")}</label>
               <select
                 value={form.type}
                 onChange={(e) => setForm({ ...form, type: e.target.value as CampaignType })}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none"
+                className={field}
               >
                 <option value="email">Email</option>
                 <option value="sms">SMS</option>
@@ -198,28 +203,28 @@ export function AdminMarketing() {
               </select>
             </div>
             <div>
-              <label className="at-eyebrow block">Segment</label>
+              <label className="at-eyebrow block">{t("admin.marketing.form.segment")}</label>
               <select
                 value={form.segment}
                 onChange={(e) => setForm({ ...form, segment: e.target.value })}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none"
+                className={field}
               >
-                <option value="all">Tous les clients</option>
-                <option value="vip">VIP (5+ visites, 200k+ FCFA)</option>
-                <option value="loyal">Loyal (3+ visites)</option>
-                <option value="active">Actif (≤90 jours)</option>
-                <option value="new">Nouveau</option>
-                <option value="inactive">Inactif (&gt;180 jours)</option>
+                <option value="all">{t("admin.marketing.segment.all")}</option>
+                <option value="vip">{t("admin.marketing.segment.vip")}</option>
+                <option value="loyal">{t("admin.marketing.segment.loyalDetail")}</option>
+                <option value="active">{t("admin.marketing.segment.activeDetail")}</option>
+                <option value="new">{t("admin.marketing.segment.new")}</option>
+                <option value="inactive">{t("admin.marketing.segment.inactiveDetail")}</option>
               </select>
             </div>
             <div>
-              <label className="at-eyebrow block">Template</label>
+              <label className="at-eyebrow block">{t("admin.marketing.form.template")}</label>
               <select
                 value={form.templateId}
                 onChange={(e) => applyTemplate(e.target.value)}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none"
+                className={field}
               >
-                <option value="">— Personnalisé —</option>
+                <option value="">{t("admin.marketing.form.customTemplate")}</option>
                 {CAMPAIGN_TEMPLATES.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.name} ({t.type})
@@ -229,24 +234,24 @@ export function AdminMarketing() {
             </div>
             {form.type === "email" && (
               <div className="sm:col-span-2">
-                <label className="at-eyebrow block">Sujet</label>
+                <label className="at-eyebrow block">{t("admin.marketing.subject")}</label>
                 <input
                   value={form.subject}
                   onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                  className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  className={field}
                 />
               </div>
             )}
             <div className="sm:col-span-2">
-              <label className="at-eyebrow block">Contenu</label>
+              <label className="at-eyebrow block">{t("admin.marketing.content")}</label>
               <textarea
                 value={form.body}
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
                 rows={4}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                className={field}
               />
               <p className="mt-1 text-[10px] text-muted-foreground">
-                Variables : {"{name}"} {"{device}"} {"{company}"} {"{code}"} {"{discount}"}{" "}
+                {t("admin.marketing.form.variables")} {"{name}"} {"{device}"} {"{company}"} {"{code}"} {"{discount}"}{" "}
                 {"{expiry}"} {"{review_link}"} {"{booking_link}"}
               </p>
             </div>
@@ -258,10 +263,10 @@ export function AdminMarketing() {
               disabled={!form.name || !form.body || handleCreate.isPending}
               onClick={() => handleCreate.mutate()}
             >
-              {handleCreate.isPending ? "…" : "Créer"}
+              {handleCreate.isPending ? "…" : t("admin.marketing.create")}
             </Button>
             <Button variant="technicalOutline" size="sm" onClick={() => setShowCreate(false)}>
-              Annuler
+              {t("admin.marketing.cancel")}
             </Button>
           </div>
         </div>
@@ -269,10 +274,10 @@ export function AdminMarketing() {
 
       <div className="space-y-2">
         {campaigns.isLoading ? (
-          <p className="text-sm text-muted-foreground">Chargement…</p>
+          <p className="text-sm text-muted-foreground">{t("admin.marketing.loading")}</p>
         ) : data.length === 0 ? (
           <p className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-            Aucune campagne créée.
+            {t("admin.marketing.empty")}
           </p>
         ) : (
           data.map((c) => {
@@ -285,7 +290,7 @@ export function AdminMarketing() {
                   <div className="flex-1 min-w-0">
                     <p className="truncate text-sm font-bold">{c.name}</p>
                     <p className="text-[10px] text-muted-foreground">
-                      {c.type.toUpperCase()} · {c.sent_count} envois ·{" "}
+                      {c.type.toUpperCase()} · {c.sent_count} {t("admin.marketing.sends")} ·{" "}
                       {new Date(c.created_at).toLocaleDateString("fr-FR")}
                     </p>
                   </div>
@@ -341,17 +346,17 @@ export function AdminMarketing() {
 
       {segData.length > 0 && (
         <div>
-          <h3 className="font-bold text-sm">Aperçu clients ({segData.length})</h3>
+          <h3 className="font-bold text-sm">{t("admin.marketing.clientPreview")} ({segData.length})</h3>
           <div className="mt-3 max-h-64 overflow-y-auto border border-border bg-card">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="p-2">Nom</th>
-                  <th className="p-2">Téléphone</th>
-                  <th className="p-2">Segment</th>
-                  <th className="p-2 text-right">Freq.</th>
-                  <th className="p-2 text-right">Dernier</th>
-                  <th className="p-2 text-right">Total</th>
+                  <th className="p-2">{t("admin.marketing.table.name")}</th>
+                  <th className="p-2">{t("admin.marketing.table.phone")}</th>
+                  <th className="p-2">{t("admin.marketing.table.segment")}</th>
+                  <th className="p-2 text-right">{t("admin.marketing.table.frequency")}</th>
+                  <th className="p-2 text-right">{t("admin.marketing.table.recency")}</th>
+                  <th className="p-2 text-right">{t("admin.marketing.table.total")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,7 +368,7 @@ export function AdminMarketing() {
                       <span
                         className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[c.segment] ?? ""}`}
                       >
-                        {SEGMENT_LABELS[c.segment] ?? c.segment}
+                        {segmentLabel(c.segment)}
                       </span>
                     </td>
                     <td className="p-2 text-right font-mono">{c.frequency}</td>

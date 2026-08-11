@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Send, User, Wrench } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 
 interface ChatMessage {
   id: string;
@@ -77,7 +78,7 @@ export function AdminChat() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder={t("admin.chat.placeholder")}
-            className="flex-1 rounded-md border bg-background px-3 py-2 text-sm"
+            className={field}
           />
           <Button size="sm" onClick={handleSend}>
             <Send className="size-3" />

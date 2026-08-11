@@ -9,6 +9,7 @@ import {
 } from "@/lib/suppliers.functions";
 import { formatFcfa } from "@/data/catalog/company";
 import { Truck, Package, Plus, Check, X, Clock, CheckCircle } from "lucide-react";
+import { field } from "@/components/admin/primitives/AdminField";
 
 interface Supplier {
   id: string;
@@ -92,31 +93,31 @@ export function AdminSuppliers() {
               placeholder={t("admin.suppliers.placeholder.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.suppliers.placeholder.contact")}
               value={form.contact_name}
               onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.suppliers.placeholder.phone")}
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.suppliers.placeholder.email")}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.suppliers.placeholder.speciality")}
               value={form.speciality}
               onChange={(e) => setForm({ ...form, speciality: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
           </div>
           <div className="flex gap-2">

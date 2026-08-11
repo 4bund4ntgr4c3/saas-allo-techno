@@ -134,7 +134,7 @@ export function DossiersSection() {
       await setReservationStatus({ data: { id, status, note: note || undefined } });
     },
     onSuccess: (_d, vars) => {
-      toast.success(t("admin.dossier.statusUpdated", [STATUS_LABEL[vars.status]]));
+      toast.success(t("admin.dossier.statusUpdated", [STATUS_LABEL[vars.status] ?? vars.status]));
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
       void logAudit(supabase as never, {

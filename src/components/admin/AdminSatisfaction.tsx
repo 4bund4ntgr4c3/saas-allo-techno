@@ -5,8 +5,10 @@ import {
   type SatisfactionEntry,
 } from "@/lib/satisfaction.functions";
 import { Star, ThumbsUp, ThumbsDown, BarChart3 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export function AdminSatisfaction() {
+  const { t } = useI18n();
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getSatisfactionStats>> | null>(null);
   const [entries, setEntries] = useState<SatisfactionEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,13 +33,13 @@ export function AdminSatisfaction() {
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-bold flex items-center gap-2">
-        <BarChart3 className="size-5" /> Satisfaction client
+        <BarChart3 className="size-5" /> {t("admin.satisfaction.title")}
       </h3>
 
       {stats && (
         <div className="grid gap-3 sm:grid-cols-4">
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">NPS Score</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.nps")}</p>
             <p
               className={`text-2xl font-bold ${stats.nps >= 50 ? "text-success" : stats.nps >= 0 ? "text-amber-600" : "text-destructive"}`}
             >
@@ -46,21 +48,21 @@ export function AdminSatisfaction() {
             </p>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">Note moyenne</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.avgRating")}</p>
             <div className="flex items-center gap-1">
               <p className="text-2xl font-bold">{stats.avgRating}</p>
               <Star className="size-4 fill-amber-400 text-amber-400" />
             </div>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">Promoteurs</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.promoters")}</p>
             <div className="flex items-center gap-1">
               <ThumbsUp className="size-4 text-success" />
               <p className="text-2xl font-bold">{stats.promoters}</p>
             </div>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">Détracteurs</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.detractors")}</p>
             <div className="flex items-center gap-1">
               <ThumbsDown className="size-4 text-destructive" />
               <p className="text-2xl font-bold">{stats.detractors}</p>
@@ -71,7 +73,7 @@ export function AdminSatisfaction() {
 
       {stats && stats.total > 0 && (
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-xs font-medium mb-2">Distribution des notes</p>
+          <p className="text-xs font-medium mb-2">{t("admin.satisfaction.ratingDistribution")}</p>
           <div className="space-y-1">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = stats.distribution[star] ?? 0;
@@ -96,7 +98,7 @@ export function AdminSatisfaction() {
 
       {entries.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-bold">Avis récents</h4>
+          <h4 className="text-sm font-bold">{t("admin.satisfaction.recentReviews")}</h4>
           {entries.slice(0, 10).map((e) => (
             <div key={e.id} className="rounded-lg border bg-card p-3">
               <div className="flex items-center justify-between mb-1">

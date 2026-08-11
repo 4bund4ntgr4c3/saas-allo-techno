@@ -4,6 +4,7 @@ import { generateReport } from "@/lib/reports.functions";
 import { downloadMonthlyReportPdf } from "@/lib/report-pdf";
 import { BarChart3, Download, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 
 interface ReportResult {
   total_reservations?: number;
@@ -73,7 +74,7 @@ export function AdminAdvancedReports() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="block rounded-md border bg-background px-3 py-2 text-sm"
+            className={field}
           />
         </div>
         <div>
@@ -82,7 +83,7 @@ export function AdminAdvancedReports() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="block rounded-md border bg-background px-3 py-2 text-sm"
+            className={field}
           />
         </div>
         <div className="flex items-end gap-2">

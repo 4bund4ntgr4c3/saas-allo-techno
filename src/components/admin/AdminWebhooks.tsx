@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Webhook, Plus, Trash2, Power, PowerOff, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,10 @@ import {
   deleteWebhook,
   WEBHOOK_EVENTS,
   type OutboundWebhook,
+  type WebhookLog,
 } from "@/lib/webhooks.functions";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 
 export function AdminWebhooks() {
   const { t } = useI18n();
@@ -38,7 +39,7 @@ export function AdminWebhooks() {
   const { data: logs } = useQuery({
     queryKey: ["webhook-logs", expandedId],
     enabled: !!expandedId,
-    queryFn: () => listWebhookLogs({ data: { webhook_id: expandedId! } }),
+    queryFn: async () => (await listWebhookLogs({ data: { webhook_id: expandedId! } })) as WebhookLog[],
   });
 
   const createMut = useMutation({
@@ -214,9 +215,6 @@ function WebhookForm({
   const toggle = (ev: string) =>
     setEvents((prev) => (prev.includes(ev) ? prev.filter((e) => e !== ev) : [...prev, ev]));
 
-  const field =
-    "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
-
   return (
     <div className="rounded-lg border bg-card p-4 space-y-3">
       <input
@@ -261,7 +259,7 @@ function WebhookForm({
           variant="technical"
           size="sm"
           disabled={!name || !url || events.length === 0}
-          onClick={() => onSubmit({ name, url, events, secret: secret || undefined })}
+          onClick={() => onSubmit({ name, url, events, ...(secret ? { secret } : {}) })}
         >
           {t("admin.webhooks.form.save")}
         </Button>

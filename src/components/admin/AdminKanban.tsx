@@ -12,6 +12,7 @@ import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
 import { downloadQuotePdf } from "@/lib/invoice";
 import { logAudit } from "@/lib/audit";
 import { useI18n } from "@/lib/i18n/context";
+import { field } from "@/components/admin/primitives/AdminField";
 import { formatFcfa } from "@/data/catalog";
 import { Route } from "@/routes/_authenticated/admin";
 import type { Enums } from "@/integrations/supabase/types";
@@ -64,9 +65,6 @@ const PHOTO_STAGE_LABEL: Record<string, string> = {
   pieces: "Pièces",
   repair: "Réparation",
 };
-
-const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 const PHOTO_STAGES = ["diagnostic", "pieces", "repair"] as const;
 
@@ -618,5 +616,4 @@ export {
   QUOTE_STATUS_LABEL,
   PHOTO_STAGE_LABEL,
   PHOTO_STAGES,
-  field,
 };

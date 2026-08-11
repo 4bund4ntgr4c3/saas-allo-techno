@@ -8,6 +8,7 @@ import {
   deleteWorkshop,
 } from "@/lib/workshops.functions";
 import { MapPin, Phone, Mail, Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { field } from "@/components/admin/primitives/AdminField";
 
 interface Workshop {
   id: string;
@@ -96,31 +97,31 @@ export function AdminWorkshops() {
               placeholder={t("admin.workshops.placeholder.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.workshops.placeholder.city")}
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.workshops.placeholder.address")}
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.workshops.placeholder.phone")}
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
             <input
               placeholder={t("admin.workshops.placeholder.email")}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className={field}
             />
           </div>
           <div className="flex gap-2">
