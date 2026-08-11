@@ -736,3 +736,115 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return detail as unknown as OrgTicketDetail;
   });
+
+// ---------------------------------------------------------------------------
+// Pièces jointes des tickets (photos / vidéos du signalement)
+// ---------------------------------------------------------------------------
+
+const B2B_ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/heic"]);
+const B2B_ALLOWED_VIDEO_MIME = new Set(["video/mp4", "video/webm"]);
+const B2B_MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const B2B_MAX_VIDEO_BYTES = 25 * 1024 * 1024;
+
+function b2bAssertValidMedia(
+  fileName: string,
+  contentType: string,
+  fileSize: number,
+): { ext: string; kind: "photo" | "video" } {
+  const kind: "photo" | "video" = contentType.startsWith("video/") ? "video" : "photo";
+  if (kind === "video") {
+    if (!B2B_ALLOWED_VIDEO_MIME.has(contentType)) {
+      throw new Error("Format de vidéo non accepté (MP4, WebM).");
+    }
+    if (fileSize > B2B_MAX_VIDEO_BYTES) {
+      throw new Error("Vidéo trop lourde (25 Mo maximum).");
+    }
+  } else {
+    if (!B2B_ALLOWED_IMAGE_MIME.has(contentType)) {
+      throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
+    }
+    if (fileSize > B2B_MAX_IMAGE_BYTES) {
+      throw new Error("Photo trop lourde (5 Mo maximum).");
+    }
+  }
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? (kind === "video" ? "mp4" : "jpg");
+  if (!/^[a-z0-9]{1,10}$/.test(ext)) {
+    throw new Error("Extension de fichier invalide.");
+  }
+  return { ext, kind };
+}
+
+/** Vérifie que l'utilisateur courant est membre de l'org du ticket (RPC). */
+async function assertTicketAccess(ticket_id: string) {
+  await getOrgTicket({ data: { ticket_id } });
+}
+
+export const getB2BTicketUpload = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const { ticket_id, fileName, contentType, fileSize } = data as {
+      ticket_id: string;
+      fileName: string;
+      contentType: string;
+      fileSize: number;
+    };
+    if (!ticket_id) throw new Error("id de ticket requis");
+    const media = b2bAssertValidMedia(fileName, contentType, fileSize);
+    return { ticket_id, fileName, contentType, fileSize, ...media };
+  })
+  .handler(async ({ data }) => {
+    await assertTicketAccess(data.ticket_id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const path = `uploads/${data.ticket_id}/${crypto.randomUUID()}.${data.ext}`;
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("device-photos")
+      .createSignedUploadUrl(path, { upsert: false });
+    if (error || !signed) {
+      console.error("[org] signed upload url failed", error);
+      throw new Error("L'envoi du fichier n'a pas pu être préparé. Réessayez.");
+    }
+    return { signedUrl: signed.signedUrl, path, kind: data.kind };
+  });
+
+export const attachB2BTicketFile = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const { ticket_id, path, kind, caption } = data as {
+      ticket_id: string;
+      path: string;
+      kind: "photo" | "video";
+      caption?: string;
+    };
+    if (!ticket_id || !path?.trim()) throw new Error("ticket et fichier requis");
+    return { ticket_id, path: path.trim(), kind, caption: caption ?? null };
+  })
+  .handler(async ({ data }) => {
+    await assertTicketAccess(data.ticket_id);
+    const { error } = await orgClient().from("reservation_attachments").insert({
+      reservation_id: data.ticket_id,
+      stage: "signalement",
+      kind: data.kind,
+      url: data.path,
+      caption: data.caption,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/** URLs signées (1 h) pour afficher les pièces jointes d'un ticket. */
+export const getB2BTicketAttachmentUrls = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    const { ticket_id, paths } = data as { ticket_id: string; paths: string[] };
+    if (!ticket_id) throw new Error("id de ticket requis");
+    return { ticket_id, paths: Array.isArray(paths) ? paths.slice(0, 20) : [] };
+  })
+  .handler(async ({ data }) => {
+    await assertTicketAccess(data.ticket_id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const urls: Record<string, string> = {};
+    for (const path of data.paths) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("device-photos")
+        .createSignedUrl(path, 3600);
+      if (signed?.signedUrl) urls[path] = signed.signedUrl;
+    }
+    return urls;
+  });

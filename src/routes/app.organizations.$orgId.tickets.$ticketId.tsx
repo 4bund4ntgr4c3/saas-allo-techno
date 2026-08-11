@@ -1,9 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, History, MapPin, Paperclip, ShieldCheck } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  History,
+  Loader2,
+  MapPin,
+  Paperclip,
+  ShieldCheck,
+  Upload,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
-import { getMyOrganizations, getOrgTicket } from "@/lib/org.functions";
+import {
+  attachB2BTicketFile,
+  getB2BTicketAttachmentUrls,
+  getB2BTicketUpload,
+  getMyOrganizations,
+  getOrgTicket,
+} from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/tickets/$ticketId")({
   component: OrgTicketDetail,
@@ -12,6 +29,9 @@ export const Route = createFileRoute("/app/organizations/$orgId/tickets/$ticketI
 function OrgTicketDetail() {
   const { orgId, ticketId } = Route.useParams();
   const { t } = useI18n();
+  const queryClient = useQueryClient();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
   const org = orgs.data?.find((o) => o.id === orgId);
@@ -20,6 +40,55 @@ function OrgTicketDetail() {
     queryKey: ["app", "org", orgId, "tickets", ticketId],
     queryFn: () => getOrgTicket({ data: { ticket_id: ticketId } }),
     enabled: Boolean(org),
+  });
+
+  const attachmentUrls = useQuery({
+    queryKey: ["app", "org", orgId, "tickets", ticketId, "attachments"],
+    queryFn: () =>
+      getB2BTicketAttachmentUrls({
+        data: { ticket_id: ticketId, paths: ticket.data?.attachments.map((a) => a.url) ?? [] },
+      }),
+    enabled: Boolean(ticket.data?.attachments.length),
+  });
+
+  const uploadFiles = useMutation({
+    mutationFn: async (files: File[]) => {
+      setUploading(true);
+      try {
+        for (const file of files) {
+          const prepared = await getB2BTicketUpload({
+            data: {
+              ticket_id: ticketId,
+              fileName: file.name,
+              contentType: file.type,
+              fileSize: file.size,
+            },
+          });
+          const res = await fetch(prepared.signedUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Type": file.type,
+              "x-upsert": "false",
+            },
+            body: file,
+          });
+          if (!res.ok) throw new Error(`Upload ${res.status}`);
+          await attachB2BTicketFile({
+            data: { ticket_id: ticketId, path: prepared.path, kind: prepared.kind },
+          });
+        }
+      } finally {
+        setUploading(false);
+      }
+    },
+    onSuccess: async () => {
+      toast.success(t("org.tickets.detail.attachment.added"));
+      if (fileInput.current) fileInput.current.value = "";
+      await queryClient.invalidateQueries({
+        queryKey: ["app", "org", orgId, "tickets", ticketId],
+      });
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   if (!org) {
@@ -118,10 +187,39 @@ function OrgTicketDetail() {
           </div>
 
           <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
-              <Paperclip className="size-5" />
-              {t("org.tickets.detail.attachments")}
-            </h2>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="flex items-center gap-2 text-lg font-bold">
+                <Paperclip className="size-5" />
+                {t("org.tickets.detail.attachments")}
+              </h2>
+              <div>
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/webm"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    if (files.length) uploadFiles.mutate(files);
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => fileInput.current?.click()}
+                >
+                  {uploading ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Upload className="size-4" />
+                  )}
+                  {uploading ? "…" : t("org.tickets.detail.addAttachment")}
+                </Button>
+              </div>
+            </div>
             {tk.attachments.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 {t("org.tickets.detail.attachments.empty")}
@@ -131,11 +229,18 @@ function OrgTicketDetail() {
                 {tk.attachments.map((a) => (
                   <li key={a.id}>
                     <a
-                      href={a.url}
+                      href={attachmentUrls.data?.[a.url] ?? a.url}
                       target="_blank"
                       rel="noreferrer"
                       className="block rounded-sm border border-border p-3 text-sm transition-colors hover:border-primary"
                     >
+                      {a.kind === "video" ? (
+                        <video
+                          src={attachmentUrls.data?.[a.url] ?? a.url}
+                          controls
+                          className="mb-2 aspect-video w-full rounded-sm bg-black"
+                        />
+                      ) : null}
                       <p className="truncate font-medium">{a.caption ?? "Pièce jointe"}</p>
                       <p className="text-xs text-muted-foreground">
                         {a.kind ?? a.stage ?? "—"} ·{" "}
