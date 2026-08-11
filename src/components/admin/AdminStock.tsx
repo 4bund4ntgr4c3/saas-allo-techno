@@ -48,7 +48,7 @@ export function StockAdmin() {
   const save = async (a: { slug: string; stock: number }) => {
     const value = Number(drafts[a.slug] ?? a.stock);
     if (!Number.isFinite(value) || value < 0) {
-      toast.error("Quantité invalide");
+      toast.error(t("admin.stock.toast.invalidQty"));
       return;
     }
     setSavingSlug(a.slug);
@@ -60,9 +60,9 @@ export function StockAdmin() {
         delete next[a.slug];
         return next;
       });
-      toast.success(`${a.slug} : stock mis à jour`);
+      toast.success(`${a.slug} : ${t("admin.stock.toast.updated")}`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.stock.toast.updateError"));
     } finally {
       setSavingSlug(null);
     }
@@ -93,10 +93,10 @@ export function StockAdmin() {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <th className="px-4 py-2">Référence</th>
-            <th className="px-4 py-2">Désignation</th>
-            <th className="px-4 py-2">Prix</th>
-            <th className="px-4 py-2">Stock</th>
+            <th className="px-4 py-2">{t("admin.stock.col.reference")}</th>
+            <th className="px-4 py-2">{t("admin.stock.col.name")}</th>
+            <th className="px-4 py-2">{t("admin.stock.col.price")}</th>
+            <th className="px-4 py-2">{t("admin.stock.col.stock")}</th>
             <th className="px-4 py-2"></th>
           </tr>
         </thead>
@@ -125,13 +125,13 @@ export function StockAdmin() {
                     />
                     {tracked && (
                       <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                        suivi
+                        {t("admin.stock.tracked")}
                       </span>
                     )}
                     {low && (
                       <span
                         className="size-2 shrink-0 rounded-full bg-destructive"
-                        title="Stock faible"
+                        title={t("admin.stock.lowStock")}
                       />
                     )}
                   </div>
@@ -143,7 +143,7 @@ export function StockAdmin() {
                     disabled={savingSlug === a.slug}
                     onClick={() => save({ slug: a.slug, stock: real ?? a.stock })}
                   >
-                    {savingSlug === a.slug ? "…" : "Mettre à jour"}
+                    {savingSlug === a.slug ? "…" : t("admin.stock.update")}
                   </Button>
                 </td>
               </tr>

@@ -3,27 +3,27 @@ import { useServerFn } from "@tanstack/react-start";
 import { useI18n } from "@/lib/i18n/context";
 import { getAuditLogs } from "@/lib/audit.functions";
 
-const AUDIT_ACTION_LABEL: Record<string, string> = {
-  "reservation.status_changed": "Statut changé",
-  "reservation.cancelled": "Réservation annulée",
-  "reservation.assigned": "Technicien assigné",
-  "quote.sent": "Devis envoyé",
-  "quote.approved": "Devis approuvé",
-  "quote.declined": "Devis refusé",
-  "payment.confirmed": "Paiement confirmé",
-  "payment.refunded": "Paiement remboursé",
-  "review.published": "Avis publié",
-  "review.hidden": "Avis masqué",
-  "lead.status_changed": "Lead mis à jour",
-  "claim.status_changed": "Réclamation mise à jour",
-  "user.role_changed": "Rôle modifié",
-  "stock.updated": "Stock mis à jour",
-  "blog.post_created": "Article créé",
-  "blog.post_updated": "Article mis à jour",
-};
-
 export function AuditSection() {
   const { t } = useI18n();
+
+  const AUDIT_ACTION_LABEL: Record<string, string> = {
+    "reservation.status_changed": t("admin.audit.action.statusChanged"),
+    "reservation.cancelled": t("admin.audit.action.cancelled"),
+    "reservation.assigned": t("admin.audit.action.technicianAssigned"),
+    "quote.sent": t("admin.audit.action.quoteSent"),
+    "quote.approved": t("admin.audit.action.quoteApproved"),
+    "quote.declined": t("admin.audit.action.quoteDeclined"),
+    "payment.confirmed": t("admin.audit.action.paymentConfirmed"),
+    "payment.refunded": t("admin.audit.action.paymentRefunded"),
+    "review.published": t("admin.audit.action.reviewPublished"),
+    "review.hidden": t("admin.audit.action.reviewHidden"),
+    "lead.status_changed": t("admin.audit.action.leadUpdated"),
+    "claim.status_changed": t("admin.audit.action.claimUpdated"),
+    "user.role_changed": t("admin.audit.action.roleChanged"),
+    "stock.updated": t("admin.audit.action.stockUpdated"),
+    "blog.post_created": t("admin.audit.action.postCreated"),
+    "blog.post_updated": t("admin.audit.action.postUpdated"),
+  };
   const getLogsFn = useServerFn(getAuditLogs);
 
   const logs = useQuery({
@@ -32,7 +32,7 @@ export function AuditSection() {
   });
 
   if (logs.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement du journal…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.audit.loading")}</p>;
   }
 
   if (logs.isError) {
@@ -40,7 +40,7 @@ export function AuditSection() {
       <div>
         <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
         <p className="mt-4 text-sm text-destructive">
-          Impossible de charger le journal d'audit. Réessayez.
+          {t("admin.audit.error")}
         </p>
       </div>
     );
@@ -52,7 +52,7 @@ export function AuditSection() {
     <div>
       <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Historique des opérations effectuées par le personnel (100 dernières entrées).
+        {t("admin.audit.description")}
       </p>
       {rows.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">{t("admin.audit.empty")}</p>
@@ -61,10 +61,10 @@ export function AuditSection() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-2 text-left">Date</th>
-                <th className="px-4 py-2 text-left">Action</th>
-                <th className="px-4 py-2 text-left">Entité</th>
-                <th className="px-4 py-2 text-left">Détails</th>
+                <th className="px-4 py-2 text-left">{t("admin.audit.col.date")}</th>
+                <th className="px-4 py-2 text-left">{t("admin.audit.col.action")}</th>
+                <th className="px-4 py-2 text-left">{t("admin.audit.col.entity")}</th>
+                <th className="px-4 py-2 text-left">{t("admin.audit.col.details")}</th>
               </tr>
             </thead>
             <tbody>

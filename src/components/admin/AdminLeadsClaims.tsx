@@ -100,7 +100,7 @@ export function LeadsSection() {
   if (rows.length === 0) {
     return (
       <div>
-        <h2 className="text-lg font-semibold">Leads</h2>
+        <h2 className="text-lg font-semibold">{t("admin.leads.title")}</h2>
         <p className="mt-4 text-sm text-muted-foreground">
           {t("admin.leads.empty")}
         </p>
@@ -110,7 +110,7 @@ export function LeadsSection() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Leads</h2>
+      <h2 className="text-lg font-semibold">{t("admin.leads.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         {t("admin.leads.description")}
       </p>
@@ -209,7 +209,7 @@ export function ClaimsSection() {
   if (rows.length === 0) {
     return (
       <div>
-        <h2 className="text-lg font-semibold">Réclamations</h2>
+        <h2 className="text-lg font-semibold">{t("admin.claims.title")}</h2>
         <p className="mt-4 text-sm text-muted-foreground">
           {t("admin.claims.empty")}
         </p>
@@ -219,7 +219,7 @@ export function ClaimsSection() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Réclamations</h2>
+      <h2 className="text-lg font-semibold">{t("admin.claims.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         {t("admin.claims.description")}
       </p>

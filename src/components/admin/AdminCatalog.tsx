@@ -175,7 +175,7 @@ function CategoriesPanel({
             <button
               type="button"
               className="text-muted-foreground hover:text-foreground"
-              aria-label={`Modifier ${c.label}`}
+              aria-label={t("admin.catalog.aria.editItem", [c.label])}
               onClick={() => {
                 setEditing(c.slug);
                 setForm({ slug: c.slug, label: c.label, sort: c.sort, active: c.active });
@@ -187,7 +187,7 @@ function CategoriesPanel({
               type="button"
               className="text-muted-foreground hover:text-destructive"
               disabled={busy}
-              aria-label={`Supprimer ${c.label}`}
+              aria-label={t("admin.catalog.aria.deleteItem", [c.label])}
               onClick={() => remove(c.slug)}
             >
               <Trash2 className="size-3" />
@@ -357,7 +357,7 @@ function BrandPanel({
                 <Button
                   variant="ghost"
                   size="sm"
-                  aria-label={`Modifier ${b.name}`}
+                  aria-label={t("admin.catalog.aria.editItem", [b.name])}
                   onClick={() => {
                     setEditing(b.slug);
                     setForm({
@@ -376,7 +376,7 @@ function BrandPanel({
                   size="sm"
                   className="text-destructive"
                   disabled={busy}
-                  aria-label={`Supprimer ${b.name}`}
+                  aria-label={t("admin.catalog.aria.deleteItem", [b.name])}
                   onClick={() => remove(b.slug)}
                 >
                   <Trash2 className="size-3.5" />
@@ -393,7 +393,7 @@ function BrandPanel({
       </ul>
       <form onSubmit={save} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editing ? `Modifier : ${editing}` : t("admin.catalog.brand.form.new")}
+          {editing ? t("admin.catalog.form.editing", [editing]) : t("admin.catalog.brand.form.new")}
         </p>
         <label className="block">
           <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.name")}</span>
@@ -602,7 +602,7 @@ function DevicePanel({
                 <Button
                   variant="ghost"
                   size="sm"
-                  aria-label={`Modifier ${d.name}`}
+                  aria-label={t("admin.catalog.aria.editItem", [d.name])}
                   onClick={() => {
                     setEditing(d.slug);
                     setForm({
@@ -623,7 +623,7 @@ function DevicePanel({
                   size="sm"
                   className="text-destructive"
                   disabled={busy}
-                  aria-label={`Supprimer ${d.name}`}
+                  aria-label={t("admin.catalog.aria.deleteItem", [d.name])}
                   onClick={() => remove(d.slug)}
                 >
                   <Trash2 className="size-3.5" />
@@ -640,7 +640,7 @@ function DevicePanel({
       </ul>
       <form onSubmit={save} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editing ? `Modifier : ${editing}` : t("admin.catalog.device.form.new")}
+          {editing ? t("admin.catalog.form.editing", [editing]) : t("admin.catalog.device.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
@@ -690,7 +690,7 @@ function DevicePanel({
               className={field}
               value={form.series}
               onChange={(e) => setForm((f) => ({ ...f, series: e.target.value }))}
-              placeholder="ex. Galaxy A15"
+              placeholder={t("admin.catalog.form.series_placeholder")}
             />
           </label>
           <label className="block">
@@ -902,7 +902,7 @@ function DeviceDetailPanel({
                 <td className="px-3 py-2">
                   <p className="font-medium">{f.label}</p>
                   <p className="font-mono text-[10px] uppercase text-muted-foreground">
-                    {f.slug} · ordre {f.sort}
+                    {f.slug} · {t("admin.catalog.fault.table.sort")} {f.sort}
                   </p>
                 </td>
                 <td className="px-3 py-2 font-mono">{formatFcfa(f.price)}</td>
@@ -914,7 +914,7 @@ function DeviceDetailPanel({
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label={`Modifier ${f.label}`}
+                      aria-label={t("admin.catalog.aria.editItem", [f.label])}
                       onClick={() => {
                         setEditingFault(f.id);
                         setFaultForm({
@@ -935,7 +935,7 @@ function DeviceDetailPanel({
                       size="sm"
                       className="text-destructive"
                       disabled={busy}
-                      aria-label={`Supprimer ${f.label}`}
+                      aria-label={t("admin.catalog.aria.deleteItem", [f.label])}
                       onClick={() => removeFault(f.id)}
                     >
                       <Trash2 className="size-3.5" />
@@ -952,7 +952,7 @@ function DeviceDetailPanel({
       </div>
       <form onSubmit={saveFault} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editingFault ? `Modifier la panne #${editingFault}` : t("admin.catalog.fault.form.new")}
+          {editingFault ? t("admin.catalog.fault.form.editing", [editingFault]) : t("admin.catalog.fault.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
@@ -990,7 +990,7 @@ function DeviceDetailPanel({
               className={field}
               value={faultForm.price}
               onChange={(e) => setFaultForm((f) => ({ ...f, price: e.target.value }))}
-              placeholder="ex. 15000"
+              placeholder={t("admin.catalog.placeholder.price")}
             />
           </label>
           <label className="block">
@@ -1064,7 +1064,7 @@ function DeviceDetailPanel({
                 type="button"
                 className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full border border-border bg-card text-destructive hover:bg-destructive/10"
                 disabled={busy}
-                aria-label="Supprimer la photo"
+                aria-label={t("admin.catalog.aria.deletePhoto")}
                 onClick={() => removePhoto(p.id)}
               >
                 <Trash2 className="size-3" />
@@ -1086,7 +1086,7 @@ function DeviceDetailPanel({
               className={`${field} max-w-64 py-1.5 text-xs`}
               value={photoUrl}
               onChange={(e) => setPhotoUrl(e.target.value)}
-              placeholder="https://… ou chemin du bucket"
+              placeholder={t("admin.catalog.photo.url_placeholder")}
             />
           </div>
           <Button

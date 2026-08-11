@@ -107,6 +107,15 @@ const fr = {
 
   // Admin — Referrals
   "admin.referrals": "Programme de parrainage",
+  "admin.referrals.total": "Total",
+  "admin.referrals.completed": "Complétées",
+  "admin.referrals.earned": "Gagné",
+  "admin.referrals.level": "Niveau",
+  "admin.referrals.history": "Historique des parrainages",
+  "admin.referrals.referral": "Parrainage",
+  "admin.referrals.status": "Statut :",
+  "admin.leads.title": "Leads",
+  "admin.claims.title": "Réclamations",
 
   // Admin — Chat
   "admin.chat": "Messages clients",
@@ -299,6 +308,14 @@ const fr = {
   "admin.catalog.button.save": "Enregistrer",
   "admin.catalog.button.saving": "Enregistrement…",
   "admin.catalog.button.cancel": "Annuler",
+  "admin.catalog.aria.editItem": "Modifier {0}",
+  "admin.catalog.aria.deleteItem": "Supprimer {0}",
+  "admin.catalog.aria.editNamed": "Modifier : {0}",
+  "admin.catalog.aria.editFault": "Modifier la panne",
+  "admin.catalog.aria.deletePhoto": "Supprimer la photo",
+  "admin.catalog.placeholder.price": "ex. 15000",
+  "admin.catalog.form.series_placeholder": "ex. Galaxy A15",
+  "admin.catalog.photo.url_placeholder": "https://… ou chemin du bucket",
 
   // Admin — Contenu
   "admin.content.tab.blog": "Articles",
@@ -601,7 +618,7 @@ const fr = {
   // Admin — Audit enrichi
   "admin.audit.filterAllActions": "Toutes les actions",
   "admin.audit.filterAllEntities": "Toutes les entités",
-  "admin.audit.loading": "Chargement...",
+  "admin.audit.loading": "Chargement du journal…",
   "admin.audit.columnDate": "Date",
   "admin.audit.columnAction": "Action",
   "admin.audit.columnEntity": "Entité",
@@ -809,6 +826,42 @@ const fr = {
   "admin.security.metrics.event": "Événement",
   "admin.security.metrics.count": "Nombre",
   "admin.security.metrics.empty": "Aucune métrique enregistrée.",
+
+  // Admin — Audit (AdminAudit.tsx)
+  "admin.audit.action.statusChanged": "Statut changé",
+  "admin.audit.action.cancelled": "Réservation annulée",
+  "admin.audit.action.technicianAssigned": "Technicien assigné",
+  "admin.audit.action.quoteSent": "Devis envoyé",
+  "admin.audit.action.quoteApproved": "Devis approuvé",
+  "admin.audit.action.quoteDeclined": "Devis refusé",
+  "admin.audit.action.paymentConfirmed": "Paiement confirmé",
+  "admin.audit.action.paymentRefunded": "Paiement remboursé",
+  "admin.audit.action.reviewPublished": "Avis publié",
+  "admin.audit.action.reviewHidden": "Avis masqué",
+  "admin.audit.action.leadUpdated": "Lead mis à jour",
+  "admin.audit.action.claimUpdated": "Réclamation mise à jour",
+  "admin.audit.action.roleChanged": "Rôle modifié",
+  "admin.audit.action.stockUpdated": "Stock mis à jour",
+  "admin.audit.action.postCreated": "Article créé",
+  "admin.audit.action.postUpdated": "Article mis à jour",
+  "admin.audit.error": "Impossible de charger le journal d'audit. Réessayez.",
+  "admin.audit.description": "Historique des opérations effectuées par le personnel (100 dernières entrées).",
+  "admin.audit.col.date": "Date",
+  "admin.audit.col.action": "Action",
+  "admin.audit.col.entity": "Entité",
+  "admin.audit.col.details": "Détails",
+
+  // Admin — Stock (AdminStock.tsx)
+  "admin.stock.col.reference": "Référence",
+  "admin.stock.col.name": "Désignation",
+  "admin.stock.col.price": "Prix",
+  "admin.stock.col.stock": "Stock",
+  "admin.stock.toast.invalidQty": "Quantité invalide",
+  "admin.stock.toast.updated": "stock mis à jour",
+  "admin.stock.toast.updateError": "Mise à jour impossible",
+  "admin.stock.tracked": "suivi",
+  "admin.stock.lowStock": "Stock faible",
+  "admin.stock.update": "Mettre à jour",
 };
 
 const en = {
@@ -917,6 +970,15 @@ const en = {
 
   // Admin — Referrals
   "admin.referrals": "Referral program",
+  "admin.referrals.total": "Total",
+  "admin.referrals.completed": "Completed",
+  "admin.referrals.earned": "Earned",
+  "admin.referrals.level": "Level",
+  "admin.referrals.history": "Referral history",
+  "admin.referrals.referral": "Referral",
+  "admin.referrals.status": "Status:",
+  "admin.leads.title": "Leads",
+  "admin.claims.title": "Claims",
 
   // Admin — Chat
   "admin.chat": "Customer messages",
@@ -1108,6 +1170,14 @@ const en = {
   "admin.catalog.button.save": "Save",
   "admin.catalog.button.saving": "Saving…",
   "admin.catalog.button.cancel": "Cancel",
+  "admin.catalog.aria.editItem": "Edit {0}",
+  "admin.catalog.aria.deleteItem": "Delete {0}",
+  "admin.catalog.aria.editNamed": "Editing: {0}",
+  "admin.catalog.aria.editFault": "Edit fault",
+  "admin.catalog.aria.deletePhoto": "Delete photo",
+  "admin.catalog.placeholder.price": "e.g. 15000",
+  "admin.catalog.form.series_placeholder": "e.g. Galaxy A15",
+  "admin.catalog.photo.url_placeholder": "https://… or bucket path",
 
   // Admin — Content
   "admin.content.tab.blog": "Articles",
@@ -1410,7 +1480,7 @@ const en = {
   // Admin — Audit enriched
   "admin.audit.filterAllActions": "All actions",
   "admin.audit.filterAllEntities": "All entities",
-  "admin.audit.loading": "Loading...",
+  "admin.audit.loading": "Loading journal…",
   "admin.audit.columnDate": "Date",
   "admin.audit.columnAction": "Action",
   "admin.audit.columnEntity": "Entity",
@@ -1618,6 +1688,42 @@ const en = {
   "admin.security.metrics.event": "Event",
   "admin.security.metrics.count": "Count",
   "admin.security.metrics.empty": "No metrics recorded.",
+
+  // Admin — Audit (AdminAudit.tsx)
+  "admin.audit.action.statusChanged": "Status changed",
+  "admin.audit.action.cancelled": "Reservation cancelled",
+  "admin.audit.action.technicianAssigned": "Technician assigned",
+  "admin.audit.action.quoteSent": "Quote sent",
+  "admin.audit.action.quoteApproved": "Quote approved",
+  "admin.audit.action.quoteDeclined": "Quote declined",
+  "admin.audit.action.paymentConfirmed": "Payment confirmed",
+  "admin.audit.action.paymentRefunded": "Payment refunded",
+  "admin.audit.action.reviewPublished": "Review published",
+  "admin.audit.action.reviewHidden": "Review hidden",
+  "admin.audit.action.leadUpdated": "Lead updated",
+  "admin.audit.action.claimUpdated": "Claim updated",
+  "admin.audit.action.roleChanged": "Role changed",
+  "admin.audit.action.stockUpdated": "Stock updated",
+  "admin.audit.action.postCreated": "Post created",
+  "admin.audit.action.postUpdated": "Post updated",
+  "admin.audit.error": "Unable to load audit log. Please retry.",
+  "admin.audit.description": "History of operations performed by staff (last 100 entries).",
+  "admin.audit.col.date": "Date",
+  "admin.audit.col.action": "Action",
+  "admin.audit.col.entity": "Entity",
+  "admin.audit.col.details": "Details",
+
+  // Admin — Stock (AdminStock.tsx)
+  "admin.stock.col.reference": "Reference",
+  "admin.stock.col.name": "Name",
+  "admin.stock.col.price": "Price",
+  "admin.stock.col.stock": "Stock",
+  "admin.stock.toast.invalidQty": "Invalid quantity",
+  "admin.stock.toast.updated": "stock updated",
+  "admin.stock.toast.updateError": "Update failed",
+  "admin.stock.tracked": "tracked",
+  "admin.stock.lowStock": "Low stock",
+  "admin.stock.update": "Update",
 };
 
 registerSegments({ fr, en });
