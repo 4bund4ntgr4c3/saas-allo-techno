@@ -10,6 +10,7 @@ import { verifyOtpLogin } from "@/lib/otp.functions";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -26,12 +27,9 @@ export const Route = createFileRoute("/_authenticated/admin")({
         <p className="mb-4 text-sm text-muted-foreground">
           {error?.message ?? "Une erreur est survenue."}
         </p>
-        <button
-          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
-          onClick={() => reset()}
-        >
+        <Button variant="technical" onClick={() => reset()}>
           Réessayer
-        </button>
+        </Button>
       </div>
     </div>
   ),
@@ -39,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 function AdminLayout() {
+  const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const [otpCode, setOtpCode] = useState("");
@@ -78,10 +77,10 @@ function AdminLayout() {
         setOtpUnlockedAt(Date.now());
         setOtpCode("");
       } else {
-        toast.error("Code invalide ou expiré.");
+        toast.error(t("admin.otp.invalidCode"));
       }
     },
-    onError: () => toast.error("Vérification impossible"),
+    onError: () => toast.error(t("admin.otp.verificationFailed")),
   });
 
   const otpRequired = otpEnabled.data === true && Date.now() - otpUnlockedAt > 24 * 3600 * 1000;
@@ -94,13 +93,13 @@ function AdminLayout() {
     },
     onSuccess: (granted) => {
       if (granted) {
-        toast.success("Vous êtes maintenant administrateur");
+        toast.success(t("admin.claim.success"));
         queryClient.invalidateQueries({ queryKey: ["is-staff", user.id] });
       } else {
-        toast.error("Un administrateur existe déjà : demandez-lui de vous ajouter.");
+        toast.error(t("admin.claim.exists"));
       }
     },
-    onError: () => toast.error("Action impossible"),
+    onError: () => toast.error(t("admin.claim.impossible")),
   });
 
   // Real-time: any change by another technician is reflected immediately
@@ -136,20 +135,20 @@ function AdminLayout() {
     return (
       <div className="mx-auto flex min-h-[50vh] max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
         <ShieldAlert className="size-10 text-destructive" />
-        <h1 className="text-2xl font-semibold">Accès réservé au personnel</h1>
+        <h1 className="text-2xl font-semibold">{t("admin.access.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Votre compte n'a pas les droits d'administration sur les dossiers de réparation.
+          {t("admin.access.description")}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button disabled={claimAdmin.isPending} onClick={() => claimAdmin.mutate()}>
-            Devenir administrateur
+            {t("admin.access.claimAdmin")}
           </Button>
           <Button asChild variant="outline">
-            <Link to="/mon-compte">Retour à mon compte</Link>
+            <Link to="/mon-compte">{t("admin.access.backToAccount")}</Link>
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Cette action n'est possible que tant qu'aucun administrateur n'existe.
+          {t("admin.access.note")}
         </p>
       </div>
     );
@@ -159,10 +158,9 @@ function AdminLayout() {
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-5 px-6 text-center">
         <KeyRound className="size-10 text-primary" />
-        <h1 className="text-2xl font-semibold">Double authentification</h1>
+        <h1 className="text-2xl font-semibold">{t("admin.otp.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Votre compte est protégé par un code à 6 chiffres généré par votre application
-          d'authentification.
+          {t("admin.otp.description")}
         </p>
         <label htmlFor="otp-code" className="sr-only">
           Code OTP
@@ -186,7 +184,7 @@ function AdminLayout() {
           disabled={verifyOtp.isPending || otpCode.length !== 6}
           onClick={() => verifyOtp.mutate(otpCode)}
         >
-          {verifyOtp.isPending ? "Vérification…" : "Déverrouiller"}
+          {verifyOtp.isPending ? t("admin.otp.verifying") : t("admin.otp.unlock")}
         </Button>
       </div>
     );

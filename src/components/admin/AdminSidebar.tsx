@@ -221,8 +221,8 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
             AT
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="truncate font-semibold tracking-tight">Allô Techno</span>
-            <span className="text-xs text-muted-foreground">Admin</span>
+            <span className="at-display truncate text-base">Allô Techno</span>
+            <span className="at-eyebrow">Admin</span>
           </div>
         </div>
       </SidebarHeader>
@@ -234,7 +234,7 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
           <div className="p-2">
             {NAV_GROUPS.map((group) => (
               <div key={group.labelKey} className="mb-4">
-                <p className="mb-1 px-2.5 text-[11px] font-medium text-muted-foreground group-data-[collapsible=icon]:hidden">
+                <p className="at-eyebrow mb-1 px-2.5 group-data-[collapsible=icon]:hidden">
                   {t(group.labelKey)}
                 </p>
                 <div className="space-y-0.5">
