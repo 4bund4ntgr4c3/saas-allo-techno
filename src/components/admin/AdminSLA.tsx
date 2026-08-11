@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { getSLABreaches, getSLAStats, type SLABreach } from "@/lib/sla";
 import { Clock, AlertTriangle, CheckCircle, Timer } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export function AdminSLA() {
   const { t } = useI18n();
@@ -26,6 +28,37 @@ export function AdminSLA() {
 
   const critical = breaches.filter((b) => b.breach_severity === "critical");
   const warnings = breaches.filter((b) => b.breach_severity === "warning");
+
+  const stageColumns: ColumnDef<{ stage: string; avg_hours: number; p90_hours: number; count: number }, unknown>[] = [
+    {
+      accessorKey: "stage",
+      header: t("admin.sla.transition"),
+      cell: ({ row }) => (
+        <span className="text-xs font-mono">{row.original.stage}</span>
+      ),
+    },
+    {
+      accessorKey: "avg_hours",
+      header: t("admin.sla.average"),
+      cell: ({ row }) => (
+        <span className="text-xs font-bold">{row.original.avg_hours}h</span>
+      ),
+    },
+    {
+      accessorKey: "p90_hours",
+      header: "P90",
+      cell: ({ row }) => (
+        <span className="text-xs">{row.original.p90_hours}h</span>
+      ),
+    },
+    {
+      accessorKey: "count",
+      header: t("admin.sla.samples"),
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground">{row.original.count}</span>
+      ),
+    },
+  ];
 
   if (loading) {
     return (
@@ -104,28 +137,7 @@ export function AdminSLA() {
       {stats.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-bold">{t("admin.sla.avgTimeByStage")}</h4>
-          <div className="rounded-lg border bg-card overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50 text-left">
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.sla.transition")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.sla.average")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">P90</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.sla.samples")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.map((s) => (
-                  <tr key={s.stage} className="border-b last:border-0">
-                    <td className="px-4 py-2 text-xs font-mono">{s.stage}</td>
-                    <td className="px-4 py-2 text-xs font-bold">{s.avg_hours}h</td>
-                    <td className="px-4 py-2 text-xs">{s.p90_hours}h</td>
-                    <td className="px-4 py-2 text-xs text-muted-foreground">{s.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable columns={stageColumns} data={stats} />
         </div>
       )}
 

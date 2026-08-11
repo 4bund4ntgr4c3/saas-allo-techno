@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
   getInventory,
   getLowStockParts,
@@ -41,6 +43,94 @@ export function AdminInventory() {
     unit_price: "0",
     location: "",
   });
+
+  const columns: ColumnDef<Part>[] = [
+    {
+      accessorKey: "name",
+      header: t("admin.inventory.table.part"),
+      cell: ({ row }) => {
+        const p = row.original;
+        return (
+          <div>
+            <p className="font-medium">{p.name}</p>
+            <p className="text-[10px] text-muted-foreground">
+              {p.brand} {p.model}
+            </p>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "sku",
+      header: "SKU",
+      cell: ({ row }) => (
+        <span className="text-xs font-mono">{row.original.sku}</span>
+      ),
+    },
+    {
+      accessorKey: "quantity",
+      header: t("admin.inventory.table.stock"),
+      cell: ({ row }) => {
+        const p = row.original;
+        return (
+          <span
+            className={`text-sm font-bold ${p.quantity <= p.min_quantity ? "text-destructive" : "text-success"}`}
+          >
+            {p.quantity}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "min_quantity",
+      header: t("admin.inventory.table.threshold"),
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground">{row.original.min_quantity}</span>
+      ),
+    },
+    {
+      accessorKey: "unit_price",
+      header: t("admin.inventory.table.price"),
+      cell: ({ row }) => (
+        <span className="text-xs">{formatFcfa(row.original.unit_price)}</span>
+      ),
+    },
+    {
+      id: "actions",
+      header: t("admin.inventory.table.actions"),
+      cell: ({ row }) => {
+        const p = row.original;
+        return (
+          <div className="flex gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => handleMovement(p.id, "in")}
+              title={t("admin.inventory.action.stockIn")}
+            >
+              <ArrowDown className="size-3 text-success" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => handleMovement(p.id, "out")}
+              title={t("admin.inventory.action.stockOut")}
+            >
+              <ArrowUp className="size-3 text-destructive" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => showMovements(p.id)}
+              title={t("admin.inventory.action.history")}
+            >
+              <History className="size-3" />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
   const load = async () => {
     setLoading(true);
@@ -215,72 +305,14 @@ export function AdminInventory() {
       ) : parts.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-8">{t("admin.inventory.empty")}</p>
       ) : (
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50 text-left">
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.part")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">SKU</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.stock")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.threshold")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.price")}</th>
-                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.actions")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {parts.map((p) => (
-                  <tr key={p.id} className="border-b last:border-0">
-                    <td className="px-4 py-3">
-                      <p className="font-medium">{p.name}</p>
-                      <p className="text-[10px] text-muted-foreground">
-                        {p.brand} {p.model}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 text-xs font-mono">{p.sku}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`text-sm font-bold ${p.quantity <= p.min_quantity ? "text-destructive" : "text-success"}`}
-                      >
-                        {p.quantity}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{p.min_quantity}</td>
-                    <td className="px-4 py-3 text-xs">{formatFcfa(p.unit_price)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleMovement(p.id, "in")}
-                          title={t("admin.inventory.action.stockIn")}
-                        >
-                          <ArrowDown className="size-3 text-success" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleMovement(p.id, "out")}
-                          title={t("admin.inventory.action.stockOut")}
-                        >
-                          <ArrowUp className="size-3 text-destructive" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => showMovements(p.id)}
-                          title={t("admin.inventory.action.history")}
-                        >
-                          <History className="size-3" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <DataTable
+          columns={columns}
+          data={parts}
+          searchKey="name"
+          searchPlaceholder={t("admin.inventory.search")}
+          emptyTitle={t("admin.inventory.empty")}
+          emptyIcon={<AlertTriangle className="size-6" />}
+        />
       )}
 
       {movementsPartId && (

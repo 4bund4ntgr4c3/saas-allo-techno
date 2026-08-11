@@ -1,10 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/admin/DataTable";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { setInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -31,6 +33,37 @@ export function StockAdmin() {
   const setFn = useServerFn(setInventory);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingSlug, setSavingSlug] = useState<string | null>(null);
+
+  type StockItem = {
+    slug: string;
+    name: string;
+    price: number;
+    stock: number;
+    draft: string | undefined;
+    isTracked: boolean;
+    isLow: boolean;
+    isSaving: boolean;
+  };
+
+  const parts = useMemo<StockItem[]>(() => {
+    const map = stockQuery.data;
+    return ACCESSORIES.map((a) => {
+      const real = map?.get(a.slug);
+      const tracked = real !== undefined;
+      const draft = drafts[a.slug];
+      const low = tracked && (real as number) < LOW_STOCK_THRESHOLD;
+      return {
+        slug: a.slug,
+        name: a.name,
+        price: a.price,
+        stock: real ?? a.stock,
+        draft,
+        isTracked: tracked,
+        isLow: !!low,
+        isSaving: savingSlug === a.slug,
+      };
+    });
+  }, [stockQuery.data, drafts, savingSlug]);
 
   const lowItems = useMemo(() => {
     const map = stockQuery.data;
@@ -68,6 +101,79 @@ export function StockAdmin() {
     }
   };
 
+  const columns = useMemo<ColumnDef<StockItem, unknown>[]>(
+    () => [
+      {
+        accessorKey: "slug",
+        header: t("admin.stock.col.reference"),
+        cell: ({ row }) => (
+          <span className="font-mono text-xs uppercase">{row.original.slug}</span>
+        ),
+      },
+      {
+        accessorKey: "name",
+        header: t("admin.stock.col.name"),
+      },
+      {
+        accessorKey: "price",
+        header: t("admin.stock.col.price"),
+        cell: ({ row }) => (
+          <span className="font-mono">{formatFcfa(row.original.price)}</span>
+        ),
+      },
+      {
+        accessorKey: "stock",
+        header: t("admin.stock.col.stock"),
+        cell: ({ row }) => {
+          const a = row.original;
+          return (
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={0}
+                className={`${field} w-28 py-1.5 text-sm ${a.isLow ? "text-destructive" : ""}`}
+                value={a.draft ?? String(a.stock)}
+                onChange={(e) => setDrafts((d) => ({ ...d, [a.slug]: e.target.value }))}
+              />
+              {a.isTracked && (
+                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                  {t("admin.stock.tracked")}
+                </span>
+              )}
+              {a.isLow && (
+                <span
+                  className="size-2 shrink-0 rounded-full bg-destructive"
+                  title={t("admin.stock.lowStock")}
+                />
+              )}
+            </div>
+          );
+        },
+        enableSorting: false,
+        enableGlobalFilter: false,
+      },
+      {
+        id: "action",
+        cell: ({ row }) => {
+          const a = row.original;
+          return (
+            <Button
+              variant="technical"
+              size="sm"
+              disabled={a.isSaving}
+              onClick={() => save({ slug: a.slug, stock: a.stock })}
+            >
+              {a.isSaving ? "…" : t("admin.stock.update")}
+            </Button>
+          );
+        },
+        enableSorting: false,
+        enableGlobalFilter: false,
+      },
+    ],
+    [t, save],
+  );
+
   return (
     <div className="overflow-x-auto">
       {lowItems.length > 0 && (
@@ -90,67 +196,7 @@ export function StockAdmin() {
           </ul>
         </div>
       )}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <th className="px-4 py-2">{t("admin.stock.col.reference")}</th>
-            <th className="px-4 py-2">{t("admin.stock.col.name")}</th>
-            <th className="px-4 py-2">{t("admin.stock.col.price")}</th>
-            <th className="px-4 py-2">{t("admin.stock.col.stock")}</th>
-            <th className="px-4 py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {ACCESSORIES.map((a) => {
-            const real = stockQuery.data?.get(a.slug);
-            const tracked = real !== undefined;
-            const draft = drafts[a.slug];
-            const low = tracked && real < LOW_STOCK_THRESHOLD;
-            return (
-              <tr
-                key={a.slug}
-                className={`border-b border-border ${low ? "bg-destructive/5" : ""}`}
-              >
-                <td className="px-4 py-2 font-mono text-xs uppercase">{a.slug}</td>
-                <td className="px-4 py-2">{a.name}</td>
-                <td className="px-4 py-2 font-mono">{formatFcfa(a.price)}</td>
-                <td className="px-4 py-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      className={`${field} w-28 py-1.5 text-sm ${low ? "text-destructive" : ""}`}
-                      value={draft ?? String(tracked ? (real as number) : a.stock)}
-                      onChange={(e) => setDrafts((d) => ({ ...d, [a.slug]: e.target.value }))}
-                    />
-                    {tracked && (
-                      <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                        {t("admin.stock.tracked")}
-                      </span>
-                    )}
-                    {low && (
-                      <span
-                        className="size-2 shrink-0 rounded-full bg-destructive"
-                        title={t("admin.stock.lowStock")}
-                      />
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-2">
-                  <Button
-                    variant="technical"
-                    size="sm"
-                    disabled={savingSlug === a.slug}
-                    onClick={() => save({ slug: a.slug, stock: real ?? a.stock })}
-                  >
-                    {savingSlug === a.slug ? "…" : t("admin.stock.update")}
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <DataTable columns={columns} data={parts} searchKey="slug" searchPlaceholder={t("admin.stock.search")} />
     </div>
   );
 }

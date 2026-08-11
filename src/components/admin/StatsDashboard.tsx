@@ -31,6 +31,8 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { exportDashboardXlsx } from "@/lib/export.functions";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 
 type Status = Enums<"reservation_status">;
 type SlotPeriod = Enums<"slot_period">;
@@ -520,6 +522,40 @@ export function StatsDashboard() {
     }
   }, []);
 
+  const columns: ColumnDef<ReservationRow>[] = [
+    {
+      accessorKey: "reference",
+      header: t("admin.stats.recent.ref"),
+      cell: ({ row }) => (
+        <span className="font-mono text-xs text-muted-foreground">
+          {row.original.reference ?? "—"}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "customer_name",
+      header: t("admin.stats.recent.client"),
+    },
+    {
+      accessorKey: "device",
+      header: t("admin.stats.recent.device"),
+    },
+    {
+      accessorKey: "status",
+      header: t("admin.stats.recent.status"),
+      cell: ({ row }) => t(`admin.stats.status.${row.original.status}`),
+    },
+    {
+      accessorKey: "created_at",
+      header: t("admin.stats.recent.date"),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {formatShortDate(row.original.created_at, locale)}
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -827,43 +863,13 @@ export function StatsDashboard() {
 
       <section>
         <h3 className="mb-4 text-sm font-semibold">{t("admin.stats.recent.title")}</h3>
-        {stats.recent.length === 0 ? (
-          <p className="rounded-sm border border-dashed border-border p-4 text-sm text-muted-foreground">
-            {t("admin.stats.recent.empty")}
-          </p>
-        ) : (
-          <div className="overflow-x-auto border border-border bg-card">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                  <th className="px-4 py-2 text-left">{t("admin.stats.recent.ref")}</th>
-                  <th className="px-4 py-2 text-left">{t("admin.stats.recent.client")}</th>
-                  <th className="px-4 py-2 text-left">{t("admin.stats.recent.device")}</th>
-                  <th className="px-4 py-2 text-left">{t("admin.stats.recent.status")}</th>
-                  <th className="px-4 py-2 text-left">{t("admin.stats.recent.date")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.recent.map((r) => (
-                  <tr
-                    key={r.id}
-                    className="border-b border-border last:border-b-0 hover:bg-surface"
-                  >
-                    <td className="px-4 py-2 font-mono text-xs text-muted-foreground">
-                      {r.reference ?? "—"}
-                    </td>
-                    <td className="px-4 py-2">{r.customer_name}</td>
-                    <td className="px-4 py-2">{r.device}</td>
-                    <td className="px-4 py-2">{t(`admin.stats.status.${r.status}`)}</td>
-                    <td className="px-4 py-2 text-muted-foreground">
-                      {formatShortDate(r.created_at, locale)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <DataTable
+          columns={columns}
+          data={stats.recent}
+          searchKey="reference"
+          searchPlaceholder={t("admin.stats.search")}
+          emptyTitle={t("admin.stats.recent.empty")}
+        />
       </section>
     </div>
   );

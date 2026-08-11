@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useI18n } from "@/lib/i18n/context";
-import { getAuditLogs } from "@/lib/audit.functions";
+import { getAuditLogs, type AuditLogRow } from "@/lib/audit.functions";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export function AuditSection() {
   const { t } = useI18n();
@@ -48,63 +50,72 @@ export function AuditSection() {
 
   const rows = logs.data ?? [];
 
+  const columns: ColumnDef<AuditLogRow>[] = [
+    {
+      accessorKey: "created_at",
+      header: t("admin.audit.col.date"),
+      cell: ({ row }) => (
+        <span className="whitespace-nowrap text-muted-foreground">
+          {new Date(row.original.created_at).toLocaleString("fr-FR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "action",
+      header: t("admin.audit.col.action"),
+      cell: ({ row }) => (
+        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          {AUDIT_ACTION_LABEL[row.original.action] ?? row.original.action}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "entity",
+      header: t("admin.audit.col.entity"),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.entity}
+          {row.original.entity_id ? (
+            <span className="ml-1 font-mono text-[10px]">
+              ({row.original.entity_id.slice(0, 8)}…)
+            </span>
+          ) : null}
+        </span>
+      ),
+    },
+    {
+      id: "details",
+      header: t("admin.audit.col.details"),
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground">
+          {row.original.user_name ? <span>{row.original.user_name} · </span> : null}
+          {row.original.details ? JSON.stringify(row.original.details) : "—"}
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div>
       <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         {t("admin.audit.description")}
       </p>
-      {rows.length === 0 ? (
-        <p className="mt-6 text-sm text-muted-foreground">{t("admin.audit.empty")}</p>
-      ) : (
-        <div className="mt-6 overflow-x-auto border border-border bg-card">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-2 text-left">{t("admin.audit.col.date")}</th>
-                <th className="px-4 py-2 text-left">{t("admin.audit.col.action")}</th>
-                <th className="px-4 py-2 text-left">{t("admin.audit.col.entity")}</th>
-                <th className="px-4 py-2 text-left">{t("admin.audit.col.details")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b border-border last:border-b-0 hover:bg-surface"
-                >
-                  <td className="px-4 py-2 whitespace-nowrap text-muted-foreground">
-                    {new Date(row.created_at).toLocaleString("fr-FR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="px-4 py-2">
-                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                      {AUDIT_ACTION_LABEL[row.action] ?? row.action}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground">
-                    {row.entity}
-                    {row.entity_id ? (
-                      <span className="ml-1 font-mono text-[10px]">
-                        ({row.entity_id.slice(0, 8)}…)
-                      </span>
-                    ) : null}
-                  </td>
-                  <td className="px-4 py-2 text-xs text-muted-foreground">
-                    {row.user_name ? <span>{row.user_name} · </span> : null}
-                    {row.details ? JSON.stringify(row.details) : "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="mt-6">
+        <DataTable
+          columns={columns}
+          data={rows}
+          searchKey="action"
+          searchPlaceholder={t("admin.audit.search")}
+          emptyTitle={t("admin.audit.empty")}
+        />
+      </div>
     </div>
   );
 }

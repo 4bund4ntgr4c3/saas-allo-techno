@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
   Send,
   Trash2,
@@ -148,6 +150,46 @@ export function AdminMarketing() {
   const data = campaigns.data ?? [];
   const segData = segments.data ?? [];
   const countData = counts.data ?? { vip: 0, loyal: 0, active: 0, new: 0, inactive: 0, total: 0 };
+
+  const segmentColumns: ColumnDef<typeof segData[number], unknown>[] = [
+    {
+      accessorKey: "customer_name",
+      header: () => t("admin.marketing.table.name"),
+      cell: ({ row }) => <span className="font-medium">{row.getValue("customer_name")}</span>,
+    },
+    {
+      accessorKey: "phone",
+      header: () => t("admin.marketing.table.phone"),
+      cell: ({ row }) => <span className="font-mono">{row.getValue("phone") as string}</span>,
+    },
+    {
+      accessorKey: "segment",
+      header: () => t("admin.marketing.table.segment"),
+      cell: ({ row }) => {
+        const seg = row.getValue("segment") as string;
+        return (
+          <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg] ?? ""}`}>
+            {segmentLabel(seg)}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "frequency",
+      header: () => t("admin.marketing.table.frequency"),
+      cell: ({ row }) => <span className="font-mono text-right">{row.getValue("frequency") as number}</span>,
+    },
+    {
+      accessorKey: "recency_days",
+      header: () => t("admin.marketing.table.recency"),
+      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("recency_days") as number)}j</span>,
+    },
+    {
+      accessorKey: "monetary",
+      header: () => t("admin.marketing.table.total"),
+      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("monetary") as number).toLocaleString("fr-FR")}</span>,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -347,40 +389,7 @@ export function AdminMarketing() {
       {segData.length > 0 && (
         <div>
           <h3 className="font-bold text-sm">{t("admin.marketing.clientPreview")} ({segData.length})</h3>
-          <div className="mt-3 max-h-64 overflow-y-auto border border-border bg-card">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="p-2">{t("admin.marketing.table.name")}</th>
-                  <th className="p-2">{t("admin.marketing.table.phone")}</th>
-                  <th className="p-2">{t("admin.marketing.table.segment")}</th>
-                  <th className="p-2 text-right">{t("admin.marketing.table.frequency")}</th>
-                  <th className="p-2 text-right">{t("admin.marketing.table.recency")}</th>
-                  <th className="p-2 text-right">{t("admin.marketing.table.total")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {segData.slice(0, 50).map((c, i) => (
-                  <tr key={i} className="border-b border-border last:border-b-0">
-                    <td className="p-2 font-medium">{c.customer_name}</td>
-                    <td className="p-2 font-mono">{c.phone}</td>
-                    <td className="p-2">
-                      <span
-                        className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[c.segment] ?? ""}`}
-                      >
-                        {segmentLabel(c.segment)}
-                      </span>
-                    </td>
-                    <td className="p-2 text-right font-mono">{c.frequency}</td>
-                    <td className="p-2 text-right font-mono">{c.recency_days}j</td>
-                    <td className="p-2 text-right font-mono">
-                      {c.monetary.toLocaleString("fr-FR")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable columns={segmentColumns} data={segData} searchKey="name" searchPlaceholder={t("admin.marketing.search")} pageSize={50} />
         </div>
       )}
     </div>

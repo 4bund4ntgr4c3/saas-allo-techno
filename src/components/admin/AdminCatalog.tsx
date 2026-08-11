@@ -6,6 +6,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 import { Loader2, ImagePlus, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatFcfa } from "@/data/catalog";
 import {
   addCatalogPhoto,
@@ -881,74 +883,99 @@ function DeviceDetailPanel({
     }
   };
 
+  const faultColumns: ColumnDef<CatalogFault>[] = [
+    {
+      accessorKey: "label",
+      header: t("admin.catalog.fault.table.fault"),
+      cell: ({ row }) => {
+        const f = row.original;
+        return (
+          <>
+            <p className="font-medium">{f.label}</p>
+            <p className="font-mono text-[10px] uppercase text-muted-foreground">
+              {f.slug} · {t("admin.catalog.fault.table.sort")} {f.sort}
+            </p>
+          </>
+        );
+      },
+    },
+    {
+      accessorKey: "price",
+      header: t("admin.catalog.fault.table.price"),
+      cell: ({ row }) => (
+        <span className="font-mono">{formatFcfa(row.original.price)}</span>
+      ),
+    },
+    {
+      accessorKey: "duration",
+      header: t("admin.catalog.fault.table.duration"),
+      cell: ({ row }) => row.original.duration || "—",
+    },
+    {
+      accessorKey: "warranty",
+      header: t("admin.catalog.fault.table.warranty"),
+      cell: ({ row }) => row.original.warranty || "—",
+    },
+    {
+      accessorKey: "part",
+      header: t("admin.catalog.fault.table.part"),
+      cell: ({ row }) => row.original.part || "—",
+    },
+    {
+      id: "actions",
+      header: () => null,
+      enableSorting: false,
+      enableHiding: false,
+      cell: ({ row }) => {
+        const f = row.original;
+        return (
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={t("admin.catalog.aria.editItem", [f.label])}
+              onClick={() => {
+                setEditingFault(f.id);
+                setFaultForm({
+                  slug: f.slug,
+                  label: f.label,
+                  price: String(f.price),
+                  duration: f.duration,
+                  warranty: f.warranty,
+                  part: f.part,
+                  sort: f.sort,
+                });
+              }}
+            >
+              <Pencil className="size-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive"
+              disabled={busy}
+              aria-label={t("admin.catalog.aria.deleteItem", [f.label])}
+              onClick={() => removeFault(f.id)}
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div className="rounded-sm border border-border bg-card p-5">
       <h3 className="text-sm font-semibold">{t("admin.catalog.fault.title_for")} {device.name}</h3>
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
-              <th className="px-3 py-2">{t("admin.catalog.fault.table.fault")}</th>
-              <th className="px-3 py-2">{t("admin.catalog.fault.table.price")}</th>
-              <th className="px-3 py-2">{t("admin.catalog.fault.table.duration")}</th>
-              <th className="px-3 py-2">{t("admin.catalog.fault.table.warranty")}</th>
-              <th className="px-3 py-2">{t("admin.catalog.fault.table.part")}</th>
-              <th className="px-3 py-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {faults.map((f) => (
-              <tr key={f.id} className="border-b border-border last:border-b-0">
-                <td className="px-3 py-2">
-                  <p className="font-medium">{f.label}</p>
-                  <p className="font-mono text-[10px] uppercase text-muted-foreground">
-                    {f.slug} · {t("admin.catalog.fault.table.sort")} {f.sort}
-                  </p>
-                </td>
-                <td className="px-3 py-2 font-mono">{formatFcfa(f.price)}</td>
-                <td className="px-3 py-2">{f.duration || "—"}</td>
-                <td className="px-3 py-2">{f.warranty || "—"}</td>
-                <td className="px-3 py-2">{f.part || "—"}</td>
-                <td className="px-3 py-2">
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-label={t("admin.catalog.aria.editItem", [f.label])}
-                      onClick={() => {
-                        setEditingFault(f.id);
-                        setFaultForm({
-                          slug: f.slug,
-                          label: f.label,
-                          price: String(f.price),
-                          duration: f.duration,
-                          warranty: f.warranty,
-                          part: f.part,
-                          sort: f.sort,
-                        });
-                      }}
-                    >
-                      <Pencil className="size-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive"
-                      disabled={busy}
-                      aria-label={t("admin.catalog.aria.deleteItem", [f.label])}
-                      onClick={() => removeFault(f.id)}
-                    >
-                      <Trash2 className="size-3.5" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {faults.length === 0 && (
-          <p className="py-3 text-xs text-muted-foreground">{t("admin.catalog.fault.empty")}</p>
-        )}
+      <div className="mt-4">
+        <DataTable
+          columns={faultColumns}
+          data={faults}
+          searchKey="label"
+          searchPlaceholder={t("admin.catalog.fault.search")}
+          pageSize={10}
+        />
       </div>
       <form onSubmit={saveFault} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">

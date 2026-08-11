@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 
 function AnalyticsSection() {
   const { t } = useI18n();
@@ -38,6 +40,33 @@ function AnalyticsSection() {
     reservation_created: t("admin.analytics.events.reservationCreated"),
   };
 
+  const columns: ColumnDef<{ event: string; created_at: string }, unknown>[] = [
+    {
+      accessorKey: "event",
+      header: t("admin.analytics.events.column.event"),
+      cell: ({ row }) => (
+        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          {EVENT_LABEL[row.original.event] ?? row.original.event}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "created_at",
+      header: t("admin.analytics.events.column.date"),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {new Date(row.original.created_at).toLocaleString(undefined, {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+      ),
+    },
+  ];
+
   if (events.isLoading) {
     return <p className="mt-6 text-sm text-muted-foreground">{t("admin.analytics.loading")}</p>;
   }
@@ -60,36 +89,7 @@ function AnalyticsSection() {
 
       <div>
         <h2 className="mb-4 text-xl font-semibold">{t("admin.analytics.events.title")}</h2>
-        <div className="overflow-x-auto border border-border bg-card">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-2 text-left">{t("admin.analytics.events.column.event")}</th>
-                <th className="px-4 py-2 text-left">{t("admin.analytics.events.column.date")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(events.data ?? []).slice(0, 50).map((e, i) => (
-                <tr key={i} className="border-b border-border last:border-b-0 hover:bg-surface">
-                  <td className="px-4 py-2">
-                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                      {EVENT_LABEL[e.event] ?? e.event}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground">
-                    {new Date(e.created_at).toLocaleString(undefined, {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable columns={columns} data={events.data ?? []} searchKey="event" searchPlaceholder={t("admin.analytics.search")} pageSize={50} />
       </div>
     </div>
   );

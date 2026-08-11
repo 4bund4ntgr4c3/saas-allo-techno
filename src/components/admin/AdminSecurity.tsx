@@ -12,6 +12,8 @@ import { getSecurityStats } from "@/lib/security.functions";
 import { getMetrics } from "@/lib/monitoring.functions";
 import { field } from "@/components/admin/primitives/AdminField";
 import { useI18n } from "@/lib/i18n/context";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@tanstack/react-table";
 
 function SecuritySection() {
   const { t } = useI18n();
@@ -172,6 +174,12 @@ function RateLimitPanel() {
     refetchInterval: 15_000,
   });
 
+  const rateLimitColumns: ColumnDef<{ key: string; count: number; resetIn: number }>[] = [
+    { accessorKey: "key", header: t("admin.security.rateLimit.key") },
+    { accessorKey: "count", header: t("admin.security.rateLimit.requests") },
+    { accessorKey: "resetIn", header: t("admin.security.rateLimit.expiresIn") },
+  ];
+
   return (
     <div className="mt-6 rounded-sm border border-border bg-card p-5">
       <h3 className="text-sm font-semibold">{t("admin.security.rateLimit.title")}</h3>
@@ -201,26 +209,7 @@ function RateLimitPanel() {
             </div>
           </div>
           {stats.data.buckets.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
-                    <th className="px-3 py-2">{t("admin.security.rateLimit.key")}</th>
-                    <th className="px-3 py-2 text-right">{t("admin.security.rateLimit.requests")}</th>
-                    <th className="px-3 py-2 text-right">{t("admin.security.rateLimit.expiresIn")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.data.buckets.map((b) => (
-                    <tr key={b.key} className="border-b border-border last:border-b-0">
-                      <td className="px-3 py-2 font-mono">{b.key}</td>
-                      <td className="px-3 py-2 text-right font-mono">{b.count}</td>
-                      <td className="px-3 py-2 text-right text-muted-foreground">{b.resetIn}s</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable columns={rateLimitColumns} data={stats.data.buckets} pageSize={10} />
           )}
         </div>
       ) : null}
@@ -249,6 +238,19 @@ function MetricsPanel() {
     refetchInterval: 30_000,
   });
 
+  const metricColumns: ColumnDef<{ name: string; count: number }>[] = [
+    {
+      accessorKey: "name",
+      header: t("admin.security.metrics.event"),
+      cell: (info) => (
+        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          {METRIC_LABEL[info.getValue() as string] ?? info.getValue() as string}
+        </span>
+      ),
+    },
+    { accessorKey: "count", header: t("admin.security.metrics.count") },
+  ];
+
   return (
     <div className="mt-6 rounded-sm border border-border bg-card p-5">
       <h3 className="text-sm font-semibold">{t("admin.security.metrics.title")}</h3>
@@ -258,27 +260,8 @@ function MetricsPanel() {
       {metrics.isLoading ? (
         <p className="mt-4 text-sm text-muted-foreground">{t("common.loading")}</p>
       ) : metrics.data && metrics.data.length > 0 ? (
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border text-left uppercase tracking-wider text-muted-foreground">
-                    <th className="px-3 py-2">{t("admin.security.metrics.event")}</th>
-                    <th className="px-3 py-2 text-right">{t("admin.security.metrics.count")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {metrics.data.map((m) => (
-                <tr key={m.name} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2">
-                    <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                      {METRIC_LABEL[m.name] ?? m.name}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono">{m.count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-4">
+          <DataTable columns={metricColumns} data={metrics.data} pageSize={10} />
         </div>
       ) : (
         <p className="mt-4 text-sm text-muted-foreground">{t("admin.security.metrics.empty")}</p>
