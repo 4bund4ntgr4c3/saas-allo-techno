@@ -7,6 +7,24 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Phase 1 B2B — parc matériel & sites)
+
+### Added
+
+- **Parc matériel** : tables `equipment` (statuts actif/en_panne/maintenance/garantie/retire, qr_id unique généré automatiquement), `equipment_history` (journal d'événements), `equipment_documents`, `warranties` — avec RLS d'isolation par organisation et 10 RPC (`create_equipment`, `update_equipment`, `set_equipment_status` avec journalisation automatique, `delete_equipment`, `add_equipment_history`, `upsert_warranty`, `delete_warranty`, `get_org_equipment` avec recherche/filtre, `get_equipment` fiche complète JSON, `get_equipment_by_qr`).
+- **Portail `/app/organizations/:id/equipment`** : liste du parc avec recherche + filtre statut, formulaire d'ajout (type, marque, modèle, n° de série, asset tag, site, dates, affectation, localisation), fiche équipement (infos, changement de statut avec raison, historique, garanties, QR code imprimable pointant vers `/app/scan`).
+- **Sites** : `workshops` étendue avec `org_id`, `manager`, `opening_hours`, `departments` + RLS préservant l'existant (ateliers org_id NULL restent publics) + 4 RPC (`get_org_sites`, `create_org_site`, `update_org_site`, `delete_org_site` avec détachement des équipements).
+- **Page `/app/organizations/:id/sites`** : liste des sites (équipements rattachés, départements), ajout/suppression.
+- **Page `/app/scan?q=`** : résolution d'un QR équipement vers la fiche (target du scan caméra à venir avec les tickets B2B).
+- **i18n** : traductions FR/EN équipement + sites.
+
+### Changed
+
+- **types.ts** : tables `equipment`, `equipment_documents`, `equipment_history`, `workshops` (colonnes sites), `warranties` + enum `equipment_status` + 14 RPC.
+- **README** : section Phase 1 B2B.
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Phase 0 B2B — fondations multi-tenant)
 
 ### Added

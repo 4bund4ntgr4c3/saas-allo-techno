@@ -956,6 +956,160 @@ export type Database = {
         };
         Relationships: [];
       };
+      equipment: {
+        Row: {
+          asset_tag: string | null;
+          assigned_to: string | null;
+          brand: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          location: string | null;
+          model: string | null;
+          name: string;
+          notes: string | null;
+          org_id: string;
+          purchase_date: string | null;
+          qr_id: string;
+          serial_number: string | null;
+          site_id: string | null;
+          status: Database["public"]["Enums"]["equipment_status"];
+          type: string;
+          updated_at: string;
+          warranty_expires_at: string | null;
+        };
+        Insert: {
+          asset_tag?: string | null;
+          assigned_to?: string | null;
+          brand?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          location?: string | null;
+          model?: string | null;
+          name: string;
+          notes?: string | null;
+          org_id: string;
+          purchase_date?: string | null;
+          qr_id?: string;
+          serial_number?: string | null;
+          site_id?: string | null;
+          status?: Database["public"]["Enums"]["equipment_status"];
+          type?: string;
+          updated_at?: string;
+          warranty_expires_at?: string | null;
+        };
+        Update: {
+          asset_tag?: string | null;
+          assigned_to?: string | null;
+          brand?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          location?: string | null;
+          model?: string | null;
+          name?: string;
+          notes?: string | null;
+          org_id?: string;
+          purchase_date?: string | null;
+          qr_id?: string;
+          serial_number?: string | null;
+          site_id?: string | null;
+          status?: Database["public"]["Enums"]["equipment_status"];
+          type?: string;
+          updated_at?: string;
+          warranty_expires_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "equipment_org_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "equipment_site_id_fkey";
+            columns: ["site_id"];
+            isOneToOne: false;
+            referencedRelation: "workshops";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      equipment_documents: {
+        Row: {
+          created_at: string;
+          equipment_id: string;
+          id: string;
+          mime: string | null;
+          name: string;
+          size: number | null;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          equipment_id: string;
+          id?: string;
+          mime?: string | null;
+          name: string;
+          size?: number | null;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          equipment_id?: string;
+          id?: string;
+          mime?: string | null;
+          name?: string;
+          size?: number | null;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "equipment_documents_equipment_id_fkey";
+            columns: ["equipment_id"];
+            isOneToOne: false;
+            referencedRelation: "equipment";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      equipment_history: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          description: string | null;
+          equipment_id: string;
+          event: string;
+          id: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          equipment_id: string;
+          event: string;
+          id?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          equipment_id?: string;
+          event?: string;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "equipment_history_equipment_id_fkey";
+            columns: ["equipment_id"];
+            isOneToOne: false;
+            referencedRelation: "equipment";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organizations: {
         Row: {
           address: string | null;
@@ -1035,7 +1189,115 @@ export type Database = {
           role?: Database["public"]["Enums"]["org_role"];
           user_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      warranties: {
+        Row: {
+          coverage: string | null;
+          created_at: string;
+          end_date: string | null;
+          equipment_id: string;
+          id: string;
+          provider: string | null;
+          start_date: string | null;
+        };
+        Insert: {
+          coverage?: string | null;
+          created_at?: string;
+          end_date?: string | null;
+          equipment_id: string;
+          id?: string;
+          provider?: string | null;
+          start_date?: string | null;
+        };
+        Update: {
+          coverage?: string | null;
+          created_at?: string;
+          end_date?: string | null;
+          equipment_id?: string;
+          id?: string;
+          provider?: string | null;
+          start_date?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "warranties_equipment_id_fkey";
+            columns: ["equipment_id"];
+            isOneToOne: false;
+            referencedRelation: "equipment";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      workshops: {
+        Row: {
+          active: boolean | null;
+          address: string | null;
+          city: string;
+          created_at: string | null;
+          departments: string[];
+          email: string | null;
+          id: string;
+          lat: number | null;
+          lng: number | null;
+          manager: string | null;
+          name: string;
+          opening_hours: Json | null;
+          org_id: string | null;
+          phone: string;
+          timezone: string | null;
+        };
+        Insert: {
+          active?: boolean | null;
+          address?: string | null;
+          city: string;
+          created_at?: string | null;
+          departments?: string[];
+          email?: string | null;
+          id?: string;
+          lat?: number | null;
+          lng?: number | null;
+          manager?: string | null;
+          name: string;
+          opening_hours?: Json | null;
+          org_id?: string | null;
+          phone: string;
+          timezone?: string | null;
+        };
+        Update: {
+          active?: boolean | null;
+          address?: string | null;
+          city?: string;
+          created_at?: string | null;
+          departments?: string[];
+          email?: string | null;
+          id?: string;
+          lat?: number | null;
+          lng?: number | null;
+          manager?: string | null;
+          name?: string;
+          opening_hours?: Json | null;
+          org_id?: string | null;
+          phone?: string;
+          timezone?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "workshops_org_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {
@@ -1051,6 +1313,10 @@ export type Database = {
         };
         Returns: undefined;
       };
+      add_equipment_history: {
+        Args: { _equipment_id: string; _event: string; _description?: string | null };
+        Returns: string;
+      };
       booked_hours: {
         Args: { _from: string; _to: string; _mode?: string };
         Returns: {
@@ -1059,6 +1325,38 @@ export type Database = {
         }[];
       };
       claim_first_admin: { Args: never; Returns: boolean };
+      create_equipment: {
+        Args: {
+          _org_id: string;
+          _name: string;
+          _type?: string;
+          _brand?: string | null;
+          _model?: string | null;
+          _serial_number?: string | null;
+          _asset_tag?: string | null;
+          _site_id?: string | null;
+          _purchase_date?: string | null;
+          _warranty_expires_at?: string | null;
+          _assigned_to?: string | null;
+          _location?: string | null;
+          _notes?: string | null;
+        };
+        Returns: string;
+      };
+      create_org_site: {
+        Args: {
+          _org_id: string;
+          _name: string;
+          _address?: string | null;
+          _city?: string | null;
+          _phone?: string | null;
+          _email?: string | null;
+          _manager?: string | null;
+          _opening_hours?: Json | null;
+          _departments?: string[] | null;
+        };
+        Returns: string;
+      };
       create_organization: {
         Args: {
           _name: string;
@@ -1075,10 +1373,13 @@ export type Database = {
         };
         Returns: string;
       };
+      delete_org_site: { Args: { _site_id: string }; Returns: boolean };
       decrement_inventory: {
         Args: { _slug: string; _qty: number };
         Returns: boolean;
       };
+      delete_equipment: { Args: { _equipment_id: string }; Returns: boolean };
+      delete_warranty: { Args: { _warranty_id: string }; Returns: boolean };
       ensure_referral_code: {
         Args: { _user_id: string; _code: string };
         Returns: string | null;
@@ -1097,6 +1398,57 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"];
         }[];
       };
+      get_equipment: { Args: { _equipment_id: string }; Returns: Json };
+      get_equipment_by_qr: {
+        Args: { _qr_id: string };
+        Returns: {
+          brand: string | null;
+          id: string;
+          model: string | null;
+          name: string;
+          org_id: string;
+          org_name: string;
+          qr_id: string;
+          status: Database["public"]["Enums"]["equipment_status"];
+          type: string;
+        }[];
+      };
+      get_org_equipment: {
+        Args: {
+          _org_id: string;
+          _search?: string | null;
+          _status?: Database["public"]["Enums"]["equipment_status"] | null;
+        };
+        Returns: {
+          asset_tag: string | null;
+          assigned_to: string | null;
+          brand: string | null;
+          created_at: string;
+          id: string;
+          location: string | null;
+          model: string | null;
+          name: string;
+          qr_id: string;
+          serial_number: string | null;
+          site_name: string | null;
+          status: Database["public"]["Enums"]["equipment_status"];
+          type: string;
+        }[];
+      };
+      get_org_sites: {
+        Args: { _org_id: string };
+        Returns: {
+          active: boolean | null;
+          address: string | null;
+          city: string;
+          departments: string[];
+          equipment_count: number;
+          id: string;
+          manager: string | null;
+          name: string;
+          phone: string;
+        }[];
+      };
       get_user_orgs: { Args: never; Returns: string };
       get_org_members: { Args: { _org_id: string }; Returns: string };
       invite_org_member: {
@@ -1110,8 +1462,49 @@ export type Database = {
         Args: { _org_id: string; _user_id: string };
         Returns: boolean;
       };
+      set_equipment_status: {
+        Args: {
+          _equipment_id: string;
+          _status: Database["public"]["Enums"]["equipment_status"];
+          _reason?: string | null;
+        };
+        Returns: boolean;
+      };
       set_org_member_role: {
         Args: { _org_id: string; _user_id: string; _role: Database["public"]["Enums"]["org_role"] };
+        Returns: boolean;
+      };
+      update_equipment: {
+        Args: {
+          _equipment_id: string;
+          _name?: string | null;
+          _type?: string | null;
+          _brand?: string | null;
+          _model?: string | null;
+          _serial_number?: string | null;
+          _asset_tag?: string | null;
+          _site_id?: string | null;
+          _purchase_date?: string | null;
+          _warranty_expires_at?: string | null;
+          _assigned_to?: string | null;
+          _location?: string | null;
+          _notes?: string | null;
+        };
+        Returns: boolean;
+      };
+      update_org_site: {
+        Args: {
+          _site_id: string;
+          _name?: string | null;
+          _address?: string | null;
+          _city?: string | null;
+          _phone?: string | null;
+          _email?: string | null;
+          _manager?: string | null;
+          _opening_hours?: Json | null;
+          _departments?: string[] | null;
+          _active?: boolean | null;
+        };
         Returns: boolean;
       };
       update_organization: {
@@ -1130,6 +1523,17 @@ export type Database = {
           _equipment_count?: number | null;
         };
         Returns: boolean;
+      };
+      upsert_warranty: {
+        Args: {
+          _equipment_id: string;
+          _warranty_id?: string | null;
+          _provider?: string | null;
+          _start_date?: string | null;
+          _end_date?: string | null;
+          _coverage?: string | null;
+        };
+        Returns: string;
       };
       get_reservation_timeline: {
         Args: { _reference: string };
@@ -1232,6 +1636,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "staff" | "technicien" | "user";
       delivery_status: "non_applicable" | "a_planifier" | "en_route" | "livre";
+      equipment_status: "actif" | "en_panne" | "maintenance" | "garantie" | "retire";
       org_role:
         | "admin_org"
         | "responsable_maintenance"
@@ -1373,6 +1778,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "staff", "technicien", "user"],
+      equipment_status: ["actif", "en_panne", "maintenance", "garantie", "retire"],
       org_role: [
         "admin_org",
         "responsable_maintenance",

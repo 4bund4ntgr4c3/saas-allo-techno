@@ -4,6 +4,13 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 
 **Version** : 2026.08.11-b36 — [Changelog](./CHANGELOG.md)
 
+## Phase 1 B2B (parc matériel & sites)
+
+- **Parc matériel** : tables `equipment` / `equipment_history` / `equipment_documents` / `warranties` isolées par organisation (RLS `org_is_member`/`org_is_admin`), 10 RPC CRUD sécurisés côté base, statuts (actif, en panne, maintenance, garantie, retiré).
+- **QR équipement** : `qr_id` unique généré à la création, QR imprimable sur la fiche (`/app/scan?q=…` résout la fiche).
+- **Sites** : `workshops` étendue (org_id, responsable, horaires, départements) — les ateliers historiques restent publics, les sites d'organisation sont isolés.
+- **Pages** : `/app/organizations/:id/equipment` (liste + recherche + filtre + ajout), `/app/organizations/:id/equipment/:id` (fiche complète, statut, historique, garanties, QR), `/app/organizations/:id/sites`.
+
 ## Phase 0 B2B (fondations multi-tenant)
 
 - **Portail entreprises `/app`** : création d'organisation (raison sociale, RCCM/NIF, adresse, secteur, taille, nb de sites/équipements), liste des organisations, gestion des membres (invitation par email, rôles : admin_org, responsable maintenance, responsable de site, comptabilité, lecture seule, membre).

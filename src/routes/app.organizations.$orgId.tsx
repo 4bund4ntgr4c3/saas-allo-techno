@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Building2, Loader2, Trash2, UserPlus } from "lucide-react";
+import { ArrowLeft, Building2, Laptop, Loader2, MapPin, Trash2, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -154,6 +154,25 @@ function OrgDetail() {
           </div>
         ))}
       </dl>
+
+      <div className="flex flex-wrap gap-2">
+        <Link
+          to="/app/organizations/$orgId/equipment"
+          params={{ orgId }}
+          className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
+        >
+          <Laptop className="size-4" />
+          {t("org.equipment.title")}
+        </Link>
+        <Link
+          to="/app/organizations/$orgId/sites"
+          params={{ orgId }}
+          className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
+        >
+          <MapPin className="size-4" />
+          {t("org.sites.title")}
+        </Link>
+      </div>
 
       <div>
         <h2 className="mb-4 text-lg font-bold">{t("org.detail.members")}</h2>
