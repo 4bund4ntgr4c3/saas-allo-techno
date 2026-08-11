@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AdminKnowledgeBase } from "@/components/admin/AdminKnowledgeBase";
 
 export const Route = createFileRoute("/_authenticated/admin/kb")({
-  component: Placeholder,
+  component: AdminKnowledgeBase,
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Base de connaissances</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OrdersSection } from "@/components/admin/AdminOrders";
 
 export const Route = createFileRoute("/_authenticated/admin/commandes")({
-  component: Placeholder,
+  component: OrdersSection,
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Commandes</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

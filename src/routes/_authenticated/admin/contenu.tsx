@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ContentSection } from "@/components/admin/AdminContent";
 
 export const Route = createFileRoute("/_authenticated/admin/contenu")({
-  component: Placeholder,
+  component: ContentSection,
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Contenu</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

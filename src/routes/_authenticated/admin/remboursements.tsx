@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RefundsSection } from "@/components/admin/AdminRefunds";
 
 export const Route = createFileRoute("/_authenticated/admin/remboursements")({
-  component: Placeholder,
+  component: RefundsSection,
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Remboursements</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

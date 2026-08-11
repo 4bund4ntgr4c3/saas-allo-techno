@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
+
+const AdminMarketing = lazy(() =>
+  import("@/components/admin/AdminMarketing").then((m) => ({ default: m.AdminMarketing })),
+);
 
 export const Route = createFileRoute("/_authenticated/admin/marketing")({
-  component: Placeholder,
+  component: () => (
+    <Suspense fallback={<div className="flex justify-center py-16"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
+      <AdminMarketing />
+    </Suspense>
+  ),
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Marketing</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

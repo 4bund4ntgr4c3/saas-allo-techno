@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AdminAdvancedReports } from "@/components/admin/AdminAdvancedReports";
 
 export const Route = createFileRoute("/_authenticated/admin/rapports")({
-  component: Placeholder,
+  component: AdminAdvancedReports,
 });
-
-function Placeholder() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Rapports</h1>
-      <p className="text-muted-foreground">Chargement…</p>
-    </div>
-  );
-}

@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
+
+const StatsDashboard = lazy(() =>
+  import("@/components/admin/StatsDashboard").then((m) => ({ default: m.StatsDashboard })),
+);
 
 export const Route = createFileRoute("/_authenticated/admin/stats")({
-  component: StatsPlaceholder,
+  component: () => (
+    <Suspense fallback={<div className="flex justify-center py-16"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
+      <StatsDashboard />
+    </Suspense>
+  ),
 });
-
-function StatsPlaceholder() {
-  return <div className="space-y-6"><h1 className="text-2xl font-semibold">Statistiques</h1><p className="text-muted-foreground">Chargement…</p></div>;
-}
