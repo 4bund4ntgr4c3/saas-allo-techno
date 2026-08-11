@@ -24,6 +24,7 @@ import "./loyalty";
 import "./magasins";
 import "./mon-compte";
 import "./notfound";
+import "./org";
 import "./panier";
 import "./promotions";
 import "./push";

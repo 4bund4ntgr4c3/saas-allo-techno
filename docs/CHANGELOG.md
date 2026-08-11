@@ -7,6 +7,24 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.11] — 2026-08-11 (Phase 0 B2B — fondations multi-tenant)
+
+### Added
+
+- **Multi-tenant (Phase 0)** : tables `organizations` + `organization_members` avec enum `org_role` (admin_org, responsable_maintenance, responsable_site, comptabilite, lecture_seule, membre) et `org_status` (pending/active/suspended).
+- **Isolation RLS par organisation** : helpers `org_role_of()` / `org_is_admin()` / `org_is_member()`, policies membres/administration sur les 2 nouvelles tables.
+- **RPC org** : `create_organization` (le créateur devient admin_org), `update_organization`, `get_user_orgs`, `get_org_members`, `invite_org_member` (par email), `set_org_member_role`, `remove_org_member` (protège le dernier admin).
+- **`org_id` nullable + RLS étendues** sur reservations, workshops, leads, inventory_parts, stock_movements, suppliers, supplier_orders — l'activité Allô Techno existante (org_id NULL) et les organisations clientes coexistent.
+- **Portail B2B `/app`** : layout avec sidebar + liste des organisations + création d'organisation (formulaire complet : raison sociale, RCCM, adresse, secteur, taille, nb sites/équipements) + détail organisation avec gestion des membres (invitation, changement de rôle, retrait).
+- **`src/lib/org.functions.ts`** : server functions org avec client Supabase scopé utilisateur (JWT Bearer) pour que `auth.uid()` des RPC résolve correctement côté serveur.
+- **i18n** : segment `org` FR/EN enregistré dans `segments/index.ts`.
+
+### Changed
+
+- **types.ts** : ajout des tables `organizations`/`organization_members`, des enums `org_role`/`org_status` et des 9 RPC org dans `Database`.
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Fix CI/CD)
 
 ### Fixed

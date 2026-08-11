@@ -4,6 +4,12 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 
 **Version** : 2026.08.11-b36 — [Changelog](./CHANGELOG.md)
 
+## Phase 0 B2B (fondations multi-tenant)
+
+- **Portail entreprises `/app`** : création d'organisation (raison sociale, RCCM/NIF, adresse, secteur, taille, nb de sites/équipements), liste des organisations, gestion des membres (invitation par email, rôles : admin_org, responsable maintenance, responsable de site, comptabilité, lecture seule, membre).
+- **Multi-tenant** : tables `organizations` + `organization_members` avec RLS d'isolation (`org_is_member`, `org_is_admin`), `org_id` nullable sur reservations, workshops, leads, inventory_parts, stock_movements, suppliers, supplier_orders — l'activité existante (org_id NULL) coexiste avec les organisations clientes.
+- **RPC org** : `create_organization`, `update_organization`, `get_user_orgs`, `get_org_members`, `invite_org_member`, `set_org_member_role`, `remove_org_member` (sécurité vérifiée côté base).
+
 ## Fonctionnalités
 
 ### Côté client
@@ -124,6 +130,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 ```
 src/
   routes/                  # Pages de l'application (TanStack Router)
+  routes/app*              # Portail B2B multi-tenant (/app)
   routes/api.*.ts          # Routes API brutes (webhooks, sitemap, docs)
   components/site/         # Composants propres au site
   components/ui/           # Composants shadcn/ui

@@ -956,6 +956,87 @@ export type Database = {
         };
         Relationships: [];
       };
+      organizations: {
+        Row: {
+          address: string | null;
+          country: string;
+          created_at: string;
+          created_by: string | null;
+          email: string | null;
+          equipment_count: number | null;
+          id: string;
+          name: string;
+          phone: string | null;
+          registration_number: string | null;
+          sector: string | null;
+          site_count: number | null;
+          size: string | null;
+          status: Database["public"]["Enums"]["org_status"];
+          trade_name: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          address?: string | null;
+          country?: string;
+          created_at?: string;
+          created_by?: string | null;
+          email?: string | null;
+          equipment_count?: number | null;
+          id?: string;
+          name: string;
+          phone?: string | null;
+          registration_number?: string | null;
+          sector?: string | null;
+          site_count?: number | null;
+          size?: string | null;
+          status?: Database["public"]["Enums"]["org_status"];
+          trade_name?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          address?: string | null;
+          country?: string;
+          created_at?: string;
+          created_by?: string | null;
+          email?: string | null;
+          equipment_count?: number | null;
+          id?: string;
+          name?: string;
+          phone?: string | null;
+          registration_number?: string | null;
+          sector?: string | null;
+          site_count?: number | null;
+          size?: string | null;
+          status?: Database["public"]["Enums"]["org_status"];
+          trade_name?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      organization_members: {
+        Row: {
+          created_at: string;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["org_role"];
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          organization_id: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          organization_id?: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          user_id?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -978,6 +1059,22 @@ export type Database = {
         }[];
       };
       claim_first_admin: { Args: never; Returns: boolean };
+      create_organization: {
+        Args: {
+          _name: string;
+          _trade_name?: string | null;
+          _registration_number?: string | null;
+          _address?: string | null;
+          _country?: string | null;
+          _phone?: string | null;
+          _email?: string | null;
+          _sector?: string | null;
+          _size?: string | null;
+          _site_count?: number | null;
+          _equipment_count?: number | null;
+        };
+        Returns: string;
+      };
       decrement_inventory: {
         Args: { _slug: string; _qty: number };
         Returns: boolean;
@@ -999,6 +1096,40 @@ export type Database = {
           slot_period: Database["public"]["Enums"]["slot_period"];
           status: Database["public"]["Enums"]["reservation_status"];
         }[];
+      };
+      get_user_orgs: { Args: never; Returns: string };
+      get_org_members: { Args: { _org_id: string }; Returns: string };
+      invite_org_member: {
+        Args: { _org_id: string; _email: string; _role?: Database["public"]["Enums"]["org_role"] };
+        Returns: boolean;
+      };
+      org_is_admin: { Args: { _org_id: string }; Returns: boolean };
+      org_is_member: { Args: { _org_id: string }; Returns: boolean };
+      org_role_of: { Args: { _org_id: string }; Returns: Database["public"]["Enums"]["org_role"] };
+      remove_org_member: {
+        Args: { _org_id: string; _user_id: string };
+        Returns: boolean;
+      };
+      set_org_member_role: {
+        Args: { _org_id: string; _user_id: string; _role: Database["public"]["Enums"]["org_role"] };
+        Returns: boolean;
+      };
+      update_organization: {
+        Args: {
+          _org_id: string;
+          _name?: string;
+          _trade_name?: string | null;
+          _registration_number?: string | null;
+          _address?: string | null;
+          _country?: string | null;
+          _phone?: string | null;
+          _email?: string | null;
+          _sector?: string | null;
+          _size?: string | null;
+          _site_count?: number | null;
+          _equipment_count?: number | null;
+        };
+        Returns: boolean;
       };
       get_reservation_timeline: {
         Args: { _reference: string };
@@ -1101,6 +1232,14 @@ export type Database = {
     Enums: {
       app_role: "admin" | "staff" | "technicien" | "user";
       delivery_status: "non_applicable" | "a_planifier" | "en_route" | "livre";
+      org_role:
+        | "admin_org"
+        | "responsable_maintenance"
+        | "responsable_site"
+        | "comptabilite"
+        | "lecture_seule"
+        | "membre";
+      org_status: "pending" | "active" | "suspended";
       payment_status: "pending" | "paid" | "failed" | "refunded";
       reservation_status:
         | "en_attente"
@@ -1234,6 +1373,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "staff", "technicien", "user"],
+      org_role: [
+        "admin_org",
+        "responsable_maintenance",
+        "responsable_site",
+        "comptabilite",
+        "lecture_seule",
+        "membre",
+      ],
+      org_status: ["pending", "active", "suspended"],
       reservation_status: [
         "en_attente",
         "confirmee",
