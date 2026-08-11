@@ -48,6 +48,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
         <img
           src={src}
           alt={alt}
+          loading="lazy"
           className="aspect-square w-full object-cover transition-transform duration-200"
           style={
             zoomed
@@ -83,6 +84,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
           <img
             src={src}
             alt={alt}
+            loading="lazy"
             className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
             draggable={false}
           />

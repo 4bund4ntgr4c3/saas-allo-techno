@@ -44,7 +44,7 @@ export async function subscribePush(
 
     // Clé publique VAPID pour l'abonnement push (doit être définie côté client
     // via VITE_VAPID_PUBLIC_KEY dans .env, exposée par Vite au build).
-    const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY ?? "";
+    const vapidPublicKey = import.meta.env["VITE_VAPID_PUBLIC_KEY"] ?? "";
 
     if (!vapidPublicKey) {
       console.warn("[push] VAPID_PUBLIC_KEY not configured — subscription skipped");

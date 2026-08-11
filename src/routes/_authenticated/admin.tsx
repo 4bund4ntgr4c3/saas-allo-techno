@@ -501,15 +501,15 @@ function AdminPage() {
     <div className="mx-auto max-w-6xl px-6 py-14">
       <header className="mb-8">
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Espace interne</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{t("admin.header.internal")}</p>
           <span className="inline-flex items-center gap-2 rounded-full border border-success/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-success">
             <RadioTower className="size-3 animate-pulse" />
-            Temps réel
+            {t("admin.header.live")}
           </span>
         </div>
-        <h1 className="mt-2 text-3xl font-semibold">Administration des dossiers</h1>
+        <h1 className="mt-2 text-3xl font-semibold">{t("admin.header.title")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Mettez à jour le statut d'une réparation et consultez l'historique des changements.
+          {t("admin.header.subtitle")}
         </p>
         {isTechnicien && (
           <p className="mt-1 text-xs font-medium text-primary">{t("admin.view.technician")}</p>
@@ -523,7 +523,7 @@ function AdminPage() {
           onClick={() => setTab("dossiers")}
         >
           <RadioTower className="mr-2 size-4" />
-          Dossiers
+          {t("admin.tab.dossiers")}
         </Button>
         <Button
           variant={tab === "atelier" ? "technical" : "outline"}
@@ -531,7 +531,7 @@ function AdminPage() {
           onClick={() => setTab("atelier")}
         >
           <Wrench className="mr-2 size-4" />
-          Atelier
+          {t("admin.tab.atelier")}
         </Button>
         <Button
           variant={tab === "equipe" ? "technical" : "outline"}
@@ -539,7 +539,7 @@ function AdminPage() {
           onClick={() => setTab("equipe")}
         >
           <Users className="mr-2 size-4" />
-          Équipe
+          {t("admin.tab.equipe")}
         </Button>
         <Button
           variant={tab === "leads" ? "technical" : "outline"}
@@ -547,7 +547,7 @@ function AdminPage() {
           onClick={() => setTab("leads")}
         >
           <MailPlus className="mr-2 size-4" />
-          Leads
+          {t("admin.tab.leads")}
         </Button>
         <Button
           variant={tab === "reclamations" ? "technical" : "outline"}
@@ -555,7 +555,7 @@ function AdminPage() {
           onClick={() => setTab("reclamations")}
         >
           <BadgeCheck className="mr-2 size-4" />
-          Réclamations
+          {t("admin.tab.reclamations")}
         </Button>
         <Button
           variant={tab === "analytics" ? "technical" : "outline"}
@@ -563,7 +563,7 @@ function AdminPage() {
           onClick={() => setTab("analytics")}
         >
           <BarChart3 className="mr-2 size-4" />
-          Analytics
+          {t("admin.tab.analytics")}
         </Button>
         <Button
           variant={tab === "analytics-advanced" ? "technical" : "outline"}
@@ -571,7 +571,7 @@ function AdminPage() {
           onClick={() => setTab("analytics-advanced")}
         >
           <TrendingUp className="mr-2 size-4" />
-          Funnel
+          {t("admin.tab.funnel")}
         </Button>
         <Button
           variant={tab === "stats" ? "technical" : "outline"}
@@ -587,7 +587,7 @@ function AdminPage() {
           onClick={() => setTab("kpis")}
         >
           <TrendingUp className="mr-2 size-4" />
-          KPI avancés
+          {t("admin.tab.kpis")}
         </Button>
         <Button
           variant={tab === "securite" ? "technical" : "outline"}
@@ -595,7 +595,7 @@ function AdminPage() {
           onClick={() => setTab("securite")}
         >
           <ShieldCheck className="mr-2 size-4" />
-          Sécurité
+          {t("admin.tab.securite")}
         </Button>
         <Button
           variant={tab === "contenu" ? "technical" : "outline"}
@@ -603,7 +603,7 @@ function AdminPage() {
           onClick={() => setTab("contenu")}
         >
           <FileText className="mr-2 size-4" />
-          Contenu
+          {t("admin.tab.contenu")}
         </Button>
         <Button
           variant={tab === "catalogue" ? "technical" : "outline"}
@@ -611,7 +611,7 @@ function AdminPage() {
           onClick={() => setTab("catalogue")}
         >
           <Package className="mr-2 size-4" />
-          Catalogue
+          {t("admin.tab.catalogue")}
         </Button>
         <Button
           variant={tab === "commandes" ? "technical" : "outline"}
@@ -619,7 +619,7 @@ function AdminPage() {
           onClick={() => setTab("commandes")}
         >
           <ShoppingCart className="mr-2 size-4" />
-          Commandes
+          {t("admin.tab.commandes")}
         </Button>
         <Button
           variant={tab === "remboursements" ? "technical" : "outline"}
@@ -627,7 +627,7 @@ function AdminPage() {
           onClick={() => setTab("remboursements")}
         >
           <RotateCcw className="mr-2 size-4" />
-          Remboursements
+          {t("admin.tab.remboursements")}
         </Button>
         <Button
           variant={tab === "retours" ? "technical" : "outline"}
@@ -635,7 +635,7 @@ function AdminPage() {
           onClick={() => setTab("retours")}
         >
           <RotateCcw className="mr-2 size-4" />
-          Retours
+          {t("admin.tab.retours")}
         </Button>
         <Button
           variant={tab === "audit" ? "technical" : "outline"}
@@ -651,7 +651,7 @@ function AdminPage() {
           onClick={() => setTab("ateliers")}
         >
           <Wrench className="mr-2 size-4" />
-          Ateliers
+          {t("admin.tab.ateliers")}
         </Button>
         <Button
           variant={tab === "fournisseurs" ? "technical" : "outline"}
@@ -659,7 +659,7 @@ function AdminPage() {
           onClick={() => setTab("fournisseurs")}
         >
           <Package className="mr-2 size-4" />
-          Fournisseurs
+          {t("admin.tab.fournisseurs")}
         </Button>
         <Button
           variant={tab === "parrainage" ? "technical" : "outline"}
@@ -667,7 +667,7 @@ function AdminPage() {
           onClick={() => setTab("parrainage")}
         >
           <Users className="mr-2 size-4" />
-          Parrainage
+          {t("admin.tab.parrainage")}
         </Button>
         <Button
           variant={tab === "chat" ? "technical" : "outline"}
@@ -675,7 +675,7 @@ function AdminPage() {
           onClick={() => setTab("chat")}
         >
           <MailPlus className="mr-2 size-4" />
-          Chat
+          {t("admin.tab.chat")}
         </Button>
         <Button
           variant={tab === "rapports" ? "technical" : "outline"}
@@ -683,7 +683,7 @@ function AdminPage() {
           onClick={() => setTab("rapports")}
         >
           <BarChart3 className="mr-2 size-4" />
-          Rapports
+          {t("admin.tab.rapports")}
         </Button>
         <Button
           variant={tab === "inventaire" ? "technical" : "outline"}
@@ -691,7 +691,7 @@ function AdminPage() {
           onClick={() => setTab("inventaire")}
         >
           <Package className="mr-2 size-4" />
-          Inventaire
+          {t("admin.tab.inventaire")}
         </Button>
         <Button
           variant={tab === "sla" ? "technical" : "outline"}
@@ -699,7 +699,7 @@ function AdminPage() {
           onClick={() => setTab("sla")}
         >
           <BarChart3 className="mr-2 size-4" />
-          SLA
+          {t("admin.tab.sla")}
         </Button>
         <Button
           variant={tab === "satisfaction" ? "technical" : "outline"}
@@ -707,7 +707,7 @@ function AdminPage() {
           onClick={() => setTab("satisfaction")}
         >
           <TrendingUp className="mr-2 size-4" />
-          Satisfaction
+          {t("admin.tab.satisfaction")}
         </Button>
         <Button
           variant={tab === "notif-interne" ? "technical" : "outline"}
@@ -715,7 +715,7 @@ function AdminPage() {
           onClick={() => setTab("notif-interne")}
         >
           <MailPlus className="mr-2 size-4" />
-          Notifs
+          {t("admin.tab.notifs")}
         </Button>
         <Button
           variant={tab === "kb" ? "technical" : "outline"}
@@ -723,7 +723,7 @@ function AdminPage() {
           onClick={() => setTab("kb")}
         >
           <FileText className="mr-2 size-4" />
-          KB
+          {t("admin.tab.kb")}
         </Button>
         <Button
           variant={tab === "marketing" ? "technical" : "outline"}

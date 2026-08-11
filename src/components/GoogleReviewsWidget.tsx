@@ -40,6 +40,7 @@ export function GoogleReviewsWidget() {
           src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
           alt="Google"
           className="size-6"
+          loading="lazy"
         />
         <div>
           <h3 className="text-sm font-bold">Avis Google</h3>

@@ -316,7 +316,7 @@ const en: Dictionary = {
   "action.accueil": "Home",
   "action.ressayer": "Retry",
   "action.ouvrir-carte": "Open map",
-  "action.en-plus-savoir": "Learn more",
+  "action.en-savoir-plus": "Learn more",
 
   // Header
   "header.menu": "Menu",

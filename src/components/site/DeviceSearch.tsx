@@ -1407,6 +1407,7 @@ export function DeviceSearch({
                         <img
                           src={previewUrls[i]}
                           alt={t("wizard.photos.alt", [i + 1])}
+                          loading="lazy"
                           className="aspect-square w-full object-cover"
                         />
                         <button
@@ -1557,6 +1558,7 @@ export function DeviceSearch({
                           <img
                             src={previewUrls[i]}
                             alt={t("wizard.photos.alt", [i + 1])}
+                            loading="lazy"
                             className="size-full object-cover"
                           />
                           <button
