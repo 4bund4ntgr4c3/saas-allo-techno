@@ -22,7 +22,10 @@ export type InvoiceRow = Pick<
   | "slot_period"
   | "slot_hour"
   | "status"
->;
+> & {
+  org_id?: string | null;
+  org_name?: string | null;
+};
 
 export type TimelineRow = {
   old_status: string | null;
@@ -276,6 +279,7 @@ export function downloadReservationsCsv(rows: InvoiceRow[]) {
   const header = [
     "Reference",
     "Client",
+    "Organisation",
     "Telephone",
     "Email",
     "Appareil",
@@ -294,6 +298,7 @@ export function downloadReservationsCsv(rows: InvoiceRow[]) {
       [
         r.reference,
         r.customer_name,
+        r.org_name ?? "",
         r.phone,
         r.email,
         r.device,
@@ -341,10 +346,13 @@ export function downloadReservationsPdf(rows: InvoiceRow[]) {
     margin: { left: margin, right: margin },
     theme: "grid",
     styles: { fontSize: 7.5, cellPadding: 1.8 },
-    head: [["Réf.", "Client", "Tél.", "Appareil", "Panne", "Mode", "Paiement", "RDV", "Statut"]],
+    head: [
+      ["Réf.", "Client", "Org.", "Tél.", "Appareil", "Panne", "Mode", "Paiement", "RDV", "Statut"],
+    ],
     body: rows.map((r) => [
       r.reference,
       r.customer_name,
+      r.org_name ?? "",
       r.phone,
       r.device,
       r.issue,
@@ -353,7 +361,7 @@ export function downloadReservationsPdf(rows: InvoiceRow[]) {
       `${formatDateFr(r.slot_date)}${r.slot_hour ? ` ${r.slot_hour}` : ""}`,
       STATUS_LABEL[r.status] ?? r.status,
     ]),
-    foot: [["", "", "", "", "", "", "", `Total`, String(rows.length)]],
+    foot: [["", "", "", "", "", "", "", "", `Total`, String(rows.length)]],
     footStyles: { fontStyle: "bold", fillColor: [241, 245, 249], textColor: [15, 23, 42] },
   });
 

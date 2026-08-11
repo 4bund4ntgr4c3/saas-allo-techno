@@ -78,7 +78,8 @@ export interface OrganizationInput {
  * recréées avec `DEFAULT NULL`, donc `gen types` les marque optionnels (`?:`)
  * et `exactOptionalPropertyTypes` interdit d'y passer `undefined` explicite.
  */
-type RpcArgs<K extends keyof Database["public"]["Functions"]> = Database["public"]["Functions"][K]["Args"];
+type RpcArgs<K extends keyof Database["public"]["Functions"]> =
+  Database["public"]["Functions"][K]["Args"];
 
 function rpcArgs<K extends keyof Database["public"]["Functions"]>(
   _fn: K,
@@ -100,19 +101,22 @@ export const createOrganization = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { data: orgId, error } = await orgClient().rpc("create_organization", rpcArgs("create_organization", {
-      _name: data.name.trim(),
-      _trade_name: data.trade_name ?? undefined,
-      _registration_number: data.registration_number ?? undefined,
-      _address: data.address ?? undefined,
-      _country: data.country ?? "Bénin",
-      _phone: data.phone ?? undefined,
-      _email: data.email ?? undefined,
-      _sector: data.sector ?? undefined,
-      _size: data.size ?? undefined,
-      _site_count: data.site_count ?? undefined,
-      _equipment_count: data.equipment_count ?? undefined,
-    }));
+    const { data: orgId, error } = await orgClient().rpc(
+      "create_organization",
+      rpcArgs("create_organization", {
+        _name: data.name.trim(),
+        _trade_name: data.trade_name ?? undefined,
+        _registration_number: data.registration_number ?? undefined,
+        _address: data.address ?? undefined,
+        _country: data.country ?? "Bénin",
+        _phone: data.phone ?? undefined,
+        _email: data.email ?? undefined,
+        _sector: data.sector ?? undefined,
+        _size: data.size ?? undefined,
+        _site_count: data.site_count ?? undefined,
+        _equipment_count: data.equipment_count ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { org_id: orgId as string };
   });
@@ -124,20 +128,23 @@ export const updateOrganization = createServerFn({ method: "POST" })
     return { org_id, updates: rest };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("update_organization", rpcArgs("update_organization", {
-      _org_id: data.org_id,
-      _name: data.updates.name ?? undefined,
-      _trade_name: data.updates.trade_name ?? undefined,
-      _registration_number: data.updates.registration_number ?? undefined,
-      _address: data.updates.address ?? undefined,
-      _country: data.updates.country ?? undefined,
-      _phone: data.updates.phone ?? undefined,
-      _email: data.updates.email ?? undefined,
-      _sector: data.updates.sector ?? undefined,
-      _size: data.updates.size ?? undefined,
-      _site_count: data.updates.site_count ?? undefined,
-      _equipment_count: data.updates.equipment_count ?? undefined,
-    }));
+    const { error } = await orgClient().rpc(
+      "update_organization",
+      rpcArgs("update_organization", {
+        _org_id: data.org_id,
+        _name: data.updates.name ?? undefined,
+        _trade_name: data.updates.trade_name ?? undefined,
+        _registration_number: data.updates.registration_number ?? undefined,
+        _address: data.updates.address ?? undefined,
+        _country: data.updates.country ?? undefined,
+        _phone: data.updates.phone ?? undefined,
+        _email: data.updates.email ?? undefined,
+        _sector: data.updates.sector ?? undefined,
+        _size: data.updates.size ?? undefined,
+        _site_count: data.updates.site_count ?? undefined,
+        _equipment_count: data.updates.equipment_count ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { updated: true };
   });
@@ -314,11 +321,14 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
     return { org_id, search: search?.trim() || null, status: status ?? undefined };
   })
   .handler(async ({ data }) => {
-    const { data: rows, error } = await orgClient().rpc("get_org_equipment", rpcArgs("get_org_equipment", {
-      _org_id: data.org_id,
-      _search: data.search,
-      _status: data.status,
-    }));
+    const { data: rows, error } = await orgClient().rpc(
+      "get_org_equipment",
+      rpcArgs("get_org_equipment", {
+        _org_id: data.org_id,
+        _search: data.search,
+        _status: data.status,
+      }),
+    );
     if (error) throw new Error(error.message);
     return (rows ?? []) as unknown as EquipmentItem[];
   });
@@ -359,21 +369,24 @@ export const createEquipment = createServerFn({ method: "POST" })
     return { org_id, input };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc("create_equipment", rpcArgs("create_equipment", {
-      _org_id: data.org_id,
-      _name: data.input.name.trim(),
-      _type: data.input.type ?? "autre",
-      _brand: data.input.brand ?? undefined,
-      _model: data.input.model ?? undefined,
-      _serial_number: data.input.serial_number ?? undefined,
-      _asset_tag: data.input.asset_tag ?? undefined,
-      _site_id: data.input.site_id ?? undefined,
-      _purchase_date: data.input.purchase_date ?? undefined,
-      _warranty_expires_at: data.input.warranty_expires_at ?? undefined,
-      _assigned_to: data.input.assigned_to ?? undefined,
-      _location: data.input.location ?? undefined,
-      _notes: data.input.notes ?? undefined,
-    }));
+    const { data: id, error } = await orgClient().rpc(
+      "create_equipment",
+      rpcArgs("create_equipment", {
+        _org_id: data.org_id,
+        _name: data.input.name.trim(),
+        _type: data.input.type ?? "autre",
+        _brand: data.input.brand ?? undefined,
+        _model: data.input.model ?? undefined,
+        _serial_number: data.input.serial_number ?? undefined,
+        _asset_tag: data.input.asset_tag ?? undefined,
+        _site_id: data.input.site_id ?? undefined,
+        _purchase_date: data.input.purchase_date ?? undefined,
+        _warranty_expires_at: data.input.warranty_expires_at ?? undefined,
+        _assigned_to: data.input.assigned_to ?? undefined,
+        _location: data.input.location ?? undefined,
+        _notes: data.input.notes ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { equipment_id: id as string };
   });
@@ -385,21 +398,24 @@ export const updateEquipment = createServerFn({ method: "POST" })
     return { equipment_id, input };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("update_equipment", rpcArgs("update_equipment", {
-      _equipment_id: data.equipment_id,
-      _name: data.input.name ?? undefined,
-      _type: data.input.type ?? undefined,
-      _brand: data.input.brand ?? undefined,
-      _model: data.input.model ?? undefined,
-      _serial_number: data.input.serial_number ?? undefined,
-      _asset_tag: data.input.asset_tag ?? undefined,
-      _site_id: data.input.site_id ?? undefined,
-      _purchase_date: data.input.purchase_date ?? undefined,
-      _warranty_expires_at: data.input.warranty_expires_at ?? undefined,
-      _assigned_to: data.input.assigned_to ?? undefined,
-      _location: data.input.location ?? undefined,
-      _notes: data.input.notes ?? undefined,
-    }));
+    const { error } = await orgClient().rpc(
+      "update_equipment",
+      rpcArgs("update_equipment", {
+        _equipment_id: data.equipment_id,
+        _name: data.input.name ?? undefined,
+        _type: data.input.type ?? undefined,
+        _brand: data.input.brand ?? undefined,
+        _model: data.input.model ?? undefined,
+        _serial_number: data.input.serial_number ?? undefined,
+        _asset_tag: data.input.asset_tag ?? undefined,
+        _site_id: data.input.site_id ?? undefined,
+        _purchase_date: data.input.purchase_date ?? undefined,
+        _warranty_expires_at: data.input.warranty_expires_at ?? undefined,
+        _assigned_to: data.input.assigned_to ?? undefined,
+        _location: data.input.location ?? undefined,
+        _notes: data.input.notes ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { updated: true };
   });
@@ -415,11 +431,14 @@ export const setEquipmentStatus = createServerFn({ method: "POST" })
     return { equipment_id, status, reason: reason ?? undefined };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("set_equipment_status", rpcArgs("set_equipment_status", {
-      _equipment_id: data.equipment_id,
-      _status: data.status,
-      _reason: data.reason,
-    }));
+    const { error } = await orgClient().rpc(
+      "set_equipment_status",
+      rpcArgs("set_equipment_status", {
+        _equipment_id: data.equipment_id,
+        _status: data.status,
+        _reason: data.reason,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { updated: true };
   });
@@ -449,11 +468,14 @@ export const addEquipmentHistory = createServerFn({ method: "POST" })
     return { equipment_id, event: event.trim(), description: description ?? undefined };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("add_equipment_history", rpcArgs("add_equipment_history", {
-      _equipment_id: data.equipment_id,
-      _event: data.event,
-      _description: data.description,
-    }));
+    const { error } = await orgClient().rpc(
+      "add_equipment_history",
+      rpcArgs("add_equipment_history", {
+        _equipment_id: data.equipment_id,
+        _event: data.event,
+        _description: data.description,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { added: true };
   });
@@ -479,14 +501,17 @@ export const upsertWarranty = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc("upsert_warranty", rpcArgs("upsert_warranty", {
-      _equipment_id: data.equipment_id,
-      _warranty_id: data.warranty_id,
-      _provider: data.provider,
-      _start_date: data.start_date,
-      _end_date: data.end_date,
-      _coverage: data.coverage,
-    }));
+    const { data: id, error } = await orgClient().rpc(
+      "upsert_warranty",
+      rpcArgs("upsert_warranty", {
+        _equipment_id: data.equipment_id,
+        _warranty_id: data.warranty_id,
+        _provider: data.provider,
+        _start_date: data.start_date,
+        _end_date: data.end_date,
+        _coverage: data.coverage,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { warranty_id: id as string };
   });
@@ -554,16 +579,19 @@ export const createOrgSite = createServerFn({ method: "POST" })
     return { org_id, input };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc("create_org_site", rpcArgs("create_org_site", {
-      _org_id: data.org_id,
-      _name: data.input.name.trim(),
-      _address: data.input.address ?? undefined,
-      _city: data.input.city ?? "Cotonou",
-      _phone: data.input.phone ?? "",
-      _email: data.input.email ?? undefined,
-      _manager: data.input.manager ?? undefined,
-      _departments: data.input.departments ?? undefined,
-    }));
+    const { data: id, error } = await orgClient().rpc(
+      "create_org_site",
+      rpcArgs("create_org_site", {
+        _org_id: data.org_id,
+        _name: data.input.name.trim(),
+        _address: data.input.address ?? undefined,
+        _city: data.input.city ?? "Cotonou",
+        _phone: data.input.phone ?? "",
+        _email: data.input.email ?? undefined,
+        _manager: data.input.manager ?? undefined,
+        _departments: data.input.departments ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { site_id: id as string };
   });
@@ -575,17 +603,20 @@ export const updateOrgSite = createServerFn({ method: "POST" })
     return { site_id, input };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("update_org_site", rpcArgs("update_org_site", {
-      _site_id: data.site_id,
-      _name: data.input.name ?? undefined,
-      _address: data.input.address ?? undefined,
-      _city: data.input.city ?? undefined,
-      _phone: data.input.phone ?? undefined,
-      _email: data.input.email ?? undefined,
-      _manager: data.input.manager ?? undefined,
-      _departments: data.input.departments ?? undefined,
-      _active: data.input.active ?? undefined,
-    }));
+    const { error } = await orgClient().rpc(
+      "update_org_site",
+      rpcArgs("update_org_site", {
+        _site_id: data.site_id,
+        _name: data.input.name ?? undefined,
+        _address: data.input.address ?? undefined,
+        _city: data.input.city ?? undefined,
+        _phone: data.input.phone ?? undefined,
+        _email: data.input.email ?? undefined,
+        _manager: data.input.manager ?? undefined,
+        _departments: data.input.departments ?? undefined,
+        _active: data.input.active ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return { updated: true };
   });
@@ -656,10 +687,12 @@ export interface OrgTicketDetail extends OrgTicketSummary {
   email: string | null;
   message: string | null;
   staff_notes: string | null;
-  equipment: OrgTicketSummary["equipment"] & {
-    status: string;
-    warranty_expires_at: string | null;
-  } | null;
+  equipment:
+    | (OrgTicketSummary["equipment"] & {
+        status: string;
+        warranty_expires_at: string | null;
+      })
+    | null;
   timeline: {
     id: string;
     old_status: string | null;
@@ -699,18 +732,21 @@ export const createB2BTicket = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { data: ticket, error } = await orgClient().rpc("create_b2b_ticket", rpcArgs("create_b2b_ticket", {
-      _org_id: data.org_id,
-      _issue: data.issue.trim(),
-      _equipment_id: data.equipment_id ?? undefined,
-      _ticket_type: data.ticket_type ?? "panne",
-      _priority: data.priority ?? "normale",
-      _location: data.location ?? undefined,
-      _contact_phone: data.contact_phone ?? undefined,
-      _contact_email: data.contact_email ?? undefined,
-      _message: data.message ?? undefined,
-      _customer_name: data.customer_name ?? undefined,
-    }));
+    const { data: ticket, error } = await orgClient().rpc(
+      "create_b2b_ticket",
+      rpcArgs("create_b2b_ticket", {
+        _org_id: data.org_id,
+        _issue: data.issue.trim(),
+        _equipment_id: data.equipment_id ?? undefined,
+        _ticket_type: data.ticket_type ?? "panne",
+        _priority: data.priority ?? "normale",
+        _location: data.location ?? undefined,
+        _contact_phone: data.contact_phone ?? undefined,
+        _contact_email: data.contact_email ?? undefined,
+        _message: data.message ?? undefined,
+        _customer_name: data.customer_name ?? undefined,
+      }),
+    );
     if (error) throw new Error(error.message);
     return ticket as unknown as { id: string; reference: string };
   });
@@ -724,15 +760,23 @@ export const getOrgTickets = createServerFn({ method: "POST" })
       ticket_type?: B2BTicketType | null;
     };
     if (!org_id) throw new Error("id d'organisation requis");
-    return { org_id, status: status ?? undefined, priority: priority ?? undefined, ticket_type: ticket_type ?? undefined };
+    return {
+      org_id,
+      status: status ?? undefined,
+      priority: priority ?? undefined,
+      ticket_type: ticket_type ?? undefined,
+    };
   })
   .handler(async ({ data }) => {
-    const { data: rows, error } = await orgClient().rpc("get_org_tickets", rpcArgs("get_org_tickets", {
-      _org_id: data.org_id,
-      _status: data.status,
-      _priority: data.priority,
-      _ticket_type: data.ticket_type,
-    }));
+    const { data: rows, error } = await orgClient().rpc(
+      "get_org_tickets",
+      rpcArgs("get_org_tickets", {
+        _org_id: data.org_id,
+        _status: data.status,
+        _priority: data.priority,
+        _ticket_type: data.ticket_type,
+      }),
+    );
     if (error) throw new Error(error.message);
     return (rows ?? []) as unknown as OrgTicketSummary[];
   });
@@ -832,13 +876,15 @@ export const attachB2BTicketFile = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     await assertTicketAccess(data.ticket_id);
-    const { error } = await orgClient().from("reservation_attachments").insert({
-      reservation_id: data.ticket_id,
-      stage: "signalement",
-      kind: data.kind,
-      url: data.path,
-      caption: data.caption,
-    });
+    const { error } = await orgClient()
+      .from("reservation_attachments")
+      .insert({
+        reservation_id: data.ticket_id,
+        stage: "signalement",
+        kind: data.kind,
+        url: data.path,
+        caption: data.caption ?? null,
+      });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

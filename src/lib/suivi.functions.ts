@@ -359,9 +359,9 @@ export const addReservationComment = createServerFn({ method: "POST" })
       _reference: data.reference,
       _code: data.code,
       _author: "customer",
-      _author_name: data.author_name ?? undefined,
+      _author_name: data.author_name ?? null,
       _body: data.body,
-    });
+    } as never);
 
     if (error) {
       console.error("[suivi] comment add failed", error);
