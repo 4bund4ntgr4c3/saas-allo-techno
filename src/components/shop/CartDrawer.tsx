@@ -15,8 +15,14 @@ export function CartDrawer() {
       <div
         className="fixed inset-0 z-[60] bg-black/40 transition-opacity"
         onClick={closeDrawer}
+        aria-hidden="true"
       />
-      <div className="fixed inset-y-0 right-0 z-[70] flex w-full max-w-md flex-col border-l border-border bg-background shadow-2xl animate-in slide-in-from-right duration-200">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("panier.title")}
+        className="fixed inset-y-0 right-0 z-[70] flex w-full max-w-md flex-col border-l border-border bg-background shadow-2xl animate-in slide-in-from-right duration-200"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <h2 className="text-lg font-extrabold uppercase tracking-tight">

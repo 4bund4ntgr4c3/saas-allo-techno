@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Clock, Download, Plus, ShieldCheck } from "lucide-react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { ArrowRight, Clock, Download, Loader2, Plus, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
-import { DevisComparison } from "@/components/DevisComparison";
 import { Button } from "@/components/ui/button";
+
+const DevisComparison = lazy(() =>
+  import("@/components/DevisComparison").then((m) => ({ default: m.DevisComparison })),
+);
 import { BRANDS, DEVICES, devicesOfBrand, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
+import { trackPlausibleEvent } from "@/lib/analytics";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
@@ -74,6 +78,7 @@ function Devis() {
       });
       setLeadSent(true);
       toast.success(t("devis.lead.success"));
+      trackPlausibleEvent("devis_submitted", { device: device.name, fault: t(fault.label) });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("devis.lead.error"));
     }
@@ -253,10 +258,12 @@ function Devis() {
 
           {compareItems.length >= 2 && (
             <div className="mt-8">
-              <DevisComparison
-                devis={compareItems}
-                onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}
-              />
+              <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
+                <DevisComparison
+                  devis={compareItems}
+                  onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}
+                />
+              </Suspense>
             </div>
           )}
           {compareItems.length === 1 && (

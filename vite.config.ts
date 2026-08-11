@@ -49,6 +49,27 @@ export default defineConfig(async ({ mode }) => {
             // un chunk dédié, chargé uniquement par les routes qui en ont besoin —
             // pas dans le bundle initial du premier rendu.
             if (id.includes("/src/data/catalog/")) return "catalog";
+
+            // Heavy charting library → separate chunk (admin-only)
+            if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
+              return "vendor-charts";
+            }
+
+            // PDF generation (admin reports/invoices) → separate chunk
+            if (id.includes("node_modules/jspdf") || id.includes("node_modules/qrcode")) {
+              return "vendor-pdf";
+            }
+
+            // Excel export (admin) → separate chunk
+            if (id.includes("node_modules/xlsx")) {
+              return "vendor-xlsx";
+            }
+
+            // QR code scanner (camera-heavy, rarely used) → separate chunk
+            if (id.includes("node_modules/html5-qrcode")) {
+              return "vendor-qr";
+            }
+
             return undefined;
           },
         },

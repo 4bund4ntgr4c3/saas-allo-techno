@@ -75,6 +75,9 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={toggleZoom}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("shop.zoom.out")}
         >
           <button
             className="absolute right-6 top-6 text-white hover:text-white/80"

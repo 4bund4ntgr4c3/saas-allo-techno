@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useCallback } from "react";
+import { lazy, Suspense, useMemo, useState, useCallback } from "react";
 import { Check, Eye, Heart, Plus, ShoppingBag, GitCompareArrows } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,6 @@ import { useCart, FREE_DELIVERY_FROM } from "@/components/shop/cart";
 import { useWishlist } from "@/components/shop/wishlist";
 import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
 import { useCompare, MAX_COMPARE } from "@/components/shop/compare";
-import { QuickView } from "@/components/shop/QuickView";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -25,6 +24,10 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
+
+const QuickView = lazy(() =>
+  import("@/components/shop/QuickView").then((m) => ({ default: m.QuickView })),
+);
 
 export const Route = createFileRoute("/$locale/boutique/")({
   loader: () => listInventory().then((stock) => ({ stock })),
@@ -360,12 +363,14 @@ function Boutique() {
       <CtaBand />
 
       {quickViewProduct && (
-        <QuickView
-          product={quickViewProduct}
-          stock={stockOf(quickViewProduct.slug)}
-          open={true}
-          onClose={() => setQuickViewSlug(null)}
-        />
+        <Suspense fallback={null}>
+          <QuickView
+            product={quickViewProduct}
+            stock={stockOf(quickViewProduct.slug)}
+            open={true}
+            onClose={() => setQuickViewSlug(null)}
+          />
+        </Suspense>
       )}
     </>
   );

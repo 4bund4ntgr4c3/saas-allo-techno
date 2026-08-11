@@ -2,7 +2,7 @@ import { test, expect, type Browser, type Page } from "@playwright/test";
 
 const PASSWORD = "Demo@2026";
 
-test.setTimeout(90_000);
+test.setTimeout(process.env.E2E_TIMEOUT ? Number(process.env.E2E_TIMEOUT) : 90_000);
 
 const ROLES: {
   role: string;

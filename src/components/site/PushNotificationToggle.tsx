@@ -10,6 +10,7 @@ import {
   subscribePush,
   unsubscribePush,
 } from "@/lib/push-notifications";
+import { supabase } from "@/integrations/supabase/client";
 
 type PushStatus = "unsupported" | "denied" | "default" | "subscribed" | "loading";
 
@@ -92,7 +93,23 @@ export function PushNotificationToggle() {
       if (subscription) {
         setStatus("subscribed");
         toast.success(t("push.enabled"));
-        // TODO: Send subscription to server for push dispatch
+        // Send subscription to server
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const subJson = subscription.toJSON();
+          const keys = subJson.keys as { p256dh: string; auth: string } | undefined;
+          if (keys) {
+            await fetch("/api/push-subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                endpoint: subscription.endpoint,
+                keys: { p256dh: keys.p256dh, auth: keys.auth },
+                user_id: user.id,
+              }),
+            }).catch(() => {});
+          }
+        }
       } else {
         setStatus("default");
       }

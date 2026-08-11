@@ -31,8 +31,13 @@ export function QuickView({ product, stock, open, onClose }: QuickViewProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-lg border border-border bg-card shadow-xl">
+      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={product.name}
+        className="relative z-10 w-full max-w-lg border border-border bg-card shadow-xl"
+      >
         <button
           onClick={onClose}
           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
@@ -81,6 +86,7 @@ export function QuickView({ product, stock, open, onClose }: QuickViewProps) {
                 <button
                   onClick={() => setQty((n) => Math.max(1, n - 1))}
                   className="size-9 font-mono text-sm"
+                  aria-label={t("boutique.qty.decrease")}
                 >
                   −
                 </button>
@@ -88,6 +94,7 @@ export function QuickView({ product, stock, open, onClose }: QuickViewProps) {
                 <button
                   onClick={() => setQty((n) => Math.min(Math.max(1, stock), n + 1))}
                   className="size-9 font-mono text-sm"
+                  aria-label={t("boutique.qty.increase")}
                 >
                   +
                 </button>

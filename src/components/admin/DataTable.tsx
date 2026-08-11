@@ -95,6 +95,7 @@ export function DataTable<TData, TValue>({
             <button
               onClick={() => table.getColumn(searchKey!)?.setFilterValue("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={t("admin.common.clearSearch")}
             >
               <X className="size-4" />
             </button>
@@ -179,16 +180,16 @@ export function DataTable<TData, TValue>({
               {t("admin.common.page")} {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
             </span>
             <div className="flex items-center gap-1">
-              <Button variant="outline" size="icon" className="size-8" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
+              <Button variant="outline" size="icon" className="size-8" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()} aria-label={t("admin.common.firstPage")}>
                 <ChevronsLeft className="size-4" />
               </Button>
-              <Button variant="outline" size="icon" className="size-8" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+              <Button variant="outline" size="icon" className="size-8" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} aria-label={t("admin.common.previousPage")}>
                 <ChevronLeft className="size-4" />
               </Button>
-              <Button variant="outline" size="icon" className="size-8" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+              <Button variant="outline" size="icon" className="size-8" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} aria-label={t("admin.common.nextPage")}>
                 <ChevronRight className="size-4" />
               </Button>
-              <Button variant="outline" size="icon" className="size-8" onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
+              <Button variant="outline" size="icon" className="size-8" onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()} aria-label={t("admin.common.lastPage")}>
                 <ChevronsRight className="size-4" />
               </Button>
             </div>

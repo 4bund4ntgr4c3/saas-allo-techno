@@ -64,7 +64,7 @@ export function PwaUpdatePrompt() {
       <Button variant="technical" size="sm" onClick={handleUpdate}>
         {t("pwa.update.refresh")}
       </Button>
-      <button onClick={() => setShow(false)} className="p-1 hover:bg-muted rounded-sm">
+      <button onClick={() => setShow(false)} className="p-1 hover:bg-muted rounded-sm" aria-label={t("pwa.close")}>
         <X className="size-3" />
       </button>
     </div>

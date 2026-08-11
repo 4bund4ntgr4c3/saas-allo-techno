@@ -69,8 +69,9 @@ export function AdminAdvancedReports() {
 
       <div className="flex flex-wrap gap-3">
         <div>
-          <label className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateFrom")}</label>
+          <label htmlFor="admin-report-date-from" className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateFrom")}</label>
           <input
+            id="admin-report-date-from"
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
@@ -78,8 +79,9 @@ export function AdminAdvancedReports() {
           />
         </div>
         <div>
-          <label className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateTo")}</label>
+          <label htmlFor="admin-report-date-to" className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateTo")}</label>
           <input
+            id="admin-report-date-to"
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}

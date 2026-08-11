@@ -1565,6 +1565,7 @@ export function DeviceSearch({
                             type="button"
                             onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
                             className="absolute -right-2 -top-2 size-5 rounded-full bg-destructive text-xs text-white"
+                            aria-label={t("wizard.photos.remove", [i + 1])}
                           >
                             ×
                           </button>

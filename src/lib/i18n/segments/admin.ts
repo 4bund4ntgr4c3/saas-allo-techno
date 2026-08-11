@@ -975,6 +975,11 @@ const fr = {
   "admin.common.noResults": "Aucun résultat",
   "admin.common.results": "résultat(s)",
   "admin.common.page": "Page",
+  "admin.common.clearSearch": "Effacer la recherche",
+  "admin.common.firstPage": "Première page",
+  "admin.common.previousPage": "Page précédente",
+  "admin.common.nextPage": "Page suivante",
+  "admin.common.lastPage": "Dernière page",
 
   // Reviews admin
   "reviews.invite.sent": "Invitation envoyée le",
@@ -1954,6 +1959,11 @@ const en = {
   "admin.common.noResults": "No results",
   "admin.common.results": "result(s)",
   "admin.common.page": "Page",
+  "admin.common.clearSearch": "Clear search",
+  "admin.common.firstPage": "First page",
+  "admin.common.previousPage": "Previous page",
+  "admin.common.nextPage": "Next page",
+  "admin.common.lastPage": "Last page",
 
   // Reviews admin
   "reviews.invite.sent": "Invitation sent on",

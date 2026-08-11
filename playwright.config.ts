@@ -9,15 +9,17 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   expect: { timeout: 15_000 },
   use: {
-    baseURL: "http://localhost:8080",
+    baseURL: process.env.E2E_BASE_URL ?? "http://localhost:8080",
     trace: "retain-on-failure",
     video: "off",
   },
   projects: [{ name: "chromium", use: { browserName: "chromium" } }],
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:8080",
-    reuseExistingServer: true,
-    timeout: 180_000,
-  },
+  webServer: process.env.E2E_BASE_URL
+    ? undefined
+    : {
+        command: "npm run dev",
+        url: "http://localhost:8080",
+        reuseExistingServer: true,
+        timeout: 180_000,
+      },
 });
