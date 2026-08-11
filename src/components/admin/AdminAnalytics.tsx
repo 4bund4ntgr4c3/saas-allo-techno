@@ -55,7 +55,7 @@ function AnalyticsSection() {
       header: t("admin.analytics.events.column.date"),
       cell: ({ row }) => (
         <span className="text-muted-foreground">
-          {new Date(row.original.created_at).toLocaleString(undefined, {
+          {new Date(row.original.created_at).toLocaleString(t("locale") as string, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

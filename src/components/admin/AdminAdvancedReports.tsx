@@ -62,7 +62,7 @@ export function AdminAdvancedReports() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <h3 className="text-lg font-bold flex items-center gap-2">
         <BarChart3 className="size-5" /> {t("admin.reports.title")}
       </h3>

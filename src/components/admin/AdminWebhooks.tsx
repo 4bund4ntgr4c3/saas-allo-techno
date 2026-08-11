@@ -169,7 +169,7 @@ export function AdminWebhooks() {
                       {logs.map((log) => (
                         <div key={log.id} className="flex items-center gap-2 text-xs">
                           <span className="font-mono text-muted-foreground w-36 shrink-0">
-                            {new Date(log.created_at).toLocaleString()}
+                            {new Date(log.created_at).toLocaleString(t("locale") as string)}
                           </span>
                           <span
                             className={
