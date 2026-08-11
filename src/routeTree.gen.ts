@@ -62,6 +62,35 @@ import { Route as LocaleQuartiersIndexRouteImport } from './routes/$locale/quart
 import { Route as LocaleQuartiersSlugRouteImport } from './routes/$locale/quartiers.$slug'
 import { Route as LocaleReparationsIndexRouteImport } from './routes/$locale/reparations.index'
 import { Route as LocaleReparationsBrandRouteImport } from './routes/$locale/reparations.$brand'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
+import { Route as AuthenticatedAdminAnalyticsAdvancedRouteImport } from './routes/_authenticated/admin/analytics-advanced'
+import { Route as AuthenticatedAdminAtelierRouteImport } from './routes/_authenticated/admin/atelier'
+import { Route as AuthenticatedAdminAteliersRouteImport } from './routes/_authenticated/admin/ateliers'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
+import { Route as AuthenticatedAdminCatalogueRouteImport } from './routes/_authenticated/admin/catalogue'
+import { Route as AuthenticatedAdminChatRouteImport } from './routes/_authenticated/admin/chat'
+import { Route as AuthenticatedAdminCommandesRouteImport } from './routes/_authenticated/admin/commandes'
+import { Route as AuthenticatedAdminContenuRouteImport } from './routes/_authenticated/admin/contenu'
+import { Route as AuthenticatedAdminDossiersRouteImport } from './routes/_authenticated/admin/dossiers'
+import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin/equipe'
+import { Route as AuthenticatedAdminFournisseursRouteImport } from './routes/_authenticated/admin/fournisseurs'
+import { Route as AuthenticatedAdminInventaireRouteImport } from './routes/_authenticated/admin/inventaire'
+import { Route as AuthenticatedAdminKbRouteImport } from './routes/_authenticated/admin/kb'
+import { Route as AuthenticatedAdminKpisRouteImport } from './routes/_authenticated/admin/kpis'
+import { Route as AuthenticatedAdminLeadsRouteImport } from './routes/_authenticated/admin/leads'
+import { Route as AuthenticatedAdminMarketingRouteImport } from './routes/_authenticated/admin/marketing'
+import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminParrainageRouteImport } from './routes/_authenticated/admin/parrainage'
+import { Route as AuthenticatedAdminRapportsRouteImport } from './routes/_authenticated/admin/rapports'
+import { Route as AuthenticatedAdminReclamationsRouteImport } from './routes/_authenticated/admin/reclamations'
+import { Route as AuthenticatedAdminRemboursementsRouteImport } from './routes/_authenticated/admin/remboursements'
+import { Route as AuthenticatedAdminRetoursRouteImport } from './routes/_authenticated/admin/retours'
+import { Route as AuthenticatedAdminSatisfactionRouteImport } from './routes/_authenticated/admin/satisfaction'
+import { Route as AuthenticatedAdminSecuriteRouteImport } from './routes/_authenticated/admin/securite'
+import { Route as AuthenticatedAdminSlaRouteImport } from './routes/_authenticated/admin/sla'
+import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin/stats'
+import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin/webhooks'
 import { Route as ApiV1SplatRouteImport } from './routes/api.v1.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -329,6 +358,172 @@ const LocaleReparationsBrandRoute = LocaleReparationsBrandRouteImport.update({
   path: '/reparations/$brand',
   getParentRoute: () => LocaleRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAnalyticsAdvancedRoute =
+  AuthenticatedAdminAnalyticsAdvancedRouteImport.update({
+    id: '/analytics-advanced',
+    path: '/analytics-advanced',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAtelierRoute =
+  AuthenticatedAdminAtelierRouteImport.update({
+    id: '/atelier',
+    path: '/atelier',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAteliersRoute =
+  AuthenticatedAdminAteliersRouteImport.update({
+    id: '/ateliers',
+    path: '/ateliers',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminCatalogueRoute =
+  AuthenticatedAdminCatalogueRouteImport.update({
+    id: '/catalogue',
+    path: '/catalogue',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminChatRoute = AuthenticatedAdminChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminCommandesRoute =
+  AuthenticatedAdminCommandesRouteImport.update({
+    id: '/commandes',
+    path: '/commandes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminContenuRoute =
+  AuthenticatedAdminContenuRouteImport.update({
+    id: '/contenu',
+    path: '/contenu',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminDossiersRoute =
+  AuthenticatedAdminDossiersRouteImport.update({
+    id: '/dossiers',
+    path: '/dossiers',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminEquipeRoute =
+  AuthenticatedAdminEquipeRouteImport.update({
+    id: '/equipe',
+    path: '/equipe',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFournisseursRoute =
+  AuthenticatedAdminFournisseursRouteImport.update({
+    id: '/fournisseurs',
+    path: '/fournisseurs',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminInventaireRoute =
+  AuthenticatedAdminInventaireRouteImport.update({
+    id: '/inventaire',
+    path: '/inventaire',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminKbRoute = AuthenticatedAdminKbRouteImport.update({
+  id: '/kb',
+  path: '/kb',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminKpisRoute = AuthenticatedAdminKpisRouteImport.update({
+  id: '/kpis',
+  path: '/kpis',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminLeadsRoute = AuthenticatedAdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminMarketingRoute =
+  AuthenticatedAdminMarketingRouteImport.update({
+    id: '/marketing',
+    path: '/marketing',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNotificationsRoute =
+  AuthenticatedAdminNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminParrainageRoute =
+  AuthenticatedAdminParrainageRouteImport.update({
+    id: '/parrainage',
+    path: '/parrainage',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminRapportsRoute =
+  AuthenticatedAdminRapportsRouteImport.update({
+    id: '/rapports',
+    path: '/rapports',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminReclamationsRoute =
+  AuthenticatedAdminReclamationsRouteImport.update({
+    id: '/reclamations',
+    path: '/reclamations',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminRemboursementsRoute =
+  AuthenticatedAdminRemboursementsRouteImport.update({
+    id: '/remboursements',
+    path: '/remboursements',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminRetoursRoute =
+  AuthenticatedAdminRetoursRouteImport.update({
+    id: '/retours',
+    path: '/retours',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSatisfactionRoute =
+  AuthenticatedAdminSatisfactionRouteImport.update({
+    id: '/satisfaction',
+    path: '/satisfaction',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSecuriteRoute =
+  AuthenticatedAdminSecuriteRouteImport.update({
+    id: '/securite',
+    path: '/securite',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSlaRoute = AuthenticatedAdminSlaRouteImport.update({
+  id: '/sla',
+  path: '/sla',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminStatsRoute = AuthenticatedAdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminWebhooksRoute =
+  AuthenticatedAdminWebhooksRouteImport.update({
+    id: '/webhooks',
+    path: '/webhooks',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
   id: '/api/v1/$',
   path: '/api/v1/$',
@@ -365,7 +560,7 @@ export interface FileRoutesByFullPath {
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/$locale/work-at': typeof LocaleWorkAtRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
@@ -384,11 +579,40 @@ export interface FileRoutesByFullPath {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
+  '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
+  '/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
+  '/admin/chat': typeof AuthenticatedAdminChatRoute
+  '/admin/commandes': typeof AuthenticatedAdminCommandesRoute
+  '/admin/contenu': typeof AuthenticatedAdminContenuRoute
+  '/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
+  '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
+  '/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
+  '/admin/kb': typeof AuthenticatedAdminKbRoute
+  '/admin/kpis': typeof AuthenticatedAdminKpisRoute
+  '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/marketing': typeof AuthenticatedAdminMarketingRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
+  '/admin/rapports': typeof AuthenticatedAdminRapportsRoute
+  '/admin/reclamations': typeof AuthenticatedAdminReclamationsRoute
+  '/admin/remboursements': typeof AuthenticatedAdminRemboursementsRoute
+  '/admin/retours': typeof AuthenticatedAdminRetoursRoute
+  '/admin/satisfaction': typeof AuthenticatedAdminSatisfactionRoute
+  '/admin/securite': typeof AuthenticatedAdminSecuriteRoute
+  '/admin/sla': typeof AuthenticatedAdminSlaRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -419,7 +643,6 @@ export interface FileRoutesByTo {
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/$locale/work-at': typeof LocaleWorkAtRoute
-  '/admin': typeof AuthenticatedAdminRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
@@ -438,11 +661,40 @@ export interface FileRoutesByTo {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
+  '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
+  '/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
+  '/admin/chat': typeof AuthenticatedAdminChatRoute
+  '/admin/commandes': typeof AuthenticatedAdminCommandesRoute
+  '/admin/contenu': typeof AuthenticatedAdminContenuRoute
+  '/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
+  '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
+  '/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
+  '/admin/kb': typeof AuthenticatedAdminKbRoute
+  '/admin/kpis': typeof AuthenticatedAdminKpisRoute
+  '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/marketing': typeof AuthenticatedAdminMarketingRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
+  '/admin/rapports': typeof AuthenticatedAdminRapportsRoute
+  '/admin/reclamations': typeof AuthenticatedAdminReclamationsRoute
+  '/admin/remboursements': typeof AuthenticatedAdminRemboursementsRoute
+  '/admin/retours': typeof AuthenticatedAdminRetoursRoute
+  '/admin/satisfaction': typeof AuthenticatedAdminSatisfactionRoute
+  '/admin/securite': typeof AuthenticatedAdminSecuriteRoute
+  '/admin/sla': typeof AuthenticatedAdminSlaRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog': typeof LocaleBlogIndexRoute
   '/$locale/boutique': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations': typeof LocaleReparationsIndexRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -476,7 +728,7 @@ export interface FileRoutesById {
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
   '/$locale/work-at': typeof LocaleWorkAtRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/_authenticated/reviews-admin': typeof AuthenticatedReviewsAdminRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
@@ -495,11 +747,40 @@ export interface FileRoutesById {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
+  '/_authenticated/admin/atelier': typeof AuthenticatedAdminAtelierRoute
+  '/_authenticated/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
+  '/_authenticated/admin/chat': typeof AuthenticatedAdminChatRoute
+  '/_authenticated/admin/commandes': typeof AuthenticatedAdminCommandesRoute
+  '/_authenticated/admin/contenu': typeof AuthenticatedAdminContenuRoute
+  '/_authenticated/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
+  '/_authenticated/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/_authenticated/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
+  '/_authenticated/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
+  '/_authenticated/admin/kb': typeof AuthenticatedAdminKbRoute
+  '/_authenticated/admin/kpis': typeof AuthenticatedAdminKpisRoute
+  '/_authenticated/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/_authenticated/admin/marketing': typeof AuthenticatedAdminMarketingRoute
+  '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/_authenticated/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
+  '/_authenticated/admin/rapports': typeof AuthenticatedAdminRapportsRoute
+  '/_authenticated/admin/reclamations': typeof AuthenticatedAdminReclamationsRoute
+  '/_authenticated/admin/remboursements': typeof AuthenticatedAdminRemboursementsRoute
+  '/_authenticated/admin/retours': typeof AuthenticatedAdminRetoursRoute
+  '/_authenticated/admin/satisfaction': typeof AuthenticatedAdminSatisfactionRoute
+  '/_authenticated/admin/securite': typeof AuthenticatedAdminSecuriteRoute
+  '/_authenticated/admin/sla': typeof AuthenticatedAdminSlaRoute
+  '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -552,11 +833,40 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/admin/analytics'
+    | '/admin/analytics-advanced'
+    | '/admin/atelier'
+    | '/admin/ateliers'
+    | '/admin/audit'
+    | '/admin/catalogue'
+    | '/admin/chat'
+    | '/admin/commandes'
+    | '/admin/contenu'
+    | '/admin/dossiers'
+    | '/admin/equipe'
+    | '/admin/fournisseurs'
+    | '/admin/inventaire'
+    | '/admin/kb'
+    | '/admin/kpis'
+    | '/admin/leads'
+    | '/admin/marketing'
+    | '/admin/notifications'
+    | '/admin/parrainage'
+    | '/admin/rapports'
+    | '/admin/reclamations'
+    | '/admin/remboursements'
+    | '/admin/retours'
+    | '/admin/satisfaction'
+    | '/admin/securite'
+    | '/admin/sla'
+    | '/admin/stats'
+    | '/admin/webhooks'
     | '/api/v1/$'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -587,7 +897,6 @@ export interface FileRouteTypes {
     | '/$locale/suivi'
     | '/$locale/tarifs'
     | '/$locale/work-at'
-    | '/admin'
     | '/mon-compte'
     | '/reviews-admin'
     | '/api/cron-reminders'
@@ -606,11 +915,40 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/admin/analytics'
+    | '/admin/analytics-advanced'
+    | '/admin/atelier'
+    | '/admin/ateliers'
+    | '/admin/audit'
+    | '/admin/catalogue'
+    | '/admin/chat'
+    | '/admin/commandes'
+    | '/admin/contenu'
+    | '/admin/dossiers'
+    | '/admin/equipe'
+    | '/admin/fournisseurs'
+    | '/admin/inventaire'
+    | '/admin/kb'
+    | '/admin/kpis'
+    | '/admin/leads'
+    | '/admin/marketing'
+    | '/admin/notifications'
+    | '/admin/parrainage'
+    | '/admin/rapports'
+    | '/admin/reclamations'
+    | '/admin/remboursements'
+    | '/admin/retours'
+    | '/admin/satisfaction'
+    | '/admin/securite'
+    | '/admin/sla'
+    | '/admin/stats'
+    | '/admin/webhooks'
     | '/api/v1/$'
     | '/$locale/blog'
     | '/$locale/boutique'
     | '/$locale/quartiers'
     | '/$locale/reparations'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -662,11 +1000,40 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/analytics-advanced'
+    | '/_authenticated/admin/atelier'
+    | '/_authenticated/admin/ateliers'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/catalogue'
+    | '/_authenticated/admin/chat'
+    | '/_authenticated/admin/commandes'
+    | '/_authenticated/admin/contenu'
+    | '/_authenticated/admin/dossiers'
+    | '/_authenticated/admin/equipe'
+    | '/_authenticated/admin/fournisseurs'
+    | '/_authenticated/admin/inventaire'
+    | '/_authenticated/admin/kb'
+    | '/_authenticated/admin/kpis'
+    | '/_authenticated/admin/leads'
+    | '/_authenticated/admin/marketing'
+    | '/_authenticated/admin/notifications'
+    | '/_authenticated/admin/parrainage'
+    | '/_authenticated/admin/rapports'
+    | '/_authenticated/admin/reclamations'
+    | '/_authenticated/admin/remboursements'
+    | '/_authenticated/admin/retours'
+    | '/_authenticated/admin/satisfaction'
+    | '/_authenticated/admin/securite'
+    | '/_authenticated/admin/sla'
+    | '/_authenticated/admin/stats'
+    | '/_authenticated/admin/webhooks'
     | '/api/v1/$'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1060,6 +1427,209 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleReparationsBrandRouteImport
       parentRoute: typeof LocaleRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics-advanced': {
+      id: '/_authenticated/admin/analytics-advanced'
+      path: '/analytics-advanced'
+      fullPath: '/admin/analytics-advanced'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsAdvancedRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/atelier': {
+      id: '/_authenticated/admin/atelier'
+      path: '/atelier'
+      fullPath: '/admin/atelier'
+      preLoaderRoute: typeof AuthenticatedAdminAtelierRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/ateliers': {
+      id: '/_authenticated/admin/ateliers'
+      path: '/ateliers'
+      fullPath: '/admin/ateliers'
+      preLoaderRoute: typeof AuthenticatedAdminAteliersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/catalogue': {
+      id: '/_authenticated/admin/catalogue'
+      path: '/catalogue'
+      fullPath: '/admin/catalogue'
+      preLoaderRoute: typeof AuthenticatedAdminCatalogueRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/chat': {
+      id: '/_authenticated/admin/chat'
+      path: '/chat'
+      fullPath: '/admin/chat'
+      preLoaderRoute: typeof AuthenticatedAdminChatRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/commandes': {
+      id: '/_authenticated/admin/commandes'
+      path: '/commandes'
+      fullPath: '/admin/commandes'
+      preLoaderRoute: typeof AuthenticatedAdminCommandesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/contenu': {
+      id: '/_authenticated/admin/contenu'
+      path: '/contenu'
+      fullPath: '/admin/contenu'
+      preLoaderRoute: typeof AuthenticatedAdminContenuRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/dossiers': {
+      id: '/_authenticated/admin/dossiers'
+      path: '/dossiers'
+      fullPath: '/admin/dossiers'
+      preLoaderRoute: typeof AuthenticatedAdminDossiersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/equipe': {
+      id: '/_authenticated/admin/equipe'
+      path: '/equipe'
+      fullPath: '/admin/equipe'
+      preLoaderRoute: typeof AuthenticatedAdminEquipeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/fournisseurs': {
+      id: '/_authenticated/admin/fournisseurs'
+      path: '/fournisseurs'
+      fullPath: '/admin/fournisseurs'
+      preLoaderRoute: typeof AuthenticatedAdminFournisseursRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/inventaire': {
+      id: '/_authenticated/admin/inventaire'
+      path: '/inventaire'
+      fullPath: '/admin/inventaire'
+      preLoaderRoute: typeof AuthenticatedAdminInventaireRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/kb': {
+      id: '/_authenticated/admin/kb'
+      path: '/kb'
+      fullPath: '/admin/kb'
+      preLoaderRoute: typeof AuthenticatedAdminKbRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/kpis': {
+      id: '/_authenticated/admin/kpis'
+      path: '/kpis'
+      fullPath: '/admin/kpis'
+      preLoaderRoute: typeof AuthenticatedAdminKpisRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/leads': {
+      id: '/_authenticated/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AuthenticatedAdminLeadsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/marketing': {
+      id: '/_authenticated/admin/marketing'
+      path: '/marketing'
+      fullPath: '/admin/marketing'
+      preLoaderRoute: typeof AuthenticatedAdminMarketingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/notifications': {
+      id: '/_authenticated/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/parrainage': {
+      id: '/_authenticated/admin/parrainage'
+      path: '/parrainage'
+      fullPath: '/admin/parrainage'
+      preLoaderRoute: typeof AuthenticatedAdminParrainageRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/rapports': {
+      id: '/_authenticated/admin/rapports'
+      path: '/rapports'
+      fullPath: '/admin/rapports'
+      preLoaderRoute: typeof AuthenticatedAdminRapportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/reclamations': {
+      id: '/_authenticated/admin/reclamations'
+      path: '/reclamations'
+      fullPath: '/admin/reclamations'
+      preLoaderRoute: typeof AuthenticatedAdminReclamationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/remboursements': {
+      id: '/_authenticated/admin/remboursements'
+      path: '/remboursements'
+      fullPath: '/admin/remboursements'
+      preLoaderRoute: typeof AuthenticatedAdminRemboursementsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/retours': {
+      id: '/_authenticated/admin/retours'
+      path: '/retours'
+      fullPath: '/admin/retours'
+      preLoaderRoute: typeof AuthenticatedAdminRetoursRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/satisfaction': {
+      id: '/_authenticated/admin/satisfaction'
+      path: '/satisfaction'
+      fullPath: '/admin/satisfaction'
+      preLoaderRoute: typeof AuthenticatedAdminSatisfactionRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/securite': {
+      id: '/_authenticated/admin/securite'
+      path: '/securite'
+      fullPath: '/admin/securite'
+      preLoaderRoute: typeof AuthenticatedAdminSecuriteRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/sla': {
+      id: '/_authenticated/admin/sla'
+      path: '/sla'
+      fullPath: '/admin/sla'
+      preLoaderRoute: typeof AuthenticatedAdminSlaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/stats': {
+      id: '/_authenticated/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AuthenticatedAdminStatsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/webhooks': {
+      id: '/_authenticated/admin/webhooks'
+      path: '/webhooks'
+      fullPath: '/admin/webhooks'
+      preLoaderRoute: typeof AuthenticatedAdminWebhooksRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/v1/$': {
       id: '/api/v1/$'
       path: '/api/v1/$'
@@ -1070,14 +1640,82 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminAnalyticsAdvancedRoute: typeof AuthenticatedAdminAnalyticsAdvancedRoute
+  AuthenticatedAdminAtelierRoute: typeof AuthenticatedAdminAtelierRoute
+  AuthenticatedAdminAteliersRoute: typeof AuthenticatedAdminAteliersRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminCatalogueRoute: typeof AuthenticatedAdminCatalogueRoute
+  AuthenticatedAdminChatRoute: typeof AuthenticatedAdminChatRoute
+  AuthenticatedAdminCommandesRoute: typeof AuthenticatedAdminCommandesRoute
+  AuthenticatedAdminContenuRoute: typeof AuthenticatedAdminContenuRoute
+  AuthenticatedAdminDossiersRoute: typeof AuthenticatedAdminDossiersRoute
+  AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
+  AuthenticatedAdminFournisseursRoute: typeof AuthenticatedAdminFournisseursRoute
+  AuthenticatedAdminInventaireRoute: typeof AuthenticatedAdminInventaireRoute
+  AuthenticatedAdminKbRoute: typeof AuthenticatedAdminKbRoute
+  AuthenticatedAdminKpisRoute: typeof AuthenticatedAdminKpisRoute
+  AuthenticatedAdminLeadsRoute: typeof AuthenticatedAdminLeadsRoute
+  AuthenticatedAdminMarketingRoute: typeof AuthenticatedAdminMarketingRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
+  AuthenticatedAdminParrainageRoute: typeof AuthenticatedAdminParrainageRoute
+  AuthenticatedAdminRapportsRoute: typeof AuthenticatedAdminRapportsRoute
+  AuthenticatedAdminReclamationsRoute: typeof AuthenticatedAdminReclamationsRoute
+  AuthenticatedAdminRemboursementsRoute: typeof AuthenticatedAdminRemboursementsRoute
+  AuthenticatedAdminRetoursRoute: typeof AuthenticatedAdminRetoursRoute
+  AuthenticatedAdminSatisfactionRoute: typeof AuthenticatedAdminSatisfactionRoute
+  AuthenticatedAdminSecuriteRoute: typeof AuthenticatedAdminSecuriteRoute
+  AuthenticatedAdminSlaRoute: typeof AuthenticatedAdminSlaRoute
+  AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
+  AuthenticatedAdminWebhooksRoute: typeof AuthenticatedAdminWebhooksRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminAnalyticsAdvancedRoute:
+    AuthenticatedAdminAnalyticsAdvancedRoute,
+  AuthenticatedAdminAtelierRoute: AuthenticatedAdminAtelierRoute,
+  AuthenticatedAdminAteliersRoute: AuthenticatedAdminAteliersRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminCatalogueRoute: AuthenticatedAdminCatalogueRoute,
+  AuthenticatedAdminChatRoute: AuthenticatedAdminChatRoute,
+  AuthenticatedAdminCommandesRoute: AuthenticatedAdminCommandesRoute,
+  AuthenticatedAdminContenuRoute: AuthenticatedAdminContenuRoute,
+  AuthenticatedAdminDossiersRoute: AuthenticatedAdminDossiersRoute,
+  AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
+  AuthenticatedAdminFournisseursRoute: AuthenticatedAdminFournisseursRoute,
+  AuthenticatedAdminInventaireRoute: AuthenticatedAdminInventaireRoute,
+  AuthenticatedAdminKbRoute: AuthenticatedAdminKbRoute,
+  AuthenticatedAdminKpisRoute: AuthenticatedAdminKpisRoute,
+  AuthenticatedAdminLeadsRoute: AuthenticatedAdminLeadsRoute,
+  AuthenticatedAdminMarketingRoute: AuthenticatedAdminMarketingRoute,
+  AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
+  AuthenticatedAdminParrainageRoute: AuthenticatedAdminParrainageRoute,
+  AuthenticatedAdminRapportsRoute: AuthenticatedAdminRapportsRoute,
+  AuthenticatedAdminReclamationsRoute: AuthenticatedAdminReclamationsRoute,
+  AuthenticatedAdminRemboursementsRoute: AuthenticatedAdminRemboursementsRoute,
+  AuthenticatedAdminRetoursRoute: AuthenticatedAdminRetoursRoute,
+  AuthenticatedAdminSatisfactionRoute: AuthenticatedAdminSatisfactionRoute,
+  AuthenticatedAdminSecuriteRoute: AuthenticatedAdminSecuriteRoute,
+  AuthenticatedAdminSlaRoute: AuthenticatedAdminSlaRoute,
+  AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
+  AuthenticatedAdminWebhooksRoute: AuthenticatedAdminWebhooksRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedMonCompteRoute: typeof AuthenticatedMonCompteRoute
   AuthenticatedReviewsAdminRoute: typeof AuthenticatedReviewsAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedMonCompteRoute: AuthenticatedMonCompteRoute,
   AuthenticatedReviewsAdminRoute: AuthenticatedReviewsAdminRoute,
 }

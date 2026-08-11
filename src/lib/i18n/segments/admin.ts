@@ -630,6 +630,39 @@ const fr = {
   "admin.perf.uptime": "Uptime",
   "admin.perf.requestsPerMin": "Requêtes/min",
   "admin.perf.title": "Monitoring Performance",
+
+  // Admin — Sidebar navigation
+  "admin.nav.overview": "Général",
+  "admin.nav.dashboard": "Tableau de bord",
+  "admin.nav.operations": "Opérations",
+  "admin.nav.team": "Équipe",
+  "admin.nav.analytics": "Analytique",
+  "admin.nav.content": "Contenu",
+  "admin.nav.tools": "Outils",
+  "admin.nav.system": "Système",
+  "admin.nav.administrator": "Administrateur",
+  "admin.nav.logout": "Se déconnecter",
+
+  // Admin — Tabs (missing)
+  "admin.tab.marketing": "Marketing",
+  "admin.tab.webhooks": "Webhooks",
+
+  // Admin — Dashboard
+  "admin.dash.activeRepairs": "Réparations actives",
+  "admin.dash.todayReservations": "Réservations aujourd'hui",
+  "admin.dash.monthRevenue": "Revenus du mois",
+  "admin.dash.onlineUsers": "Utilisateurs en ligne",
+  "admin.dash.fromLastMonth": "{0} vs mois dernier",
+  "admin.dash.sinceYesterday": "{0} vs hier",
+  "admin.dash.recentActivity": "Activité récente",
+  "admin.dash.quickActions": "Actions rapides",
+  "admin.dash.newRepair": "Nouvelle réparation",
+  "admin.dash.viewDossiers": "Voir les dossiers",
+  "admin.dash.openKanban": "Ouvrir le Kanban",
+  "admin.dash.noActivity": "Aucune activité récente.",
+  "admin.dash.repairFor": "Réparation pour {0}",
+  "admin.dash.statusChanged": "Statut → {0}",
+  "admin.dash.by": "par {0}",
 };
 
 const en = {
@@ -1260,6 +1293,39 @@ const en = {
   "admin.perf.uptime": "Uptime",
   "admin.perf.requestsPerMin": "Requests/min",
   "admin.perf.title": "Performance Monitoring",
+
+  // Admin — Sidebar navigation
+  "admin.nav.overview": "General",
+  "admin.nav.dashboard": "Dashboard",
+  "admin.nav.operations": "Operations",
+  "admin.nav.team": "Team",
+  "admin.nav.analytics": "Analytics",
+  "admin.nav.content": "Content",
+  "admin.nav.tools": "Tools",
+  "admin.nav.system": "System",
+  "admin.nav.administrator": "Administrator",
+  "admin.nav.logout": "Sign out",
+
+  // Admin — Tabs (missing)
+  "admin.tab.marketing": "Marketing",
+  "admin.tab.webhooks": "Webhooks",
+
+  // Admin — Dashboard
+  "admin.dash.activeRepairs": "Active repairs",
+  "admin.dash.todayReservations": "Today's reservations",
+  "admin.dash.monthRevenue": "Monthly revenue",
+  "admin.dash.onlineUsers": "Online users",
+  "admin.dash.fromLastMonth": "{0} from last month",
+  "admin.dash.sinceYesterday": "{0} since yesterday",
+  "admin.dash.recentActivity": "Recent activity",
+  "admin.dash.quickActions": "Quick actions",
+  "admin.dash.newRepair": "New repair",
+  "admin.dash.viewDossiers": "View dossiers",
+  "admin.dash.openKanban": "Open Kanban",
+  "admin.dash.noActivity": "No recent activity.",
+  "admin.dash.repairFor": "Repair for {0}",
+  "admin.dash.statusChanged": "Status → {0}",
+  "admin.dash.by": "by {0}",
 };
 
 registerSegments({ fr, en });
