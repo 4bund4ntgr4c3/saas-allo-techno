@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n/context";
 import { Loader2, ImagePlus, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog";
@@ -29,6 +30,7 @@ const field =
   "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 export function CatalogSection() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const listFn = useServerFn(listCatalog);
   const [brandSlug, setBrandSlug] = useState<string | null>(null);
@@ -40,15 +42,15 @@ export function CatalogSection() {
   });
 
   if (catalog.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement du catalogue…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.catalog.loading")}</p>;
   }
 
   if (catalog.isError) {
     return (
       <div>
-        <h2 className="text-lg font-semibold">Catalogue</h2>
+        <h2 className="text-lg font-semibold">{t("admin.catalog.title")}</h2>
         <p className="mt-4 text-sm text-destructive">
-          Impossible de charger le catalogue. Réessayez.
+          {t("admin.catalog.error.load")}
         </p>
       </div>
     );
@@ -64,9 +66,9 @@ export function CatalogSection() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-lg font-semibold">Catalogue</h2>
+        <h2 className="text-lg font-semibold">{t("admin.catalog.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Marques, appareils et pannes affichés sur le site — les modifications sont immédiates.
+          {t("admin.catalog.subtitle")}
         </p>
       </div>
       <CategoriesPanel categories={data.categories} onChanged={invalidate} />
@@ -108,6 +110,7 @@ function CategoriesPanel({
 }) {
   const upsertFn = useServerFn(upsertCategory);
   const deleteFn = useServerFn(deleteCategory);
+  const { t } = useI18n();
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState({ slug: "", label: "", sort: 0, active: true });
   const [busy, setBusy] = useState(false);
@@ -132,11 +135,11 @@ function CategoriesPanel({
           active: form.active,
         },
       });
-      toast.success(editing ? "Catégorie mise à jour" : "Catégorie ajoutée");
+      toast.success(editing ? t("admin.catalog.category.toast.updated") : t("admin.catalog.category.toast.added"));
       reset();
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.error.save"));
     } finally {
       setBusy(false);
     }
@@ -146,10 +149,10 @@ function CategoriesPanel({
     setBusy(true);
     try {
       await deleteFn({ data: { slug } });
-      toast.success("Catégorie supprimée");
+      toast.success(t("admin.catalog.category.toast.deleted"));
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.catalog.error.delete"));
     } finally {
       setBusy(false);
     }
@@ -158,9 +161,9 @@ function CategoriesPanel({
   return (
     <div className="rounded-sm border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">Catégories d'appareils</h3>
+        <h3 className="text-sm font-semibold">{t("admin.catalog.category.title")}</h3>
         <Button variant="outline" size="sm" onClick={reset}>
-          <Plus className="size-3.5" /> Ajouter
+          <Plus className="size-3.5" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -170,7 +173,7 @@ function CategoriesPanel({
             className="inline-flex items-center gap-2 rounded-sm border border-border bg-surface px-2 py-1 text-xs"
           >
             {c.label}
-            {!c.active && <span className="text-muted-foreground">(inactive)</span>}
+            {!c.active && <span className="text-muted-foreground">{t("admin.catalog.status.inactive")}</span>}
             <button
               type="button"
               className="text-muted-foreground hover:text-foreground"
@@ -194,12 +197,12 @@ function CategoriesPanel({
           </span>
         ))}
         {categories.length === 0 && (
-          <p className="text-xs text-muted-foreground">Aucune catégorie.</p>
+          <p className="text-xs text-muted-foreground">{t("admin.catalog.category.empty")}</p>
         )}
       </div>
       <form onSubmit={save} className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-2">
         <label className="block">
-          <span className="at-eyebrow mb-1 block text-[11px]">Libellé</span>
+          <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.label")}</span>
           <input
             className={field}
             value={form.label}
@@ -208,7 +211,7 @@ function CategoriesPanel({
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-1 block text-[11px]">Slug</span>
+          <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
           <input
             className={field}
             value={form.slug}
@@ -226,7 +229,7 @@ function CategoriesPanel({
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-1 block text-[11px]">Ordre</span>
+          <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
           <input
             type="number"
             min={0}
@@ -241,7 +244,7 @@ function CategoriesPanel({
             checked={form.active}
             onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))}
           />
-          Visible sur le site
+          {t("admin.catalog.form.visible")}
         </label>
         {error && <p className="text-sm text-destructive sm:col-span-2">{error}</p>}
         <div className="sm:col-span-2">
@@ -251,7 +254,7 @@ function CategoriesPanel({
             size="sm"
             disabled={busy || !form.label.trim() || !form.slug.trim()}
           >
-            {busy ? "Enregistrement…" : editing ? "Enregistrer" : "Ajouter"}
+            {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
           </Button>
         </div>
       </form>
@@ -272,6 +275,7 @@ function BrandPanel({
 }) {
   const upsertFn = useServerFn(upsertBrand);
   const deleteFn = useServerFn(deleteBrand);
+  const { t } = useI18n();
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState({ slug: "", name: "", tag: "", sort: 0, active: true });
   const [busy, setBusy] = useState(false);
@@ -297,11 +301,11 @@ function BrandPanel({
           active: form.active,
         },
       });
-      toast.success(editing ? "Marque mise à jour" : "Marque ajoutée");
+      toast.success(editing ? t("admin.catalog.brand.toast.updated") : t("admin.catalog.brand.toast.added"));
       reset();
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.error.save"));
     } finally {
       setBusy(false);
     }
@@ -312,10 +316,10 @@ function BrandPanel({
     try {
       await deleteFn({ data: { slug } });
       if (slug === selectedSlug) onSelect(null);
-      toast.success("Marque supprimée (appareils cascadés)");
+      toast.success(t("admin.catalog.brand.toast.deleted"));
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.catalog.error.delete"));
     } finally {
       setBusy(false);
     }
@@ -324,9 +328,9 @@ function BrandPanel({
   return (
     <div className="rounded-sm border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">Marques</h3>
+        <h3 className="text-sm font-semibold">{t("admin.catalog.brand.title")}</h3>
         <Button variant="outline" size="sm" onClick={reset}>
-          <Plus className="size-3.5" /> Ajouter
+          <Plus className="size-3.5" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
       <ul className="mt-4 space-y-2">
@@ -348,7 +352,7 @@ function BrandPanel({
                 <p className="truncate font-mono text-[10px] uppercase text-muted-foreground">
                   {b.slug}
                   {b.tag ? ` · ${b.tag}` : ""}
-                  {b.active ? "" : " · inactive"}
+                  {b.active ? "" : ` · ${t("admin.catalog.status.inactive")}`}
                 </p>
               </button>
               <div className="flex shrink-0 gap-1">
@@ -385,16 +389,16 @@ function BrandPanel({
         })}
         {brands.length === 0 && (
           <li className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
-            Aucune marque
+            {t("admin.catalog.brand.empty")}
           </li>
         )}
       </ul>
       <form onSubmit={save} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editing ? `Modifier : ${editing}` : "Nouvelle marque"}
+          {editing ? `Modifier : ${editing}` : t("admin.catalog.brand.form.new")}
         </p>
         <label className="block">
-          <span className="at-eyebrow mb-1 block text-[11px]">Nom</span>
+          <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.name")}</span>
           <input
             className={field}
             value={form.name}
@@ -403,7 +407,7 @@ function BrandPanel({
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-1 block text-[11px]">Slug</span>
+          <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
           <input
             className={field}
             value={form.slug}
@@ -422,16 +426,16 @@ function BrandPanel({
         </label>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Tag</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.tag")}</span>
             <input
               className={field}
               value={form.tag}
               onChange={(e) => setForm((f) => ({ ...f, tag: e.target.value }))}
-              placeholder="ex. iPhone, Android"
+              placeholder={t("admin.catalog.form.tag_placeholder")}
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Ordre</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
             <input
               type="number"
               min={0}
@@ -447,7 +451,7 @@ function BrandPanel({
             checked={form.active}
             onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))}
           />
-          Visible sur le site
+          {t("admin.catalog.form.visible")}
         </label>
         {error && <p className="text-sm text-destructive">{error}</p>}
         <Button
@@ -456,7 +460,7 @@ function BrandPanel({
           size="sm"
           disabled={busy || !form.name.trim() || !form.slug.trim()}
         >
-          {busy ? "Enregistrement…" : editing ? "Enregistrer" : "Ajouter"}
+          {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
         </Button>
       </form>
     </div>
@@ -480,6 +484,7 @@ function DevicePanel({
 }) {
   const upsertFn = useServerFn(upsertDevice);
   const deleteFn = useServerFn(deleteDevice);
+  const { t } = useI18n();
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState({
     slug: "",
@@ -496,9 +501,9 @@ function DevicePanel({
   if (!brand) {
     return (
       <div className="rounded-sm border border-border bg-card p-5">
-        <h3 className="text-sm font-semibold">Appareils</h3>
+        <h3 className="text-sm font-semibold">{t("admin.catalog.device.title")}</h3>
         <p className="mt-4 text-sm text-muted-foreground">
-          Sélectionnez une marque pour gérer ses appareils.
+          {t("admin.catalog.device.select_brand")}
         </p>
       </div>
     );
@@ -521,7 +526,7 @@ function DevicePanel({
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.categorySlug) {
-      setError("Sélectionnez une catégorie avant d'enregistrer.");
+      setError(t("admin.catalog.error.select_category"));
       return;
     }
     setBusy(true);
@@ -539,11 +544,11 @@ function DevicePanel({
           active: form.active,
         },
       });
-      toast.success(editing ? "Appareil mis à jour" : "Appareil ajouté");
+      toast.success(editing ? t("admin.catalog.device.toast.updated") : t("admin.catalog.device.toast.added"));
       reset();
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.error.save"));
     } finally {
       setBusy(false);
     }
@@ -554,10 +559,10 @@ function DevicePanel({
     try {
       await deleteFn({ data: { slug } });
       if (slug === deviceSlug) onSelectDevice(null);
-      toast.success("Appareil supprimé");
+      toast.success(t("admin.catalog.device.toast.deleted"));
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.catalog.error.delete"));
     } finally {
       setBusy(false);
     }
@@ -568,9 +573,9 @@ function DevicePanel({
   return (
     <div className="rounded-sm border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">Appareils — {brand.name}</h3>
+        <h3 className="text-sm font-semibold">{t("admin.catalog.device.title_for")} {brand.name}</h3>
         <Button variant="outline" size="sm" onClick={reset}>
-          <Plus className="size-3.5" /> Ajouter
+          <Plus className="size-3.5" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
       <ul className="mt-4 space-y-2">
@@ -592,7 +597,7 @@ function DevicePanel({
                 <p className="truncate font-mono text-[10px] uppercase text-muted-foreground">
                   {d.slug} · {categoryLabel(d.category_slug)}
                   {d.year ? ` · ${d.year}` : ""}
-                  {d.active ? "" : " · inactif"}
+                  {d.active ? "" : ` · ${t("admin.catalog.status.inactive")}`}
                 </p>
               </button>
               <div className="flex shrink-0 gap-1">
@@ -631,17 +636,17 @@ function DevicePanel({
         })}
         {devices.length === 0 && (
           <li className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
-            Aucun appareil pour cette marque
+            {t("admin.catalog.device.empty")}
           </li>
         )}
       </ul>
       <form onSubmit={save} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editing ? `Modifier : ${editing}` : "Nouvel appareil"}
+          {editing ? `Modifier : ${editing}` : t("admin.catalog.device.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Nom</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.name")}</span>
             <input
               className={field}
               value={form.name}
@@ -650,7 +655,7 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Slug</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
             <input
               className={field}
               value={form.slug}
@@ -668,7 +673,7 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Catégorie</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.category")}</span>
             <select
               className={field}
               value={form.categorySlug}
@@ -682,7 +687,7 @@ function DevicePanel({
             </select>
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Série</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.series")}</span>
             <input
               className={field}
               value={form.series}
@@ -691,7 +696,7 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Année</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.year")}</span>
             <input
               type="number"
               min={1990}
@@ -702,7 +707,7 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Ordre</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
             <input
               type="number"
               min={0}
@@ -718,7 +723,7 @@ function DevicePanel({
             checked={form.active}
             onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))}
           />
-          Visible sur le site
+          {t("admin.catalog.form.visible")}
         </label>
         {error && <p className="text-sm text-destructive">{error}</p>}
         <Button
@@ -727,7 +732,7 @@ function DevicePanel({
           size="sm"
           disabled={busy || !form.name.trim() || !form.slug.trim()}
         >
-          {busy ? "Enregistrement…" : editing ? "Enregistrer" : "Ajouter"}
+          {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
         </Button>
       </form>
     </div>
@@ -750,6 +755,7 @@ function DeviceDetailPanel({
   const addPhotoFn = useServerFn(addCatalogPhoto);
   const deletePhotoFn = useServerFn(deleteCatalogPhoto);
   const getUploadFn = useServerFn(getCatalogUpload);
+  const { t } = useI18n();
   const [editingFault, setEditingFault] = useState<number | null>(null);
   const [faultForm, setFaultForm] = useState({
     slug: "",
@@ -767,9 +773,9 @@ function DeviceDetailPanel({
   if (!device) {
     return (
       <div className="rounded-sm border border-border bg-card p-5">
-        <h3 className="text-sm font-semibold">Pannes & photos</h3>
+        <h3 className="text-sm font-semibold">{t("admin.catalog.fault.title")}</h3>
         <p className="mt-4 text-sm text-muted-foreground">
-          Sélectionnez un appareil pour gérer ses pannes et photos.
+          {t("admin.catalog.fault.select_device")}
         </p>
       </div>
     );
@@ -800,11 +806,11 @@ function DeviceDetailPanel({
           sort: faultForm.sort,
         },
       });
-      toast.success(editingFault ? "Panne mise à jour" : "Panne ajoutée");
+      toast.success(editingFault ? t("admin.catalog.fault.toast.updated") : t("admin.catalog.fault.toast.added"));
       resetFault();
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.error.save"));
     } finally {
       setBusy(false);
     }
@@ -814,10 +820,10 @@ function DeviceDetailPanel({
     setBusy(true);
     try {
       await deleteFn({ data: { id } });
-      toast.success("Panne supprimée");
+      toast.success(t("admin.catalog.fault.toast.deleted"));
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.catalog.error.delete"));
     } finally {
       setBusy(false);
     }
@@ -828,11 +834,11 @@ function DeviceDetailPanel({
     setError(null);
     try {
       await addPhotoFn({ data: { deviceSlug: device.slug, url } });
-      toast.success("Photo ajoutée");
+      toast.success(t("admin.catalog.photo.toast.added"));
       setPhotoUrl("");
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ajout impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.photo.error.add"));
     } finally {
       setBusy(false);
     }
@@ -842,10 +848,10 @@ function DeviceDetailPanel({
     setBusy(true);
     try {
       await deletePhotoFn({ data: { id } });
-      toast.success("Photo supprimée");
+      toast.success(t("admin.catalog.photo.toast.deleted"));
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.catalog.error.delete"));
     } finally {
       setBusy(false);
     }
@@ -868,10 +874,10 @@ function DeviceDetailPanel({
       });
       if (!put.ok) throw new Error(`Upload ${put.status}`);
       await addPhotoFn({ data: { deviceSlug: device.slug, url: prepared.path } });
-      toast.success("Photo téléversée et ajoutée");
+      toast.success(t("admin.catalog.photo.toast.uploaded"));
       onChanged();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload impossible");
+      setError(err instanceof Error ? err.message : t("admin.catalog.photo.error.upload"));
     } finally {
       setBusy(false);
     }
@@ -879,16 +885,16 @@ function DeviceDetailPanel({
 
   return (
     <div className="rounded-sm border border-border bg-card p-5">
-      <h3 className="text-sm font-semibold">Pannes & photos — {device.name}</h3>
+      <h3 className="text-sm font-semibold">{t("admin.catalog.fault.title_for")} {device.name}</h3>
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
-              <th className="px-3 py-2">Panne</th>
-              <th className="px-3 py-2">Prix</th>
-              <th className="px-3 py-2">Durée</th>
-              <th className="px-3 py-2">Garantie</th>
-              <th className="px-3 py-2">Pièce</th>
+              <th className="px-3 py-2">{t("admin.catalog.fault.table.fault")}</th>
+              <th className="px-3 py-2">{t("admin.catalog.fault.table.price")}</th>
+              <th className="px-3 py-2">{t("admin.catalog.fault.table.duration")}</th>
+              <th className="px-3 py-2">{t("admin.catalog.fault.table.warranty")}</th>
+              <th className="px-3 py-2">{t("admin.catalog.fault.table.part")}</th>
               <th className="px-3 py-2"></th>
             </tr>
           </thead>
@@ -943,16 +949,16 @@ function DeviceDetailPanel({
           </tbody>
         </table>
         {faults.length === 0 && (
-          <p className="py-3 text-xs text-muted-foreground">Aucune panne enregistrée.</p>
+          <p className="py-3 text-xs text-muted-foreground">{t("admin.catalog.fault.empty")}</p>
         )}
       </div>
       <form onSubmit={saveFault} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editingFault ? `Modifier la panne #${editingFault}` : "Nouvelle panne"}
+          {editingFault ? `Modifier la panne #${editingFault}` : t("admin.catalog.fault.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Libellé</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.label")}</span>
             <input
               className={field}
               value={faultForm.label}
@@ -961,7 +967,7 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Slug</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
             <input
               className={field}
               value={faultForm.slug}
@@ -978,7 +984,7 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Prix (FCFA)</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.form.price")}</span>
             <input
               type="number"
               min={0}
@@ -990,34 +996,34 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Durée</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.duration")}</span>
             <input
               className={field}
               value={faultForm.duration}
               onChange={(e) => setFaultForm((f) => ({ ...f, duration: e.target.value }))}
-              placeholder="ex. 1 à 2 jours"
+              placeholder={t("admin.catalog.fault.form.duration_placeholder")}
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Garantie</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.warranty")}</span>
             <input
               className={field}
               value={faultForm.warranty}
               onChange={(e) => setFaultForm((f) => ({ ...f, warranty: e.target.value }))}
-              placeholder="ex. 6 mois"
+              placeholder={t("admin.catalog.fault.form.warranty_placeholder")}
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Pièce</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.part")}</span>
             <input
               className={field}
               value={faultForm.part}
               onChange={(e) => setFaultForm((f) => ({ ...f, part: e.target.value }))}
-              placeholder="ex. Écran + batterie"
+              placeholder={t("admin.catalog.fault.form.part_placeholder")}
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">Ordre</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
             <input
               type="number"
               min={0}
@@ -1035,17 +1041,17 @@ function DeviceDetailPanel({
             size="sm"
             disabled={busy || !faultForm.label.trim() || !faultForm.slug.trim()}
           >
-            {busy ? "Enregistrement…" : editingFault ? "Enregistrer" : "Ajouter la panne"}
+            {busy ? t("admin.catalog.button.saving") : editingFault ? t("admin.catalog.button.save") : t("admin.catalog.fault.button.add")}
           </Button>
           {editingFault !== null && (
             <Button type="button" variant="outline" size="sm" onClick={resetFault} disabled={busy}>
-              Annuler
+              {t("admin.catalog.button.cancel")}
             </Button>
           )}
         </div>
       </form>
       <div className="mt-4 border-t border-border pt-4">
-        <p className="text-sm font-semibold">Photos</p>
+        <p className="text-sm font-semibold">{t("admin.catalog.photo.title")}</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {photos.map((p) => (
             <div key={p.id} className="relative">
@@ -1067,7 +1073,7 @@ function DeviceDetailPanel({
               </button>
             </div>
           ))}
-          {photos.length === 0 && <p className="text-xs text-muted-foreground">Aucune photo.</p>}
+          {photos.length === 0 && <p className="text-xs text-muted-foreground">{t("admin.catalog.photo.empty")}</p>}
         </div>
         <div className="mt-3 flex flex-wrap items-end gap-3">
           <div>
@@ -1075,7 +1081,7 @@ function DeviceDetailPanel({
               htmlFor={`photo-url-${device.slug}`}
               className="mb-1 block text-[11px] text-muted-foreground"
             >
-              URL de la photo
+              {t("admin.catalog.photo.url_label")}
             </label>
             <input
               id={`photo-url-${device.slug}`}
@@ -1091,7 +1097,7 @@ function DeviceDetailPanel({
             disabled={busy || !photoUrl.trim()}
             onClick={() => addPhoto(photoUrl.trim())}
           >
-            Ajouter
+            {t("admin.catalog.photo.add_button")}
           </Button>
           <label className="flex cursor-pointer items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-xs hover:bg-surface">
             {busy ? (
@@ -1099,7 +1105,7 @@ function DeviceDetailPanel({
             ) : (
               <ImagePlus className="size-3.5 text-muted-foreground" />
             )}
-            Téléverser
+            {t("admin.catalog.photo.upload_button")}
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/heic,image/heif"

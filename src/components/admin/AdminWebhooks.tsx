@@ -13,18 +13,19 @@ import {
   WEBHOOK_EVENTS,
   type OutboundWebhook,
 } from "@/lib/webhooks.functions";
-
-const EVENT_LABELS: Record<string, string> = {
-  "reservation.created": "Réservation créée",
-  "reservation.status_changed": "Changement de statut",
-  "reservation.completed": "Réservation terminée",
-  "payment.received": "Paiement reçu",
-  "payment.failed": "Paiement échoué",
-  "lead.new": "Nouveau lead",
-  "review.submitted": "Avis soumis",
-};
+import { useI18n } from "@/lib/i18n/context";
 
 export function AdminWebhooks() {
+  const { t } = useI18n();
+  const EVENT_LABELS: Record<string, string> = {
+    "reservation.created": t("admin.webhooks.event.reservation.created"),
+    "reservation.status_changed": t("admin.webhooks.event.reservation.status_changed"),
+    "reservation.completed": t("admin.webhooks.event.reservation.completed"),
+    "payment.received": t("admin.webhooks.event.payment.received"),
+    "payment.failed": t("admin.webhooks.event.payment.failed"),
+    "lead.new": t("admin.webhooks.event.lead.new"),
+    "review.submitted": t("admin.webhooks.event.review.submitted"),
+  };
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export function AdminWebhooks() {
       createWebhook({ data: v }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outbound-webhooks"] });
-      toast.success("Webhook créé");
+      toast.success(t("admin.webhooks.toast.created"));
       setShowCreate(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -61,7 +62,7 @@ export function AdminWebhooks() {
     mutationFn: (id: string) => deleteWebhook({ data: { id } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outbound-webhooks"] });
-      toast.success("Webhook supprimé");
+      toast.success(t("admin.webhooks.toast.deleted"));
     },
   });
 
@@ -78,10 +79,10 @@ export function AdminWebhooks() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold flex items-center gap-2">
-          <Webhook className="size-5" /> Webhooks sortants
+          <Webhook className="size-5" /> {t("admin.webhooks.title")}
         </h3>
         <Button variant="technical" size="sm" onClick={() => setShowCreate(!showCreate)}>
-          <Plus className="mr-1 size-4" /> Créer
+          <Plus className="mr-1 size-4" /> {t("admin.webhooks.button.create")}
         </Button>
       </div>
 
@@ -92,7 +93,7 @@ export function AdminWebhooks() {
       {(!webhooks || webhooks.length === 0) ? (
         <div className="rounded-lg border bg-card p-8 text-center">
           <Webhook className="mx-auto size-8 text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">Aucun webhook configuré</p>
+          <p className="text-sm text-muted-foreground">{t("admin.webhooks.empty")}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -124,7 +125,7 @@ export function AdminWebhooks() {
                   <button
                     className="p-1 hover:bg-muted rounded-sm"
                     onClick={() => toggleMut.mutate(w)}
-                    title={w.active ? "Désactiver" : "Activer"}
+                    title={w.active ? t("admin.webhooks.action.deactivate") : t("admin.webhooks.action.activate")}
                   >
                     {w.active ? (
                       <Power className="size-4 text-success" />
@@ -153,13 +154,13 @@ export function AdminWebhooks() {
               {expandedId === w.id && logs && (
                 <div className="border-t p-3">
                   {logs.length === 0 ? (
-                    <p className="text-xs text-muted-foreground">Aucun log</p>
+                    <p className="text-xs text-muted-foreground">{t("admin.webhooks.logs.empty")}</p>
                   ) : (
                     <div className="space-y-1">
                       {logs.map((log) => (
                         <div key={log.id} className="flex items-center gap-2 text-xs">
                           <span className="font-mono text-muted-foreground w-36 shrink-0">
-                            {new Date(log.created_at).toLocaleString("fr-FR")}
+                            {new Date(log.created_at).toLocaleString()}
                           </span>
                           <span
                             className={
@@ -195,6 +196,16 @@ function WebhookForm({
   onSubmit: (v: { name: string; url: string; events: string[]; secret?: string }) => void;
   onCancel: () => void;
 }) {
+  const { t } = useI18n();
+  const EVENT_LABELS: Record<string, string> = {
+    "reservation.created": t("admin.webhooks.event.reservation.created"),
+    "reservation.status_changed": t("admin.webhooks.event.reservation.status_changed"),
+    "reservation.completed": t("admin.webhooks.event.reservation.completed"),
+    "payment.received": t("admin.webhooks.event.payment.received"),
+    "payment.failed": t("admin.webhooks.event.payment.failed"),
+    "lead.new": t("admin.webhooks.event.lead.new"),
+    "review.submitted": t("admin.webhooks.event.review.submitted"),
+  };
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [secret, setSecret] = useState("");
@@ -210,7 +221,7 @@ function WebhookForm({
     <div className="rounded-lg border bg-card p-4 space-y-3">
       <input
         className={field}
-        placeholder="Nom du webhook"
+        placeholder={t("admin.webhooks.form.name_placeholder")}
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
@@ -222,12 +233,12 @@ function WebhookForm({
       />
       <input
         className={field}
-        placeholder="Secret (optionnel, pour signature HMAC)"
+        placeholder={t("admin.webhooks.form.secret_placeholder")}
         value={secret}
         onChange={(e) => setSecret(e.target.value)}
       />
       <div>
-        <p className="text-xs font-medium mb-1">Événements</p>
+        <p className="text-xs font-medium mb-1">{t("admin.webhooks.form.events_label")}</p>
         <div className="flex flex-wrap gap-1">
           {WEBHOOK_EVENTS.map((ev) => (
             <button
@@ -252,10 +263,10 @@ function WebhookForm({
           disabled={!name || !url || events.length === 0}
           onClick={() => onSubmit({ name, url, events, secret: secret || undefined })}
         >
-          Enregistrer
+          {t("admin.webhooks.form.save")}
         </Button>
         <Button variant="outline" size="sm" onClick={onCancel}>
-          Annuler
+          {t("admin.webhooks.form.cancel")}
         </Button>
       </div>
     </div>

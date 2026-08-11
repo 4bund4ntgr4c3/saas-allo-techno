@@ -17,19 +17,6 @@ import {
 const field =
   "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
-const LEAD_SOURCE_LABEL: Record<string, string> = {
-  devis: "Devis",
-  contact: "Contact",
-  suivi: "Assistance",
-  boutique: "Commande boutique",
-};
-
-const LEAD_STATUS_LABEL: Record<string, string> = {
-  nouveau: "Nouveau",
-  contacte: "Contacté",
-  clos: "Clôturé",
-};
-
 function downloadCsv(csv: string, filename: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -104,11 +91,11 @@ export function LeadsSection() {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.returns.error.updateFailed")),
   });
 
   if (leads.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des demandes…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.leads.loading")}</p>;
   }
 
   const rows = leads.data ?? [];
@@ -117,7 +104,7 @@ export function LeadsSection() {
       <div>
         <h2 className="text-lg font-semibold">Leads</h2>
         <p className="mt-4 text-sm text-muted-foreground">
-          Les demandes de devis et messages de contact apparaîtront ici.
+          {t("admin.leads.empty")}
         </p>
       </div>
     );
@@ -127,7 +114,7 @@ export function LeadsSection() {
     <div>
       <h2 className="text-lg font-semibold">Leads</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Devis, contacts et demandes d'assistance reçus via le site.
+        {t("admin.leads.description")}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <CsvExportButton
@@ -141,10 +128,10 @@ export function LeadsSection() {
           <li key={l.id} className="border border-border bg-card p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-medium">
-                {l.name ?? "Anonyme"}{" "}
+                {l.name ?? t("admin.refunds.anonymous")}{" "}
                 <span className="ml-2 text-xs font-normal text-muted-foreground">
-                  {LEAD_SOURCE_LABEL[l.source] ?? l.source}
-                  {l.reference ? ` · dossier ${l.reference}` : ""}
+                  {t(`admin.leads.source.${l.source}` as any) || l.source}
+                  {l.reference ? ` · ${t("admin.leads.caseLabel")} ${l.reference}` : ""}
                 </span>
               </p>
               <select
@@ -153,9 +140,9 @@ export function LeadsSection() {
                 disabled={setStatus.isPending}
                 onChange={(e) => setStatus.mutate({ id: l.id, status: e.target.value })}
               >
-                {Object.entries(LEAD_STATUS_LABEL).map(([value, label]) => (
+                {(["nouveau", "contacte", "clos"] as const).map((value) => (
                   <option key={value} value={value}>
-                    {label}
+                    {t(`admin.leads.status.${value === "contacte" ? "contacted" : value === "clos" ? "closed" : "new"}` as any)}
                   </option>
                 ))}
               </select>
@@ -172,18 +159,11 @@ export function LeadsSection() {
   );
 }
 
-const CLAIM_STATUS_LABEL: Record<string, string> = {
-  nouveau: "Nouveau",
-  en_cours: "En cours",
-  acceptee: "Acceptée",
-  refuse: "Refusé",
-  cloturee: "Clôturée",
-};
-
 const CLAIM_STATUS_ORDER: ClaimStatus[] = ["nouveau", "en_cours", "acceptee", "refuse", "cloturee"];
 
 export function ClaimsSection() {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const listClaims = useServerFn(listWarrantyClaims);
   const updateClaim = useServerFn(setWarrantyClaimStatus);
 
@@ -197,11 +177,18 @@ export function ClaimsSection() {
       await updateClaim({ data: { id, status } });
     },
     onSuccess: (_d, vars) => {
-      toast.success(`Statut mis à jour : ${CLAIM_STATUS_LABEL[vars.status] ?? vars.status}`);
+      const claimStatusMap: Record<string, string> = {
+        nouveau: t("admin.claims.status.new"),
+        en_cours: t("admin.claims.status.inProgress"),
+        acceptee: t("admin.claims.status.accepted"),
+        refuse: t("admin.claims.status.refused"),
+        cloturee: t("admin.claims.status.closed"),
+      };
+      toast.success(t("admin.claims.statusUpdated", [claimStatusMap[vars.status] ?? vars.status]));
       queryClient.invalidateQueries({ queryKey: ["claims"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.returns.error.updateFailed")),
   });
 
   const saveNote = useMutation({
@@ -209,15 +196,15 @@ export function ClaimsSection() {
       await updateClaim({ data: { id, staffNote: note || undefined } });
     },
     onSuccess: () => {
-      toast.success("Note enregistrée");
+      toast.success(t("admin.claims.noteSaved"));
       queryClient.invalidateQueries({ queryKey: ["claims"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Enregistrement impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.claims.saveError")),
   });
 
   if (claims.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des réclamations…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.claims.loading")}</p>;
   }
 
   const rows = claims.data ?? [];
@@ -226,7 +213,7 @@ export function ClaimsSection() {
       <div>
         <h2 className="text-lg font-semibold">Réclamations</h2>
         <p className="mt-4 text-sm text-muted-foreground">
-          Les réclamations de garantie soumises via le site apparaîtront ici.
+          {t("admin.claims.empty")}
         </p>
       </div>
     );
@@ -236,8 +223,7 @@ export function ClaimsSection() {
     <div>
       <h2 className="text-lg font-semibold">Réclamations</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Réclamations de garantie soumises en ligne — traitez le statut, notez la décision et le
-        client est prévenu par WhatsApp.
+        {t("admin.claims.description")}
       </p>
       <ul className="mt-6 space-y-3">
         {rows.map((c) => (
@@ -265,6 +251,7 @@ export function ClaimCard({
   onStatus: (status: ClaimStatus) => void;
   onSaveNote: (note: string) => void;
 }) {
+  const { t } = useI18n();
   const [note, setNote] = useState(claim.staff_note ?? "");
 
   return (
@@ -289,7 +276,7 @@ export function ClaimCard({
         >
           {CLAIM_STATUS_ORDER.map((value) => (
             <option key={value} value={value}>
-              {CLAIM_STATUS_LABEL[value]}
+              {t(`admin.claims.status.${value === "acceptee" ? "accepted" : value === "refuse" ? "refused" : value === "cloturee" ? "closed" : value === "en_cours" ? "inProgress" : "new"}` as any)}
             </option>
           ))}
         </select>
@@ -313,7 +300,7 @@ export function ClaimCard({
           className={`${field} min-h-20 max-w-md py-1.5 text-xs`}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Note / réponse de l'atelier…"
+          placeholder={t("admin.claims.notePlaceholder")}
           maxLength={500}
         />
         <Button
@@ -322,7 +309,7 @@ export function ClaimCard({
           onClick={() => onSaveNote(note.trim())}
         >
           {busy ? <Loader2 className="mr-2 size-3.5 animate-spin" /> : null}
-          Enregistrer
+          {t("admin.webhooks.form.save")}
         </Button>
       </div>
     </li>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 import {
   createReturn,
   listReturns,
@@ -17,15 +18,16 @@ const field =
 
 const RETURN_STATUS_ORDER: ReturnStatus[] = ["nouveau", "en_cours", "accepte", "refuse", "cloture"];
 
-const RETURN_STATUS_LABEL: Record<string, string> = {
-  nouveau: "Nouveau",
-  en_cours: "En cours",
-  accepte: "Accepté",
-  refuse: "Refusé",
-  cloture: "Clôturé",
+const RETURN_STATUS_I18N: Record<string, string> = {
+  nouveau: "admin.returns.status.new",
+  en_cours: "admin.returns.status.inProgress",
+  accepte: "admin.returns.status.accepted",
+  refuse: "admin.returns.status.rejected",
+  cloture: "admin.returns.status.closed",
 };
 
 export function ReturnsSection() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const createFn = useServerFn(createReturn);
   const listFn = useServerFn(listReturns);
@@ -62,11 +64,11 @@ export function ReturnsSection() {
           reason: form.reason.trim(),
         },
       });
-      toast.success(`Retour créé : ${res.reference}`);
+      toast.success(t("admin.returns.toast.created", [res.reference]));
       setForm({ customerName: "", phone: "", email: "", orderReference: "", item: "", reason: "" });
       queryClient.invalidateQueries({ queryKey: ["returns"] });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Création impossible");
+      setError(err instanceof Error ? err.message : t("admin.returns.error.creationFailed"));
     } finally {
       setBusy(false);
     }
@@ -87,11 +89,12 @@ export function ReturnsSection() {
       });
     },
     onSuccess: (_d, vars) => {
-      toast.success(`Statut mis à jour : ${RETURN_STATUS_LABEL[vars.status] ?? vars.status}`);
+      const label = t(RETURN_STATUS_I18N[vars.status] ?? `admin.returns.status.${vars.status}`);
+      toast.success(t("admin.returns.toast.statusUpdated", [label]));
       queryClient.invalidateQueries({ queryKey: ["returns"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.returns.error.updateFailed")),
   });
 
   const saveNote = useMutation({
@@ -107,15 +110,15 @@ export function ReturnsSection() {
       await setFn({ data: { reference, status, note } });
     },
     onSuccess: () => {
-      toast.success("Note enregistrée");
+      toast.success(t("admin.returns.toast.noteSaved"));
       queryClient.invalidateQueries({ queryKey: ["returns"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Enregistrement impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.returns.error.saveFailed")),
   });
 
   if (returns.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des retours…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.returns.loading")}</p>;
   }
 
   const rows = returns.data ?? [];
@@ -123,18 +126,17 @@ export function ReturnsSection() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-lg font-semibold">Retours</h2>
+        <h2 className="text-lg font-semibold">{t("admin.returns.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Créez une demande de retour pour un client et suivez son traitement ; le client est
-          prévenu par WhatsApp/e-mail à chaque changement de statut.
+          {t("admin.returns.description")}
         </p>
       </div>
 
       <form onSubmit={create} className="space-y-4 rounded-sm border border-border bg-card p-5">
-        <h3 className="text-sm font-semibold">Nouvelle demande de retour</h3>
+        <h3 className="text-sm font-semibold">{t("admin.returns.newRequest")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-2 block">Nom du client</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.customerName")}</span>
             <input
               className={field}
               value={form.customerName}
@@ -143,17 +145,17 @@ export function ReturnsSection() {
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-2 block">Téléphone</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.phone")}</span>
             <input
               className={field}
               value={form.phone}
               onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-              placeholder="+229 …"
+              placeholder={t("admin.returns.form.phonePlaceholder")}
               required
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-2 block">E-mail</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.email")}</span>
             <input
               type="email"
               className={field}
@@ -162,25 +164,25 @@ export function ReturnsSection() {
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-2 block">Référence commande</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.orderReference")}</span>
             <input
               className={field}
               value={form.orderReference}
               onChange={(e) => setForm((f) => ({ ...f, orderReference: e.target.value }))}
-              placeholder="ex. AC-2026-0001"
+              placeholder={t("admin.returns.form.orderRefPlaceholder")}
             />
           </label>
           <label className="block sm:col-span-2">
-            <span className="at-eyebrow mb-2 block">Article concerné</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.item")}</span>
             <input
               className={field}
               value={form.item}
               onChange={(e) => setForm((f) => ({ ...f, item: e.target.value }))}
-              placeholder="ex. Chargeur 65 W"
+              placeholder={t("admin.returns.form.itemPlaceholder")}
             />
           </label>
           <label className="block sm:col-span-2">
-            <span className="at-eyebrow mb-2 block">Motif du retour</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.returns.form.reason")}</span>
             <textarea
               className={`${field} min-h-24`}
               value={form.reason}
@@ -195,12 +197,12 @@ export function ReturnsSection() {
           variant="technical"
           disabled={busy || !form.customerName.trim() || !form.phone.trim() || !form.reason.trim()}
         >
-          {busy ? "Création…" : "Créer le retour"}
+          {busy ? t("admin.returns.creating") : t("admin.returns.createButton")}
         </Button>
       </form>
 
       {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Aucune demande de retour pour le moment.</p>
+        <p className="text-sm text-muted-foreground">{t("admin.returns.empty")}</p>
       ) : (
         <ul className="space-y-3">
           {rows.map((r) => (
@@ -235,6 +237,7 @@ export function ReturnCard({
   onStatus: (status: ReturnStatus) => void;
   onSaveNote: (note: string) => void;
 }) {
+  const { t } = useI18n();
   const [note, setNote] = useState(returnRow.note ?? "");
 
   return (
@@ -259,7 +262,7 @@ export function ReturnCard({
         >
           {RETURN_STATUS_ORDER.map((value) => (
             <option key={value} value={value}>
-              {RETURN_STATUS_LABEL[value]}
+              {t(RETURN_STATUS_I18N[value] ?? `admin.returns.status.${value}`)}
             </option>
           ))}
         </select>
@@ -283,7 +286,7 @@ export function ReturnCard({
           className={`${field} min-h-20 max-w-md py-1.5 text-xs`}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Note interne de l'atelier…"
+          placeholder={t("admin.returns.form.notePlaceholder")}
           maxLength={500}
         />
         <Button
@@ -292,7 +295,7 @@ export function ReturnCard({
           onClick={() => onSaveNote(note.trim())}
         >
           {busy ? <Loader2 className="mr-2 size-3.5 animate-spin" /> : null}
-          Enregistrer
+          {t("admin.webhooks.form.save")}
         </Button>
       </div>
     </li>

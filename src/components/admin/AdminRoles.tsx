@@ -6,15 +6,14 @@ import { useState } from "react";
 import { Shield, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
-const ROLES: { value: string; label: string; color: string }[] = [
-  { value: "admin", label: "Admin", color: "bg-red-100 text-red-800" },
-  { value: "staff", label: "Staff", color: "bg-blue-100 text-blue-800" },
-  { value: "technicien", label: "Technicien", color: "bg-purple-100 text-purple-800" },
-  { value: "user", label: "User", color: "bg-gray-100 text-gray-600" },
-];
-
 export function AdminRoles() {
   const { t } = useI18n();
+  const ROLES: { value: string; label: string; color: string }[] = [
+    { value: "admin", label: "Admin", color: "bg-red-100 text-red-800" },
+    { value: "staff", label: "Staff", color: "bg-blue-100 text-blue-800" },
+    { value: "technicien", label: t("admin.roles.label.technicien"), color: "bg-purple-100 text-purple-800" },
+    { value: "user", label: "User", color: "bg-gray-100 text-gray-600" },
+  ];
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState("");
   const [role, setRole] = useState<string>("staff");
@@ -28,11 +27,11 @@ export function AdminRoles() {
     mutationFn: () => setUserRole({ data: { user_id: userId, role: role as UserRole["role"] } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "user-roles"] });
-      toast.success("Rôle assigné");
+      toast.success(t("admin.roles.toast.assigned"));
       setUserId("");
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : "Erreur");
+      toast.error(err instanceof Error ? err.message : t("admin.roles.toast.error"));
     },
   });
 
@@ -67,12 +66,12 @@ export function AdminRoles() {
           disabled={!userId || setRoleMutation.isPending}
         >
           <UserPlus className="mr-1 size-3" />
-          Assigner
+          {t("admin.roles.assign")}
         </Button>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement...</p>
+        <p className="text-sm text-muted-foreground">{t("admin.roles.loading")}</p>
       ) : (
         <div className="divide-y divide-border rounded-lg border border-border">
           {roles.map((r) => {
@@ -90,7 +89,7 @@ export function AdminRoles() {
             );
           })}
           {roles.length === 0 && (
-            <p className="px-4 py-6 text-center text-sm text-muted-foreground">Aucun rôle assigné</p>
+            <p className="px-4 py-6 text-center text-sm text-muted-foreground">{t("admin.roles.empty")}</p>
           )}
         </div>
       )}

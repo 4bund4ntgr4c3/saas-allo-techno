@@ -18,11 +18,13 @@ import {
   type FunnelStep,
   type SourceStat,
 } from "@/lib/analytics-advanced.functions";
+import { useI18n } from "@/lib/i18n/context";
 
 const FUNNEL_COLORS = ["#d83100", "#f59e0b", "#22c55e"];
 const SOURCE_COLORS = ["#d83100", "#3b82f6", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#6366f1", "#14b8a6", "#64748b"];
 
 export function AnalyticsAdvanced() {
+  const { t } = useI18n();
   const getFunnel = useServerFn(getConversionFunnel);
   const getSources = useServerFn(getSourceStats);
   const getErrors = useServerFn(getRecentErrors);
@@ -45,14 +47,14 @@ export function AnalyticsAdvanced() {
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-bold flex items-center gap-2">
-        <BarChart3 className="size-5" /> Analytics avancées
+        <BarChart3 className="size-5" /> {t("admin.analytics.advanced.title")}
       </h3>
 
       {/* Conversion Funnel */}
       <div className="rounded-lg border bg-card p-4">
         <h4 className="flex items-center gap-2 text-sm font-bold mb-3">
           <TrendingUp className="size-4" />
-          Funnel de conversion (30j)
+          {t("admin.analytics.funnel.title")}
         </h4>
         {funnel && funnel.length > 0 ? (
           <div className="space-y-2">
@@ -70,7 +72,7 @@ export function AnalyticsAdvanced() {
                       {step.count.toLocaleString("fr-FR")}
                       {i > 0 && (
                         <span className="ml-1 text-[10px]">
-                          ({convRate}% conv.)
+                          ({convRate}% {t("admin.analytics.funnel.conversionAbbrev")})
                         </span>
                       )}
                     </span>
@@ -97,7 +99,7 @@ export function AnalyticsAdvanced() {
       <div className="rounded-lg border bg-card p-4">
         <h4 className="flex items-center gap-2 text-sm font-bold mb-3">
           <Globe className="size-4" />
-          Sources d'acquisition (30j)
+          {t("admin.analytics.sources.title")}
         </h4>
         {sources && sources.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
@@ -111,7 +113,7 @@ export function AnalyticsAdvanced() {
                 width={60}
               />
               <Tooltip
-                formatter={(value: number) => [`${value} hits`, "Hits"]}
+                formatter={(value: number) => [`${value} hits`, t("admin.analytics.sources.hits")]}
                 contentStyle={{ fontSize: 11 }}
               />
               <Bar dataKey="count" radius={[0, 4, 4, 0]}>
@@ -122,7 +124,7 @@ export function AnalyticsAdvanced() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-xs text-muted-foreground">Pas de données de source</p>
+          <p className="text-xs text-muted-foreground">{t("admin.analytics.sources.empty")}</p>
         )}
       </div>
 
@@ -130,7 +132,7 @@ export function AnalyticsAdvanced() {
       <div className="rounded-lg border bg-card p-4">
         <h4 className="flex items-center gap-2 text-sm font-bold mb-3">
           <AlertTriangle className="size-4" />
-          Erreurs récentes (24h)
+          {t("admin.analytics.errors.title")}
         </h4>
         {errors && errors.length > 0 ? (
           <div className="space-y-1">
@@ -151,7 +153,7 @@ export function AnalyticsAdvanced() {
           </div>
         ) : (
           <div className="rounded-sm bg-success/10 p-4 text-center">
-            <p className="text-xs text-success font-medium">Aucune erreur détectée</p>
+            <p className="text-xs text-success font-medium">{t("admin.analytics.errors.empty")}</p>
           </div>
         )}
       </div>

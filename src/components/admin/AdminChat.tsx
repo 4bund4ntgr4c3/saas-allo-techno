@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Send, User, Wrench } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface ChatMessage {
   id: string;
@@ -13,6 +14,7 @@ interface ChatMessage {
 }
 
 export function AdminChat() {
+  const { t } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
 
@@ -34,13 +36,13 @@ export function AdminChat() {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-bold flex items-center gap-2">
-        <MessageSquare className="size-5" /> Messages clients
+        <MessageSquare className="size-5" /> {t("admin.chat.title")}
       </h3>
 
       <div className="rounded-lg border bg-card h-80 flex flex-col">
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
           {messages.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucun message</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("admin.chat.empty")}</p>
           ) : (
             messages.map((m) => (
               <div
@@ -74,7 +76,7 @@ export function AdminChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Votre réponse..."
+            placeholder={t("admin.chat.placeholder")}
             className="flex-1 rounded-md border bg-background px-3 py-2 text-sm"
           />
           <Button size="sm" onClick={handleSend}>

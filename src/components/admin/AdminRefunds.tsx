@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ const field =
   "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 export function RefundsSection() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const listFn = useServerFn(listRefundablePayments);
   const refundFn = useServerFn(initiateRefund);
@@ -42,17 +44,17 @@ export function RefundsSection() {
       await refundFn({ data: { paymentId: confirmPayment.id, reason: reason.trim() } });
     },
     onSuccess: () => {
-      toast.success("Remboursement enregistré");
+      toast.success(t("admin.refunds.toast.refundRecorded"));
       setConfirmPayment(null);
       setReason("");
       queryClient.invalidateQueries({ queryKey: ["admin-refundable-payments"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Remboursement impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.refunds.error.refundFailed")),
   });
 
   if (payments.isLoading) {
-    return <p className="text-sm text-muted-foreground">Chargement des paiements…</p>;
+    return <p className="text-sm text-muted-foreground">{t("admin.refunds.loading")}</p>;
   }
 
   const rows = (payments.data ?? []).filter((p) => {
@@ -67,24 +69,23 @@ export function RefundsSection() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Remboursements</h2>
+      <h2 className="text-lg font-semibold">{t("admin.refunds.title")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Paiements confirmés éligibles au remboursement. Le statut passe à « Remboursé » et une
-        entrée d'audit est créée.
+        {t("admin.refunds.description")}
       </p>
       <label htmlFor="refund-search" className="sr-only">
-        Rechercher un paiement
+        {t("admin.refunds.searchLabel")}
       </label>
       <input
         id="refund-search"
         className={`${field} mt-4`}
-        placeholder="Rechercher (référence, nom, téléphone)"
+        placeholder={t("admin.refunds.searchPlaceholder")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       {rows.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
-          Aucun paiement remboursable ne correspond à cette recherche.
+          {t("admin.refunds.empty")}
         </p>
       ) : (
         <ul className="mt-6 space-y-3">
@@ -95,7 +96,7 @@ export function RefundsSection() {
                   <span className="rounded-full border border-primary/50 px-3 py-1 font-mono text-xs font-bold text-primary">
                     {p.reference}
                   </span>
-                  <p className="font-medium">{p.customer_name ?? "Anonyme"}</p>
+                  <p className="font-medium">{p.customer_name ?? t("admin.refunds.anonymous")}</p>
                   <Badge variant="outline" className="border-success/50 text-success">
                     {formatFcfa(p.amount)}
                   </Badge>
@@ -111,7 +112,7 @@ export function RefundsSection() {
                     setReason("");
                   }}
                 >
-                  Rembourser
+                  {t("admin.refunds.refundButton")}
                 </Button>
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
@@ -135,28 +136,26 @@ export function RefundsSection() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirmer le remboursement</DialogTitle>
+            <DialogTitle>{t("admin.refunds.dialog.title")}</DialogTitle>
             <DialogDescription>
-              Le paiement de <strong>{confirmPayment?.reference}</strong> (
-              {confirmPayment ? formatFcfa(confirmPayment.amount) : ""}) sera marqué comme
-              remboursé. Cette action est irréversible.
+              {t("admin.refunds.dialog.description", [confirmPayment ? `${confirmPayment.reference} (${formatFcfa(confirmPayment.amount)})` : ""])}
             </DialogDescription>
           </DialogHeader>
           <label htmlFor="refund-reason" className="block">
-            <span className="at-eyebrow mb-2 block">Motif du remboursement</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.refunds.form.reason")}</span>
             <textarea
               id="refund-reason"
               className={`${field} min-h-20 py-1.5 text-xs`}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Indiquez la raison du remboursement…"
+              placeholder={t("admin.refunds.form.reasonPlaceholder")}
               maxLength={500}
             />
           </label>
           {!reason.trim() && (
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <AlertCircle className="size-3" />
-              Un motif est requis pour créer l'entrée d'audit.
+              {t("admin.refunds.form.reasonRequired")}
             </p>
           )}
           <DialogFooter>
@@ -168,14 +167,14 @@ export function RefundsSection() {
                 setReason("");
               }}
             >
-              Annuler
+              {t("admin.webhooks.form.cancel")}
             </Button>
             <Button
               variant="technical"
               disabled={doRefund.isPending || !reason.trim()}
               onClick={() => doRefund.mutate()}
             >
-              {doRefund.isPending ? "Remboursement…" : "Confirmer le remboursement"}
+              {doRefund.isPending ? t("admin.refunds.processing") : t("admin.refunds.confirmButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

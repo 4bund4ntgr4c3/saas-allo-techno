@@ -81,7 +81,7 @@ export function AdminSuppliers() {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">{t("admin.suppliers")}</h3>
         <Button size="sm" onClick={() => setShowNew(true)}>
-          <Plus className="mr-1 size-3" /> Ajouter
+          <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
 
@@ -89,31 +89,31 @@ export function AdminSuppliers() {
         <div className="rounded-lg border bg-card p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <input
-              placeholder="Nom *"
+              placeholder={t("admin.suppliers.placeholder.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Contact"
+              placeholder={t("admin.suppliers.placeholder.contact")}
               value={form.contact_name}
               onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Téléphone *"
+              placeholder={t("admin.suppliers.placeholder.phone")}
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Email"
+              placeholder={t("admin.suppliers.placeholder.email")}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Spécialité"
+              placeholder={t("admin.suppliers.placeholder.speciality")}
               value={form.speciality}
               onChange={(e) => setForm({ ...form, speciality: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
@@ -121,14 +121,14 @@ export function AdminSuppliers() {
           </div>
           <div className="flex gap-2">
             <Button size="sm" onClick={handleCreate}>
-              <Check className="mr-1 size-3" /> Enregistrer
+              <Check className="mr-1 size-3" /> {t("admin.webhooks.form.save")}
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={() => setShowNew(false)}
             >
-              <X className="mr-1 size-3" /> Annuler
+              <X className="mr-1 size-3" /> {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
         </div>
@@ -152,7 +152,7 @@ export function AdminSuppliers() {
                   <div>
                     <p className="text-sm font-bold">{s.name}</p>
                     <p className="text-[10px] text-muted-foreground">
-                      {s.speciality || "Général"}
+                      {s.speciality || t("admin.suppliers.speciality.general")}
                     </p>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export function AdminSuppliers() {
 
           {orders.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-bold">Commandes fournisseurs</h4>
+              <h4 className="text-sm font-bold">{t("admin.suppliers.orders.title")}</h4>
               {orders.map((o) => (
                 <div
                   key={o.id}
@@ -180,7 +180,7 @@ export function AdminSuppliers() {
                     <Package className="size-4 text-muted-foreground" />
                     <div>
                       <p className="text-xs font-medium">
-                        {o.parts.length} pièce(s) — {formatFcfa(o.total)}
+                        {o.parts.length} {t("admin.suppliers.orders.pieces")} — {formatFcfa(o.total)}
                       </p>
                       <p className="text-[10px] text-muted-foreground">{o.status}</p>
                     </div>

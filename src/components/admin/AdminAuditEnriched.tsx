@@ -63,7 +63,7 @@ export function AdminAuditEnriched() {
           onChange={(e) => { setActionFilter(e.target.value); setPage(0); }}
           className="rounded-md border border-border bg-background px-3 py-1.5 text-xs"
         >
-          <option value="">Toutes les actions</option>
+          <option value="">{t("admin.audit.filterAllActions")}</option>
           {actions.map((a) => <option key={a} value={a}>{a}</option>)}
         </select>
         <select
@@ -71,29 +71,29 @@ export function AdminAuditEnriched() {
           onChange={(e) => { setEntityFilter(e.target.value); setPage(0); }}
           className="rounded-md border border-border bg-background px-3 py-1.5 text-xs"
         >
-          <option value="">Toutes les entités</option>
+          <option value="">{t("admin.audit.filterAllEntities")}</option>
           {entities.map((e) => <option key={e} value={e}>{e}</option>)}
         </select>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement...</p>
+        <p className="text-sm text-muted-foreground">{t("admin.audit.loading")}</p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-xs">
             <thead className="bg-muted">
               <tr>
-                <th className="px-3 py-2 text-left font-medium">Date</th>
-                <th className="px-3 py-2 text-left font-medium">Action</th>
-                <th className="px-3 py-2 text-left font-medium">Entité</th>
+                <th className="px-3 py-2 text-left font-medium">{t("admin.audit.columnDate")}</th>
+                <th className="px-3 py-2 text-left font-medium">{t("admin.audit.columnAction")}</th>
+                <th className="px-3 py-2 text-left font-medium">{t("admin.audit.columnEntity")}</th>
                 <th className="px-3 py-2 text-left font-medium">ID</th>
-                <th className="px-3 py-2 text-left font-medium">User</th>
+                <th className="px-3 py-2 text-left font-medium">{t("admin.audit.columnUser")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {filteredLogs.map((log, i) => (
                 <tr key={i} className="hover:bg-muted/50">
-                  <td className="px-3 py-2 font-mono">{new Date(log.created_at).toLocaleString("fr-BJ")}</td>
+                  <td className="px-3 py-2 font-mono">{new Date(log.created_at).toLocaleString()}</td>
                   <td className="px-3 py-2"><code className="rounded bg-muted px-1">{log.action}</code></td>
                   <td className="px-3 py-2">{log.entity}</td>
                   <td className="px-3 py-2 font-mono text-muted-foreground">{log.entity_id?.slice(0, 8) ?? "—"}</td>
@@ -107,11 +107,11 @@ export function AdminAuditEnriched() {
 
       <div className="flex justify-between">
         <Button variant="ghost" size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
-          Précédent
+          {t("admin.audit.previous")}
         </Button>
-        <span className="text-xs text-muted-foreground">Page {page + 1}</span>
+        <span className="text-xs text-muted-foreground">{t("admin.audit.page", [page + 1])}</span>
         <Button variant="ghost" size="sm" disabled={filteredLogs.length < limit} onClick={() => setPage(page + 1)}>
-          Suivant
+          {t("admin.audit.next")}
         </Button>
       </div>
     </div>

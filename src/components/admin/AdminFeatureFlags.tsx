@@ -72,7 +72,7 @@ export function AdminFeatureFlags() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement...</p>
+        <p className="text-sm text-muted-foreground">{t("admin.feature-flags.loading")}</p>
       ) : (
         <div className="divide-y divide-border rounded-lg border border-border">
           {flags.map((flag) => (
@@ -102,7 +102,7 @@ export function AdminFeatureFlags() {
           ))}
           {flags.length === 0 && (
             <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-              Aucun feature flag configuré
+              {t("admin.feature-flags.empty")}
             </p>
           )}
         </div>

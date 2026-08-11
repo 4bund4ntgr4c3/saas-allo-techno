@@ -98,11 +98,18 @@ function DeliveryBlock({
     address?: string;
   }) => void;
 }) {
+  const { t } = useI18n();
   const [address, setAddress] = useState(r.delivery_address ?? "");
+  const DELIVERY_LABELS: Record<Enums<"delivery_status">, string> = {
+    non_applicable: t("admin.kanban.delivery.nonApplicable"),
+    a_planifier: t("admin.kanban.delivery.toPlan"),
+    en_route: t("admin.kanban.delivery.inTransit"),
+    livre: t("admin.kanban.delivery.delivered"),
+  };
   return (
     <div className="mt-4 border-t border-border pt-4">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-muted-foreground">Livraison :</span>
+        <span className="text-muted-foreground">{t("admin.kanban.delivery.label")}</span>
         <select
           className={`${field} max-w-44 py-1.5 text-xs`}
           value={r.delivery_status}
@@ -115,7 +122,7 @@ function DeliveryBlock({
             })
           }
         >
-          {Object.entries(DELIVERY_STATUS_LABEL).map(([value, label]) => (
+          {Object.entries(DELIVERY_LABELS).map(([value, label]) => (
             <option key={value} value={value}>
               {label}
             </option>
@@ -130,7 +137,7 @@ function DeliveryBlock({
             className={`${field} max-w-64 py-1.5 text-xs`}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            placeholder="Adresse d'enlèvement / livraison"
+            placeholder={t("admin.kanban.delivery.addressPlaceholder")}
           />
           <Button
             size="sm"
@@ -143,7 +150,7 @@ function DeliveryBlock({
               })
             }
           >
-            Enregistrer l'adresse
+            {t("admin.kanban.delivery.saveAddress")}
           </Button>
         </div>
       ) : null}
@@ -158,6 +165,7 @@ function KanbanBoard({
   rows: KanbanRow[];
   updateStatus: (v: { id: string; status: Status }) => void;
 }) {
+  const { t } = useI18n();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overCol, setOverCol] = useState<Status | null>(null);
 
@@ -216,7 +224,7 @@ function KanbanBoard({
               ))}
               {columnRows.length === 0 && (
                 <p className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
-                  Aucun dossier
+                  {t("admin.kanban.empty")}
                 </p>
               )}
             </div>
@@ -224,8 +232,7 @@ function KanbanBoard({
         );
       })}
       <p className="bg-card p-3 text-xs text-muted-foreground sm:col-span-2 lg:col-span-4">
-        Glissez-déposez une carte dans une autre colonne pour changer son statut. Les changements
-        sont enregistrés immédiatement et notifiés à l'équipe.
+        {t("admin.kanban.dragHelp")}
       </p>
     </div>
   );
@@ -244,6 +251,7 @@ function StageControls({
   historyOpen: boolean;
   onToggleHistory: () => void;
 }) {
+  const { t } = useI18n();
   const [status, setStatus] = useState<Status>(current);
   const [note, setNote] = useState("");
   const next = NEXT_STATUS[current];
@@ -276,7 +284,7 @@ function StageControls({
             setNote("");
           }}
         >
-          Appliquer
+          {t("admin.kanban.apply")}
         </Button>
         {next ? (
           <Button
@@ -288,17 +296,17 @@ function StageControls({
               setNote("");
             }}
           >
-            Passer à « {STATUS_LABEL[next]} »
+            {t("admin.kanban.moveToNext", [STATUS_LABEL[next] ?? ""])}
           </Button>
         ) : null}
         <Button variant="outline" size="sm" onClick={onToggleHistory}>
           <History className="mr-2 size-4" />
-          {historyOpen ? "Masquer l'historique" : "Historique"}
+          {historyOpen ? t("admin.kanban.hideHistory") : t("admin.kanban.history")}
         </Button>
       </div>
       <textarea
         className="min-h-16 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        placeholder="Note visible par le client (ex. : pièce commandée, écran remplacé…)"
+        placeholder={t("admin.kanban.notePlaceholder")}
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
@@ -307,6 +315,7 @@ function StageControls({
 }
 
 function StatusHistoryList({ reservationId }: { reservationId: string }) {
+  const { t } = useI18n();
   const history = useQuery({
     queryKey: ["status-history", reservationId],
     queryFn: async () => {
@@ -321,12 +330,12 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
   });
 
   if (history.isLoading) {
-    return <p className="mt-4 text-sm text-muted-foreground">Chargement de l'historique…</p>;
+    return <p className="mt-4 text-sm text-muted-foreground">{t("admin.kanban.historyLoading")}</p>;
   }
 
   const rows = history.data ?? [];
   if (rows.length === 0) {
-    return <p className="mt-4 text-sm text-muted-foreground">Aucun changement enregistré.</p>;
+    return <p className="mt-4 text-sm text-muted-foreground">{t("admin.kanban.historyEmpty")}</p>;
   }
 
   return (
@@ -337,7 +346,7 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
             {new Date(h.created_at).toLocaleString("fr-FR")}
           </time>
           <span>
-            {h.old_status ? `${STATUS_LABEL[h.old_status]} → ` : "Création : "}
+            {h.old_status ? `${STATUS_LABEL[h.old_status]} → ` : t("admin.kanban.history.creation")}
             <strong>{STATUS_LABEL[h.new_status]}</strong>
           </span>
           {h.note ? <span className="text-muted-foreground">— {h.note}</span> : null}
@@ -384,7 +393,7 @@ function QuotePanel({
     mutationFn: async () => {
       const parsed = Number(amount);
       if (!Number.isFinite(parsed) || parsed < 0 || parsed > 50_000_000) {
-        throw new Error("Montant invalide (0 à 50 000 000 FCFA).");
+        throw new Error(t("admin.kanban.quote.amountInvalid"));
       }
       const finalAmount = warranty === 12 ? Math.round(parsed * 1.15) : Math.round(parsed);
       await sendQuoteFn({
@@ -392,7 +401,7 @@ function QuotePanel({
       });
     },
     onSuccess: () => {
-      toast.success("Devis envoyé au client");
+      toast.success(t("admin.kanban.quote.sentSuccess"));
       setAmount("");
       queryClient.invalidateQueries({ queryKey: ["reservation-quote", reservationId] });
       void logAudit(supabase as never, {
@@ -404,7 +413,7 @@ function QuotePanel({
       });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Envoi du devis impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.kanban.quote.sendError")),
   });
 
   const status = quote.data?.quote_status ?? "none";
@@ -414,8 +423,8 @@ function QuotePanel({
     <div className="mt-4 border-t border-border pt-4">
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <Banknote className="size-3.5 text-muted-foreground" />
-        <span className="text-muted-foreground">Devis :</span>
-        <span className="font-medium">{QUOTE_STATUS_LABEL[status] ?? status}</span>
+        <span className="text-muted-foreground">{t("admin.kanban.quote.label")}</span>
+        <span className="font-medium">{status === "none" ? t("admin.kanban.quote.none") : status}</span>
         {sentAmount != null && (
           <span className="font-mono text-muted-foreground">{formatFcfa(sentAmount)}</span>
         )}
@@ -434,7 +443,7 @@ function QuotePanel({
             htmlFor={`quote-amount-${reservationId}`}
             className="mb-1 block text-[11px] text-muted-foreground"
           >
-            Montant (FCFA)
+            {t("admin.kanban.quote.amountLabel")}
           </label>
           <input
             id={`quote-amount-${reservationId}`}
@@ -442,7 +451,7 @@ function QuotePanel({
             min={0}
             step={500}
             className={`${field} max-w-40 py-1.5 text-xs`}
-            placeholder="ex. 45000"
+            placeholder={t("admin.kanban.quote.amountPlaceholder")}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -452,7 +461,7 @@ function QuotePanel({
             htmlFor={`quote-warranty-${reservationId}`}
             className="mb-1 block text-[11px] text-muted-foreground"
           >
-            Garantie étendue
+            {t("admin.kanban.quote.extendedWarranty")}
           </label>
           <select
             id={`quote-warranty-${reservationId}`}
@@ -470,7 +479,7 @@ function QuotePanel({
           disabled={send.isPending || !amount.trim()}
           onClick={() => send.mutate()}
         >
-          {send.isPending ? "Envoi…" : "Envoyer le devis"}
+          {send.isPending ? t("admin.kanban.quote.sending") : t("admin.kanban.quote.send")}
         </Button>
         {sentAmount != null && sentAmount > 0 && (
           <Button
@@ -490,7 +499,7 @@ function QuotePanel({
                 created_at,
               })
             }
-            aria-label={`Devis PDF du dossier ${reference}`}
+            aria-label={t("admin.kanban.quote.pdfAria", [reference])}
           >
             <FileDown className="mr-1 size-3.5" />
             PDF
@@ -502,6 +511,7 @@ function QuotePanel({
 }
 
 function PhotoPanel({ reservationId }: { reservationId: string }) {
+  const { t } = useI18n();
   const getUpload = useServerFn(getStaffPhotoUpload);
   const addPhoto = useServerFn(addStagePhoto);
   const [busyStage, setBusyStage] = useState<string | null>(null);
@@ -537,12 +547,17 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
       }
     },
     onSuccess: (_d, vars) => {
-      toast.success(`Photo « ${PHOTO_STAGE_LABEL[vars.stage] ?? vars.stage} » ajoutée au dossier`);
+      const stageLabels: Record<string, string> = {
+        diagnostic: t("admin.kanban.photoStage.diagnostic"),
+        pieces: t("admin.kanban.photoStage.pieces"),
+        repair: t("admin.kanban.photoStage.repair"),
+      };
+      toast.success(t("admin.kanban.photo.addedSuccess", [stageLabels[vars.stage] ?? vars.stage]));
     },
     onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Upload impossible";
+      const message = err instanceof Error ? err.message : t("admin.kanban.photo.uploadError");
       if (message.includes("code d'authentification")) {
-        toast.error("Veuillez confirmer votre code d'authentification.");
+        toast.error(t("admin.kanban.photo.authRequired"));
       } else {
         toast.error(message);
       }
@@ -553,7 +568,7 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
     <div className="mt-4 border-t border-border pt-4">
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <ImagePlus className="size-3.5 text-muted-foreground" />
-        <span className="text-muted-foreground">Photos de suivi :</span>
+        <span className="text-muted-foreground">{t("admin.kanban.photo.label")}</span>
       </div>
       <div className="mt-2 flex flex-wrap gap-3">
         {PHOTO_STAGES.map((stage) => (
@@ -561,11 +576,11 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
             key={stage}
             className="flex cursor-pointer items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-xs hover:bg-surface"
           >
-            <span className="text-muted-foreground">{PHOTO_STAGE_LABEL[stage]}</span>
+            <span className="text-muted-foreground">{t(`admin.kanban.photoStage.${stage}` as any)}</span>
             {busyStage === stage ? (
               <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
             ) : (
-              <span className="text-primary underline">Ajouter</span>
+              <span className="text-primary underline">{t("admin.catalog.button.add")}</span>
             )}
             <input
               type="file"

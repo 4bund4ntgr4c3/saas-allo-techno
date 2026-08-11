@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Users, Wrench, DollarSign } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface LiveMetrics {
   activeRepairs: number;
@@ -12,6 +13,7 @@ interface LiveMetrics {
 }
 
 export function LiveDashboard() {
+  const { t } = useI18n();
   const [metrics, setMetrics] = useState<LiveMetrics>({
     activeRepairs: 0,
     todayReservations: 0,
@@ -52,10 +54,10 @@ export function LiveDashboard() {
   }, []);
 
   const cards = [
-    { icon: Wrench, label: "Réparations actives", value: metrics.activeRepairs, color: "text-primary" },
-    { icon: Activity, label: "Réservations aujourd'hui", value: metrics.todayReservations, color: "text-success" },
-    { icon: DollarSign, label: "CA aujourd'hui", value: `${(metrics.todayRevenue / 1000).toFixed(0)}k FCFA`, color: "text-amber-500" },
-    { icon: Users, label: "Utilisateurs en ligne", value: metrics.onlineUsers, color: "text-purple-500" },
+    { icon: Wrench, label: t("admin.live.activeRepairs"), value: metrics.activeRepairs, color: "text-primary" },
+    { icon: Activity, label: t("admin.live.todayReservations"), value: metrics.todayReservations, color: "text-success" },
+    { icon: DollarSign, label: t("admin.live.todayRevenue"), value: `${(metrics.todayRevenue / 1000).toFixed(0)}k FCFA`, color: "text-amber-500" },
+    { icon: Users, label: t("admin.live.onlineUsers"), value: metrics.onlineUsers, color: "text-purple-500" },
   ];
 
   return (

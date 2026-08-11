@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n/context";
 
 function AnalyticsSection() {
+  const { t } = useI18n();
   const events = useQuery({
     queryKey: ["analytics-events"],
     queryFn: async () => {
@@ -31,19 +33,19 @@ function AnalyticsSection() {
   });
 
   const EVENT_LABEL: Record<string, string> = {
-    step_viewed: "Étape consultée",
-    estimation_shown: "Estimation affichée",
-    reservation_created: "Réservation créée",
+    step_viewed: t("admin.analytics.events.stepViewed"),
+    estimation_shown: t("admin.analytics.events.estimationShown"),
+    reservation_created: t("admin.analytics.events.reservationCreated"),
   };
 
   if (events.isLoading) {
-    return <p className="mt-6 text-sm text-muted-foreground">Chargement…</p>;
+    return <p className="mt-6 text-sm text-muted-foreground">{t("admin.analytics.loading")}</p>;
   }
 
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="mb-4 text-xl font-semibold">Vue d'ensemble</h2>
+        <h2 className="mb-4 text-xl font-semibold">{t("admin.analytics.overview.title")}</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {(counts.data ?? []).map((c) => (
             <div key={c.event} className="border border-border bg-card p-4 text-center">
@@ -57,13 +59,13 @@ function AnalyticsSection() {
       </div>
 
       <div>
-        <h2 className="mb-4 text-xl font-semibold">Événements récents</h2>
+        <h2 className="mb-4 text-xl font-semibold">{t("admin.analytics.events.title")}</h2>
         <div className="overflow-x-auto border border-border bg-card">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-2 text-left">Événement</th>
-                <th className="px-4 py-2 text-left">Date</th>
+                <th className="px-4 py-2 text-left">{t("admin.analytics.events.column.event")}</th>
+                <th className="px-4 py-2 text-left">{t("admin.analytics.events.column.date")}</th>
               </tr>
             </thead>
             <tbody>
@@ -75,7 +77,7 @@ function AnalyticsSection() {
                     </span>
                   </td>
                   <td className="px-4 py-2 text-muted-foreground">
-                    {new Date(e.created_at).toLocaleString("fr-FR", {
+                    {new Date(e.created_at).toLocaleString(undefined, {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",

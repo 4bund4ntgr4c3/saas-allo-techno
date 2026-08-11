@@ -16,19 +16,15 @@ import {
 } from "@/lib/content.functions";
 import { logAudit } from "@/lib/audit";
 import { StockAdmin } from "@/components/admin/AdminStock";
+import { useI18n } from "@/lib/i18n/context";
 
 const field =
   "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
-const contentTabs = [
-  { id: "blog", label: "Articles" },
-  { id: "avis", label: "Avis clients" },
-  { id: "stock", label: "Stock boutique" },
-] as const;
-
-type ContentTab = (typeof contentTabs)[number]["id"];
+type ContentTab = "blog" | "avis" | "stock";
 
 export function ContentSection() {
+  const { t } = useI18n();
   const [sub, setSub] = useState<ContentTab>("blog");
   const lowStockQuery = useQuery({
     queryKey: ["admin-low-stock"],
@@ -42,19 +38,24 @@ export function ContentSection() {
     refetchInterval: 5 * 60 * 1000,
   });
   const lowStockCount = lowStockQuery.data?.length ?? 0;
+  const contentTabs = [
+    { id: "blog" as ContentTab, label: t("admin.content.tab.blog") },
+    { id: "avis" as ContentTab, label: t("admin.content.tab.reviews") },
+    { id: "stock" as ContentTab, label: t("admin.content.tab.stock") },
+  ];
 
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap gap-2">
-        {contentTabs.map((t) => (
+        {contentTabs.map((tab) => (
           <Button
-            key={t.id}
-            variant={sub === t.id ? "technical" : "outline"}
+            key={tab.id}
+            variant={sub === tab.id ? "technical" : "outline"}
             size="sm"
-            onClick={() => setSub(t.id)}
+            onClick={() => setSub(tab.id)}
           >
-            {t.label}
-            {t.id === "stock" && lowStockCount > 0 && (
+            {tab.label}
+            {tab.id === "stock" && lowStockCount > 0 && (
               <span className="ml-2 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">
                 {lowStockCount}
               </span>
@@ -70,6 +71,7 @@ export function ContentSection() {
 }
 
 function BlogAdmin() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [locale, setLocale] = useState<string>("fr");
   const postsQuery = useQuery({
@@ -152,10 +154,10 @@ function BlogAdmin() {
         },
       });
       queryClient.invalidateQueries({ queryKey: ["admin-blog"] });
-      toast.success("Article enregistré");
+      toast.success(t("admin.content.blog.toast.saved"));
       setEditing(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.content.blog.error.save"));
     } finally {
       setSaving(false);
     }
@@ -165,9 +167,9 @@ function BlogAdmin() {
     try {
       await deleteFn({ data: { slug, locale } });
       queryClient.invalidateQueries({ queryKey: ["admin-blog"] });
-      toast.success("Article supprimé");
+      toast.success(t("admin.content.blog.toast.deleted"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.content.blog.error.delete"));
     }
   };
 
@@ -177,10 +179,10 @@ function BlogAdmin() {
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="w-full" onClick={startNew}>
             <Plus className="mr-2 size-4" />
-            Nouvel article
+            {t("admin.content.blog.button.new")}
           </Button>
           <label className="sr-only" htmlFor="blog-locale">
-            Langue
+            {t("admin.content.blog.form.language")}
           </label>
           <select
             id="blog-locale"
@@ -196,7 +198,7 @@ function BlogAdmin() {
           </select>
         </div>
         {postsQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">Chargement…</p>
+          <p className="text-sm text-muted-foreground">{t("admin.content.loading")}</p>
         ) : (
           (postsQuery.data ?? []).map((p) => (
             <div key={p.slug} className="rounded-sm border border-border bg-card p-4">
@@ -222,7 +224,7 @@ function BlogAdmin() {
                     })
                   }
                 >
-                  <Pencil className="size-3.5" /> Modifier
+                  <Pencil className="size-3.5" /> {t("admin.content.button.edit")}
                 </Button>
                 <Button
                   variant="outline"
@@ -242,15 +244,15 @@ function BlogAdmin() {
         <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">
-              {editing ? "Modifier l'article" : "Nouvel article"}
+              {editing ? t("admin.content.blog.form.editing") : t("admin.content.blog.form.new")}
             </p>
             <span className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-              Langue : {form.locale === "en" ? "English" : "Français"}
+              {t("admin.content.blog.form.language")} : {form.locale === "en" ? "English" : "Français"}
             </span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
-              <span className="at-eyebrow mb-2 block">Titre</span>
+              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.title")}</span>
               <input
                 className={field}
                 value={form.title}
@@ -259,7 +261,7 @@ function BlogAdmin() {
               />
             </label>
             <label className="block">
-              <span className="at-eyebrow mb-2 block">Slug</span>
+              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.slug")}</span>
               <input
                 className={field}
                 value={form.slug}
@@ -278,7 +280,7 @@ function BlogAdmin() {
             </label>
           </div>
           <label className="block">
-            <span className="at-eyebrow mb-2 block">Résumé</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.excerpt")}</span>
             <textarea
               className={`${field} h-20`}
               value={form.excerpt}
@@ -288,7 +290,7 @@ function BlogAdmin() {
           </label>
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block">
-              <span className="at-eyebrow mb-2 block">Date</span>
+              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.date")}</span>
               <input
                 type="date"
                 className={field}
@@ -298,7 +300,7 @@ function BlogAdmin() {
               />
             </label>
             <label className="block">
-              <span className="at-eyebrow mb-2 block">Catégorie</span>
+              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.category")}</span>
               <input
                 className={field}
                 value={form.category}
@@ -307,7 +309,7 @@ function BlogAdmin() {
               />
             </label>
             <label className="block">
-              <span className="at-eyebrow mb-2 block">Lecture</span>
+              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.reading_time")}</span>
               <input
                 className={field}
                 value={form.readingTime}
@@ -318,7 +320,7 @@ function BlogAdmin() {
             </label>
           </div>
           <label className="block">
-            <span className="at-eyebrow mb-2 block">Contenu (un paragraphe par ligne)</span>
+            <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.body_hint")}</span>
             <textarea
               className={`${field} h-56`}
               value={form.bodyText}
@@ -329,7 +331,7 @@ function BlogAdmin() {
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex flex-wrap gap-3">
             <Button type="submit" variant="technical" disabled={saving}>
-              {saving ? "Enregistrement…" : editing ? "Enregistrer les modifications" : "Publier"}
+              {saving ? t("admin.content.button.saving") : editing ? t("admin.content.blog.button.save_edits") : t("admin.content.blog.button.publish")}
             </Button>
             <Button
               type="button"
@@ -337,7 +339,7 @@ function BlogAdmin() {
               onClick={() => setEditing(null)}
               disabled={saving}
             >
-              Annuler
+              {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
         </form>
@@ -357,6 +359,7 @@ export function parsePostBody(raw: string): string[] {
 }
 
 function ReviewsAdmin() {
+  const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const reviewsQuery = useQuery({
@@ -412,7 +415,7 @@ function ReviewsAdmin() {
         },
       });
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success(form.id ? "Avis mis à jour" : "Avis ajouté");
+      toast.success(form.id ? t("admin.content.review.toast.updated") : t("admin.content.review.toast.added"));
       void logAudit(supabase as never, {
         user_id: user.id,
         action: form.status === "published" ? "review.published" : "review.hidden",
@@ -422,7 +425,7 @@ function ReviewsAdmin() {
       });
       reset();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Enregistrement impossible");
+      setError(err instanceof Error ? err.message : t("admin.content.review.error.save"));
     } finally {
       setSaving(false);
     }
@@ -432,9 +435,9 @@ function ReviewsAdmin() {
     try {
       await deleteFn({ data: { id } });
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success("Avis supprimé");
+      toast.success(t("admin.content.review.toast.deleted"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Suppression impossible");
+      toast.error(err instanceof Error ? err.message : t("admin.content.review.error.delete"));
     }
   };
 
@@ -466,7 +469,7 @@ function ReviewsAdmin() {
                     })
                   }
                 >
-                  <Pencil className="size-3.5" /> Modifier
+                  <Pencil className="size-3.5" /> {t("admin.content.button.edit")}
                 </Button>
                 <Button
                   variant="outline"
@@ -484,9 +487,9 @@ function ReviewsAdmin() {
       </div>
 
       <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5 h-fit">
-        <h3 className="text-sm font-semibold">{form.id ? "Modifier l'avis" : "Ajouter un avis"}</h3>
+        <h3 className="text-sm font-semibold">{form.id ? t("admin.content.review.form.editing") : t("admin.content.review.form.new")}</h3>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Nom</span>
+          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.name")}</span>
           <input
             className={field}
             value={form.customer_name}
@@ -495,7 +498,7 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Téléphone</span>
+          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.phone")}</span>
           <input
             className={field}
             value={form.phone}
@@ -504,7 +507,7 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Email</span>
+          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.email")}</span>
           <input
             className={field}
             type="email"
@@ -513,7 +516,7 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Note ({form.rating}/5)</span>
+          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.rating", [form.rating])}</span>
           <input
             type="range"
             min={1}
@@ -525,7 +528,7 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">Commentaire</span>
+          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.comment")}</span>
           <textarea
             className={`${field} h-24`}
             value={form.comment}
@@ -536,11 +539,11 @@ function ReviewsAdmin() {
         {error && <p className="text-sm text-destructive">{error}</p>}
         <div className="flex flex-wrap gap-3">
           <Button type="submit" variant="technical" disabled={saving}>
-            {saving ? "Enregistrement…" : form.id ? "Enregistrer" : "Ajouter"}
+            {saving ? t("admin.content.button.saving") : form.id ? t("admin.webhooks.form.save") : t("admin.content.review.form.new")}
           </Button>
           {form.id && (
             <Button type="button" variant="outline" onClick={reset} disabled={saving}>
-              Annuler
+              {t("admin.webhooks.form.cancel")}
             </Button>
           )}
         </div>

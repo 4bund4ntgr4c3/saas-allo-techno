@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { generateReport } from "@/lib/reports.functions";
 import { downloadMonthlyReportPdf } from "@/lib/report-pdf";
 import { BarChart3, Download, Loader2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface ReportResult {
   total_reservations?: number;
@@ -14,6 +15,7 @@ interface ReportResult {
 }
 
 export function AdminAdvancedReports() {
+  const { t } = useI18n();
   const [dateFrom, setDateFrom] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10),
   );
@@ -41,7 +43,7 @@ export function AdminAdvancedReports() {
   const handleDownloadPdf = async () => {
     if (!result) return;
     await downloadMonthlyReportPdf({
-      month: new Date(dateFrom).toLocaleDateString("fr-FR", { month: "long" }),
+      month: new Date(dateFrom).toLocaleDateString(undefined, { month: "long" }),
       year: new Date(dateFrom).getFullYear(),
       totalReservations: result.total_reservations ?? 0,
       completedRepairs: 0,
@@ -61,12 +63,12 @@ export function AdminAdvancedReports() {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-bold flex items-center gap-2">
-        <BarChart3 className="size-5" /> Rapports avancés
+        <BarChart3 className="size-5" /> {t("admin.reports.title")}
       </h3>
 
       <div className="flex flex-wrap gap-3">
         <div>
-          <label className="text-[10px] uppercase text-muted-foreground">Du</label>
+          <label className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -75,7 +77,7 @@ export function AdminAdvancedReports() {
           />
         </div>
         <div>
-          <label className="text-[10px] uppercase text-muted-foreground">Au</label>
+          <label className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -86,7 +88,7 @@ export function AdminAdvancedReports() {
         <div className="flex items-end gap-2">
           <Button onClick={handleGenerate} disabled={generating}>
             {generating ? <Loader2 className="mr-1 size-3 animate-spin" /> : null}
-            Générer
+            {t("admin.reports.generate")}
           </Button>
           {result && (
             <Button variant="outline" onClick={handleDownloadPdf}>
@@ -99,16 +101,16 @@ export function AdminAdvancedReports() {
       {result && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">Réservations</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.totalReservations")}</p>
             <p className="text-2xl font-bold">{String(result.total_reservations ?? 0)}</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">Chiffre d&apos;affaires</p>
+            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.revenue")}</p>
             <p className="text-2xl font-bold">{String(result.total_revenue ?? 0)} FCFA</p>
           </div>
           {result.brand_breakdown && (
             <div className="rounded-lg border bg-card p-4 sm:col-span-2">
-              <p className="text-[10px] uppercase text-muted-foreground mb-2">Marques</p>
+              <p className="text-[10px] uppercase text-muted-foreground mb-2">{t("admin.reports.brands")}</p>
               {Object.entries(result.brand_breakdown)
                 .slice(0, 5)
                 .map(([brand, count]) => (

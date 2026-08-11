@@ -84,14 +84,14 @@ export function AdminInventory() {
   };
 
   const handleMovement = async (partId: string, type: "in" | "out") => {
-    const qty = prompt(type === "in" ? "Quantité à ajouter :" : "Quantité à retirer :");
+    const qty = prompt(type === "in" ? t("admin.inventory.prompt.addQuantity") : t("admin.inventory.prompt.removeQuantity"));
     if (!qty || isNaN(parseInt(qty))) return;
     await recordMovement({
       data: {
         part_id: partId,
         type,
         quantity: parseInt(qty),
-        reason: type === "in" ? "Approvisionnement" : "Utilisation réparation",
+        reason: type === "in" ? t("admin.inventory.reason.supply") : t("admin.inventory.reason.repairUse"),
         reservation_id: null,
         performed_by: "admin",
       },
@@ -110,7 +110,7 @@ export function AdminInventory() {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">{t("admin.inventory")}</h3>
         <Button size="sm" onClick={() => setShowNew(true)}>
-          <Plus className="mr-1 size-3" /> Ajouter
+          <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
 
@@ -118,7 +118,7 @@ export function AdminInventory() {
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="size-4 text-amber-600" />
-            <span className="text-sm font-bold text-amber-800">Stock bas ({lowStock.length})</span>
+            <span className="text-sm font-bold text-amber-800">{t("admin.inventory.lowStock")} ({lowStock.length})</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {lowStock.map((p) => (
@@ -137,58 +137,58 @@ export function AdminInventory() {
         <div className="rounded-lg border bg-card p-4 space-y-3">
           <div className="grid grid-cols-3 gap-3">
             <input
-              placeholder="Nom *"
+              placeholder={t("admin.inventory.form.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="SKU *"
+              placeholder={t("admin.inventory.form.sku")}
               value={form.sku}
               onChange={(e) => setForm({ ...form, sku: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Catégorie"
+              placeholder={t("admin.inventory.form.category")}
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Marque"
+              placeholder={t("admin.inventory.form.brand")}
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Modèle"
+              placeholder={t("admin.inventory.form.model")}
               value={form.model}
               onChange={(e) => setForm({ ...form, model: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Quantité"
+              placeholder={t("admin.inventory.form.quantity")}
               type="number"
               value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Seuil min"
+              placeholder={t("admin.inventory.form.minThreshold")}
               type="number"
               value={form.min_quantity}
               onChange={(e) => setForm({ ...form, min_quantity: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Prix unitaire"
+              placeholder={t("admin.inventory.form.unitPrice")}
               type="number"
               value={form.unit_price}
               onChange={(e) => setForm({ ...form, unit_price: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Emplacement"
+              placeholder={t("admin.inventory.form.location")}
               value={form.location}
               onChange={(e) => setForm({ ...form, location: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
@@ -196,10 +196,10 @@ export function AdminInventory() {
           </div>
           <div className="flex gap-2">
             <Button size="sm" onClick={handleCreate}>
-              <Check className="mr-1 size-3" /> Enregistrer
+              <Check className="mr-1 size-3" /> {t("admin.webhooks.form.save")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setShowNew(false)}>
-              <X className="mr-1 size-3" /> Annuler
+              <X className="mr-1 size-3" /> {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
         </div>
@@ -212,19 +212,19 @@ export function AdminInventory() {
           ))}
         </div>
       ) : parts.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">Aucune pièce en inventaire</p>
+        <p className="text-sm text-muted-foreground text-center py-8">{t("admin.inventory.empty")}</p>
       ) : (
         <div className="rounded-lg border bg-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50 text-left">
-                  <th className="px-4 py-2 text-xs font-medium">Pièce</th>
+                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.part")}</th>
                   <th className="px-4 py-2 text-xs font-medium">SKU</th>
-                  <th className="px-4 py-2 text-xs font-medium">Stock</th>
-                  <th className="px-4 py-2 text-xs font-medium">Seuil</th>
-                  <th className="px-4 py-2 text-xs font-medium">Prix</th>
-                  <th className="px-4 py-2 text-xs font-medium">Actions</th>
+                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.stock")}</th>
+                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.threshold")}</th>
+                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.price")}</th>
+                  <th className="px-4 py-2 text-xs font-medium">{t("admin.inventory.table.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -252,7 +252,7 @@ export function AdminInventory() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleMovement(p.id, "in")}
-                          title="Entrée stock"
+                          title={t("admin.inventory.action.stockIn")}
                         >
                           <ArrowDown className="size-3 text-success" />
                         </Button>
@@ -260,7 +260,7 @@ export function AdminInventory() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleMovement(p.id, "out")}
-                          title="Sortie stock"
+                          title={t("admin.inventory.action.stockOut")}
                         >
                           <ArrowUp className="size-3 text-destructive" />
                         </Button>
@@ -268,7 +268,7 @@ export function AdminInventory() {
                           size="sm"
                           variant="ghost"
                           onClick={() => showMovements(p.id)}
-                          title="Historique"
+                          title={t("admin.inventory.action.history")}
                         >
                           <History className="size-3" />
                         </Button>
@@ -285,13 +285,13 @@ export function AdminInventory() {
       {movementsPartId && (
         <div className="rounded-lg border bg-card p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-bold">Mouvements de stock</h4>
+            <h4 className="text-sm font-bold">{t("admin.inventory.movements")}</h4>
             <Button size="sm" variant="ghost" onClick={() => setMovementsPartId(null)}>
               <X className="size-3" />
             </Button>
           </div>
           {movements.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Aucun mouvement</p>
+            <p className="text-xs text-muted-foreground">{t("admin.inventory.noMovements")}</p>
           ) : (
             movements.map((m) => (
               <div

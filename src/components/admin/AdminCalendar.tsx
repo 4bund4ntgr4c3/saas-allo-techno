@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface CalendarEvent {
   id: string;
@@ -28,27 +29,6 @@ const STATUS_COLORS: Record<string, string> = {
   annulee: "bg-red-100 text-red-800 border-red-300",
 };
 
-const PERIOD_LABELS: Record<string, string> = {
-  matin: "Matin",
-  apres_midi: "Après-midi",
-};
-
-const DAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
-const MONTHS = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
-
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
 }
@@ -62,9 +42,30 @@ function formatDate(year: number, month: number, day: number) {
 }
 
 export function AdminCalendar({ events, onEventClick }: Props) {
+  const { t } = useI18n();
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+
+  const DAYS = [t("admin.calendar.day.sunday"), t("admin.calendar.day.monday"), t("admin.calendar.day.tuesday"), t("admin.calendar.day.wednesday"), t("admin.calendar.day.thursday"), t("admin.calendar.day.friday"), t("admin.calendar.day.saturday")];
+  const MONTHS = [
+    t("admin.calendar.month.january"),
+    t("admin.calendar.month.february"),
+    t("admin.calendar.month.march"),
+    t("admin.calendar.month.april"),
+    t("admin.calendar.month.may"),
+    t("admin.calendar.month.june"),
+    t("admin.calendar.month.july"),
+    t("admin.calendar.month.august"),
+    t("admin.calendar.month.september"),
+    t("admin.calendar.month.october"),
+    t("admin.calendar.month.november"),
+    t("admin.calendar.month.december"),
+  ];
+  const PERIOD_LABELS: Record<string, string> = {
+    matin: t("admin.calendar.period.morning"),
+    apres_midi: t("admin.calendar.period.afternoon"),
+  };
 
   const eventsByDate = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();

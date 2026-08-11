@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 import {
   getKBArticles,
   createKBArticle,
@@ -12,6 +13,7 @@ import {
 import { BookOpen, Plus, Pencil, Trash2, Check, X, Search, Eye, ThumbsUp } from "lucide-react";
 
 export function AdminKnowledgeBase() {
+  const { t } = useI18n();
   const [articles, setArticles] = useState<KBArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
@@ -82,7 +84,7 @@ export function AdminKnowledgeBase() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer cet article ?")) return;
+    if (!confirm(t("admin.kb.confirmDelete"))) return;
     await deleteKBArticle({ data: { id } });
     load();
   };
@@ -98,7 +100,7 @@ export function AdminKnowledgeBase() {
           <BookOpen className="size-5" /> Knowledge base
         </h3>
         <Button size="sm" onClick={() => setShowNew(true)}>
-          <Plus className="mr-1 size-3" /> Ajouter
+          <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
         </Button>
       </div>
 
@@ -108,7 +110,7 @@ export function AdminKnowledgeBase() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Rechercher..."
+            placeholder="Search..."
             className="rounded-md border bg-background px-3 py-2 text-sm flex-1"
           />
           <Button size="sm" variant="outline" onClick={handleSearch}>
@@ -120,7 +122,7 @@ export function AdminKnowledgeBase() {
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="rounded-md border bg-background px-3 py-2 text-sm"
         >
-          <option value="">Toutes</option>
+          <option value="">{t("admin.kb.allCategories")}</option>
           {KB_CATEGORIES.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -133,7 +135,7 @@ export function AdminKnowledgeBase() {
         <div className="rounded-lg border bg-card p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <input
-              placeholder="Titre *"
+              placeholder={t("admin.kb.form.title")}
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
@@ -151,21 +153,21 @@ export function AdminKnowledgeBase() {
             </select>
           </div>
           <textarea
-            placeholder="Contenu *"
+            placeholder={t("admin.kb.form.content")}
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             rows={6}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
           <input
-            placeholder="Tags (séparés par virgules)"
+            placeholder={t("admin.kb.form.tagsPlaceholder")}
             value={form.tags}
             onChange={(e) => setForm({ ...form, tags: e.target.value })}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={editingId ? handleUpdate : handleCreate}>
-              <Check className="mr-1 size-3" /> {editingId ? "Mettre à jour" : "Enregistrer"}
+              <Check className="mr-1 size-3" /> {editingId ? t("admin.webhooks.form.save") : t("admin.webhooks.form.save")}
             </Button>
             <Button
               size="sm"
@@ -182,7 +184,7 @@ export function AdminKnowledgeBase() {
                 });
               }}
             >
-              <X className="mr-1 size-3" /> Annuler
+              <X className="mr-1 size-3" /> {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
         </div>
@@ -195,7 +197,7 @@ export function AdminKnowledgeBase() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">Aucun article</p>
+        <p className="text-sm text-muted-foreground text-center py-8">{t("admin.kb.empty")}</p>
       ) : (
         <div className="space-y-2">
           {filtered.map((a) => (

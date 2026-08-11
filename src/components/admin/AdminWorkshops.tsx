@@ -75,7 +75,7 @@ export function AdminWorkshops() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer cet atelier ?")) return;
+    if (!confirm(t("admin.workshops.deleteConfirm"))) return;
     await deleteWorkshop({ data: { id } });
     load();
   };
@@ -93,31 +93,31 @@ export function AdminWorkshops() {
         <div className="rounded-lg border bg-card p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <input
-              placeholder="Nom"
+              placeholder={t("admin.workshops.placeholder.name")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Ville"
+              placeholder={t("admin.workshops.placeholder.city")}
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Adresse"
+              placeholder={t("admin.workshops.placeholder.address")}
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Téléphone"
+              placeholder={t("admin.workshops.placeholder.phone")}
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Email"
+              placeholder={t("admin.workshops.placeholder.email")}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="rounded-md border bg-background px-3 py-2 text-sm"
@@ -125,7 +125,7 @@ export function AdminWorkshops() {
           </div>
           <div className="flex gap-2">
             <Button size="sm" onClick={handleSave}>
-              <Check className="mr-1 size-3" /> Enregistrer
+              <Check className="mr-1 size-3" /> {t("admin.webhooks.form.save")}
             </Button>
             <Button
               size="sm"
@@ -135,7 +135,7 @@ export function AdminWorkshops() {
                 setEditingId(null);
               }}
             >
-              <X className="mr-1 size-3" /> Annuler
+              <X className="mr-1 size-3" /> {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
         </div>
@@ -148,7 +148,7 @@ export function AdminWorkshops() {
           ))}
         </div>
       ) : workshops.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">Aucun atelier configuré</p>
+        <p className="text-sm text-muted-foreground text-center py-8">{t("admin.workshops.empty")}</p>
       ) : (
         <div className="space-y-2">
           {workshops.map((w) => (

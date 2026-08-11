@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, AlertTriangle, CheckCircle, Activity } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PerfMetrics {
   avgResponseTime: number;
@@ -12,6 +13,7 @@ interface PerfMetrics {
 }
 
 export function PerfMonitoring() {
+  const { t } = useI18n();
   const [metrics, setMetrics] = useState<PerfMetrics>({
     avgResponseTime: 0,
     errorRate: 0,
@@ -51,25 +53,25 @@ export function PerfMonitoring() {
   const cards = [
     {
       icon: Clock,
-      label: "Temps de réponse moyen",
+      label: t("admin.perf.avgResponseTime"),
       value: `${Math.round(metrics.avgResponseTime)}ms`,
       color: metrics.avgResponseTime > 200 ? "text-amber-500" : "text-success",
     },
     {
       icon: AlertTriangle,
-      label: "Taux d'erreur",
+      label: t("admin.perf.errorRate"),
       value: `${metrics.errorRate.toFixed(1)}%`,
       color: metrics.errorRate > 1 ? "text-destructive" : "text-success",
     },
     {
       icon: CheckCircle,
-      label: "Uptime",
+      label: t("admin.perf.uptime"),
       value: `${metrics.uptime}%`,
       color: "text-success",
     },
     {
       icon: Activity,
-      label: "Requêtes/min",
+      label: t("admin.perf.requestsPerMin"),
       value: String(metrics.requestsPerMinute),
       color: "text-primary",
     },
@@ -77,7 +79,7 @@ export function PerfMonitoring() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-bold">Monitoring Performance</h2>
+      <h2 className="text-lg font-bold">{t("admin.perf.title")}</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <Card key={card.label}>

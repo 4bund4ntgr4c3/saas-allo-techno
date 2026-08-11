@@ -16,6 +16,7 @@ import type { Enums } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog";
 import { STATUS_LABEL } from "@/lib/reservation-schema";
+import { useI18n } from "@/lib/i18n/context";
 import { AdminCalendar } from "@/components/admin/AdminCalendar";
 import {
   ATELIER_STATUSES,
@@ -47,6 +48,7 @@ const field =
 
 export function AtelierBoard() {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const getBoardFn = useServerFn(getAtelierBoard);
   const assignFn = useServerFn(assignTechnician);
   const transferFn = useServerFn(transferReservation);
@@ -69,13 +71,13 @@ export function AtelierBoard() {
       await setReservationStatus({ data: { id, status } });
     },
     onSuccess: (_d, vars) => {
-      toast.success(`Dossier passé en « ${STATUS_LABEL[vars.status] ?? vars.status} »`);
+      toast.success(t("admin.atelier.statusChanged", [STATUS_LABEL[vars.status] ?? vars.status]));
       queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Mise à jour impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.returns.error.updateFailed")),
   });
 
   const assign = useMutation({
@@ -87,11 +89,11 @@ export function AtelierBoard() {
       technicianId: string;
     }) => assignFn({ data: { reservationId, technicianId } }),
     onSuccess: () => {
-      toast.success("Technicien assigné");
+      toast.success(t("admin.atelier.technicianAssigned"));
       queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Assignation impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.atelier.assignError")),
   });
 
   const transfer = useMutation({
@@ -104,15 +106,15 @@ export function AtelierBoard() {
     }) => transferFn({ data: { reservationId, targetWorkshopId } }),
     onSuccess: (result) => {
       if (result?.ok) {
-        toast.success(`Dossier transféré vers ${result.target_name}`);
+        toast.success(t("admin.atelier.transferred", [result.target_name ?? ""]));
         queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
         queryClient.invalidateQueries({ queryKey: ["workshop-load"] });
       } else {
-        toast.error(result?.error ?? "Transfert impossible");
+        toast.error(result?.error ?? t("admin.atelier.transfer.error"));
       }
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Transfert impossible"),
+      toast.error(err instanceof Error ? err.message : t("admin.atelier.transfer.error")),
   });
 
   useEffect(() => {
@@ -156,11 +158,10 @@ export function AtelierBoard() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">
-            Atelier — {view === "kanban" ? "kanban" : "calendrier"}
+            {view === "kanban" ? t("admin.atelier.title.kanban") : t("admin.atelier.title.calendar")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au
-            client.
+            {t("admin.atelier.description")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -169,7 +170,7 @@ export function AtelierBoard() {
             onChange={(e) => setWorkshopFilter(e.target.value)}
             className="h-9 rounded-sm border border-border bg-card px-3 text-xs font-medium focus:outline-none"
           >
-            <option value="all">Tous les ateliers</option>
+            <option value="all">{t("admin.atelier.filter.all")}</option>
             {workshops.map((w) => (
               <option key={w.id} value={w.id}>
                 {w.name} ({w.active_count})
@@ -186,7 +187,7 @@ export function AtelierBoard() {
               }`}
             >
               <LayoutGrid className="size-3" />
-              Kanban
+              {t("admin.atelier.view.kanban")}
             </button>
             <button
               onClick={() => setView("calendar")}
@@ -197,7 +198,7 @@ export function AtelierBoard() {
               }`}
             >
               <Calendar className="size-3" />
-              Calendrier
+              {t("admin.atelier.view.calendar")}
             </button>
           </div>
           <Button
@@ -232,9 +233,9 @@ export function AtelierBoard() {
                 <span className="text-xs font-bold">{w.name}</span>
               </div>
               <div className="mt-2 flex gap-3 font-mono text-[10px] text-muted-foreground">
-                <span>{w.active_count} actifs</span>
-                <span>{w.in_progress_count} en cours</span>
-                <span>{w.pending_count} en attente</span>
+                <span>{w.active_count} {t("admin.atelier.load.active")}</span>
+                <span>{w.in_progress_count} {t("admin.atelier.load.progress")}</span>
+                <span>{w.pending_count} {t("admin.atelier.load.pending")}</span>
               </div>
             </button>
           ))}
@@ -242,7 +243,7 @@ export function AtelierBoard() {
       )}
 
       {board.isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement de l'atelier…</p>
+        <p className="text-sm text-muted-foreground">{t("admin.atelier.loading")}</p>
       ) : view === "calendar" ? (
         <AdminCalendar events={calendarEvents} />
       ) : (
@@ -281,7 +282,7 @@ export function AtelierBoard() {
                     ))}
                     {columnCards.length === 0 && (
                       <p className="rounded-sm border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
-                        Aucun dossier
+                        {t("admin.atelier.empty")}
                       </p>
                     )}
                   </div>
@@ -316,6 +317,7 @@ export function AtelierCard({
   onAssign: (technicianId: string) => void;
   onTransfer: (targetWorkshopId: string) => void;
 }) {
+  const { t } = useI18n();
   const index = ATELIER_STATUSES.findIndex((s) => s === card.status);
   const prev = index > 0 ? (ATELIER_STATUSES[index - 1] ?? null) : null;
   const next =
@@ -337,7 +339,7 @@ export function AtelierCard({
         <p className="truncate font-mono text-[10px] text-muted-foreground">{card.reference}</p>
         {card.status === "en_attente" && (
           <span className="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
-            Nouveau
+            {t("admin.atelier.badge.new")}
           </span>
         )}
       </div>
@@ -352,12 +354,12 @@ export function AtelierCard({
       <div className="mt-2 flex flex-wrap gap-1.5">
         {quotePending && (
           <span className="rounded-full border border-primary/50 px-2 py-0.5 text-[10px] font-medium text-primary">
-            Devis {formatFcfa(card.quote_amount ?? 0)}
+            {t("admin.atelier.badge.quote", [formatFcfa(card.quote_amount ?? 0)])}
           </span>
         )}
         {paid && (
           <span className="rounded-full border border-success/50 px-2 py-0.5 text-[10px] font-medium text-success">
-            Payé
+            {t("admin.atelier.badge.paid")}
           </span>
         )}
         {card.sla && (
@@ -367,16 +369,16 @@ export function AtelierCard({
                 ? "border-destructive/50 text-destructive"
                 : "border-border text-muted-foreground"
             }`}
-            title={`Restitution estimée : ${card.sla.expectedDate}`}
+            title={t("admin.atelier.sla.estimatedReturn", [card.sla.expectedDate])}
           >
             SLA {shortDate(card.sla.expectedDate)} ·{" "}
-            {card.sla.remainingDays < 0 ? "en retard" : `J-${Math.round(card.sla.remainingDays)}`}
+            {card.sla.remainingDays < 0 ? t("admin.atelier.sla.overdue") : t("admin.atelier.sla.countdown", [Math.round(card.sla.remainingDays)])}
           </span>
         )}
       </div>
 
       <label htmlFor={`atelier-tech-${card.id}`} className="sr-only">
-        Technicien du dossier {card.reference}
+        {t("admin.atelier.technicianAria", [card.reference])}
       </label>
       <select
         id={`atelier-tech-${card.id}`}
@@ -385,10 +387,10 @@ export function AtelierCard({
         disabled={busy}
         onChange={(e) => onAssign(e.target.value)}
       >
-        <option value="">Non assigné</option>
-        {technicians.map((t) => (
-          <option key={t.id} value={t.id}>
-            {t.full_name ?? "Technicien"}
+        <option value="">{t("admin.atelier.unassigned")}</option>
+        {technicians.map((tech) => (
+          <option key={tech.id} value={tech.id}>
+            {tech.full_name ?? t("admin.atelier.technicianFallback")}
           </option>
         ))}
       </select>
@@ -404,7 +406,7 @@ export function AtelierCard({
               if (e.target.value) onTransfer(e.target.value);
             }}
           >
-            <option value="">Transférer…</option>
+            <option value="">{t("admin.atelier.transferPlaceholder")}</option>
             {otherWorkshops.map((w) => (
               <option key={w.id} value={w.id}>
                 {w.name} ({w.active_count})
@@ -420,7 +422,7 @@ export function AtelierCard({
           size="sm"
           className="px-2"
           disabled={busy || !prev}
-          aria-label="Étape précédente"
+          aria-label={t("admin.atelier.prevStep")}
           onClick={() => {
             if (prev) onMove(prev);
           }}
@@ -435,7 +437,7 @@ export function AtelierCard({
           size="sm"
           className="px-2"
           disabled={busy || !next}
-          aria-label="Étape suivante"
+          aria-label={t("admin.atelier.nextStep")}
           onClick={() => {
             if (next) onMove(next);
           }}
