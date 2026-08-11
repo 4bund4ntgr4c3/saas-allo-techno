@@ -73,12 +73,17 @@ export function TeamSection() {
   const rolesByUser = new Map((members.data?.roles ?? []).map((r) => [r.user_id, r.role]));
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.team.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.team.description")}
-      </p>
-      <ul className="mt-6 space-y-3">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.team.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.team.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.team.description")}
+          </p>
+        </div>
+      </div>
+      <ul className="space-y-3">
         {(members.data?.profiles ?? []).map((p) => {
           const role = rolesByUser.get(p.id) ?? "user";
           return (

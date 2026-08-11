@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Send, User, Wrench } from "lucide-react";
+import { Send, User, Wrench } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 
@@ -35,10 +35,14 @@ export function AdminChat() {
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-bold flex items-center gap-2">
-        <MessageSquare className="size-5" /> {t("admin.chat.title")}
-      </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.chat.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.chat.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.chat.description")}</p>
+        </div>
+      </div>
 
       <div className="rounded-lg border bg-card h-80 flex flex-col">
         <div className="flex-1 overflow-y-auto p-3 space-y-2">

@@ -65,11 +65,12 @@ export function CatalogSection() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-lg font-semibold">{t("admin.catalog.title")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("admin.catalog.subtitle")}
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.catalog.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.catalog.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.catalog.subtitle")}</p>
+        </div>
       </div>
       <CategoriesPanel categories={data.categories} onChanged={invalidate} />
       <div className="grid items-start gap-6 lg:grid-cols-3">

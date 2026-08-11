@@ -10,7 +10,7 @@ import {
   KB_CATEGORIES,
   type KBArticle,
 } from "@/lib/knowledge-base";
-import { BookOpen, Plus, Pencil, Trash2, Check, X, Search, Eye, ThumbsUp } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, Search, Eye, ThumbsUp } from "lucide-react";
 import { field } from "@/components/admin/primitives/AdminField";
 
 export function AdminKnowledgeBase() {
@@ -95,11 +95,13 @@ export function AdminKnowledgeBase() {
     : articles;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          <BookOpen className="size-5" /> Knowledge base
-        </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.kb.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.kb.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.kb.description")}</p>
+        </div>
         <Button size="sm" onClick={() => setShowNew(true)}>
           <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
         </Button>

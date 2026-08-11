@@ -66,17 +66,20 @@ export function AdminInternalNotifs() {
   const unread = notifications.filter((n) => !n.read);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          <Bell className="size-5" />
-          {t("admin.notifs.title")}
-          {unread.length > 0 && (
-            <span className="rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
-              {unread.length}
-            </span>
-          )}
-        </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.notifs.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">
+            {t("admin.notifs.title")}
+            {unread.length > 0 && (
+              <span className="ml-2 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
+                {unread.length}
+              </span>
+            )}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.notifs.description")}</p>
+        </div>
         {unread.length > 0 && (
           <Button size="sm" variant="outline" onClick={handleMarkAllRead}>
             <CheckCheck className="mr-1 size-3" /> {t("admin.notifs.markAllRead")}

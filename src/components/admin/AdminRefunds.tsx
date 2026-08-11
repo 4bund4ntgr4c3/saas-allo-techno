@@ -66,11 +66,14 @@ export function RefundsSection() {
   });
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.refunds.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.refunds.description")}
-      </p>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.refunds.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.refunds.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.refunds.description")}</p>
+        </div>
+      </div>
       <label htmlFor="refund-search" className="sr-only">
         {t("admin.refunds.searchLabel")}
       </label>

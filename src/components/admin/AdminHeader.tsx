@@ -63,7 +63,7 @@ export function AdminHeader() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/admin">
+              <Link to="/admin" data-tour="admin-header">
                 <RadioTower className="mr-1 size-3.5" />
                 Admin
               </Link>

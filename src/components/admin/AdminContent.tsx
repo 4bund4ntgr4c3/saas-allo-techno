@@ -44,6 +44,13 @@ export function ContentSection() {
 
   return (
     <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.content.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.content.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.content.description")}</p>
+        </div>
+      </div>
       <div className="flex flex-wrap gap-2">
         {contentTabs.map((tab) => (
           <Button

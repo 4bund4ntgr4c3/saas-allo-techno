@@ -77,11 +77,13 @@ export function AdminWebhooks() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          <Webhook className="size-5" /> {t("admin.webhooks.title")}
-        </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.webhooks.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.webhooks.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.webhooks.description")}</p>
+        </div>
         <Button variant="technical" size="sm" onClick={() => setShowCreate(!showCreate)}>
           <Plus className="mr-1 size-4" /> {t("admin.webhooks.button.create")}
         </Button>

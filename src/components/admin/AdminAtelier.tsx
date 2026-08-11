@@ -151,10 +151,11 @@ export function AtelierBoard() {
   }));
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">
+          <p className="at-eyebrow">{t("admin.atelier.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">
             {view === "kanban" ? t("admin.atelier.title.kanban") : t("admin.atelier.title.calendar")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">

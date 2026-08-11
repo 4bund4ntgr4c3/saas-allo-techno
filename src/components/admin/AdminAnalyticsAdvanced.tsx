@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { BarChart3, TrendingUp, Globe, AlertTriangle } from "lucide-react";
+import { TrendingUp, Globe, AlertTriangle } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -43,10 +43,14 @@ export function AnalyticsAdvanced() {
   });
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-bold flex items-center gap-2">
-        <BarChart3 className="size-5" /> {t("admin.analytics.advanced.title")}
-      </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.analytics.advanced.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.analytics.advanced.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.analytics.advanced.description")}</p>
+        </div>
+      </div>
 
       {/* Conversion Funnel */}
       <div className="rounded-lg border bg-card p-4">

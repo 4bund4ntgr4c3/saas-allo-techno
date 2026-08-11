@@ -81,6 +81,29 @@ const fr = {
   "admin.stock.low.remaining.one": "{0} restant",
   "admin.stock.low.remaining.other": "{0} restants",
 
+  // Admin — Stock (header)
+  "admin.stock.eyebrow": "Stock",
+  "admin.stock.title": "Stock boutique",
+  "admin.stock.description": "Gérez le stock des accessoires et pièces détachées.",
+
+  // Admin — Dossiers (eyebrow)
+  "admin.dossiers.eyebrow": "Gestion",
+
+  // Admin — Atelier (eyebrow)
+  "admin.atelier.eyebrow": "Atelier",
+
+  // Admin — Orders (eyebrow)
+  "admin.orders.eyebrow": "Boutique",
+
+  // Admin — Team (eyebrow)
+  "admin.team.eyebrow": "Équipe",
+
+  // Admin — Audit (eyebrow)
+  "admin.audit.eyebrow": "Journal",
+
+  // Admin — Security (eyebrow)
+  "admin.security.eyebrow": "Sécurité",
+
   // Admin — Audit log
   "admin.audit.title": "Journal d'audit",
   "admin.audit.empty": "Aucune opération enregistrée",
@@ -93,6 +116,11 @@ const fr = {
   "admin.feature-flags": "Feature Flags",
   "admin.feature-flags.description": "Description (optionnel)",
   "admin.feature-flags.add": "Ajouter",
+
+  // Admin — Feature flags (header)
+  "admin.feature-flags.eyebrow": "Système",
+  "admin.feature-flags.title": "Feature Flags",
+  "admin.feature-flags.headerDescription": "Activez ou désactivez les fonctionnalités en cours de développement.",
 
   // Admin — Webhooks
   "admin.webhooks": "Webhooks",
@@ -116,6 +144,8 @@ const fr = {
   "admin.suppliers": "Fournisseurs",
 
   // Admin — Referrals
+  "admin.referrals.eyebrow": "Croissance",
+  "admin.referrals.description": "Statistiques du programme de parrainage et historique des parrainages.",
   "admin.referrals": "Programme de parrainage",
   "admin.referrals.total": "Total",
   "admin.referrals.completed": "Complétées",
@@ -172,6 +202,13 @@ const fr = {
   "admin.marketing.recipients": "destinataires",
 
   // Admin — Onglets
+  "admin.catalog.eyebrow": "Catalogue",
+  "admin.returns.eyebrow": "Retours",
+  "admin.refunds.eyebrow": "Remboursements",
+  "admin.kpis.eyebrow": "Indicateurs",
+  "admin.marketing.eyebrow": "Marketing",
+  "admin.leads.eyebrow": "Leads",
+  "admin.claims.eyebrow": "Réclamations",
   "admin.tab.dossiers": "Dossiers",
   "admin.tab.atelier": "Atelier",
   "admin.tab.equipe": "Équipe",
@@ -202,6 +239,8 @@ const fr = {
   "admin.header.subtitle": "Mettez à jour le statut d'une réparation et consultez l'historique des changements.",
 
   // Admin — Webhooks sortants
+  "admin.webhooks.eyebrow": "Intégrations",
+  "admin.webhooks.description": "Webhooks sortants pour synchroniser vos outils externes.",
   "admin.webhooks.title": "Webhooks sortants",
   "admin.webhooks.button.create": "Créer",
   "admin.webhooks.empty": "Aucun webhook configuré",
@@ -329,6 +368,9 @@ const fr = {
   "admin.catalog.photo.url_placeholder": "https://… ou chemin du bucket",
 
   // Admin — Contenu
+  "admin.content.eyebrow": "Contenu",
+  "admin.content.title": "Gestion du contenu",
+  "admin.content.description": "Articles de blog, avis clients et stock boutique.",
   "admin.content.tab.blog": "Articles",
   "admin.content.tab.reviews": "Avis clients",
   "admin.content.tab.stock": "Stock boutique",
@@ -428,6 +470,11 @@ const fr = {
   "admin.kb.form.tagsPlaceholder": "Tags (séparés par virgules)",
   "admin.kb.empty": "Aucun article",
 
+  // Admin — Knowledge base (header)
+  "admin.kb.eyebrow": "Connaissances",
+  "admin.kb.title": "Knowledge base",
+  "admin.kb.description": "Articles et guides pour l'équipe et les clients.",
+
   // Admin — Inventaire
   "admin.inventory.prompt.addQuantity": "Quantité à ajouter :",
   "admin.inventory.prompt.removeQuantity": "Quantité à retirer :",
@@ -454,6 +501,11 @@ const fr = {
   "admin.inventory.action.stockIn": "Entrée stock",
   "admin.inventory.action.stockOut": "Sortie stock",
   "admin.inventory.action.history": "Historique",
+
+  // Admin — Inventory (header)
+  "admin.inventory.eyebrow": "Inventaire",
+  "admin.inventory.title": "Inventaire pièces",
+  "admin.inventory.description": "Gérez les pièces, seuils d'alerte et mouvements de stock.",
 
   // Admin — Retours
   "admin.returns.loading": "Chargement des retours…",
@@ -513,6 +565,11 @@ const fr = {
   "admin.workshops.placeholder.email": "Email",
   "admin.workshops.empty": "Aucun atelier configuré",
 
+  // Admin — Workshops (header)
+  "admin.workshops.eyebrow": "Multi-ateliers",
+  "admin.workshops.title": "Ateliers",
+  "admin.workshops.description": "Configurez vos ateliers et points de service.",
+
   // Admin — Fournisseurs
   "admin.suppliers.placeholder.name": "Nom *",
   "admin.suppliers.placeholder.contact": "Contact",
@@ -522,6 +579,11 @@ const fr = {
   "admin.suppliers.speciality.general": "Général",
   "admin.suppliers.orders.title": "Commandes fournisseurs",
   "admin.suppliers.orders.pieces": "pièce(s)",
+
+  // Admin — Suppliers (header)
+  "admin.suppliers.eyebrow": "Approvisionnement",
+  "admin.suppliers.title": "Fournisseurs",
+  "admin.suppliers.description": "Gérez vos fournisseurs et suivez les commandes.",
 
   // Admin — Kanban
   "admin.kanban.quote.none": "Aucun devis",
@@ -611,6 +673,8 @@ const fr = {
   "admin.atelier.nextStep": "Étape suivante",
 
   // Admin — Analytics avancées
+  "admin.analytics.advanced.eyebrow": "Analytique avancée",
+  "admin.analytics.advanced.description": "Funnel de conversion, sources d'acquisition et erreurs récentes.",
   "admin.analytics.advanced.title": "Analytics avancées",
   "admin.analytics.funnel.title": "Funnel de conversion (30j)",
   "admin.analytics.funnel.conversionAbbrev": "conv.",
@@ -625,6 +689,10 @@ const fr = {
   "admin.chat.title": "Messages clients",
   "admin.chat.empty": "Aucun message",
   "admin.chat.placeholder": "Votre réponse...",
+
+  // Admin — Chat (header)
+  "admin.chat.eyebrow": "Communication",
+  "admin.chat.description": "Échangez avec vos clients en temps réel.",
 
   // Admin — Audit enrichi
   "admin.audit.filterAllActions": "Toutes les actions",
@@ -648,6 +716,8 @@ const fr = {
   "admin.reports.brands": "Marques",
 
   // Admin — Analytics (overview)
+  "admin.analytics.eyebrow": "Activité",
+  "admin.analytics.description": "Vue d'ensemble des événements et statistiques d'utilisation.",
   "admin.analytics.overview.title": "Vue d'ensemble",
   "admin.analytics.events.title": "Événements récents",
   "admin.analytics.events.column.event": "Événement",
@@ -738,6 +808,8 @@ const fr = {
   "admin.team.noName": "Sans nom",
 
   // Admin — SLA
+  "admin.sla.eyebrow": "Performance",
+  "admin.sla.description": "Suivi des délais de traitement et alertes de dépassement.",
   "admin.sla.title": "Suivi SLA",
   "admin.sla.critical": "Critiques",
   "admin.sla.alerts": "Alertes",
@@ -752,6 +824,8 @@ const fr = {
   "admin.sla.allOnTime": "Tous les dossiers sont dans les temps",
 
   // Admin — Satisfaction (detailed)
+  "admin.satisfaction.eyebrow": "Avis clients",
+  "admin.satisfaction.description": "Score NPS, notes moyennes et avis récents des clients.",
   "admin.satisfaction.title": "Satisfaction client",
   "admin.satisfaction.nps": "NPS Score",
   "admin.satisfaction.avgRating": "Note moyenne",
@@ -761,6 +835,8 @@ const fr = {
   "admin.satisfaction.recentReviews": "Avis récents",
 
   // Admin — Internal notifications (detailed)
+  "admin.notifs.eyebrow": "Alertes",
+  "admin.notifs.description": "Notifications internes : alertes SLA, paiements et escalades.",
   "admin.notifs.title": "Notifications internes",
   "admin.notifs.markAllRead": "Tout marquer lu",
   "admin.notifs.empty": "Aucune notification",
@@ -981,6 +1057,29 @@ const en = {
   "admin.stock.low.remaining.one": "{0} left",
   "admin.stock.low.remaining.other": "{0} left",
 
+  // Admin — Stock (header)
+  "admin.stock.eyebrow": "Stock",
+  "admin.stock.title": "Shop Stock",
+  "admin.stock.description": "Manage accessory and spare part stock levels.",
+
+  // Admin — Dossiers (eyebrow)
+  "admin.dossiers.eyebrow": "Management",
+
+  // Admin — Atelier (eyebrow)
+  "admin.atelier.eyebrow": "Workshop",
+
+  // Admin — Orders (eyebrow)
+  "admin.orders.eyebrow": "Shop",
+
+  // Admin — Team (eyebrow)
+  "admin.team.eyebrow": "Team",
+
+  // Admin — Audit (eyebrow)
+  "admin.audit.eyebrow": "Audit",
+
+  // Admin — Security (eyebrow)
+  "admin.security.eyebrow": "Security",
+
   // Admin — Audit log
   "admin.audit.title": "Audit log",
   "admin.audit.empty": "No operations recorded",
@@ -993,6 +1092,11 @@ const en = {
   "admin.feature-flags": "Feature Flags",
   "admin.feature-flags.description": "Description (optional)",
   "admin.feature-flags.add": "Add",
+
+  // Admin — Feature flags (header)
+  "admin.feature-flags.eyebrow": "System",
+  "admin.feature-flags.title": "Feature Flags",
+  "admin.feature-flags.headerDescription": "Toggle features currently under development.",
 
   // Admin — Webhooks
   "admin.webhooks": "Webhooks",
@@ -1016,6 +1120,8 @@ const en = {
   "admin.suppliers": "Suppliers",
 
   // Admin — Referrals
+  "admin.referrals.eyebrow": "Growth",
+  "admin.referrals.description": "Referral program statistics and referral history.",
   "admin.referrals": "Referral program",
   "admin.referrals.total": "Total",
   "admin.referrals.completed": "Completed",
@@ -1072,6 +1178,13 @@ const en = {
   "admin.marketing.recipients": "recipients",
 
   // Admin — Tabs
+  "admin.catalog.eyebrow": "Catalogue",
+  "admin.returns.eyebrow": "Returns",
+  "admin.refunds.eyebrow": "Refunds",
+  "admin.kpis.eyebrow": "KPIs",
+  "admin.marketing.eyebrow": "Marketing",
+  "admin.leads.eyebrow": "Leads",
+  "admin.claims.eyebrow": "Claims",
   "admin.tab.dossiers": "Cases",
   "admin.tab.atelier": "Workshop",
   "admin.tab.equipe": "Team",
@@ -1102,6 +1215,8 @@ const en = {
   "admin.header.subtitle": "Update repair status and view change history.",
 
   // Admin — Outbound Webhooks
+  "admin.webhooks.eyebrow": "Integrations",
+  "admin.webhooks.description": "Outbound webhooks to sync your external tools.",
   "admin.webhooks.title": "Outbound Webhooks",
   "admin.webhooks.button.create": "Create",
   "admin.webhooks.empty": "No webhooks configured",
@@ -1228,6 +1343,9 @@ const en = {
   "admin.catalog.photo.url_placeholder": "https://… or bucket path",
 
   // Admin — Content
+  "admin.content.eyebrow": "Content",
+  "admin.content.title": "Content Management",
+  "admin.content.description": "Blog articles, customer reviews and shop stock.",
   "admin.content.tab.blog": "Articles",
   "admin.content.tab.reviews": "Customer reviews",
   "admin.content.tab.stock": "Shop stock",
@@ -1327,6 +1445,11 @@ const en = {
   "admin.kb.form.tagsPlaceholder": "Tags (comma separated)",
   "admin.kb.empty": "No articles",
 
+  // Admin — Knowledge base (header)
+  "admin.kb.eyebrow": "Knowledge",
+  "admin.kb.title": "Knowledge Base",
+  "admin.kb.description": "Articles and guides for the team and customers.",
+
   // Admin — Inventory
   "admin.inventory.prompt.addQuantity": "Quantity to add:",
   "admin.inventory.prompt.removeQuantity": "Quantity to remove:",
@@ -1353,6 +1476,11 @@ const en = {
   "admin.inventory.action.stockIn": "Stock in",
   "admin.inventory.action.stockOut": "Stock out",
   "admin.inventory.action.history": "History",
+
+  // Admin — Inventory (header)
+  "admin.inventory.eyebrow": "Inventory",
+  "admin.inventory.title": "Parts Inventory",
+  "admin.inventory.description": "Manage parts, alert thresholds and stock movements.",
 
   // Admin — Returns
   "admin.returns.loading": "Loading returns…",
@@ -1412,6 +1540,11 @@ const en = {
   "admin.workshops.placeholder.email": "Email",
   "admin.workshops.empty": "No workshops configured",
 
+  // Admin — Workshops (header)
+  "admin.workshops.eyebrow": "Multi-workshop",
+  "admin.workshops.title": "Workshops",
+  "admin.workshops.description": "Configure your workshops and service points.",
+
   // Admin — Suppliers
   "admin.suppliers.placeholder.name": "Name *",
   "admin.suppliers.placeholder.contact": "Contact",
@@ -1421,6 +1554,11 @@ const en = {
   "admin.suppliers.speciality.general": "General",
   "admin.suppliers.orders.title": "Supplier orders",
   "admin.suppliers.orders.pieces": "piece(s)",
+
+  // Admin — Suppliers (header)
+  "admin.suppliers.eyebrow": "Supply Chain",
+  "admin.suppliers.title": "Suppliers",
+  "admin.suppliers.description": "Manage your suppliers and track orders.",
 
   // Admin — Kanban
   "admin.kanban.quote.none": "No quote",
@@ -1510,6 +1648,8 @@ const en = {
   "admin.atelier.nextStep": "Next step",
 
   // Admin — Analytics advanced
+  "admin.analytics.advanced.eyebrow": "Advanced Analytics",
+  "admin.analytics.advanced.description": "Conversion funnel, acquisition sources and recent errors.",
   "admin.analytics.advanced.title": "Advanced analytics",
   "admin.analytics.funnel.title": "Conversion funnel (30d)",
   "admin.analytics.funnel.conversionAbbrev": "conv.",
@@ -1524,6 +1664,10 @@ const en = {
   "admin.chat.title": "Customer messages",
   "admin.chat.empty": "No messages",
   "admin.chat.placeholder": "Your reply...",
+
+  // Admin — Chat (header)
+  "admin.chat.eyebrow": "Communication",
+  "admin.chat.description": "Chat with your customers in real time.",
 
   // Admin — Audit enriched
   "admin.audit.filterAllActions": "All actions",
@@ -1547,6 +1691,8 @@ const en = {
   "admin.reports.brands": "Brands",
 
   // Admin — Analytics (overview)
+  "admin.analytics.eyebrow": "Activity",
+  "admin.analytics.description": "Overview of usage events and statistics.",
   "admin.analytics.overview.title": "Overview",
   "admin.analytics.events.title": "Recent events",
   "admin.analytics.events.column.event": "Event",
@@ -1637,6 +1783,8 @@ const en = {
   "admin.team.noName": "No name",
 
   // Admin — SLA
+  "admin.sla.eyebrow": "Performance",
+  "admin.sla.description": "Processing time tracking and breach alerts.",
   "admin.sla.title": "SLA Tracking",
   "admin.sla.critical": "Critical",
   "admin.sla.alerts": "Alerts",
@@ -1651,6 +1799,8 @@ const en = {
   "admin.sla.allOnTime": "All dossiers are on time",
 
   // Admin — Satisfaction (detailed)
+  "admin.satisfaction.eyebrow": "Customer Feedback",
+  "admin.satisfaction.description": "NPS score, average ratings and recent customer reviews.",
   "admin.satisfaction.title": "Customer satisfaction",
   "admin.satisfaction.nps": "NPS Score",
   "admin.satisfaction.avgRating": "Average rating",
@@ -1660,6 +1810,8 @@ const en = {
   "admin.satisfaction.recentReviews": "Recent reviews",
 
   // Admin — Internal notifications (detailed)
+  "admin.notifs.eyebrow": "Alerts",
+  "admin.notifs.description": "Internal notifications: SLA alerts, payments and escalations.",
   "admin.notifs.title": "Internal notifications",
   "admin.notifs.markAllRead": "Mark all read",
   "admin.notifs.empty": "No notifications",

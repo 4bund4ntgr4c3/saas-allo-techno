@@ -39,9 +39,14 @@ export function AuditSection() {
 
   if (logs.isError) {
     return (
-      <div>
-        <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
-        <p className="mt-4 text-sm text-destructive">
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="at-eyebrow">{t("admin.audit.eyebrow")}</p>
+            <h2 className="mt-1 text-xl font-semibold">{t("admin.audit.title")}</h2>
+          </div>
+        </div>
+        <p className="text-sm text-destructive">
           {t("admin.audit.error")}
         </p>
       </div>
@@ -102,12 +107,17 @@ export function AuditSection() {
   ];
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.audit.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.audit.description")}
-      </p>
-      <div className="mt-6">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.audit.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.audit.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.audit.description")}
+          </p>
+        </div>
+      </div>
+      <div>
         <DataTable
           columns={columns}
           data={rows}

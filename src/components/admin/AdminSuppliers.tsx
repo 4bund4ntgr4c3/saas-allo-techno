@@ -78,9 +78,13 @@ export function AdminSuppliers() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold">{t("admin.suppliers")}</h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.suppliers.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.suppliers.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.suppliers.description")}</p>
+        </div>
         <Button size="sm" onClick={() => setShowNew(true)}>
           <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
         </Button>

@@ -112,17 +112,22 @@ export function OrdersSection() {
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.orders.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.orders.description")}
-      </p>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.orders.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.orders.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.orders.description")}
+          </p>
+        </div>
+      </div>
       <label htmlFor="orders-search" className="sr-only">
         {t("admin.orders.searchLabel")}
       </label>
       <input
         id="orders-search"
-        className={`${field} mt-4`}
+        className={field}
         placeholder={t("admin.orders.search")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}

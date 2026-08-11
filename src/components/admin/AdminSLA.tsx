@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSLABreaches, getSLAStats, type SLABreach } from "@/lib/sla";
-import { Clock, AlertTriangle, CheckCircle, Timer } from "lucide-react";
+import { Clock, AlertTriangle, CheckCircle } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { DataTable } from "@/components/admin/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -70,10 +70,14 @@ export function AdminSLA() {
   }
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-bold flex items-center gap-2">
-        <Timer className="size-5" /> {t("admin.sla.title")}
-      </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.sla.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.sla.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.sla.description")}</p>
+        </div>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">

@@ -160,7 +160,7 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
 
       <SidebarContent>
         <ScrollArea className="h-full">
-          <div className="p-2">
+          <div className="p-2" data-tour="admin-sidebar">
             {NAV_GROUPS.map((group) => (
               <div key={group.labelKey} className="mb-4">
                 <p className="at-eyebrow mb-1 px-2.5 group-data-[collapsible=icon]:hidden">

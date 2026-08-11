@@ -78,11 +78,16 @@ function SecuritySection() {
   const enrolling = pendingSecret !== null;
 
   return (
-    <div className="max-w-xl">
-      <h2 className="text-lg font-semibold">{t("admin.security.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.security.description")}
-      </p>
+    <div className="max-w-xl space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.security.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.security.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.security.description")}
+          </p>
+        </div>
+      </div>
 
       <RateLimitPanel />
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { History, Loader2, Banknote, ImagePlus, FileDown } from "lucide-react";
+import { Building2, History, Loader2, Banknote, ImagePlus, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
@@ -60,6 +60,7 @@ type KanbanRow = {
   slot_date: string;
   slot_period: Enums<"slot_period">;
   status: Status;
+  org_id?: string | null;
 };
 
 function StatusHistory({ reservationId }: { reservationId: string }) {
@@ -142,9 +143,11 @@ function DeliveryBlock({
 function KanbanBoard({
   rows,
   updateStatus,
+  orgName,
 }: {
   rows: KanbanRow[];
   updateStatus: (v: { id: string; status: Status }) => void;
+  orgName?: Map<string, string>;
 }) {
   const { t } = useI18n();
   const [dragId, setDragId] = useState<string | null>(null);
@@ -197,6 +200,12 @@ function KanbanBoard({
                   className="block w-full cursor-grab rounded-sm border border-border bg-surface p-3 text-left transition-shadow hover:shadow-md active:cursor-grabbing"
                 >
                   <p className="font-mono text-[10px] text-muted-foreground">{r.reference}</p>
+                  {r.org_id && (
+                    <p className="mt-1 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium">
+                      <Building2 className="size-3 text-muted-foreground" />
+                      {orgName?.get(r.org_id) ?? "B2B"}
+                    </p>
+                  )}
                   <p className="mt-1 text-sm font-semibold leading-snug">
                     {r.customer_name} — {r.device}
                   </p>
@@ -245,7 +254,7 @@ function StageControls({
   }, [current]);
 
   return (
-    <div className="mt-4 space-y-3">
+    <div className="mt-4 space-y-3" data-tour="admin-status">
       <div className="flex flex-wrap items-center gap-3">
         <select
           className={`${field} max-w-xs`}

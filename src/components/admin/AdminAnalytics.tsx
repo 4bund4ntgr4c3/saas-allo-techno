@@ -73,8 +73,15 @@ function AnalyticsSection() {
 
   return (
     <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.analytics.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.analytics.overview.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.analytics.description")}</p>
+        </div>
+      </div>
+
       <div>
-        <h2 className="mb-4 text-xl font-semibold">{t("admin.analytics.overview.title")}</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {(counts.data ?? []).map((c) => (
             <div key={c.event} className="border border-border bg-card p-4 text-center">

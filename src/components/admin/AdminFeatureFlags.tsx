@@ -44,9 +44,13 @@ export function AdminFeatureFlags() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">{t("admin.feature-flags")}</h2>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.feature-flags.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.feature-flags.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.feature-flags.headerDescription")}</p>
+        </div>
       </div>
 
       <div className="flex gap-2">

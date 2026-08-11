@@ -99,21 +99,27 @@ export function LeadsSection() {
   const rows = leads.data ?? [];
   if (rows.length === 0) {
     return (
-      <div>
-        <h2 className="text-lg font-semibold">{t("admin.leads.title")}</h2>
-        <p className="mt-4 text-sm text-muted-foreground">
-          {t("admin.leads.empty")}
-        </p>
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="at-eyebrow">{t("admin.leads.eyebrow")}</p>
+            <h2 className="mt-1 text-xl font-semibold">{t("admin.leads.title")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("admin.leads.empty")}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.leads.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.leads.description")}
-      </p>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.leads.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.leads.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.leads.description")}</p>
+        </div>
+      </div>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <CsvExportButton
           serverFn={exportLeadsCsv}
@@ -208,21 +214,27 @@ export function ClaimsSection() {
   const rows = claims.data ?? [];
   if (rows.length === 0) {
     return (
-      <div>
-        <h2 className="text-lg font-semibold">{t("admin.claims.title")}</h2>
-        <p className="mt-4 text-sm text-muted-foreground">
-          {t("admin.claims.empty")}
-        </p>
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="at-eyebrow">{t("admin.claims.eyebrow")}</p>
+            <h2 className="mt-1 text-xl font-semibold">{t("admin.claims.title")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("admin.claims.empty")}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{t("admin.claims.title")}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("admin.claims.description")}
-      </p>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.claims.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.claims.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.claims.description")}</p>
+        </div>
+      </div>
       <ul className="mt-6 space-y-3">
         {rows.map((c) => (
           <ClaimCard

@@ -42,8 +42,14 @@ export function AdminReferrals() {
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-bold">{t("admin.referrals")}</h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.referrals.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.referrals")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.referrals.description")}</p>
+        </div>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg border bg-card p-4">

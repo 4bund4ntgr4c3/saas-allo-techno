@@ -4,7 +4,7 @@ import {
   getSatisfactionEntries,
   type SatisfactionEntry,
 } from "@/lib/satisfaction.functions";
-import { Star, ThumbsUp, ThumbsDown, BarChart3 } from "lucide-react";
+import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 export function AdminSatisfaction() {
@@ -31,10 +31,14 @@ export function AdminSatisfaction() {
   }
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-bold flex items-center gap-2">
-        <BarChart3 className="size-5" /> {t("admin.satisfaction.title")}
-      </h3>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.satisfaction.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.satisfaction.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.satisfaction.description")}</p>
+        </div>
+      </div>
 
       {stats && (
         <div className="grid gap-3 sm:grid-cols-4">

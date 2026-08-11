@@ -175,7 +175,14 @@ export function StockAdmin() {
   );
 
   return (
-    <div className="overflow-x-auto">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.stock.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.stock.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.stock.description")}</p>
+        </div>
+      </div>
       {lowItems.length > 0 && (
         <div className="mb-4 rounded-sm border border-destructive/40 bg-destructive/5 p-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-destructive">

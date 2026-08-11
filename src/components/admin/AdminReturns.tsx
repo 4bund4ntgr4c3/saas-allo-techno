@@ -123,11 +123,12 @@ export function ReturnsSection() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-lg font-semibold">{t("admin.returns.title")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("admin.returns.description")}
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="at-eyebrow">{t("admin.returns.eyebrow")}</p>
+          <h2 className="mt-1 text-xl font-semibold">{t("admin.returns.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.returns.description")}</p>
+        </div>
       </div>
 
       <form onSubmit={create} className="space-y-4 rounded-sm border border-border bg-card p-5">
