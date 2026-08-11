@@ -23,5 +23,5 @@ export const COMPANY = {
 export const absoluteUrl = (path: string) =>
   `${COMPANY.url}${path.startsWith("/") ? path : `/${path}`}`;
 
-export const formatFcfa = (n: number) =>
-  `${n.toLocaleString("fr-FR").replace(/\u202f|\s/g, ".")} FCFA`;
+export const formatFcfa = (n: number, locale = "fr-FR") =>
+  `${n.toLocaleString(locale).replace(/\u202f|\s/g, ".")} FCFA`;

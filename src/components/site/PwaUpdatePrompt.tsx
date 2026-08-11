@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { RefreshCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 
 /**
  * Detects when a new service worker is installed and prompts the user to refresh.
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 export function PwaUpdatePrompt() {
   const [show, setShow] = useState(false);
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -52,14 +54,11 @@ export function PwaUpdatePrompt() {
   return (
     <div className="fixed bottom-4 left-4 z-50 flex items-center gap-3 rounded-sm border border-primary/30 bg-card p-3 shadow-lg animate-in slide-in-from-bottom-4">
       <RefreshCw className="size-4 text-primary animate-spin" />
-      <p className="text-xs font-medium">Mise à jour disponible</p>
+      <p className="text-xs font-medium">{t("pwa.update.available")}</p>
       <Button variant="technical" size="sm" onClick={handleUpdate}>
-        Actualiser
+        {t("pwa.update.refresh")}
       </Button>
-      <button
-        onClick={() => setShow(false)}
-        className="p-1 hover:bg-muted rounded-sm"
-      >
+      <button onClick={() => setShow(false)} className="p-1 hover:bg-muted rounded-sm">
         <X className="size-3" />
       </button>
     </div>

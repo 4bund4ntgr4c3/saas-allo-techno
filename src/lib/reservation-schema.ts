@@ -140,9 +140,9 @@ export type AvailabilityRow = {
   remaining: number;
 };
 
-export function formatDateFr(iso: string) {
+export function formatDateFr(iso: string, locale = "fr-FR") {
   const d = new Date(`${iso}T12:00:00`);
-  return d.toLocaleDateString("fr-FR", {
+  return d.toLocaleDateString(locale, {
     weekday: "long",
     day: "2-digit",
     month: "long",

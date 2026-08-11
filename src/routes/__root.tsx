@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, Suspense, lazy, type ReactNode } from "react";
-import { I18nProvider } from "@/lib/i18n/context";
+import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
@@ -44,20 +44,19 @@ const SearchModal = lazy(() =>
 );
 
 function NotFoundComponent() {
+  const { t } = useI18n();
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="at-display text-7xl">404</h1>
-        <h2 className="mt-4 text-xl font-bold tracking-tight">Page introuvable</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Cette page n'existe pas ou a été déplacée.
-        </p>
+        <h2 className="mt-4 text-xl font-bold tracking-tight">{t("error.notFound.title")}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{t("error.notFound.description")}</p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
           >
-            Retour à l'accueil
+            {t("error.notFound.backToHome")}
           </Link>
         </div>
       </div>
@@ -68,6 +67,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { t } = useI18n();
 
   const isAuthError =
     error.message.toLowerCase().includes("auth") || error.message.toLowerCase().includes("session");
@@ -76,14 +76,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="at-display text-2xl">
-          {isAuthError
-            ? "Votre session a expiré. Veuillez vous reconnecter."
-            : "Une erreur est survenue"}
+          {isAuthError ? t("error.sessionExpired") : t("error.generic")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {isAuthError
-            ? "Vous allez être redirigé vers la page de connexion."
-            : "Nous n'avons pas pu charger cette page."}
+          {isAuthError ? t("error.redirectingToLogin") : t("error.couldNotLoad")}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           {isAuthError ? (
@@ -91,7 +87,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               href="/auth"
               className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
             >
-              Connexion
+              {t("auth.login")}
             </a>
           ) : (
             <>
@@ -102,13 +98,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
                 }}
                 className="rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
               >
-                Réessayer
+                {t("error.retry")}
               </button>
               <a
                 href="/"
                 className="rounded-sm border border-border px-5 py-3 text-sm font-bold uppercase tracking-widest"
               >
-                Retour à l'accueil
+                {t("error.notFound.backToHome")}
               </a>
             </>
           )}

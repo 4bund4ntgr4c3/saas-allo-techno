@@ -96,7 +96,8 @@ const fr: Dictionary = {
 
   // Newsletter
   "footer.newsletter.title": "Restez informé",
-  "footer.newsletter.description": "Nouveautés boutique, guides techniques et offres promotionnelles — max 2 mails/mois.",
+  "footer.newsletter.description":
+    "Nouveautés boutique, guides techniques et offres promotionnelles — max 2 mails/mois.",
   "footer.newsletter.placeholder": "votre@email.com",
   "footer.newsletter.cta": "S'inscrire",
   "footer.newsletter.success": "Merci ! Vous recevrez nos prochaines nouveautés.",
@@ -104,7 +105,8 @@ const fr: Dictionary = {
 
   // Cookie consent
   "cookie.title": "Cookies & confidentialité",
-  "cookie.text": "Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. En poursuivant votre navigation, vous acceptez l'utilisation des cookies.",
+  "cookie.text":
+    "Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. En poursuivant votre navigation, vous acceptez l'utilisation des cookies.",
   "cookie.accept": "Tout accepter",
   "cookie.refuse": "Tout refuser",
 
@@ -126,6 +128,14 @@ const fr: Dictionary = {
   "error.text": "Nous n'avons pas pu charger cette page.",
   "error.retry": "Réessayer",
   "error.home": "Retour à l'accueil",
+  "error.notFound.title": "Page introuvable",
+  "error.notFound.description": "Cette page n'existe pas ou a été déplacée.",
+  "error.notFound.backToHome": "Retour à l'accueil",
+  "error.sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+  "error.generic": "Une erreur est survenue",
+  "error.redirectingToLogin": "Vous allez être redirigé vers la page de connexion.",
+  "error.couldNotLoad": "Nous n'avons pas pu charger cette page.",
+  "auth.login": "Connexion",
 
   // Home — hero
   "home.meta.title": "Allô Techno — Réparation smartphone & ordinateur à Abomey-Calavi",
@@ -273,6 +283,11 @@ const fr: Dictionary = {
   "pwa.install": "Installer",
   "pwa.later": "Plus tard",
   "pwa.close": "Fermer",
+  "pwa.update.available": "Mise à jour disponible",
+  "pwa.update.refresh": "Actualiser",
+
+  // QR Code
+  "qr.download": "Télécharger le QR code",
 
   // Offline
   "offline.title": "Vous êtes hors ligne",
@@ -386,7 +401,8 @@ const en: Dictionary = {
 
   // Cookie consent
   "cookie.title": "Cookies & privacy",
-  "cookie.text": "We use cookies to improve your experience, analyze traffic and personalize content. By continuing to browse, you accept the use of cookies.",
+  "cookie.text":
+    "We use cookies to improve your experience, analyze traffic and personalize content. By continuing to browse, you accept the use of cookies.",
   "cookie.accept": "Accept all",
   "cookie.refuse": "Refuse all",
 
@@ -406,6 +422,14 @@ const en: Dictionary = {
   "error.text": "We couldn't load this page.",
   "error.retry": "Try again",
   "error.home": "Back to home",
+  "error.notFound.title": "Page not found",
+  "error.notFound.description": "This page doesn't exist or has been moved.",
+  "error.notFound.backToHome": "Back to home",
+  "error.sessionExpired": "Your session has expired. Please sign in again.",
+  "error.generic": "An error occurred",
+  "error.redirectingToLogin": "You will be redirected to the login page.",
+  "error.couldNotLoad": "We couldn't load this page.",
+  "auth.login": "Sign in",
   pannes: "faults",
   panne: "fault",
 
@@ -554,6 +578,11 @@ const en: Dictionary = {
   "pwa.install": "Install",
   "pwa.later": "Later",
   "pwa.close": "Close",
+  "pwa.update.available": "Update available",
+  "pwa.update.refresh": "Refresh",
+
+  // QR Code
+  "qr.download": "Download QR code",
 
   // Offline
   "offline.title": "You are offline",
