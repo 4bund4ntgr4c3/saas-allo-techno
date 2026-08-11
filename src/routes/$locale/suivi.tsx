@@ -79,22 +79,7 @@ export const Route = createFileRoute("/$locale/suivi")({
       links: [...seo.links],
     };
   },
-  errorComponent: ({ error, reset }) => (
-    <div className="flex min-h-[50vh] items-center justify-center px-4">
-      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
-        <h2 className="at-display mb-2 text-2xl">Erreur de suivi</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {error?.message ?? "Impossible de charger la page de suivi."}
-        </p>
-        <button
-          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
-          onClick={() => reset()}
-        >
-          Réessayer
-        </button>
-      </div>
-    </div>
-  ),
+  errorComponent: SuiviError,
   component: Suivi,
 });
 
@@ -163,6 +148,26 @@ function statusLabel(t: TranslateFn, status: string | null | undefined): string 
     annulee: t("suivi.status.annulee"),
   };
   return label[status] ?? status;
+}
+
+function SuiviError({ error, reset }: { error: Error | null; reset: () => void }) {
+  const { t } = useI18n();
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+        <h2 className="at-display mb-2 text-2xl">{t("suivi.error.title")}</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {error?.message ?? t("suivi.error.message")}
+        </p>
+        <button
+          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
+          onClick={() => reset()}
+        >
+          {t("action.ressayer")}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function Suivi() {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/context";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -8,6 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PwaInstallBanner() {
+  const { t } = useI18n();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -56,16 +58,16 @@ export function PwaInstallBanner() {
           <Download className="size-5 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">Installer Allô Techno</p>
+          <p className="text-sm font-semibold">{t("pwa.title")}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Accédez rapidement depuis votre écran d'accueil, même hors ligne.
+            {t("pwa.description")}
           </p>
           <div className="mt-3 flex gap-2">
             <Button size="sm" onClick={handleInstall}>
-              Installer
+              {t("pwa.install")}
             </Button>
             <Button size="sm" variant="ghost" onClick={handleDismiss}>
-              Plus tard
+              {t("pwa.later")}
             </Button>
           </div>
         </div>
@@ -73,7 +75,7 @@ export function PwaInstallBanner() {
           type="button"
           onClick={handleDismiss}
           className="shrink-0 text-muted-foreground hover:text-foreground"
-          aria-label="Fermer"
+          aria-label={t("pwa.close")}
         >
           <X className="size-4" />
         </button>

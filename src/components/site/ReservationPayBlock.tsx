@@ -84,10 +84,10 @@ export function ReservationPayBlock({
     setPhase(status);
     if (!userId) return;
     if (status === "paid") {
-      toast.success("Paiement confirmé. Merci !");
+      toast.success(t("reservation.pay.success"));
       queryClient.invalidateQueries({ queryKey: ["reservations", userId] });
     } else {
-      toast.error("Le paiement a échoué. Vous pouvez réessayer.");
+      toast.error(t("reservation.pay.failed"));
     }
   };
 
@@ -183,7 +183,7 @@ export function ReservationPayBlock({
       <div
         className="mt-4 flex flex-wrap items-center gap-2"
         role="group"
-        aria-label="Mode de paiement"
+        aria-label={t("reservation.pay.mode")}
       >
         <button
           type="button"
@@ -222,7 +222,7 @@ export function ReservationPayBlock({
         </p>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Prestataire">
+      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label={t("reservation.pay.provider")}>
         {PROVIDERS.map((p) => (
           <button
             key={p.key}

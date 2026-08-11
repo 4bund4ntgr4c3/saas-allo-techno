@@ -258,6 +258,30 @@ const fr: Dictionary = {
   "search.page.panier.hint": "Votre commande boutique",
   "search.clearHistory": "Effacer l'historique",
 
+  // Header
+  "header.theme.light": "Activer le mode clair",
+  "header.theme.dark": "Activer le mode sombre",
+  "header.cart.article": "article",
+  "header.cart.articles": "articles",
+  "header.backToTop": "Retour en haut de page",
+  "header.changeLanguage": "Changer de langue",
+
+  // PWA Install
+  "pwa.title": "Installer Allô Techno",
+  "pwa.description": "Accédez rapidement depuis votre écran d'accueil, même hors ligne.",
+  "pwa.install": "Installer",
+  "pwa.later": "Plus tard",
+  "pwa.close": "Fermer",
+
+  // Offline
+  "offline.title": "Vous êtes hors ligne",
+  "offline.cache": "Données en cache",
+
+  // Signature
+  "signature.title": "Signature du client",
+  "signature.clear": "Effacer",
+  "signature.validate": "Valider",
+
   // Auth
   "auth.session.expired": "Votre session a expiré. Veuillez vous reconnecter.",
 };
@@ -513,6 +537,30 @@ const en: Dictionary = {
   "search.page.contact.hint": "Abomey-Calavi workshop",
   "search.page.panier.hint": "Your shop order",
   "search.clearHistory": "Clear history",
+
+  // Header
+  "header.theme.light": "Enable light mode",
+  "header.theme.dark": "Enable dark mode",
+  "header.cart.article": "item",
+  "header.cart.articles": "items",
+  "header.backToTop": "Back to top",
+  "header.changeLanguage": "Change language",
+
+  // PWA Install
+  "pwa.title": "Install Allô Techno",
+  "pwa.description": "Access quickly from your home screen, even offline.",
+  "pwa.install": "Install",
+  "pwa.later": "Later",
+  "pwa.close": "Close",
+
+  // Offline
+  "offline.title": "You are offline",
+  "offline.cache": "Cached data",
+
+  // Signature
+  "signature.title": "Customer signature",
+  "signature.clear": "Clear",
+  "signature.validate": "Confirm",
 
   // Auth
   "auth.session.expired": "Your session has expired. Please sign in again.",

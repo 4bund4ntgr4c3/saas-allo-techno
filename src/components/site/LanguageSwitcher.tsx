@@ -8,7 +8,7 @@ import type { Locale } from "@/lib/i18n/locales";
  * synchronise le préfixe d'URL (/fr, /en) quand le routage le permet.
  */
 export function LanguageSwitcher({ className }: { className?: string }) {
-  const { locale, setLocale } = useI18n();
+  const { locale, setLocale, t } = useI18n();
   const router = useRouter();
 
   const switchTo = (next: Locale) => {
@@ -34,7 +34,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     <div
       className={`inline-flex items-center gap-1 rounded-sm border border-border p-0.5 ${className ?? ""}`}
       role="group"
-      aria-label="Changer de langue"
+      aria-label={t("header.changeLanguage")}
     >
       <Languages className="size-4 text-muted-foreground" aria-hidden />
       {(["fr", "en"] as Locale[]).map((code) => (

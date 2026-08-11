@@ -66,7 +66,7 @@ export function SignatureCapture({
       <div className="mb-3 flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-sm font-bold">
           <Pen className="size-4" />
-          Signature du client
+          {t("signature.title")}
         </h3>
         <div className="flex gap-1">
           <Button
@@ -76,7 +76,7 @@ export function SignatureCapture({
             disabled={!hasSignature}
           >
             <RotateCcw className="mr-1 size-3" />
-            Effacer
+            {t("signature.clear")}
           </Button>
           <Button
             variant="technical"
@@ -85,7 +85,7 @@ export function SignatureCapture({
             disabled={!hasSignature}
           >
             <Check className="mr-1 size-3" />
-            Valider
+            {t("signature.validate")}
           </Button>
         </div>
       </div>

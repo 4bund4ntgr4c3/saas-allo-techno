@@ -82,7 +82,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
       setReviews(r);
       setRating(rt);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erreur");
+      toast.error(err instanceof Error ? err.message : t("admin.roles.toast.error"));
     }
     setSubmitting(false);
   }

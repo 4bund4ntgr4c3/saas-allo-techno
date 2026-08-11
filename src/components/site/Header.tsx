@@ -33,6 +33,7 @@ const NAV = [
 
 function ThemeToggle() {
   const [dark, setDark] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     const stored = localStorage.getItem("at-theme");
@@ -53,7 +54,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label={dark ? "Activer le mode clair" : "Activer le mode sombre"}
+      aria-label={dark ? t("header.theme.light") : t("header.theme.dark")}
       className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
@@ -67,7 +68,7 @@ function CartButton() {
   return (
     <button
       onClick={openDrawer}
-      aria-label={t("nav.panier") + `, ${count} article${count > 1 ? "s" : ""}`}
+      aria-label={`${t("nav.panier")}, ${count} ${count > 1 ? t("header.cart.articles") : t("header.cart.article")}`}
       className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       <ShoppingBag className="size-4" />

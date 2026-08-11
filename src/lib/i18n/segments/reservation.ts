@@ -221,6 +221,12 @@ const fr = {
   "search.type.device": "Appareil",
   "search.type.blog": "Article",
   "search.type.page": "Page",
+
+  // Payment
+  "reservation.pay.success": "Paiement confirmé. Merci !",
+  "reservation.pay.failed": "Le paiement a échoué. Vous pouvez réessayer.",
+  "reservation.pay.mode": "Mode de paiement",
+  "reservation.pay.provider": "Prestataire",
 };
 
 const en = {
@@ -441,6 +447,12 @@ const en = {
   "search.type.device": "Device",
   "search.type.blog": "Article",
   "search.type.page": "Page",
+
+  // Payment
+  "reservation.pay.success": "Payment confirmed. Thank you!",
+  "reservation.pay.failed": "Payment failed. You can try again.",
+  "reservation.pay.mode": "Payment method",
+  "reservation.pay.provider": "Provider",
 };
 
 registerSegments({ fr, en });

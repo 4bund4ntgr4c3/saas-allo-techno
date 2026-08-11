@@ -164,6 +164,10 @@ const fr = {
   "suivi.pwa.offline": "Vous êtes hors ligne",
   "suivi.pwa.cache": "Données en cache",
   "suivi.pwa.sync": "Sync",
+
+  // Error
+  "suivi.error.title": "Erreur de suivi",
+  "suivi.error.message": "Impossible de charger la page de suivi.",
 };
 
 const en = {
@@ -326,6 +330,10 @@ const en = {
   "suivi.pwa.offline": "You are offline",
   "suivi.pwa.cache": "Cached data",
   "suivi.pwa.sync": "Sync",
+
+  // Error
+  "suivi.error.title": "Tracking error",
+  "suivi.error.message": "Unable to load the tracking page.",
 };
 
 registerSegments({ fr, en });

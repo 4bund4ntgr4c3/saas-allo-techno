@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { WifiOff, Wifi, Clock, Database } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 /**
  * Enhanced offline indicator — shows offline status, cached data indicator,
  * and last sync timestamp. Shows a subtle bottom bar when offline.
  */
 export function OfflineIndicator() {
+  const { t } = useI18n();
   const [isOffline, setIsOffline] = useState(false);
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [hasCache, setHasCache] = useState(false);
@@ -23,7 +25,7 @@ export function OfflineIndicator() {
           if (parsed.timestamp) {
             const ago = Date.now() - parsed.timestamp;
             if (ago < 5 * 60 * 1000) {
-              setLastSync(new Date(parsed.timestamp).toLocaleTimeString("fr-FR", {
+              setLastSync(new Date(parsed.timestamp).toLocaleTimeString(undefined, {
                 hour: "2-digit",
                 minute: "2-digit",
               }));
@@ -67,14 +69,14 @@ export function OfflineIndicator() {
         <div className="flex items-center gap-2 text-sm">
           <WifiOff className="size-4 text-amber-600 dark:text-amber-400" />
           <span className="font-medium text-amber-800 dark:text-amber-200">
-            Vous êtes hors ligne
+            {t("offline.title")}
           </span>
         </div>
         {hasCache && lastSync && (
           <div className="flex items-center gap-3 text-[10px] text-amber-700 dark:text-amber-300">
             <span className="flex items-center gap-1">
               <Database className="size-3" />
-              Données en cache
+              {t("offline.cache")}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="size-3" />
