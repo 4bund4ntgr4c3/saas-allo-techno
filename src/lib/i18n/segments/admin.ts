@@ -647,6 +647,23 @@ const fr = {
   "admin.tab.marketing": "Marketing",
   "admin.tab.webhooks": "Webhooks",
 
+  // Admin — Dossiers
+  "admin.dossier.technicianAssigned": "Technicien assigné",
+  "admin.dossier.assignError": "Assignation impossible",
+  "admin.dossier.statusUpdated": "Statut mis à jour : {0}",
+  "admin.dossier.updateError": "Mise à jour impossible",
+  "admin.dossier.otpExpired": "Veuillez confirmer votre code d'authentification.",
+  "admin.dossier.deliveryUpdated": "Statut de livraison mis à jour",
+  "admin.dossier.allTechs": "Tous les techniciens",
+  "admin.dossier.unassigned": "Non assigné",
+  "admin.dossier.kanbanView": "Vue Kanban",
+  "admin.dossier.listView": "Vue liste",
+  "admin.dossier.empty": "Aucun dossier",
+  "admin.dossier.emptyDesc": "Aucun dossier ne correspond à ce filtre.",
+  "admin.dossier.technician": "Technicien",
+  "admin.dossier.you": "Vous",
+  "admin.dossier.notAssignedToYou": "Non assigné à vous",
+
   // Admin — Dashboard
   "admin.dash.activeRepairs": "Réparations actives",
   "admin.dash.todayReservations": "Réservations aujourd'hui",
@@ -1309,6 +1326,23 @@ const en = {
   // Admin — Tabs (missing)
   "admin.tab.marketing": "Marketing",
   "admin.tab.webhooks": "Webhooks",
+
+  // Admin — Dossiers
+  "admin.dossier.technicianAssigned": "Technician assigned",
+  "admin.dossier.assignError": "Assignment failed",
+  "admin.dossier.statusUpdated": "Status updated: {0}",
+  "admin.dossier.updateError": "Update failed",
+  "admin.dossier.otpExpired": "Please confirm your authentication code.",
+  "admin.dossier.deliveryUpdated": "Delivery status updated",
+  "admin.dossier.allTechs": "All technicians",
+  "admin.dossier.unassigned": "Unassigned",
+  "admin.dossier.kanbanView": "Kanban view",
+  "admin.dossier.listView": "List view",
+  "admin.dossier.empty": "No dossiers",
+  "admin.dossier.emptyDesc": "No dossiers match this filter.",
+  "admin.dossier.technician": "Technician",
+  "admin.dossier.you": "You",
+  "admin.dossier.notAssignedToYou": "Not assigned to you",
 
   // Admin — Dashboard
   "admin.dash.activeRepairs": "Active repairs",

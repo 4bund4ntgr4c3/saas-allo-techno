@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LocaleRouteImport } from './routes/$locale'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
@@ -52,6 +53,7 @@ import { Route as ApiIcalRouteImport } from './routes/api.ical'
 import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
 import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
 import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
+import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
@@ -92,6 +94,7 @@ import { Route as AuthenticatedAdminSlaRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin/stats'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin/webhooks'
 import { Route as ApiV1SplatRouteImport } from './routes/api.v1.$'
+import { Route as AppOrganizationsOrgIdRouteImport } from './routes/app.organizations.$orgId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -105,6 +108,11 @@ const LocaleRoute = LocaleRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -307,6 +315,11 @@ const ApiSitemapRoute = ApiSitemapRouteImport.update({
   id: '/api/sitemap',
   path: '/api/sitemap',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any)
 const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
   id: '/appareil/$slug',
@@ -529,10 +542,16 @@ const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
   path: '/api/v1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppOrganizationsOrgIdRoute = AppOrganizationsOrgIdRouteImport.update({
+  id: '/organizations/$orgId',
+  path: '/organizations/$orgId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteWithChildren
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$locale/about': typeof LocaleAboutRoute
@@ -573,6 +592,7 @@ export interface FileRoutesByFullPath {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale/': typeof LocaleIndexRoute
+  '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
@@ -608,6 +628,7 @@ export interface FileRoutesByFullPath {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
@@ -655,6 +676,7 @@ export interface FileRoutesByTo {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale': typeof LocaleIndexRoute
+  '/app': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
@@ -690,6 +712,7 @@ export interface FileRoutesByTo {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
   '/$locale/blog': typeof LocaleBlogIndexRoute
   '/$locale/boutique': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers': typeof LocaleQuartiersIndexRoute
@@ -701,6 +724,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$locale': typeof LocaleRouteWithChildren
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$locale/about': typeof LocaleAboutRoute
@@ -741,6 +765,7 @@ export interface FileRoutesById {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/api/sitemap': typeof ApiSitemapRoute
   '/$locale/': typeof LocaleIndexRoute
+  '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
   '/$locale/blog/$slug': typeof LocaleBlogSlugRoute
   '/$locale/boutique/$slug': typeof LocaleBoutiqueSlugRoute
@@ -776,6 +801,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/api/v1/$': typeof ApiV1SplatRoute
+  '/app/organizations/$orgId': typeof AppOrganizationsOrgIdRoute
   '/$locale/blog/': typeof LocaleBlogIndexRoute
   '/$locale/boutique/': typeof LocaleBoutiqueIndexRoute
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
@@ -787,6 +813,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$locale'
+    | '/app'
     | '/auth'
     | '/sitemap.xml'
     | '/$locale/about'
@@ -827,6 +854,7 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale/'
+    | '/app/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
@@ -862,6 +890,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/webhooks'
     | '/api/v1/$'
+    | '/app/organizations/$orgId'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
@@ -909,6 +938,7 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale'
+    | '/app'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
@@ -944,6 +974,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/webhooks'
     | '/api/v1/$'
+    | '/app/organizations/$orgId'
     | '/$locale/blog'
     | '/$locale/boutique'
     | '/$locale/quartiers'
@@ -954,6 +985,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/$locale'
+    | '/app'
     | '/auth'
     | '/sitemap.xml'
     | '/$locale/about'
@@ -994,6 +1026,7 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/api/sitemap'
     | '/$locale/'
+    | '/app/'
     | '/$locale/appareil/$slug'
     | '/$locale/blog/$slug'
     | '/$locale/boutique/$slug'
@@ -1029,6 +1062,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/webhooks'
     | '/api/v1/$'
+    | '/app/organizations/$orgId'
     | '/$locale/blog/'
     | '/$locale/boutique/'
     | '/$locale/quartiers/'
@@ -1040,6 +1074,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LocaleRoute: typeof LocaleRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiCronRemindersRoute: typeof ApiCronRemindersRoute
@@ -1075,6 +1110,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1357,6 +1399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/$locale/appareil/$slug': {
       id: '/$locale/appareil/$slug'
       path: '/appareil/$slug'
@@ -1637,6 +1686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/organizations/$orgId': {
+      id: '/app/organizations/$orgId'
+      path: '/organizations/$orgId'
+      fullPath: '/app/organizations/$orgId'
+      preLoaderRoute: typeof AppOrganizationsOrgIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -1804,10 +1860,23 @@ const LocaleRouteChildren: LocaleRouteChildren = {
 const LocaleRouteWithChildren =
   LocaleRoute._addFileChildren(LocaleRouteChildren)
 
+interface AppRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+  AppOrganizationsOrgIdRoute: typeof AppOrganizationsOrgIdRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+  AppOrganizationsOrgIdRoute: AppOrganizationsOrgIdRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LocaleRoute: LocaleRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiCronRemindersRoute: ApiCronRemindersRoute,
