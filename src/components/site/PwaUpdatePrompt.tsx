@@ -15,8 +15,13 @@ export function PwaUpdatePrompt() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
+    // Première visite : le SW prend le contrôle (clients.claim) sans recharger.
+    // Un rechargement n'est utile que lorsqu'un SW déjà actif est remplacé
+    // par une nouvelle version (mise à jour du site).
+    const hadController = Boolean(navigator.serviceWorker.controller);
+
     const onControllerChange = () => {
-      window.location.reload();
+      if (hadController) window.location.reload();
     };
 
     navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
