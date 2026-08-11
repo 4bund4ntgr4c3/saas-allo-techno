@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Download } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export function QrCode({
   value,
@@ -15,6 +16,7 @@ export function QrCode({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dataUrl, setDataUrl] = useState<string | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -50,7 +52,7 @@ export function QrCode({
           className="inline-flex items-center gap-1.5 text-xs text-primary underline"
         >
           <Download className="size-3" />
-          Télécharger le QR code
+          {t("qr.download")}
         </button>
       ) : null}
     </div>

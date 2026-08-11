@@ -32,7 +32,7 @@ type Props = {
  * authentifié, l'authentification tient lieu de preuve de propriété.
  */
 export function ReschedulePanel({ reference, code = "", mode, current, onDone }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const submit = useServerFn(rescheduleReservation);
   const availability = useSlotAvailability(mode);
   const [date, setDate] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
         data: { reference, code, date, creneau: periodOfHour(hour), heure: hour },
       });
       toast.success(t("reschedule.success"), {
-        description: `${formatDateFr(date)} à ${hour} — confirmation envoyée.`,
+        description: `${formatDateFr(date, locale)} à ${hour} — confirmation envoyée.`,
       });
       onDone();
     } catch (error) {
@@ -80,7 +80,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
             {t("reschedule.title")} {reference}
           </p>
           <p className="mt-1 text-sm font-bold">
-            {t("reschedule.current")} {formatDateFr(current.date)}
+            {t("reschedule.current")} {formatDateFr(current.date, locale)}
             {current.hour ? ` à ${current.hour}` : ""}
           </p>
         </div>
@@ -143,14 +143,14 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
 
       <div className="mt-6 mb-2 flex items-center gap-2">
         <Clock className="size-4 text-primary" strokeWidth={1.5} />
-        <span className="font-mono text-[10px] uppercase tracking-wider">{t("reschedule.newTime")}</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider">
+          {t("reschedule.newTime")}
+        </span>
       </div>
       {!date ? (
         <p className="text-xs text-muted-foreground">{t("reschedule.selectDay")}</p>
       ) : availableHours.length === 0 ? (
-        <p className="text-xs text-muted-foreground">
-          {t("reschedule.noHours")}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("reschedule.noHours")}</p>
       ) : (
         <div
           role="radiogroup"
@@ -186,7 +186,7 @@ export function ReschedulePanel({ reference, code = "", mode, current, onDone }:
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
         <p className="font-mono text-xs uppercase text-muted-foreground">
-          {date && hour ? `${formatDateFr(date)} à ${hour}` : t("reschedule.selectSlot")}
+          {date && hour ? `${formatDateFr(date, locale)} à ${hour}` : t("reschedule.selectSlot")}
         </p>
         <Button
           variant="primaryBlock"

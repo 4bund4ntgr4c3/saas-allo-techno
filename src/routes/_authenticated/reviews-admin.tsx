@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Stars } from "@/components/site/Blocks";
 import { formatDateFr } from "@/lib/reservation-schema";
+import { useI18n } from "@/lib/i18n/context";
 import {
   adminListReviews,
   adminSetReviewStatus,
@@ -44,6 +45,7 @@ const STATUS_TONE: Record<ReviewStatus, string> = {
 
 function ReviewsAdminPage() {
   const { user } = Route.useRouteContext();
+  const { t, locale } = useI18n();
 
   const access = useQuery({
     queryKey: ["is-staff", user.id],
@@ -190,12 +192,12 @@ function InvitationsSection() {
                     {r.customer_name} — {r.device}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {formatDateFr(r.slot_date)} · {r.phone}
+                    {formatDateFr(r.slot_date, locale)} · {r.phone}
                   </p>
                 </div>
                 {invite ? (
                   <p className="text-xs text-muted-foreground">
-                    Invitation envoyée le {new Date(invite.sent_at).toLocaleDateString("fr-FR")}
+                    {t("reviews.invite.sent")} {new Date(invite.sent_at).toLocaleDateString(locale)}
                   </p>
                 ) : (
                   <Button
@@ -209,7 +211,7 @@ function InvitationsSection() {
                     ) : (
                       <MailPlus className="mr-2 size-4" />
                     )}
-                    Envoyer l'invitation
+                    {t("reviews.invite.send")}
                   </Button>
                 )}
               </li>

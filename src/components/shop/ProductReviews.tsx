@@ -37,7 +37,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
   const fetchReviews = useServerFn(getProductReviews);
   const fetchRating = useServerFn(getProductRating);
   const submitReview = useServerFn(addProductReview);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     let cancelled = false;
@@ -160,7 +160,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">{r.text}</p>
                 <span className="mt-2 block font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
-                  {new Date(r.created_at).toLocaleDateString("fr-FR")}
+                  {new Date(r.created_at).toLocaleDateString(locale)}
                 </span>
               </div>
             ))}
