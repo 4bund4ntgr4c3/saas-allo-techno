@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -42,12 +43,14 @@ export function DataTable<TData, TValue>({
   data,
   searchPlaceholder,
   searchKey,
-  emptyTitle = "Aucun résultat",
+  emptyTitle,
   emptyDescription,
   emptyIcon,
   pageSize: initialPageSize = 20,
   className,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useI18n();
+  const resolvedEmptyTitle = emptyTitle ?? t("admin.common.noResults");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -131,7 +134,7 @@ export function DataTable<TData, TValue>({
                 <TableCell colSpan={columns.length} className="h-48">
                   <AdminEmptyState
                     icon={emptyIcon ?? <Search className="size-6" />}
-                    title={emptyTitle}
+                    title={resolvedEmptyTitle}
                     {...(emptyDescription ? { description: emptyDescription } : {})}
                   />
                 </TableCell>
@@ -154,7 +157,7 @@ export function DataTable<TData, TValue>({
       {table.getPageCount() > 1 && (
         <div className="flex items-center justify-between px-2">
           <p className="text-sm text-muted-foreground">
-            {table.getFilteredRowModel().rows.length} résultat(s)
+            {table.getFilteredRowModel().rows.length} {t("admin.common.results")}
           </p>
           <div className="flex items-center gap-2">
             <Select
@@ -173,7 +176,7 @@ export function DataTable<TData, TValue>({
               </SelectContent>
             </Select>
             <span className="text-sm text-muted-foreground">
-              Page {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
+              {t("admin.common.page")} {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
             </span>
             <div className="flex items-center gap-1">
               <Button variant="outline" size="icon" className="size-8" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>

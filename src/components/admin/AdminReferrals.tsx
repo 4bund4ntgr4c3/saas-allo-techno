@@ -83,7 +83,7 @@ export function AdminReferrals() {
             <div key={e.id} className="flex items-center justify-between rounded-lg border bg-card p-3">
               <div>
                 <p className="text-xs font-medium">
-                  {t("admin.referrals.referral")} — {new Date(e.created_at).toLocaleDateString("fr-BJ")}
+                  {t("admin.referrals.referral")} — {new Date(e.created_at).toLocaleDateString(t("locale") as string)}
                 </p>
                 <p className="text-[10px] text-muted-foreground">{t("admin.referrals.status")} {e.status}</p>
               </div>

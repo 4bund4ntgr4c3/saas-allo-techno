@@ -359,7 +359,7 @@ export const addReservationComment = createServerFn({ method: "POST" })
       _reference: data.reference,
       _code: data.code,
       _author: "customer",
-      _author_name: data.author_name ?? null,
+      _author_name: data.author_name ?? undefined,
       _body: data.body,
     });
 

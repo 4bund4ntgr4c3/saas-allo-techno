@@ -91,7 +91,7 @@ export function AdminDashboard() {
     },
     {
       title: t("admin.dash.monthRevenue"),
-      value: `${(monthRevenue.data ?? 0).toLocaleString("fr-FJ")} FCFA`,
+      value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
       icon: DollarSign,
       color: "text-chart-3",
       loading: monthRevenue.isLoading,

@@ -148,7 +148,7 @@ export function LeadsSection() {
             <p className="mt-2 text-sm text-muted-foreground">{l.message}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               {[l.phone, l.email].filter(Boolean).join(" · ") || "—"} ·{" "}
-              {new Date(l.created_at).toLocaleString("fr-FR")}
+              {new Date(l.created_at).toLocaleString(t("locale") as string)}
             </p>
           </li>
         ))}
@@ -285,7 +285,7 @@ export function ClaimCard({
         {claim.email ? <span className="text-muted-foreground">{claim.email}</span> : null}
         {claim.device ? <span>{claim.device}</span> : null}
         <span className="text-xs text-muted-foreground">
-          {new Date(claim.created_at).toLocaleString("fr-FR")}
+          {new Date(claim.created_at).toLocaleString(t("locale") as string)}
         </span>
       </div>
 

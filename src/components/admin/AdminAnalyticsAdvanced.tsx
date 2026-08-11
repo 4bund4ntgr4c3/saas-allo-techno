@@ -68,7 +68,7 @@ export function AnalyticsAdvanced() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium">{step.label}</span>
                     <span className="text-muted-foreground">
-                      {step.count.toLocaleString("fr-FR")}
+                      {step.count.toLocaleString(t("locale") as string)}
                       {i > 0 && (
                         <span className="ml-1 text-[10px]">
                           ({convRate}% {t("admin.analytics.funnel.conversionAbbrev")})
@@ -145,7 +145,7 @@ export function AnalyticsAdvanced() {
                 </p>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                   <span className="font-bold text-destructive">{err.count}×</span>
-                  <span>{new Date(err.last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>{new Date(err.last).toLocaleTimeString(t("locale") as string, { hour: "2-digit", minute: "2-digit" })}</span>
                 </div>
               </div>
             ))}

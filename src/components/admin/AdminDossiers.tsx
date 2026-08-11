@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { FileDown, LayoutGrid, RadioTower, Wrench } from "lucide-react";
+import { Building2, FileDown, LayoutGrid, RadioTower, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
@@ -88,6 +88,17 @@ export function DossiersSection() {
     },
   });
 
+  const organizations = useQuery({
+    queryKey: ["organizations"],
+    enabled: !isTechnicien,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("organizations").select("id, name");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const orgName = new Map((organizations.data ?? []).map((o) => [o.id, o.name]));
+
   const assignTech = useMutation({
     mutationFn: async ({ reservationId, technicianId }: { reservationId: string; technicianId: string }) => {
       const { error } = await supabase.from("technician_assignments").insert({
@@ -116,7 +127,7 @@ export function DossiersSection() {
       let q = supabase
         .from("reservations")
         .select(
-          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id",
+          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id",
         )
         .order("slot_date", { ascending: false })
         .limit(200);
@@ -281,6 +292,12 @@ export function DossiersSection() {
                     <span className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}>
                       {t("admin.status." + r.status)}
                     </span>
+                    {r.org_id && orgName.get(r.org_id) && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium">
+                        <Building2 className="size-3.5 text-muted-foreground" />
+                        {orgName.get(r.org_id)}
+                      </span>
+                    )}
                     <Button variant="ghost" size="sm" onClick={() => downloadInvoicePdf(r)}>
                       <FileDown className="size-4" />
                     </Button>

@@ -888,6 +888,11 @@ const fr = {
   "admin.stock.tracked": "suivi",
   "admin.stock.lowStock": "Stock faible",
   "admin.stock.update": "Mettre à jour",
+
+  // Admin — Common (DataTable, etc.)
+  "admin.common.noResults": "Aucun résultat",
+  "admin.common.results": "résultat(s)",
+  "admin.common.page": "Page",
 };
 
 const en = {
@@ -1776,6 +1781,11 @@ const en = {
   "admin.stock.tracked": "tracked",
   "admin.stock.lowStock": "Low stock",
   "admin.stock.update": "Update",
+
+  // Admin — Common (DataTable, etc.)
+  "admin.common.noResults": "No results",
+  "admin.common.results": "result(s)",
+  "admin.common.page": "Page",
 };
 
 registerSegments({ fr, en });

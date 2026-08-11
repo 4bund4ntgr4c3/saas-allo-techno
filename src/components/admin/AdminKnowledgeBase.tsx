@@ -219,7 +219,7 @@ export function AdminKnowledgeBase() {
                     <span className="flex items-center gap-1">
                       <ThumbsUp className="size-2" /> {a.helpful}
                     </span>
-                    <span>{new Date(a.updated_at).toLocaleDateString("fr-BJ")}</span>
+                    <span>{new Date(a.updated_at).toLocaleDateString(t("locale") as string)}</span>
                   </div>
                   {a.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">

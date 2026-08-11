@@ -179,7 +179,7 @@ export function OrdersSection() {
                 <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span>{o.phone ?? "—"}</span>
                   {total !== null && <span className="font-mono">{formatFcfa(total)}</span>}
-                  <span>{new Date(o.created_at).toLocaleString("fr-FR")}</span>
+                  <span>{new Date(o.created_at).toLocaleString(t("locale") as string)}</span>
                 </div>
               </li>
             );

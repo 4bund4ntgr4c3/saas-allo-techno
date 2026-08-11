@@ -271,7 +271,7 @@ export function ReturnCard({
         {returnRow.email ? <span className="text-muted-foreground">{returnRow.email}</span> : null}
         {returnRow.item ? <span>{returnRow.item}</span> : null}
         <span className="text-xs text-muted-foreground">
-          {new Date(returnRow.created_at).toLocaleString("fr-FR")}
+          {new Date(returnRow.created_at).toLocaleString(t("locale") as string)}
         </span>
       </div>
 

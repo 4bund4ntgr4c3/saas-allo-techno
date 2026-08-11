@@ -187,7 +187,7 @@ export function AdminMarketing() {
     {
       accessorKey: "monetary",
       header: () => t("admin.marketing.table.total"),
-      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("monetary") as number).toLocaleString("fr-FR")}</span>,
+      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("monetary") as number).toLocaleString(t("locale") as string)}</span>,
     },
   ];
 
@@ -333,7 +333,7 @@ export function AdminMarketing() {
                     <p className="truncate text-sm font-bold">{c.name}</p>
                     <p className="text-[10px] text-muted-foreground">
                       {c.type.toUpperCase()} · {c.sent_count} {t("admin.marketing.sends")} ·{" "}
-                      {new Date(c.created_at).toLocaleDateString("fr-FR")}
+                      {new Date(c.created_at).toLocaleDateString(t("locale") as string)}
                     </p>
                   </div>
                   <span

@@ -49,23 +49,6 @@ const STATUS_TONE: Record<string, string> = {
   annulee: "border-destructive/50 text-destructive",
 };
 
-const DELIVERY_STATUS_LABEL: Record<Enums<"delivery_status">, string> = {
-  non_applicable: "Non applicable",
-  a_planifier: "À planifier",
-  en_route: "En route",
-  livre: "Livré",
-};
-
-const QUOTE_STATUS_LABEL: Record<string, string> = {
-  none: "Aucun devis",
-};
-
-const PHOTO_STAGE_LABEL: Record<string, string> = {
-  diagnostic: "Diagnostic",
-  pieces: "Pièces",
-  repair: "Réparation",
-};
-
 const PHOTO_STAGES = ["diagnostic", "pieces", "repair"] as const;
 
 type KanbanRow = {
@@ -341,7 +324,7 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
       {rows.map((h) => (
         <li key={h.id} className="flex flex-wrap items-baseline gap-2 text-sm">
           <time className="font-mono text-xs text-muted-foreground">
-            {new Date(h.created_at).toLocaleString("fr-FR")}
+            {new Date(h.created_at).toLocaleString(t("locale") as string)}
           </time>
           <span>
             {h.old_status ? `${t("admin.status." + h.old_status)} → ` : t("admin.kanban.history.creation")}
@@ -612,8 +595,5 @@ export {
   STATUSES,
   NEXT_STATUS,
   STATUS_TONE,
-  DELIVERY_STATUS_LABEL,
-  QUOTE_STATUS_LABEL,
-  PHOTO_STAGE_LABEL,
   PHOTO_STAGES,
 };

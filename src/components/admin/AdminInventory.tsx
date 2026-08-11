@@ -339,7 +339,7 @@ export function AdminInventory() {
                   {m.quantity}
                 </span>
                 <span className="text-muted-foreground">
-                  {new Date(m.created_at).toLocaleDateString("fr-BJ")}
+                  {new Date(m.created_at).toLocaleDateString(t("locale") as string)}
                 </span>
               </div>
             ))

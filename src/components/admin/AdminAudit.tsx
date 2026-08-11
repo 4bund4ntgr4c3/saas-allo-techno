@@ -56,7 +56,7 @@ export function AuditSection() {
       header: t("admin.audit.col.date"),
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">
-          {new Date(row.original.created_at).toLocaleString("fr-FR", {
+          {new Date(row.original.created_at).toLocaleString(t("locale") as string, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

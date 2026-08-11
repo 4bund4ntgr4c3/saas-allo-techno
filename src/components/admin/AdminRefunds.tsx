@@ -116,7 +116,7 @@ export function RefundsSection() {
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                 <span>{p.phone ?? "—"}</span>
                 <span>{p.source}</span>
-                <span>{new Date(p.created_at).toLocaleString("fr-FR")}</span>
+                <span>{new Date(p.created_at).toLocaleString(t("locale") as string)}</span>
               </div>
             </li>
           ))}
