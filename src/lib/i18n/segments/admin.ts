@@ -975,6 +975,10 @@ const fr = {
   "admin.common.noResults": "Aucun résultat",
   "admin.common.results": "résultat(s)",
   "admin.common.page": "Page",
+
+  // Reviews admin
+  "reviews.invite.sent": "Invitation envoyée le",
+  "reviews.invite.send": "Envoyer l'invitation",
 };
 
 const en = {
@@ -1950,6 +1954,10 @@ const en = {
   "admin.common.noResults": "No results",
   "admin.common.results": "result(s)",
   "admin.common.page": "Page",
+
+  // Reviews admin
+  "reviews.invite.sent": "Invitation sent on",
+  "reviews.invite.send": "Send invitation",
 };
 
 registerSegments({ fr, en });

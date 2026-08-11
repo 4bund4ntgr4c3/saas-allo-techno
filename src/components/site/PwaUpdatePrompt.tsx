@@ -44,6 +44,12 @@ export function PwaUpdatePrompt() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!show) return;
+    const timer = setTimeout(() => setShow(false), 8_000);
+    return () => clearTimeout(timer);
+  }, [show]);
+
   const handleUpdate = () => {
     waiting?.postMessage({ type: "SKIP_WAITING" });
     setShow(false);

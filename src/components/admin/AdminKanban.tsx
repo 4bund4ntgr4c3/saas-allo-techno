@@ -149,7 +149,7 @@ function KanbanBoard({
   updateStatus: (v: { id: string; status: Status }) => void;
   orgName?: Map<string, string>;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [dragId, setDragId] = useState<string | null>(null);
   const [overCol, setOverCol] = useState<Status | null>(null);
 
@@ -210,7 +210,7 @@ function KanbanBoard({
                     {r.customer_name} — {r.device}
                   </p>
                   <p className="mt-1 text-[11px] text-muted-foreground">
-                    {formatDateFr(r.slot_date)} · {t("admin.period." + r.slot_period)} · {r.phone}
+                    {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)} · {r.phone}
                   </p>
                 </Button>
               ))}

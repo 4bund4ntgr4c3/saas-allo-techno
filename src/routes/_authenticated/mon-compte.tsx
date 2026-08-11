@@ -407,7 +407,7 @@ function Dashboard() {
                       <dl className="mt-6 grid gap-4 text-sm sm:grid-cols-3">
                         <div>
                           <dt className="at-eyebrow mb-1">{t("mc.dossiers.date")}</dt>
-                          <dd>{formatDateFr(r.slot_date)}</dd>
+                          <dd>{formatDateFr(r.slot_date, locale)}</dd>
                         </div>
                         <div>
                           <dt className="at-eyebrow mb-1">{t("mc.dossiers.slot")}</dt>
@@ -572,7 +572,7 @@ function Dashboard() {
                                 {entry.reference ? ` — ${entry.reference}` : ""}
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                {formatDateFr(entry.created_at)}
+                                {formatDateFr(entry.created_at, locale)}
                               </p>
                             </div>
                             <span
@@ -728,7 +728,7 @@ function Dashboard() {
                         </span>
                       </div>
                       <p className="mt-3 text-xs text-muted-foreground">
-                        {formatDateFr(review.created_at)}
+                        {formatDateFr(review.created_at, locale)}
                       </p>
                     </li>
                   ))}
@@ -752,7 +752,7 @@ function Dashboard() {
                       payments
                         .filter((p) => p.status === "paid")
                         .reduce((sum, p) => sum + p.amount, 0)
-                        .toLocaleString("fr-FR"),
+                        .toLocaleString(locale),
                     ])}
                   </p>
                   <ul className="space-y-4">
@@ -779,7 +779,7 @@ function Dashboard() {
                           <div>
                             <dt className="at-eyebrow mb-1">{t("mc.payments.amount")}</dt>
                             <dd className="font-semibold">
-                              {p.amount.toLocaleString("fr-FR")} FCFA
+                              {p.amount.toLocaleString(locale)} FCFA
                             </dd>
                           </div>
                           <div>
@@ -788,7 +788,7 @@ function Dashboard() {
                           </div>
                           <div>
                             <dt className="at-eyebrow mb-1">Date</dt>
-                            <dd>{formatDateFr(p.created_at)}</dd>
+                            <dd>{formatDateFr(p.created_at, locale)}</dd>
                           </div>
                         </dl>
                       </li>
@@ -840,7 +840,7 @@ function Dashboard() {
                           <div>
                             <dt className="at-eyebrow mb-1">{t("mc.devis.amount")}</dt>
                             <dd className="font-semibold">
-                              {r.quote_amount?.toLocaleString("fr-FR")} FCFA
+                              {r.quote_amount?.toLocaleString(locale)} FCFA
                             </dd>
                           </div>
                           <div>
@@ -853,7 +853,7 @@ function Dashboard() {
                           </div>
                           <div>
                             <dt className="at-eyebrow mb-1">{t("mc.devis.date")}</dt>
-                            <dd>{formatDateFr(r.created_at)}</dd>
+                            <dd>{formatDateFr(r.created_at, locale)}</dd>
                           </div>
                         </dl>
                         {r.quote_status === "approved" && (

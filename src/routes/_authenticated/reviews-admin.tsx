@@ -297,6 +297,7 @@ function ReviewRow({
   busy: boolean;
   onStatus: (v: { id: string; status: ReviewStatus }) => void;
 }) {
+  const { locale } = useI18n();
   return (
     <tr className="border-b border-border align-top last:border-b-0 hover:bg-surface">
       <td className="px-4 py-3">
@@ -317,7 +318,7 @@ function ReviewRow({
       </td>
       <td className="max-w-md px-4 py-3 text-sm text-muted-foreground">« {review.comment} »</td>
       <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
-        {new Date(review.created_at).toLocaleString("fr-FR")}
+        {new Date(review.created_at).toLocaleString(locale)}
       </td>
       <td className="px-4 py-3">
         <span

@@ -185,12 +185,12 @@ function HistoriqueDevice() {
                   <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <CalendarClock className="size-3" />
-                      {formatDateFr(entry.created_at)}
+                      {formatDateFr(entry.created_at, locale)}
                     </span>
                     {entry.completed_at && (
                       <span className="flex items-center gap-1 text-green-600">
                         <CheckCircle2 className="size-3" />
-                        {t("historique.completed")} {formatDateFr(entry.completed_at)}
+                        {t("historique.completed")} {formatDateFr(entry.completed_at, locale)}
                       </span>
                     )}
                   </div>

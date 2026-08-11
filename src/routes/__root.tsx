@@ -11,6 +11,7 @@ import {
 import { useEffect, Suspense, lazy, type ReactNode } from "react";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { initSentry } from "@/lib/sentry";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -26,6 +27,8 @@ import { AddToCartWidget } from "@/components/shop/AddToCartWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthErrorHandler } from "@/components/AuthErrorHandler";
+
+initSentry();
 
 // Lazy-load components that could crash at import time (zustand, etc.)
 // Without lazy, an import failure in these kills the entire root → I18nProvider never renders.

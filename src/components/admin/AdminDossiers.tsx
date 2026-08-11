@@ -38,7 +38,7 @@ type Status = Enums<"reservation_status">;
 export function DossiersSection() {
   const { user } = useRouteContext({ from: "/_authenticated" });
   const queryClient = useQueryClient();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [filter, setFilter] = useState<Status | "toutes">("toutes");
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [typeFilter, setTypeFilter] = useState<"tous" | "b2b" | "particulier">("tous");
@@ -408,7 +408,7 @@ export function DossiersSection() {
                       </h2>
                       <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {formatDateFr(r.slot_date)} · {t("admin.period." + r.slot_period)} ·{" "}
+                        {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)} ·{" "}
                         {r.phone}
                       </p>
                     </div>

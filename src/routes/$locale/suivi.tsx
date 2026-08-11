@@ -393,13 +393,13 @@ function StatusResult({
         <div className="sm:text-right">
           <p className="text-sm text-muted-foreground">{t("suivi.appointment")}</p>
           <p className="font-medium">
-            {formatDateFr(result.slot_date)} · {periodText}
+            {formatDateFr(result.slot_date, locale)} · {periodText}
             {result.slot_hour ? t("suivi.at", [result.slot_hour]) : ""}
           </p>
           <p className="mt-2 flex items-center justify-start gap-2 font-mono text-[10px] uppercase text-muted-foreground sm:justify-end">
             <RadioTower className={`size-3 ${live ? "animate-pulse text-primary" : ""}`} />
             {t("suivi.updated")}{" "}
-            {new Date(updatedAt).toLocaleTimeString("fr-FR", {
+            {new Date(updatedAt).toLocaleTimeString(locale, {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -485,7 +485,7 @@ function StatusResult({
           {sla?.expectedDate && (
             <div className="mt-4 border border-primary/30 bg-primary/5 p-4">
               <p className="text-sm">
-                <strong>{t("suivi.sla.expected", [formatDateFr(sla.expectedDate)])}</strong>
+                <strong>{t("suivi.sla.expected", [formatDateFr(sla.expectedDate, locale)])}</strong>
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {sla.remainingDays < 1
@@ -543,12 +543,12 @@ function StatusResult({
                       </span>
                     ) : reachedAt ? (
                       <time className="font-mono text-[10px] uppercase text-muted-foreground">
-                        {new Date(reachedAt).toLocaleDateString("fr-FR", {
+                        {new Date(reachedAt).toLocaleDateString(locale, {
                           day: "2-digit",
                           month: "short",
                         })}{" "}
                         ·{" "}
-                        {new Date(reachedAt).toLocaleTimeString("fr-FR", {
+                        {new Date(reachedAt).toLocaleTimeString(locale, {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -667,7 +667,7 @@ function StatusResult({
 }
 
 function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (entries.length === 0) {
     return <p className="mt-3 text-sm text-muted-foreground">{t("suivi.timeline.empty")}</p>;
   }
@@ -707,7 +707,7 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <time className="font-mono text-[10px] uppercase text-muted-foreground">
-                {new Date(e.created_at).toLocaleString("fr-FR", {
+                {new Date(e.created_at).toLocaleString(locale, {
                   day: "2-digit",
                   month: "short",
                   hour: "2-digit",
@@ -763,7 +763,7 @@ function stageLabel(t: TranslateFn, stage: string): string {
 }
 
 function QuoteDecision({ token }: { token: string }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const fetchQuote = useServerFn(getQuoteStatus);
   const decide = useServerFn(decideOnQuote);
   const [decided, setDecided] = useState<{ approve: boolean } | null>(null);
@@ -811,7 +811,7 @@ function QuoteDecision({ token }: { token: string }) {
             <div>
               <dt className="text-xs text-muted-foreground">{t("suivi.quote.amount")}</dt>
               <dd className="mt-1 text-2xl font-semibold">
-                {(quote.data.quote.amount ?? 0).toLocaleString("fr-FR")} FCFA
+                {(quote.data.quote.amount ?? 0).toLocaleString(locale)} FCFA
               </dd>
             </div>
             <div>
@@ -957,7 +957,7 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
 }
 
 function CommentsBlock({ reference, code }: { reference: string; code: string }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const fetchComments = useServerFn(getReservationComments);
   const addComment = useServerFn(addReservationComment);
   const queryClient = useQueryClient();
@@ -1017,7 +1017,7 @@ function CommentsBlock({ reference, code }: { reference: string; code: string })
                     ? "Atelier"
                     : ""}
                 {c.author_name || c.author === "staff" ? " · " : ""}
-                {new Date(c.created_at).toLocaleString("fr-FR", {
+                {new Date(c.created_at).toLocaleString(locale, {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",

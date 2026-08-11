@@ -51,7 +51,7 @@ export function ReservationSummary({
   immediate,
   headingRef,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const device = deviceBySlug(values.appareil);
   const faults = matchedFaults(values.appareil, values.panne);
   const estimate = computeEstimate(faults);
@@ -106,8 +106,8 @@ export function ReservationSummary({
             </span>
             <span className="block text-lg font-bold">
               {immediate && !values.heure
-                ? `${formatDateFr(values.date)} · ${t("wizard.summary.immediate")}`
-                : `${formatDateFr(values.date)} · ${values.heure ? values.heure : t("wizard.period." + values.creneau)}`}
+                ? `${formatDateFr(values.date, locale)} · ${t("wizard.summary.immediate")}`
+                : `${formatDateFr(values.date, locale)} · ${values.heure ? values.heure : t("wizard.period." + values.creneau)}`}
             </span>
           </span>
         </span>
