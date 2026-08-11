@@ -39,3 +39,6 @@ supabase/.temp/
 # Playwright
 test-results/
 playwright-report/
+
+# Backups de base de données (données sensibles)
+backups/
