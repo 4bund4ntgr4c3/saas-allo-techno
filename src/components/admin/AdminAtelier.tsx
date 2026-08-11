@@ -15,7 +15,6 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog";
-import { STATUS_LABEL } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 import { AdminCalendar } from "@/components/admin/AdminCalendar";
@@ -69,7 +68,7 @@ export function AtelierBoard() {
       await setReservationStatus({ data: { id, status } });
     },
     onSuccess: (_d, vars) => {
-      toast.success(t("admin.atelier.statusChanged", [STATUS_LABEL[vars.status] ?? vars.status]));
+      toast.success(t("admin.atelier.statusChanged", [t("admin.status." + vars.status)]));
       queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
@@ -255,7 +254,7 @@ export function AtelierBoard() {
                     <span
                       className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[status] ?? ""}`}
                     >
-                      {STATUS_LABEL[status] ?? status}
+                      {t("admin.status." + status)}
                     </span>
                     <span className="font-mono text-xs text-muted-foreground">
                       {columnCards.length}
@@ -428,7 +427,7 @@ export function AtelierCard({
           <ChevronLeft className="size-4" />
         </Button>
         <span className="text-[10px] text-muted-foreground">
-          {STATUS_LABEL[card.status] ?? card.status}
+          {t("admin.status." + card.status)}
         </span>
         <Button
           variant="ghost"

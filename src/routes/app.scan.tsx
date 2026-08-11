@@ -14,7 +14,7 @@ export const Route = createFileRoute("/app/scan")({
   component: ScanPage,
   validateSearch: (search: Record<string, unknown>): ScanSearch => {
     const q = typeof search["q"] === "string" ? search["q"] : undefined;
-    return q ? { q } : {};
+    return q !== undefined ? { q } : {};
   },
 });
 

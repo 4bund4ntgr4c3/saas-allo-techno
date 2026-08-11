@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { History, Loader2, Banknote, ImagePlus, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { STATUS_LABEL, PERIOD_LABEL, formatDateFr } from "@/lib/reservation-schema";
+import { formatDateFr } from "@/lib/reservation-schema";
 import { getReservationQuote } from "@/lib/admin.functions";
 import { sendQuote } from "@/lib/quote.functions";
 import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
@@ -195,7 +195,7 @@ function KanbanBoard({
               <span
                 className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[status] ?? ""}`}
               >
-                {STATUS_LABEL[status]}
+                {t("admin.status." + status)}
               </span>
               <span className="font-mono text-xs text-muted-foreground">{columnRows.length}</span>
             </div>
@@ -216,7 +216,7 @@ function KanbanBoard({
                     {r.customer_name} — {r.device}
                   </p>
                   <p className="mt-1 text-[11px] text-muted-foreground">
-                    {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
+                    {formatDateFr(r.slot_date)} · {t("admin.period." + r.slot_period)} · {r.phone}
                   </p>
                 </button>
               ))}
@@ -270,7 +270,7 @@ function StageControls({
         >
           {STATUSES.map((s) => (
             <option key={s} value={s}>
-              {STATUS_LABEL[s]}
+              {t("admin.status." + s)}
             </option>
           ))}
         </select>
@@ -294,7 +294,7 @@ function StageControls({
               setNote("");
             }}
           >
-            {t("admin.kanban.moveToNext", [STATUS_LABEL[next] ?? ""])}
+            {t("admin.kanban.moveToNext", [t("admin.status." + next)])}
           </Button>
         ) : null}
         <Button variant="outline" size="sm" onClick={onToggleHistory}>
@@ -344,8 +344,8 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
             {new Date(h.created_at).toLocaleString("fr-FR")}
           </time>
           <span>
-            {h.old_status ? `${STATUS_LABEL[h.old_status]} → ` : t("admin.kanban.history.creation")}
-            <strong>{STATUS_LABEL[h.new_status]}</strong>
+            {h.old_status ? `${t("admin.status." + h.old_status)} → ` : t("admin.kanban.history.creation")}
+            <strong>{t("admin.status." + h.new_status)}</strong>
           </span>
           {h.note ? <span className="text-muted-foreground">— {h.note}</span> : null}
         </li>

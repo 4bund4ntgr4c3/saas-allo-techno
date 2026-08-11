@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WifiOff, Wifi, Clock, Database } from "lucide-react";
+import { WifiOff, Clock, Database } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 /**

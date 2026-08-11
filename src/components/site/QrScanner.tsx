@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Html5Qrcode, type Html5QrcodeCameraConfig } from "html5-qrcode";
+import { Html5Qrcode, type Html5QrcodeCameraScanConfig } from "html5-qrcode";
 import { Camera, X, ScanLine, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -11,7 +11,7 @@ interface QrScannerProps {
   qrOnly?: boolean;
 }
 
-const SCAN_CONFIG: Html5QrcodeCameraConfig = {
+const SCAN_CONFIG: Html5QrcodeCameraScanConfig = {
   fps: 10,
   qrbox: { width: 250, height: 250 },
   aspectRatio: 1.0,
@@ -29,10 +29,6 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
 
     const scanner = new Html5Qrcode("qr-scanner-region");
     scannerRef.current = scanner;
-
-    const formats = qrOnly
-      ? undefined
-      : undefined; // default scans all supported formats
 
     scanner
       .start(
@@ -60,7 +56,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
       if (scannerRef.current?.isScanning) {
         scannerRef.current.stop().catch(() => {});
       }
-      scannerRef.current?.clear().catch(() => {});
+      try { scannerRef.current?.clear(); } catch { /* ignore */ }
     };
   }, [onScan, qrOnly]);
 

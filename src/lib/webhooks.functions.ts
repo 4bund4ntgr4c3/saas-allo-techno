@@ -21,7 +21,7 @@ export type WebhookLog = {
   id: string;
   webhook_id: string;
   event: string;
-  payload: Record<string, unknown>;
+  payload: Record<string, string | number | boolean | null>;
   status_code: number | null;
   response_body: string | null;
   duration_ms: number | null;
@@ -138,7 +138,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
  */
 export async function triggerWebhooks(
   event: WebhookEvent,
-  payload: Record<string, unknown>,
+  payload: Record<string, string | number | boolean | null>,
 ): Promise<void> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/start";
+import { createServerFn } from "@tanstack/react-start";
 import { rateLimit } from "@/lib/security";
 
 export type HandoffSignature = {
@@ -23,7 +23,7 @@ export const saveHandoffSignature = createServerFn({ method: "POST" })
     }
     return d;
   })
-  .handler(async ({ data }) => {
+  .handler(async ({ data }: { data: { reservation_id: string; customer_name: string; signature_data_url: string } }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("save-signature", 10))) throw new Error("Trop de demandes.");
 
@@ -42,7 +42,7 @@ export const getHandoffSignature = createServerFn({ method: "POST" })
     const { reservation_id } = data as { reservation_id: string };
     return { reservation_id };
   })
-  .handler(async ({ data }): Promise<HandoffSignature | null> => {
+  .handler(async ({ data }: { data: { reservation_id: string } }): Promise<HandoffSignature | null> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("get-signature", 20))) throw new Error("Trop de demandes.");
 

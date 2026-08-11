@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { FileDown, LayoutGrid, RadioTower, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { PERIOD_LABEL, STATUS_LABEL, formatDateFr } from "@/lib/reservation-schema";
+import { formatDateFr } from "@/lib/reservation-schema";
 import { setReservationStatus } from "@/lib/admin.functions";
 import { setDeliveryStatus } from "@/lib/delivery.functions";
 import { downloadInvoicePdf, downloadReservationsCsv, downloadReservationsPdf } from "@/lib/invoice";
@@ -134,7 +134,7 @@ export function DossiersSection() {
       await setReservationStatus({ data: { id, status, note: note || undefined } });
     },
     onSuccess: (_d, vars) => {
-      toast.success(t("admin.dossier.statusUpdated", [STATUS_LABEL[vars.status] ?? vars.status]));
+      toast.success(t("admin.dossier.statusUpdated", [t("admin.status." + vars.status)]));
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
       void logAudit(supabase as never, {
@@ -213,7 +213,7 @@ export function DossiersSection() {
         <select id="filter-status" className={field} value={filter} onChange={(e) => setFilter(e.target.value as Status | "toutes")}>
           <option value="toutes">{t("admin.filters.all")}</option>
           {STATUSES.map((s) => (
-            <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+            <option key={s} value={s}>{t("admin.status." + s)}</option>
           ))}
         </select>
         {!isTechnicien && (
@@ -275,11 +275,11 @@ export function DossiersSection() {
                       <h2 className="text-lg font-semibold">{r.customer_name} — {r.device}</h2>
                       <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {formatDateFr(r.slot_date)} · {PERIOD_LABEL[r.slot_period]} · {r.phone}
+                        {formatDateFr(r.slot_date)} · {t("admin.period." + r.slot_period)} · {r.phone}
                       </p>
                     </div>
                     <span className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}>
-                      {STATUS_LABEL[r.status]}
+                      {t("admin.status." + r.status)}
                     </span>
                     <Button variant="ghost" size="sm" onClick={() => downloadInvoicePdf(r)}>
                       <FileDown className="size-4" />

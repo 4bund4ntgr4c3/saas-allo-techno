@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatFcfa } from "@/data/catalog";
-import { STATUS_LABEL } from "@/lib/reservation-schema";
 import { getAdminKpis } from "@/lib/admin.functions";
 import { exportPaymentsCsv } from "@/lib/export.functions";
 import { useI18n } from "@/lib/i18n/context";
@@ -214,7 +213,7 @@ function KpisSection() {
             {data.avgStageDuration.map((s) => (
               <li key={s.stage} className="flex items-center gap-3 text-sm">
                 <span className="w-44 shrink-0 truncate text-muted-foreground">
-                  {STATUS_LABEL[s.stage] ?? s.stage}
+                  {t("admin.status." + s.stage) || s.stage}
                 </span>
                 <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
                   <div
