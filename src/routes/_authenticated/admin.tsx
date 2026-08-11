@@ -7,10 +7,11 @@ import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { verifyOtpLogin } from "@/lib/otp.functions";
+import { useI18n } from "@/lib/i18n/context";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { useI18n } from "@/lib/i18n/context";
+import { AdminSectionTabs } from "@/components/admin/AdminSectionTabs";
 import { field } from "@/components/admin/primitives/AdminField";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -196,6 +197,7 @@ function AdminLayout() {
       <SidebarInset>
         <AdminHeader />
         <div className="flex-1 p-6">
+          <AdminSectionTabs />
           <Outlet />
         </div>
       </SidebarInset>

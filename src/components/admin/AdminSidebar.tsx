@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  BarChart3, BadgeCheck, ChevronDown, FileText, History,
+  BarChart3, BadgeCheck, FileText, History,
   LayoutDashboard, MailPlus, Package, PieChart, RadioTower, RotateCcw,
   ShieldCheck, ShoppingCart, TrendingUp, Users, Wrench, Webhook,
 } from "lucide-react";
@@ -21,7 +20,6 @@ type NavItem = {
   labelKey: string;
   to?: string;
   icon: React.ComponentType<{ className?: string }>;
-  children?: NavItem[];
   badge?: string;
 };
 
@@ -58,18 +56,12 @@ const NAV_GROUPS: NavGroup[] = [
   {
     labelKey: "admin.nav.analytics",
     items: [
-      {
-        labelKey: "admin.nav.analytics",
-        icon: BarChart3,
-        children: [
-          { labelKey: "admin.stats.tab", to: "/admin/stats", icon: PieChart },
-          { labelKey: "admin.tab.kpis", to: "/admin/kpis", icon: TrendingUp },
-          { labelKey: "admin.tab.analytics", to: "/admin/analytics", icon: BarChart3 },
-          { labelKey: "admin.tab.funnel", to: "/admin/analytics-advanced", icon: TrendingUp },
-          { labelKey: "admin.tab.sla", to: "/admin/sla", icon: BarChart3 },
-          { labelKey: "admin.tab.satisfaction", to: "/admin/satisfaction", icon: TrendingUp },
-        ],
-      },
+      { labelKey: "admin.stats.tab", to: "/admin/stats", icon: PieChart },
+      { labelKey: "admin.tab.kpis", to: "/admin/kpis", icon: TrendingUp },
+      { labelKey: "admin.tab.analytics", to: "/admin/analytics", icon: BarChart3 },
+      { labelKey: "admin.tab.funnel", to: "/admin/analytics-advanced", icon: TrendingUp },
+      { labelKey: "admin.tab.sla", to: "/admin/sla", icon: BarChart3 },
+      { labelKey: "admin.tab.satisfaction", to: "/admin/satisfaction", icon: TrendingUp },
     ],
   },
   {
@@ -110,64 +102,17 @@ function isItemActive(pathname: string, item: NavItem, locale: string): boolean 
     }
     return pathname.includes(item.to);
   }
-  if (item.children) {
-    return item.children.some((child) => isItemActive(pathname, child, locale));
-  }
   return false;
-}
-
-function findExpandedItems(pathname: string, locale: string): Set<string> {
-  const expanded = new Set<string>();
-  for (const group of NAV_GROUPS) {
-    for (const item of group.items) {
-      if (item.children && isItemActive(pathname, item, locale)) {
-        expanded.add(item.labelKey);
-      }
-    }
-  }
-  return expanded;
 }
 
 function NavItemLink({
   item,
   isActive,
-  onClick,
 }: {
   item: NavItem;
   isActive: boolean;
-  onClick?: () => void;
 }) {
   const { t } = useI18n();
-
-  if (item.children) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(
-          "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors duration-150",
-          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
-            : "text-sidebar-foreground/70",
-        )}
-      >
-        <item.icon
-          className={cn(
-            "size-4 shrink-0 transition-colors",
-            isActive ? "text-foreground" : "text-muted-foreground",
-          )}
-        />
-        <span className="flex-1 text-left truncate">{t(item.labelKey)}</span>
-        <ChevronDown
-          className={cn(
-            "size-3.5 shrink-0 text-muted-foreground transition-transform duration-200",
-            isActive && "rotate-180",
-          )}
-        />
-      </button>
-    );
-  }
 
   return (
     <Link
@@ -197,22 +142,6 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
   const location = useLocation();
   const initials = (user.email ?? "A").slice(0, 2).toUpperCase();
 
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(() =>
-    findExpandedItems(location.pathname, t("locale") as string),
-  );
-
-  const toggleItem = (labelKey: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(labelKey)) {
-        next.delete(labelKey);
-      } else {
-        next.add(labelKey);
-      }
-      return next;
-    });
-  };
-
   return (
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
@@ -240,57 +169,11 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
                 <div className="space-y-0.5">
                   {group.items.map((item) => {
                     const isActive = isItemActive(location.pathname, item, t("locale") as string);
-                    const isExpanded = expandedItems.has(item.labelKey);
 
                     return (
-                      <div key={item.labelKey}>
-                        <NavItemLink
-                          item={item}
-                          isActive={isActive}
-                          {...(item.children ? { onClick: () => toggleItem(item.labelKey) } : {})}
-                        />
-
-                        {item.children && (
-                          <div
-                            className={cn(
-                              "overflow-hidden transition-all duration-200",
-                              isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
-                            )}
-                          >
-                            <div className="ml-4 border-l border-border pl-3 py-0.5 space-y-0.5">
-                              {item.children.map((child) => {
-                                const childActive = child.to
-                                  ? (child.to === "/admin"
-                                      ? location.pathname === "/admin" || location.pathname === `/${t("locale")}/admin`
-                                      : location.pathname.includes(child.to))
-                                  : false;
-                                return (
-                                  <Link
-                                    key={child.labelKey}
-                                    to={child.to!}
-                                    className={cn(
-                                      "flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm transition-colors duration-150",
-                                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                                      childActive
-                                        ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                                        : "text-sidebar-foreground/60",
-                                    )}
-                                  >
-                                    <span className="truncate">{t(child.labelKey)}</span>
-                                    {child.badge && (
-                                      <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                                        {child.badge}
-                                      </span>
-                                    )}
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-
-                        {!item.children && item.badge && (
+                      <div key={item.labelKey} className="relative">
+                        <NavItemLink item={item} isActive={isActive} />
+                        {item.badge && (
                           <span className="absolute right-2.5 top-1/2 -translate-y-1/2 flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary group-data-[collapsible=icon]:hidden">
                             {item.badge}
                           </span>
