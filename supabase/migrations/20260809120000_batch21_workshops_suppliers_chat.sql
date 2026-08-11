@@ -101,11 +101,11 @@ CREATE TABLE IF NOT EXISTS api_keys (
 CREATE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys(key_hash) WHERE active = TRUE;
 
 -- Feature flags defaults
-INSERT INTO feature_flags (name, enabled) VALUES
+INSERT INTO feature_flags (key, enabled) VALUES
   ('referral_program', TRUE),
   ('multi_workshop', FALSE),
   ('supplier_management', FALSE),
   ('chat_messaging', FALSE),
   ('google_reviews_widget', TRUE),
   ('public_api', FALSE)
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (key) DO NOTHING;

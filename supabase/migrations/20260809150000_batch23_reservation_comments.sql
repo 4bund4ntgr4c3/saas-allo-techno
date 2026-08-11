@@ -27,7 +27,7 @@ create policy "reservation_comments_read_own"
 create policy "reservation_comments_read_staff"
   on public.reservation_comments
   for select
-  using (public.is_staff());
+  using (public.is_staff(auth.uid()));
 
 -- Anyone can insert (rate-limited server-side)
 create policy "reservation_comments_insert"
@@ -85,9 +85,9 @@ $$;
 create or replace function public.add_reservation_comment(
   _reference  text,
   _code       text,
+  _body       text,
   _author     text default 'customer',
-  _author_name text default null,
-  _body       text
+  _author_name text default null
 )
 returns uuid
 language plpgsql

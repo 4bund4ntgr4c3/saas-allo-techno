@@ -156,7 +156,7 @@ INSERT INTO escalation_rules (sla_stage, escalate_after_hours, notify_roles, aut
 ON CONFLICT DO NOTHING;
 
 -- Feature flags for batch 22
-INSERT INTO feature_flags (name, enabled) VALUES
+INSERT INTO feature_flags (key, enabled) VALUES
   ('inventory_management', TRUE),
   ('sla_tracking', TRUE),
   ('satisfaction_surveys', TRUE),
@@ -164,4 +164,4 @@ INSERT INTO feature_flags (name, enabled) VALUES
   ('extended_warranty', TRUE),
   ('scheduled_reports', FALSE),
   ('auto_escalation', TRUE)
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (key) DO NOTHING;

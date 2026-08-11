@@ -1,4 +1,7 @@
 -- Performance indexes for frequently queried columns
+-- scheduled_notifications.status / scheduled_for (colonne creee ici, absente de reminders.sql)
+alter table public.scheduled_notifications add column if not exists status text;
+alter table public.scheduled_notifications add column if not exists scheduled_for timestamptz;
 CREATE INDEX IF NOT EXISTS idx_reservations_reference ON public.reservations(reference);
 CREATE INDEX IF NOT EXISTS idx_reservations_user_id ON public.reservations(user_id);
 CREATE INDEX IF NOT EXISTS idx_reservations_status ON public.reservations(status);

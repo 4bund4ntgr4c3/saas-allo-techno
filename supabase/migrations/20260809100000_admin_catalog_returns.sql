@@ -114,7 +114,7 @@ grant execute on function public.catalog_upsert_device(text, text, text, text, t
 -- Panne (insert si _id null, sinon mise à jour par id ; l'upsert se
 -- replie sur l'unicité (device_slug, slug))
 create or replace function public.catalog_upsert_fault(
-  _id integer default null,
+  _id integer,
   _device_slug text,
   _slug text,
   _label text,
