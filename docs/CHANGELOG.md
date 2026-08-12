@@ -7,14 +7,34 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
-## [2026.08.12] — 2026-08-12 (Audit & Security Hardening)
+## [2026.08.12-b38] — 2026-08-12 (Strategic Enterprise & Operations Suite — Batch 38)
 
 ### Added
 
+- **Portail Entreprise B2B Phase 3 : Facturation Consolidée** (`/app/organizations/$orgId/billing` & migration `20260818000000_b2b_billing_maintenance.sql`) : consolidation mensuelle automatique des interventions atelier en factures périodiques, calcul de la TVA 18%, gestion des statuts de règlement et export PDF.
+- **Portail Entreprise B2B Phase 3 : Maintenance Préventive du Parc** (`/app/organizations/$orgId/maintenance`) : calendrier prévisionnel des révisions récurrentes (dépoussiérage, pâte thermique, santé batterie, diagnostic SSD), alertes d'échéances et validation en 1 clic.
+- **Logistique Terrain & Application Coursier** (`/admin/livraisons` & `AdminDeliveries.tsx`) : tableau de bord de gestion des courses d'enlèvement et de livraison à domicile, filtrage par statut, navigation GPS en 1 clic, appel et WhatsApp coursier pré-rempli, modal de signature tactile client.
+- **Gestion Avancée des Stocks & Bon de Commande Fournisseur Rapide** (`AdminInventory.tsx` & `inventory.functions.ts`) : tableau de bord de valorisation financière du stock (FCFA, références actives, seuils critiques), génération automatique en 1 clic d'un bon de commande fournisseur pour les pièces en rupture et export instantané vers WhatsApp.
+- **Marketing & Relances Enquêtes de Satisfaction J+2** (`AdminSatisfaction.tsx`) : détection automatique des dossiers clôturés et envoi des enquêtes NPS/Avis par WhatsApp avec incitation +50 points fidélité.
+- **Tests E2E Playwright** (`e2e/caisse-pos.spec.ts`, `e2e/b2b-maintenance.spec.ts`) : couverture E2E des accès sécurisés sur les routes POS et B2B.
+
+---
+
+## [2026.08.12] — 2026-08-12 (Admin Suite & POS Overhaul — Batch 37)
+
+### Added
+
+- **Caisse & Encaissement Direct Comptoir (POS)** (`/admin/caisse` & `AdminPOS.tsx`) : encaissement direct en espèces ou Mobile Money (MTN, Moov, Celtiis), recherche dossier ou vente rapide d'accessoires, calculatrice de monnaie automatique et impression thermique du ticket de caisse.
+- **Générateur d'Étiquettes Thermiques Atelier** (`AdminDeviceLabel.tsx`) : impression d'étiquettes adhésives 58mm/80mm avec QR code de suivi client, référence dossier, coordonnées et diagnostic panne.
+- **Inspection & Contrôle Qualité QA** (`AdminChecklistModal.tsx` & migration `20260817000000_checklists.sql`) : grille d'évaluation 10 points (écran, tactile, caméras, batterie, audio, boutons, châssis) pour l'entrée et la sortie d'atelier.
+- **Actions Rapides WhatsApp & SMS** (`AdminQuickContact.tsx`) : messages préformatés en 1 clic (prise en charge, devis prêt, appareil réparé, relance) intégrés dans les dossiers et l'atelier.
+- **Messagerie Admin Multi-Conversations** (`AdminChat.tsx`) : messagerie bidirectionnelle en temps réel connectée aux dossiers clients et à Supabase Realtime avec accusés de lecture.
+- **Feature Flags Admin** (`/admin/feature-flags`) : interface de pilotage et d'activation dynamique des fonctionnalités système.
 - **Robots.txt** : protection de la route privée B2B (`Disallow: /app`) pour les moteurs de recherche.
 
 ### Changed
 
+- **Admin Dashboard** : calcul exact du chiffre d'affaires mensuel basé sur la table `payments` (`status = 'paid'`) et les devis validés.
 - **Security Headers** : ajustement de la `permissions-policy` pour autoriser la caméra (`camera=(self)`) et les paiements (`payment=(self)`) sur l'origine propre, nécessaires au scanner QR d'atelier et aux flux Mobile Money.
 - **Webhook KKiaPay** : comparaison du secret webhook en temps constant (`timingSafeEqual`) pour prévenir les attaques temporelles.
 

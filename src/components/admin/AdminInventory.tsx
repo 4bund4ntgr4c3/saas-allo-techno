@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, FileText, MessageSquare, ShoppingBag } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { DataTable } from "@/components/admin/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -10,8 +10,11 @@ import {
   createPart,
   recordMovement,
   getStockMovements,
+  createSupplierOrderFromLowStock,
+  getInventoryValuation,
   type Part,
   type StockMovement,
+  type SupplierOrderDraft,
 } from "@/lib/inventory.functions";
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
@@ -32,6 +35,8 @@ export function AdminInventory() {
   const [showNew, setShowNew] = useState(false);
   const [movementsPartId, setMovementsPartId] = useState<string | null>(null);
   const [movements, setMovements] = useState<StockMovement[]>([]);
+  const [supplierOrder, setSupplierOrder] = useState<SupplierOrderDraft | null>(null);
+  const [valuation, setValuation] = useState<{ totalValue: number; totalUnits: number; totalReferences: number; lowStockCount: number } | null>(null);
   const [form, setForm] = useState({
     name: "",
     sku: "",
@@ -43,6 +48,42 @@ export function AdminInventory() {
     unit_price: "0",
     location: "",
   });
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [allParts, low, val] = await Promise.all([
+        getInventory(),
+        getLowStockParts(),
+        getInventoryValuation(),
+      ]);
+      setParts(allParts);
+      setLowStock(low);
+      setValuation(val);
+    } catch {
+      // Fallback
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerateSupplierOrder = async () => {
+    try {
+      const draft = await createSupplierOrderFromLowStock();
+      setSupplierOrder(draft);
+    } catch {
+      //
+    }
+  };
+
+  const exportOrderWhatsApp = (draft: SupplierOrderDraft) => {
+    let msg = `*ALLÔ TECHNO — Bon de Commande Fournisseur (${draft.order_reference})*\n\n`;
+    draft.items.forEach((item, idx) => {
+      msg += `${idx + 1}. *${item.name}* (${item.brand} ${item.model}) - Réf: ${item.sku}\n   Quantité : *${item.recommended_order} pcs*\n`;
+    });
+    msg += `\n*Montant estimé total :* ${formatFcfa(draft.total_estimated_cost)}\nMerci de nous confirmer la disponibilité et le délai de livraison.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+  };
 
   const columns: ColumnDef<Part>[] = [
     {
@@ -132,19 +173,8 @@ export function AdminInventory() {
     },
   ];
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const [all, low] = await Promise.all([getInventory(), getLowStockParts()]);
-      setParts(all);
-      setLowStock(low);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    load();
+    loadData();
   }, []);
 
   const handleCreate = async () => {
@@ -171,7 +201,7 @@ export function AdminInventory() {
       unit_price: "0",
       location: "",
     });
-    load();
+    loadData();
   };
 
   const handleMovement = async (partId: string, type: "in" | "out") => {
@@ -187,7 +217,7 @@ export function AdminInventory() {
         performed_by: "admin",
       },
     });
-    load();
+    loadData();
   };
 
   const showMovements = async (partId: string) => {
@@ -197,33 +227,141 @@ export function AdminInventory() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="at-eyebrow">{t("admin.inventory.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.inventory.title")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("admin.inventory.description")}</p>
         </div>
-        <Button size="sm" onClick={() => setShowNew(true)}>
-          <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
-        </Button>
+        <div className="flex items-center gap-2">
+          {lowStock.length > 0 && (
+            <Button size="sm" variant="secondary" onClick={handleGenerateSupplierOrder} className="gap-1.5 font-bold">
+              <ShoppingBag className="size-3.5" />
+              <span>Générer Bon Fournisseur</span>
+            </Button>
+          )}
+          <Button size="sm" onClick={() => setShowNew(true)}>
+            <Plus className="mr-1 size-3" /> {t("admin.catalog.button.add")}
+          </Button>
+        </div>
       </div>
 
+      {/* Valuation KPIs */}
+      {valuation && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">Valeur du Stock</p>
+            <p className="text-lg font-black font-mono text-primary">{formatFcfa(valuation.totalValue)}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">Unités Totales</p>
+            <p className="text-lg font-black font-mono text-foreground">{valuation.totalUnits} pièces</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">Références Actives</p>
+            <p className="text-lg font-black font-mono text-foreground">{valuation.totalReferences}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">Sous Seuil Critique</p>
+            <p className={`text-lg font-black font-mono ${valuation.lowStockCount > 0 ? "text-amber-500" : "text-success"}`}>
+              {valuation.lowStockCount}
+            </p>
+          </div>
+        </div>
+      )}
+
       {lowStock.length > 0 && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="size-4 text-amber-600" />
-            <span className="text-sm font-bold text-amber-800">{t("admin.inventory.lowStock")} ({lowStock.length})</span>
+        <div className="rounded-xl border border-amber-300/60 bg-amber-500/10 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-4 text-amber-600" />
+              <span className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                {t("admin.inventory.lowStock")} ({lowStock.length} références à réapprovisionner)
+              </span>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs gap-1.5 bg-background"
+              onClick={handleGenerateSupplierOrder}
+            >
+              <FileText className="size-3.5 text-primary" />
+              <span>Préparer commande</span>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-2">
             {lowStock.map((p) => (
               <span
                 key={p.id}
-                className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800"
+                className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-900 dark:text-amber-200"
               >
                 {p.name} ({p.quantity}/{p.min_quantity})
               </span>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Supplier Order Modal */}
+      {supplierOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="relative w-full max-w-2xl rounded-xl bg-card border border-border p-6 shadow-2xl space-y-5 max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
+              <div>
+                <h3 className="font-bold text-base">Bon de Commande Fournisseur Rapide</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Réf : <span className="font-mono font-bold text-foreground">{supplierOrder.order_reference}</span>
+                </p>
+              </div>
+              <button onClick={() => setSupplierOrder(null)} className="p-1 rounded text-muted-foreground hover:text-foreground">
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto divide-y divide-border/60 pr-1">
+              {supplierOrder.items.map((item) => (
+                <div key={item.part_id} className="py-2.5 flex items-center justify-between text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground">{item.name}</p>
+                    <p className="text-[11px] text-muted-foreground font-mono">
+                      {item.brand} {item.model} • SKU: {item.sku}
+                    </p>
+                  </div>
+                  <div className="text-right space-y-0.5">
+                    <p className="font-bold text-primary">
+                      Quantité conseillée : <span className="font-mono text-sm">{item.recommended_order}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground font-mono">
+                      {formatFcfa(item.total_cost)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-border pt-3 flex items-center justify-between shrink-0">
+              <div>
+                <p className="text-[11px] text-muted-foreground">Estimation totale :</p>
+                <p className="text-base font-extrabold text-foreground font-mono">
+                  {formatFcfa(supplierOrder.total_estimated_cost)}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => setSupplierOrder(null)}>
+                  Fermer
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-success text-white hover:bg-success/90 gap-1.5 font-bold"
+                  onClick={() => exportOrderWhatsApp(supplierOrder)}
+                >
+                  <MessageSquare className="size-3.5" />
+                  <span>Envoyer par WhatsApp</span>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

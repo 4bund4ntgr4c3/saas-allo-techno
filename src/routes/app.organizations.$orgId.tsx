@@ -1,8 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Building2, Laptop, LifeBuoy, Loader2, MapPin, Trash2, UserPlus } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  CreditCard,
+  Laptop,
+  LifeBuoy,
+  Loader2,
+  MapPin,
+  ShieldCheck,
+  Trash2,
+  UserPlus,
+  Users,
+  Hash,
+  Globe,
+  Mail,
+  Phone,
+  Briefcase,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,10 +54,28 @@ const ROLES: OrgRole[] = [
   "membre",
 ];
 
+const NAV_ITEMS = [
+  { labelKey: "org.equipment.title", to: "equipment", icon: Laptop },
+  { labelKey: "org.sites.title", to: "sites", icon: MapPin },
+  { labelKey: "org.tickets.title", to: "tickets", icon: LifeBuoy },
+  { labelKey: "org.nav.maintenance", to: "maintenance", icon: ShieldCheck },
+  { labelKey: "org.nav.billing", to: "billing", icon: CreditCard },
+] as const;
+
+const ROLE_COLORS: Record<string, string> = {
+  admin_org: "bg-primary/10 text-primary border-primary/20",
+  responsable_maintenance: "bg-accent/10 text-accent border-accent/20",
+  responsable_site: "bg-success/10 text-success border-success/20",
+  comptabilite: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  lecture_seule: "bg-muted text-muted-foreground",
+  membre: "bg-muted text-muted-foreground",
+};
+
 function OrgDetail() {
   const { orgId } = Route.useParams();
   const { t } = useI18n();
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
   const org = orgs.data?.find((o) => o.id === orgId);
@@ -94,35 +129,85 @@ function OrgDetail() {
 
   if (!org) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {orgs.isLoading ? t("common.loading") : t("org.error.notfound")}
-      </p>
+      <div className="flex items-center justify-center py-20">
+        {orgs.isLoading ? (
+          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        ) : (
+          <p className="text-sm text-muted-foreground">{t("org.error.notfound")}</p>
+        )}
+      </div>
     );
   }
 
+  const STATUS_COLORS: Record<string, string> = {
+    active: "bg-success/15 text-success border-success/30",
+    suspended: "bg-destructive/15 text-destructive border-destructive/30",
+    pending: "bg-amber-500/15 text-amber-600 border-amber-500/30",
+  };
+
+  const kpiCards = [
+    {
+      label: t("org.form.equipmentCount"),
+      value: org.equipment_count ?? 0,
+      icon: Laptop,
+      color: "text-primary",
+    },
+    {
+      label: t("org.form.siteCount"),
+      value: org.site_count ?? 0,
+      icon: MapPin,
+      color: "text-accent",
+    },
+    {
+      label: t("org.detail.members"),
+      value: members.data?.length ?? "—",
+      icon: Users,
+      color: "text-success",
+    },
+  ];
+
+  const orgInfoItems = [
+    { icon: Hash, label: t("org.form.registrationNumber"), value: org.registration_number },
+    { icon: MapPin, label: t("org.form.address"), value: org.address },
+    { icon: Globe, label: t("org.form.country"), value: org.country },
+    { icon: Phone, label: t("org.form.phone"), value: org.phone },
+    { icon: Mail, label: t("org.form.email"), value: org.email },
+    { icon: Briefcase, label: t("org.form.sector"), value: org.sector },
+    {
+      icon: Users,
+      label: t("org.form.size"),
+      value: org.size ? t(`org.form.size.${org.size}`) : null,
+    },
+  ];
+
   return (
     <div className="space-y-8">
-      <div>
+      {/* ─── Back + Header ─── */}
+      <div className="at-in">
         <Link
           to="/app"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
           {t("org.detail.back")}
         </Link>
-        <div className="mt-4 flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-sm bg-foreground text-background">
-              <Building2 className="size-6" />
+
+        <div className="mt-5 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex size-14 items-center justify-center rounded-sm bg-gradient-to-br from-foreground to-foreground/80 text-background shadow-sm">
+              <Building2 className="size-7" />
             </div>
             <div>
-              <h1 className="at-display text-2xl font-bold">{org.name}</h1>
-              <p className="text-sm text-muted-foreground">
-                {org.trade_name ?? org.registration_number ?? org.sector ?? org.country}
+              <h1 className="at-display text-2xl font-bold md:text-3xl">{org.name}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {org.trade_name ?? org.sector ?? org.country}
               </p>
             </div>
           </div>
-          <Badge variant="outline">
+          <Badge
+            variant="outline"
+            className={`${STATUS_COLORS[org.status] ?? ""} font-mono text-[10px] font-semibold uppercase tracking-wider`}
+          >
             {t(
               org.status === "active"
                 ? "org.list.status.active"
@@ -134,79 +219,104 @@ function OrgDetail() {
         </div>
       </div>
 
-      <dl className="grid gap-4 rounded-sm border border-border bg-card p-5 text-sm sm:grid-cols-2 lg:grid-cols-3">
-        {[
-          ["org.form.registrationNumber", org.registration_number],
-          ["org.form.address", org.address],
-          ["org.form.country", org.country],
-          ["org.form.phone", org.phone],
-          ["org.form.email", org.email],
-          ["org.form.sector", org.sector],
-          ["org.form.size", org.size ? t(`org.form.size.${org.size}`) : null],
-          ["org.form.siteCount", org.site_count],
-          ["org.form.equipmentCount", org.equipment_count],
-        ].map(([label, value]) => (
-          <div key={String(label)}>
-            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              {t(String(label))}
-            </dt>
-            <dd className="mt-1 font-medium">{value ?? "—"}</dd>
+      {/* ─── KPI Cards ─── */}
+      <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
+        {kpiCards.map((kpi) => (
+          <div
+            key={kpi.label}
+            className="flex items-center gap-3 rounded-sm border border-border bg-card p-4"
+          >
+            <div className={`flex size-10 items-center justify-center rounded-sm bg-muted ${kpi.color}`}>
+              <kpi.icon className="size-5" />
+            </div>
+            <div>
+              <p className="font-mono text-2xl font-bold tabular-nums">{kpi.value}</p>
+              <p className="text-xs text-muted-foreground">{kpi.label}</p>
+            </div>
           </div>
         ))}
-      </dl>
-
-      <div className="flex flex-wrap gap-2">
-        <Link
-          to="/app/organizations/$orgId/equipment"
-          params={{ orgId }}
-          className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
-        >
-          <Laptop className="size-4" />
-          {t("org.equipment.title")}
-        </Link>
-        <Link
-          to="/app/organizations/$orgId/sites"
-          params={{ orgId }}
-          className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
-        >
-          <MapPin className="size-4" />
-          {t("org.sites.title")}
-        </Link>
-        <Link
-          to="/app/organizations/$orgId/tickets"
-          params={{ orgId }}
-          className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
-        >
-          <LifeBuoy className="size-4" />
-          {t("org.tickets.title")}
-        </Link>
       </div>
 
-      <div>
-        <h2 className="mb-4 text-lg font-bold">{t("org.detail.members")}</h2>
+      {/* ─── Navigation Pills ─── */}
+      <nav
+        className="at-in flex gap-1 overflow-x-auto rounded-sm border border-border bg-card p-1"
+        style={{ animationDelay: "120ms" }}
+      >
+        {NAV_ITEMS.map((item) => {
+          const href = `/app/organizations/${orgId}/${item.to}`;
+          const isActive = location.pathname.includes(`/${item.to}`);
+          return (
+            <Link
+              key={item.to}
+              to={href}
+              className={`inline-flex items-center gap-2 whitespace-nowrap rounded-sm px-4 py-2.5 text-sm font-medium transition-all ${
+                isActive
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+              }`}
+            >
+              <item.icon className="size-4" />
+              {t(item.labelKey)}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* ─── Organization Info ─── */}
+      <div className="at-in" style={{ animationDelay: "180ms" }}>
+        <span className="at-eyebrow mb-3 block">{t("org.form.registrationNumber").split(" ")[0]}</span>
+        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          {orgInfoItems.map(({ icon: Icon, label, value }) => (
+            <div key={label} className="flex items-start gap-3 bg-card p-4">
+              <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{label}</dt>
+                <dd className="mt-0.5 truncate text-sm font-medium">
+                  {value ?? "—"}
+                </dd>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── Team Members ─── */}
+      <div className="at-in" style={{ animationDelay: "240ms" }}>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <span className="at-eyebrow mb-1 block">{t("org.detail.members")}</span>
+            <h2 className="text-lg font-bold">{t("org.detail.members")}</h2>
+          </div>
+          <Badge variant="outline" className="font-mono">
+            {members.data?.length ?? 0}
+          </Badge>
+        </div>
 
         <form
-          className="mb-5 flex flex-col gap-3 rounded-sm border border-border bg-card p-4 sm:flex-row sm:items-end"
+          className="mb-5 grid gap-3 rounded-sm border border-border bg-card p-4 sm:grid-cols-[1fr_auto_auto]"
           onSubmit={(e) => {
             e.preventDefault();
             invite.mutate();
           }}
         >
-          <div className="flex-1">
-            <Label htmlFor="invite-email">{t("org.detail.invite.email")}</Label>
+          <div>
+            <Label htmlFor="invite-email" className="text-xs">
+              {t("org.detail.invite.email")}
+            </Label>
             <Input
               id="invite-email"
               type="email"
               required
-              className="mt-1.5"
+              className="mt-1"
+              placeholder="collaborateur@entreprise.com"
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
             />
           </div>
-          <div className="sm:w-56">
-            <Label>{t("org.detail.role")}</Label>
+          <div>
+            <Label className="text-xs">{t("org.detail.role")}</Label>
             <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as OrgRole)}>
-              <SelectTrigger className="mt-1.5">
+              <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -218,31 +328,47 @@ function OrgDetail() {
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" variant="primaryBlock" disabled={invite.isPending}>
-            {invite.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <UserPlus className="size-4" />
-            )}
-            {t("org.detail.invite.submit")}
-          </Button>
+          <div className="flex items-end">
+            <Button type="submit" variant="primaryBlock" disabled={invite.isPending} className="w-full">
+              {invite.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <UserPlus className="size-4" />
+              )}
+              {t("org.detail.invite.submit")}
+            </Button>
+          </div>
         </form>
 
         {members.isLoading ? (
-          <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+          <div className="flex justify-center py-8">
+            <Loader2 className="size-5 animate-spin text-muted-foreground" />
+          </div>
         ) : members.data?.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("org.detail.members.empty")}</p>
+          <div className="rounded-sm border border-dashed border-border p-8 text-center">
+            <Users className="mx-auto size-8 text-muted-foreground" />
+            <p className="mt-3 text-sm font-medium">{t("org.detail.members.empty")}</p>
+          </div>
         ) : (
-          <ul className="divide-y divide-border rounded-sm border border-border bg-card">
+          <div className="divide-y divide-border overflow-hidden rounded-sm border border-border bg-card">
             {members.data?.map((m) => (
-              <li key={m.user_id} className="flex flex-wrap items-center gap-3 p-4">
-                <div className="flex size-9 items-center justify-center rounded-sm bg-accent text-xs font-black uppercase">
+              <div
+                key={m.user_id}
+                className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-muted/30"
+              >
+                <div className="flex size-10 items-center justify-center rounded-sm bg-gradient-to-br from-foreground/90 to-foreground/60 text-xs font-black uppercase text-background">
                   {(m.full_name ?? m.email ?? "?").slice(0, 2)}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{m.full_name ?? m.email}</p>
                   <p className="truncate text-xs text-muted-foreground">{m.email}</p>
                 </div>
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-semibold ${ROLE_COLORS[m.role] ?? ""}`}
+                >
+                  {t(`org.role.${m.role}`)}
+                </Badge>
                 <Select
                   value={m.role}
                   onValueChange={(v) => {
@@ -250,7 +376,7 @@ function OrgDetail() {
                     changeRole.mutate(v as OrgRole);
                   }}
                 >
-                  <SelectTrigger className="h-9 w-52">
+                  <SelectTrigger className="h-8 w-44 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,22 +391,18 @@ function OrgDetail() {
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground hover:text-destructive"
+                  className="size-8 text-muted-foreground hover:text-destructive"
                   onClick={() => {
                     if (confirm(t("org.detail.remove.confirm"))) remove.mutate(m.user_id);
                   }}
                 >
-                  <Trash2 className="size-4" />
+                  <Trash2 className="size-3.5" />
                 </Button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
-
-      <p className="rounded-sm border border-dashed border-border p-4 text-xs text-muted-foreground">
-        {t("org.phase1.hint")}
-      </p>
     </div>
   );
 }

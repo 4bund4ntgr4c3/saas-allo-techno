@@ -1,8 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  BarChart3, BadgeCheck, FileText, History,
+  BarChart3, BadgeCheck, CreditCard, FileText, History,
   LayoutDashboard, MailPlus, Package, PieChart, RadioTower, RotateCcw,
-  ShieldCheck, ShoppingCart, TrendingUp, Users, Wrench, Webhook,
+  ShieldCheck, ShoppingCart, ToggleLeft, TrendingUp, Truck, Users, Wrench, Webhook,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/context";
@@ -40,6 +40,8 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { labelKey: "admin.tab.dossiers", to: "/admin/dossiers", icon: RadioTower },
       { labelKey: "admin.tab.atelier", to: "/admin/atelier", icon: Wrench },
+      { labelKey: "admin.tab.caisse", to: "/admin/caisse", icon: CreditCard },
+      { labelKey: "admin.tab.livraisons", to: "/admin/livraisons", icon: Truck },
       { labelKey: "admin.tab.commandes", to: "/admin/commandes", icon: ShoppingCart },
       { labelKey: "admin.tab.retours", to: "/admin/retours", icon: RotateCcw },
       { labelKey: "admin.tab.remboursements", to: "/admin/remboursements", icon: RotateCcw },
@@ -90,6 +92,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "admin.tab.notifs", to: "/admin/notifications", icon: MailPlus },
       { labelKey: "admin.tab.marketing", to: "/admin/marketing", icon: MailPlus },
       { labelKey: "admin.tab.webhooks", to: "/admin/webhooks", icon: Webhook },
+      { labelKey: "admin.tab.featureFlags", to: "/admin/feature-flags", icon: ToggleLeft },
       { labelKey: "admin.tab.chat", to: "/admin/chat", icon: MailPlus, badge: "3" },
     ],
   },

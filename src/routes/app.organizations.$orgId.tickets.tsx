@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   AlertTriangle,
   ArrowLeft,
+  Clock,
   LifeBuoy,
   Loader2,
   MapPin,
@@ -49,8 +50,8 @@ export const Route = createFileRoute("/app/organizations/$orgId/tickets")({
 const PRIORITY_BADGE: Record<B2BTicketPriority, string> = {
   faible: "bg-muted text-muted-foreground",
   normale: "bg-muted text-foreground",
-  haute: "bg-amber-500/15 text-amber-600",
-  critique: "bg-red-500/15 text-red-600",
+  haute: "bg-amber-500/15 text-amber-600 border-amber-500/20",
+  critique: "bg-red-500/15 text-red-600 border-red-500/20",
 };
 
 function OrgTickets() {
@@ -124,32 +125,44 @@ function OrgTickets() {
     onError: (err) => toast.error(t("org.tickets.form.error").replace("{0}", err.message)),
   });
 
+  const ticketList = tickets.data ?? [];
+  const kpis = useMemo(() => {
+    const open = ticketList.filter(
+      (t) => t.status !== "fermé" && t.status !== "annulé",
+    ).length;
+    const critical = ticketList.filter((t) => t.priority === "critique").length;
+    return { total: ticketList.length, open, critical };
+  }, [ticketList]);
+
   if (!org) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {orgs.isLoading ? t("common.loading") : t("org.error.notfound")}
-      </p>
+      <div className="flex items-center justify-center py-20">
+        {orgs.isLoading ? (
+          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        ) : (
+          <p className="text-sm text-muted-foreground">{t("org.error.notfound")}</p>
+        )}
+      </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <div>
+    <div className="space-y-6">
+      {/* ─── Header ─── */}
+      <div className="at-in">
         <Link
           to="/app/organizations/$orgId"
           params={{ orgId }}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          {t("org.tickets.detail.back")}
+          {org.name}
         </Link>
         <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="at-display flex items-center gap-2 text-2xl font-bold">
-              <LifeBuoy className="size-6" />
-              {t("org.tickets.title")}
-            </h1>
-            <p className="text-sm text-muted-foreground">{t("org.tickets.subtitle")}</p>
+            <span className="at-eyebrow mb-1 block">{t("org.tickets.title")}</span>
+            <h1 className="at-display text-2xl font-bold">{t("org.tickets.title")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("org.tickets.subtitle")}</p>
           </div>
           <Button type="button" variant="primaryBlock" onClick={() => setShowForm((v) => !v)}>
             {showForm ? <ArrowLeft className="size-4" /> : <AlertTriangle className="size-4" />}
@@ -158,20 +171,52 @@ function OrgTickets() {
         </div>
       </div>
 
+      {/* ─── KPI Cards ─── */}
+      <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
+        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-primary">
+            <LifeBuoy className="size-5" />
+          </div>
+          <div>
+            <p className="font-mono text-2xl font-bold tabular-nums">{kpis.total}</p>
+            <p className="text-xs text-muted-foreground">{t("org.tickets.kpi.total")}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
+          <div className={`flex size-10 items-center justify-center rounded-sm ${kpis.open > 0 ? "bg-amber-500/10 text-amber-600" : "bg-muted text-success"}`}>
+            <Clock className="size-5" />
+          </div>
+          <div>
+            <p className="font-mono text-2xl font-bold tabular-nums">{kpis.open}</p>
+            <p className="text-xs text-muted-foreground">{t("org.tickets.kpi.open")}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
+          <div className={`flex size-10 items-center justify-center rounded-sm ${kpis.critical > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
+            <AlertTriangle className="size-5" />
+          </div>
+          <div>
+            <p className="font-mono text-2xl font-bold tabular-nums">{kpis.critical}</p>
+            <p className="text-xs text-muted-foreground">{t("org.tickets.kpi.critical")}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Ticket Creation Form ─── */}
       {showForm ? (
         <form
-          className="grid gap-4 rounded-sm border border-border bg-card p-5 sm:grid-cols-2"
+          className="at-in grid gap-4 rounded-sm border border-border bg-card p-5 sm:grid-cols-2"
           onSubmit={(e) => {
             e.preventDefault();
             createTicket.mutate();
           }}
         >
-          <div className="sm:col-span-2">
-            <h2 className="text-lg font-bold">{t("org.tickets.form.title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("org.tickets.form.subtitle")}</p>
+          <div className="sm:col-span-2 border-b border-border pb-3">
+            <h2 className="text-sm font-bold">{t("org.tickets.form.title")}</h2>
+            <p className="text-xs text-muted-foreground">{t("org.tickets.form.subtitle")}</p>
           </div>
           <div>
-            <Label>{t("org.tickets.form.equipment")}</Label>
+            <Label className="text-xs">{t("org.tickets.form.equipment")}</Label>
             <Select
               value={form.equipment_id}
               onValueChange={(v) => setForm((f) => ({ ...f, equipment_id: v }))}
@@ -190,7 +235,7 @@ function OrgTickets() {
             </Select>
           </div>
           <div>
-            <Label>{t("org.tickets.form.type")}</Label>
+            <Label className="text-xs">{t("org.tickets.form.type")}</Label>
             <Select
               value={form.ticket_type}
               onValueChange={(v) => setForm((f) => ({ ...f, ticket_type: v as B2BTicketType }))}
@@ -208,7 +253,7 @@ function OrgTickets() {
             </Select>
           </div>
           <div>
-            <Label>{t("org.tickets.form.priority")}</Label>
+            <Label className="text-xs">{t("org.tickets.form.priority")}</Label>
             <Select
               value={form.priority}
               onValueChange={(v) =>
@@ -228,7 +273,9 @@ function OrgTickets() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="ticket-location">{t("org.tickets.form.location")}</Label>
+            <Label htmlFor="ticket-location" className="text-xs">
+              {t("org.tickets.form.location")}
+            </Label>
             <Input
               id="ticket-location"
               className="mt-1.5"
@@ -237,7 +284,9 @@ function OrgTickets() {
             />
           </div>
           <div className="sm:col-span-2">
-            <Label htmlFor="ticket-issue">{t("org.tickets.form.issue")}</Label>
+            <Label htmlFor="ticket-issue" className="text-xs">
+              {t("org.tickets.form.issue")}
+            </Label>
             <Textarea
               id="ticket-issue"
               required
@@ -248,7 +297,9 @@ function OrgTickets() {
             />
           </div>
           <div>
-            <Label htmlFor="ticket-phone">{t("org.tickets.form.phone")}</Label>
+            <Label htmlFor="ticket-phone" className="text-xs">
+              {t("org.tickets.form.phone")}
+            </Label>
             <Input
               id="ticket-phone"
               type="tel"
@@ -258,7 +309,9 @@ function OrgTickets() {
             />
           </div>
           <div>
-            <Label htmlFor="ticket-email">{t("org.tickets.form.email")}</Label>
+            <Label htmlFor="ticket-email" className="text-xs">
+              {t("org.tickets.form.email")}
+            </Label>
             <Input
               id="ticket-email"
               type="email"
@@ -268,7 +321,9 @@ function OrgTickets() {
             />
           </div>
           <div className="sm:col-span-2">
-            <Label htmlFor="ticket-message">{t("org.tickets.form.message")}</Label>
+            <Label htmlFor="ticket-message" className="text-xs">
+              {t("org.tickets.form.message")}
+            </Label>
             <Textarea
               id="ticket-message"
               className="mt-1.5"
@@ -276,7 +331,7 @@ function OrgTickets() {
               onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
             />
           </div>
-          <div className="sm:col-span-2 flex justify-end">
+          <div className="flex justify-end sm:col-span-2">
             <Button
               type="submit"
               variant="primaryBlock"
@@ -293,24 +348,33 @@ function OrgTickets() {
         </form>
       ) : null}
 
-      {tickets.isLoading ? (
-        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
-      ) : tickets.data?.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("org.tickets.empty")}</p>
-      ) : (
-        <ul className="divide-y divide-border rounded-sm border border-border bg-card">
-          {tickets.data?.map((ticket) => (
-            <li key={ticket.id}>
+      {/* ─── Ticket List ─── */}
+      <div className="at-in" style={{ animationDelay: "120ms" }}>
+        <span className="at-eyebrow mb-3 block">{t("org.tickets.list.title")}</span>
+
+        {tickets.isLoading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : ticketList.length === 0 ? (
+          <div className="rounded-sm border border-dashed border-border py-16 text-center">
+            <LifeBuoy className="mx-auto size-10 text-muted-foreground" />
+            <p className="mt-4 text-sm font-medium">{t("org.tickets.empty")}</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border overflow-hidden rounded-sm border border-border bg-card">
+            {ticketList.map((ticket) => (
               <Link
+                key={ticket.id}
                 to="/app/organizations/$orgId/tickets/$ticketId"
                 params={{ orgId, ticketId: ticket.id }}
-                className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-accent/50"
+                className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-muted/30"
               >
                 <Badge
                   variant="outline"
-                  className={
-                    ticket.priority ? PRIORITY_BADGE[ticket.priority] : undefined
-                  }
+                  className={`text-[10px] font-semibold ${
+                    ticket.priority ? PRIORITY_BADGE[ticket.priority] : ""
+                  }`}
                 >
                   {ticket.priority ? t(`org.tickets.priority.${ticket.priority}`) : "—"}
                 </Badge>
@@ -321,7 +385,7 @@ function OrgTickets() {
                     </span>{" "}
                     {ticket.issue}
                   </p>
-                  <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                     {ticket.equipment ? (
                       <span>{ticket.equipment.name}</span>
                     ) : (
@@ -340,12 +404,23 @@ function OrgTickets() {
                     </span>
                   </p>
                 </div>
-                <Badge variant="outline">{t(`org.tickets.status.${ticket.status}`)}</Badge>
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-semibold ${
+                    ticket.status === "fermé"
+                      ? "bg-success/15 text-success border-success/20"
+                      : ticket.status === "en_cours"
+                        ? "bg-primary/10 text-primary border-primary/20"
+                        : ""
+                  }`}
+                >
+                  {t(`org.tickets.status.${ticket.status}`)}
+                </Badge>
               </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

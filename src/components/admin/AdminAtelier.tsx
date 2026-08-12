@@ -9,7 +9,8 @@ import {
   Calendar,
   LayoutGrid,
   ArrowRightLeft,
-  Building2,
+  Tag,
+  ClipboardCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
@@ -18,6 +19,9 @@ import { formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 import { AdminCalendar } from "@/components/admin/AdminCalendar";
+import { AdminDeviceLabel, type DeviceLabelData } from "@/components/admin/AdminDeviceLabel";
+import { AdminQuickContact } from "@/components/admin/AdminQuickContact";
+import { AdminChecklistModal } from "@/components/admin/AdminChecklistModal";
 import {
   ATELIER_STATUSES,
   assignTechnician,
@@ -62,6 +66,14 @@ export function AtelierBoard() {
   });
 
   const [workshopFilter, setWorkshopFilter] = useState<string>("all");
+  const [labelTarget, setLabelTarget] = useState<DeviceLabelData | null>(null);
+  const [checklistTarget, setChecklistTarget] = useState<{
+    id: string;
+    reference: string;
+    device: string;
+    type: "intake" | "qa";
+    initial?: any;
+  } | null>(null);
 
   const move = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: Status }) => {
@@ -127,118 +139,99 @@ export function AtelierBoard() {
     };
   }, [queryClient]);
 
-  const allCards = board.data?.reservations ?? [];
-  const technicians = board.data?.technicians ?? [];
-  const workshops = workshopLoad.data ?? [];
+  const technicians: AtelierTechnician[] = board.data?.technicians ?? [];
+  const workshops: WorkshopLoad[] = workshopLoad.data ?? [];
+  const cards: AtelierCardType[] = (board.data?.reservations ?? []).filter((c) => {
+    if (workshopFilter === "all") return true;
+    if (workshopFilter === "unassigned")
+      return !(c as AtelierCardType & { workshop_id?: string }).workshop_id;
+    return (c as AtelierCardType & { workshop_id?: string }).workshop_id === workshopFilter;
+  });
+
   const busy = move.isPending || assign.isPending || transfer.isPending;
-  const [view, setView] = useState<"kanban" | "calendar">("kanban");
-
-  const cards =
-    workshopFilter === "all"
-      ? allCards
-      : allCards.filter(
-          (c) => (c as AtelierCardType & { workshop_id?: string }).workshop_id === workshopFilter,
-        );
-
-  const calendarEvents = cards.map((c) => ({
-    id: c.id,
-    date: c.slot_date ?? "",
-    period: c.slot_hour ?? "",
-    reference: c.reference,
-    device: c.device,
-    customerName: c.customer_name,
-    status: c.status,
-  }));
+  const [viewMode, setViewMode] = useState<"kanban" | "calendar">("kanban");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="at-eyebrow">{t("admin.atelier.eyebrow")}</p>
-          <h2 className="mt-1 text-xl font-semibold">
-            {view === "kanban" ? t("admin.atelier.title.kanban") : t("admin.atelier.title.calendar")}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("admin.atelier.description")}
-          </p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight">{t("admin.atelier.title")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.atelier.subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <select
-            value={workshopFilter}
-            onChange={(e) => setWorkshopFilter(e.target.value)}
-            className="h-9 rounded-sm border border-border bg-card px-3 text-xs font-medium focus:outline-none"
-          >
-            <option value="all">{t("admin.atelier.filter.all")}</option>
-            {workshops.map((w) => (
-              <option key={w.id} value={w.id}>
-                {w.name} ({w.active_count})
-              </option>
-            ))}
-          </select>
-          <div className="flex rounded-md border border-border">
-            <Button
-              variant={view === "kanban" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setView("kanban")}
+          {viewMode === "kanban" && (
+            <select
+              className="h-8 rounded-sm border border-border bg-card px-2 text-xs focus:outline-none"
+              value={workshopFilter}
+              onChange={(e) => setWorkshopFilter(e.target.value)}
             >
-              <LayoutGrid className="size-3" />
+              <option value="all">{t("admin.atelier.filter.allWorkshops")}</option>
+              <option value="unassigned">{t("admin.atelier.filter.unassigned")}</option>
+              {workshops.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {w.name} ({w.active_count})
+                </option>
+              ))}
+            </select>
+          )}
+          <div className="flex rounded-sm border border-border p-0.5">
+            <button
+              onClick={() => setViewMode("kanban")}
+              className={`flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
+                viewMode === "kanban"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <LayoutGrid className="size-3.5" />
               {t("admin.atelier.view.kanban")}
-            </Button>
-            <Button
-              variant={view === "calendar" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setView("calendar")}
+            </button>
+            <button
+              onClick={() => setViewMode("calendar")}
+              className={`flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
+                viewMode === "calendar"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <Calendar className="size-3" />
+              <Calendar className="size-3.5" />
               {t("admin.atelier.view.calendar")}
-            </Button>
+            </button>
           </div>
           <Button
             variant="outline"
             size="sm"
-            disabled={board.isFetching}
             onClick={() => {
-              queryClient.invalidateQueries({ queryKey: ["atelier-board"] });
-              queryClient.invalidateQueries({ queryKey: ["workshop-load"] });
+              board.refetch();
+              workshopLoad.refetch();
             }}
+            disabled={board.isFetching}
           >
             <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
-            {t("admin.common.refresh")}
+            {t("admin.atelier.refresh")}
           </Button>
         </div>
       </div>
 
-      {workshops.length > 0 && (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {workshops.map((w) => (
-            <Button
-              key={w.id}
-              variant={w.id === workshopFilter ? "secondary" : "outline"}
-              size="sm"
-              className="h-auto flex-col items-start p-3"
-              onClick={() => setWorkshopFilter(w.id === workshopFilter ? "all" : w.id)}
-            >
-              <div className="flex items-center gap-2">
-                <Building2 className="size-3 text-muted-foreground" />
-                <span className="text-xs font-bold">{w.name}</span>
-              </div>
-              <div className="mt-2 flex gap-3 font-mono text-[10px] text-muted-foreground">
-                <span>{w.active_count} {t("admin.atelier.load.active")}</span>
-                <span>{w.in_progress_count} {t("admin.atelier.load.progress")}</span>
-                <span>{w.pending_count} {t("admin.atelier.load.pending")}</span>
-              </div>
-            </Button>
-          ))}
-        </div>
-      )}
-
-      {board.isLoading ? (
-        <p className="text-sm text-muted-foreground">{t("admin.atelier.loading")}</p>
-      ) : view === "calendar" ? (
-        <AdminCalendar events={calendarEvents} />
+      {viewMode === "calendar" ? (
+        <AdminCalendar
+          events={cards.map((c) => ({
+            id: c.id,
+            date: c.slot_date ?? "",
+            period: c.slot_hour ?? "",
+            reference: c.reference,
+            device: c.device,
+            customerName: c.customer_name,
+            status: c.status,
+          }))}
+          onEventClick={() => {
+            setViewMode("kanban");
+          }}
+        />
       ) : (
         <div className="overflow-x-auto pb-4">
-          <div className="grid min-w-[72rem] grid-cols-6 gap-px border border-border bg-border">
+          <div className="grid min-w-[72rem] grid-cols-6 gap-3">
             {ATELIER_STATUSES.map((status) => {
               const columnCards = cards.filter((c) => c.status === status);
               return (
@@ -268,6 +261,22 @@ export function AtelierBoard() {
                         onTransfer={(targetWorkshopId) =>
                           transfer.mutate({ reservationId: card.id, targetWorkshopId })
                         }
+                        onPrintLabel={(c) => setLabelTarget(c)}
+                        onOpenChecklist={(c) =>
+                          setChecklistTarget({
+                            id: c.id,
+                            reference: c.reference,
+                            device: c.device,
+                            type:
+                              c.status === "pret" || c.status === "livre" || c.status === "terminee"
+                                ? "qa"
+                                : "intake",
+                            initial:
+                              (c.status === "pret" || c.status === "livre" || c.status === "terminee"
+                                ? (c as any).qa_checklist?.items
+                                : (c as any).intake_checklist?.items) ?? null,
+                          })
+                        }
                       />
                     ))}
                     {columnCards.length === 0 && (
@@ -281,6 +290,20 @@ export function AtelierBoard() {
             })}
           </div>
         </div>
+      )}
+
+      {labelTarget && (
+        <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />
+      )}
+      {checklistTarget && (
+        <AdminChecklistModal
+          reservationId={checklistTarget.id}
+          reference={checklistTarget.reference}
+          device={checklistTarget.device}
+          type={checklistTarget.type}
+          initialData={checklistTarget.initial}
+          onClose={() => setChecklistTarget(null)}
+        />
       )}
     </div>
   );
@@ -298,6 +321,8 @@ export function AtelierCard({
   onMove,
   onAssign,
   onTransfer,
+  onPrintLabel,
+  onOpenChecklist,
 }: {
   card: AtelierCardType;
   technicians: AtelierTechnician[];
@@ -306,6 +331,8 @@ export function AtelierCard({
   onMove: (status: Status) => void;
   onAssign: (technicianId: string) => void;
   onTransfer: (targetWorkshopId: string) => void;
+  onPrintLabel?: (card: AtelierCardType) => void;
+  onOpenChecklist?: (card: AtelierCardType) => void;
 }) {
   const { t } = useI18n();
   const index = ATELIER_STATUSES.findIndex((s) => s === card.status);
@@ -325,13 +352,36 @@ export function AtelierCard({
         card.status === "en_attente" ? "border-amber-500/60" : "border-border"
       }`}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-1">
         <p className="truncate font-mono text-[10px] text-muted-foreground">{card.reference}</p>
-        {card.status === "en_attente" && (
-          <span className="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
-            {t("admin.atelier.badge.new")}
-          </span>
-        )}
+        <div className="flex items-center gap-1">
+          {card.status === "en_attente" && (
+            <span className="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
+              {t("admin.atelier.badge.new")}
+            </span>
+          )}
+          <AdminQuickContact data={card} variant="icon" />
+          {onPrintLabel && (
+            <button
+              type="button"
+              onClick={() => onPrintLabel(card)}
+              title="Imprimer l'étiquette atelier"
+              className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            >
+              <Tag className="size-3" />
+            </button>
+          )}
+          {onOpenChecklist && (
+            <button
+              type="button"
+              onClick={() => onOpenChecklist(card)}
+              title="Contrôle qualité / Checklist"
+              className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            >
+              <ClipboardCheck className="size-3" />
+            </button>
+          )}
+        </div>
       </div>
       <p className="mt-1 text-sm font-semibold leading-snug">{card.device}</p>
       <p className="mt-0.5 truncate text-[11px] text-muted-foreground">

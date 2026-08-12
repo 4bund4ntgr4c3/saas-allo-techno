@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Building2, FileDown, LayoutGrid, RadioTower, Wrench } from "lucide-react";
+import { Building2, FileDown, LayoutGrid, RadioTower, Wrench, Tag, ClipboardCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
@@ -31,6 +31,9 @@ import { CsvExportButton } from "@/components/admin/AdminLeadsClaims";
 import { field } from "@/components/admin/primitives/AdminField";
 import { AdminSkeleton } from "@/components/admin/primitives/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/primitives/AdminEmptyState";
+import { AdminDeviceLabel, type DeviceLabelData } from "@/components/admin/AdminDeviceLabel";
+import { AdminQuickContact } from "@/components/admin/AdminQuickContact";
+import { AdminChecklistModal } from "@/components/admin/AdminChecklistModal";
 import { useRouteContext } from "@tanstack/react-router";
 
 type Status = Enums<"reservation_status">;
@@ -47,6 +50,14 @@ export function DossiersSection() {
   const [dateTo, setDateTo] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [view, setView] = useState<"liste" | "kanban">("liste");
+  const [labelTarget, setLabelTarget] = useState<DeviceLabelData | null>(null);
+  const [checklistTarget, setChecklistTarget] = useState<{
+    id: string;
+    reference: string;
+    device: string;
+    type: "intake" | "qa";
+    initial?: any;
+  } | null>(null);
 
   const role = useQuery({
     queryKey: ["my-role", user.id],
@@ -423,9 +434,46 @@ export function DossiersSection() {
                         {orgName.get(r.org_id)}
                       </span>
                     )}
-                    <Button variant="ghost" size="sm" onClick={() => downloadInvoicePdf(r)}>
-                      <FileDown className="size-4" />
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <AdminQuickContact data={r} />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLabelTarget(r)}
+                        className="text-xs gap-1"
+                        title="Imprimer l'étiquette atelier"
+                      >
+                        <Tag className="size-3.5" />
+                        <span>Étiquette</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setChecklistTarget({
+                            id: r.id,
+                            reference: r.reference,
+                            device: r.device,
+                            type:
+                              r.status === "pret" || r.status === "livre" || r.status === "terminee"
+                                ? "qa"
+                                : "intake",
+                            initial:
+                              (r.status === "pret" || r.status === "livre" || r.status === "terminee"
+                                ? (r as any).qa_checklist?.items
+                                : (r as any).intake_checklist?.items) ?? null,
+                          })
+                        }
+                        className="text-xs gap-1"
+                        title="Inspection & Contrôle Qualité"
+                      >
+                        <ClipboardCheck className="size-3.5" />
+                        <span>Contrôle QA</span>
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => downloadInvoicePdf(r)} title="Télécharger facture PDF">
+                        <FileDown className="size-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   <StageControls
@@ -500,6 +548,20 @@ export function DossiersSection() {
             </ul>
           )}
         </>
+      )}
+
+      {labelTarget && (
+        <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />
+      )}
+      {checklistTarget && (
+        <AdminChecklistModal
+          reservationId={checklistTarget.id}
+          reference={checklistTarget.reference}
+          device={checklistTarget.device}
+          type={checklistTarget.type}
+          initialData={checklistTarget.initial}
+          onClose={() => setChecklistTarget(null)}
+        />
       )}
     </div>
   );

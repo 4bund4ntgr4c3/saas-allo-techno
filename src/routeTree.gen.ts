@@ -72,17 +72,20 @@ import { Route as AuthenticatedAdminAnalyticsAdvancedRouteImport } from './route
 import { Route as AuthenticatedAdminAtelierRouteImport } from './routes/_authenticated/admin/atelier'
 import { Route as AuthenticatedAdminAteliersRouteImport } from './routes/_authenticated/admin/ateliers'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
+import { Route as AuthenticatedAdminCaisseRouteImport } from './routes/_authenticated/admin/caisse'
 import { Route as AuthenticatedAdminCatalogueRouteImport } from './routes/_authenticated/admin/catalogue'
 import { Route as AuthenticatedAdminChatRouteImport } from './routes/_authenticated/admin/chat'
 import { Route as AuthenticatedAdminCommandesRouteImport } from './routes/_authenticated/admin/commandes'
 import { Route as AuthenticatedAdminContenuRouteImport } from './routes/_authenticated/admin/contenu'
 import { Route as AuthenticatedAdminDossiersRouteImport } from './routes/_authenticated/admin/dossiers'
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin/equipe'
+import { Route as AuthenticatedAdminFeatureFlagsRouteImport } from './routes/_authenticated/admin/feature-flags'
 import { Route as AuthenticatedAdminFournisseursRouteImport } from './routes/_authenticated/admin/fournisseurs'
 import { Route as AuthenticatedAdminInventaireRouteImport } from './routes/_authenticated/admin/inventaire'
 import { Route as AuthenticatedAdminKbRouteImport } from './routes/_authenticated/admin/kb'
 import { Route as AuthenticatedAdminKpisRouteImport } from './routes/_authenticated/admin/kpis'
 import { Route as AuthenticatedAdminLeadsRouteImport } from './routes/_authenticated/admin/leads'
+import { Route as AuthenticatedAdminLivraisonsRouteImport } from './routes/_authenticated/admin/livraisons'
 import { Route as AuthenticatedAdminMarketingRouteImport } from './routes/_authenticated/admin/marketing'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
 import { Route as AuthenticatedAdminParrainageRouteImport } from './routes/_authenticated/admin/parrainage'
@@ -97,7 +100,9 @@ import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin/webhooks'
 import { Route as ApiV1SplatRouteImport } from './routes/api.v1.$'
 import { Route as AppOrganizationsOrgIdRouteImport } from './routes/app.organizations.$orgId'
+import { Route as AppOrganizationsOrgIdBillingRouteImport } from './routes/app.organizations.$orgId.billing'
 import { Route as AppOrganizationsOrgIdEquipmentRouteImport } from './routes/app.organizations.$orgId.equipment'
+import { Route as AppOrganizationsOrgIdMaintenanceRouteImport } from './routes/app.organizations.$orgId.maintenance'
 import { Route as AppOrganizationsOrgIdSitesRouteImport } from './routes/app.organizations.$orgId.sites'
 import { Route as AppOrganizationsOrgIdTicketsRouteImport } from './routes/app.organizations.$orgId.tickets'
 import { Route as AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport } from './routes/app.organizations.$orgId.equipment.$equipmentId'
@@ -422,6 +427,12 @@ const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminCaisseRoute =
+  AuthenticatedAdminCaisseRouteImport.update({
+    id: '/caisse',
+    path: '/caisse',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminCatalogueRoute =
   AuthenticatedAdminCatalogueRouteImport.update({
     id: '/catalogue',
@@ -457,6 +468,12 @@ const AuthenticatedAdminEquipeRoute =
     path: '/equipe',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFeatureFlagsRoute =
+  AuthenticatedAdminFeatureFlagsRouteImport.update({
+    id: '/feature-flags',
+    path: '/feature-flags',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminFournisseursRoute =
   AuthenticatedAdminFournisseursRouteImport.update({
     id: '/fournisseurs',
@@ -484,6 +501,12 @@ const AuthenticatedAdminLeadsRoute = AuthenticatedAdminLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminLivraisonsRoute =
+  AuthenticatedAdminLivraisonsRouteImport.update({
+    id: '/livraisons',
+    path: '/livraisons',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminMarketingRoute =
   AuthenticatedAdminMarketingRouteImport.update({
     id: '/marketing',
@@ -564,10 +587,22 @@ const AppOrganizationsOrgIdRoute = AppOrganizationsOrgIdRouteImport.update({
   path: '/organizations/$orgId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrganizationsOrgIdBillingRoute =
+  AppOrganizationsOrgIdBillingRouteImport.update({
+    id: '/billing',
+    path: '/billing',
+    getParentRoute: () => AppOrganizationsOrgIdRoute,
+  } as any)
 const AppOrganizationsOrgIdEquipmentRoute =
   AppOrganizationsOrgIdEquipmentRouteImport.update({
     id: '/equipment',
     path: '/equipment',
+    getParentRoute: () => AppOrganizationsOrgIdRoute,
+  } as any)
+const AppOrganizationsOrgIdMaintenanceRoute =
+  AppOrganizationsOrgIdMaintenanceRouteImport.update({
+    id: '/maintenance',
+    path: '/maintenance',
     getParentRoute: () => AppOrganizationsOrgIdRoute,
   } as any)
 const AppOrganizationsOrgIdSitesRoute =
@@ -653,17 +688,20 @@ export interface FileRoutesByFullPath {
   '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
   '/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/caisse': typeof AuthenticatedAdminCaisseRoute
   '/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
   '/admin/chat': typeof AuthenticatedAdminChatRoute
   '/admin/commandes': typeof AuthenticatedAdminCommandesRoute
   '/admin/contenu': typeof AuthenticatedAdminContenuRoute
   '/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/feature-flags': typeof AuthenticatedAdminFeatureFlagsRoute
   '/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
   '/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
   '/admin/kb': typeof AuthenticatedAdminKbRoute
   '/admin/kpis': typeof AuthenticatedAdminKpisRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/livraisons': typeof AuthenticatedAdminLivraisonsRoute
   '/admin/marketing': typeof AuthenticatedAdminMarketingRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
@@ -683,7 +721,9 @@ export interface FileRoutesByFullPath {
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/billing': typeof AppOrganizationsOrgIdBillingRoute
   '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
@@ -744,17 +784,20 @@ export interface FileRoutesByTo {
   '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
   '/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/caisse': typeof AuthenticatedAdminCaisseRoute
   '/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
   '/admin/chat': typeof AuthenticatedAdminChatRoute
   '/admin/commandes': typeof AuthenticatedAdminCommandesRoute
   '/admin/contenu': typeof AuthenticatedAdminContenuRoute
   '/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/feature-flags': typeof AuthenticatedAdminFeatureFlagsRoute
   '/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
   '/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
   '/admin/kb': typeof AuthenticatedAdminKbRoute
   '/admin/kpis': typeof AuthenticatedAdminKpisRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/livraisons': typeof AuthenticatedAdminLivraisonsRoute
   '/admin/marketing': typeof AuthenticatedAdminMarketingRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
@@ -774,7 +817,9 @@ export interface FileRoutesByTo {
   '/$locale/quartiers': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations': typeof LocaleReparationsIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/billing': typeof AppOrganizationsOrgIdBillingRoute
   '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
@@ -840,17 +885,20 @@ export interface FileRoutesById {
   '/_authenticated/admin/atelier': typeof AuthenticatedAdminAtelierRoute
   '/_authenticated/admin/ateliers': typeof AuthenticatedAdminAteliersRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/caisse': typeof AuthenticatedAdminCaisseRoute
   '/_authenticated/admin/catalogue': typeof AuthenticatedAdminCatalogueRoute
   '/_authenticated/admin/chat': typeof AuthenticatedAdminChatRoute
   '/_authenticated/admin/commandes': typeof AuthenticatedAdminCommandesRoute
   '/_authenticated/admin/contenu': typeof AuthenticatedAdminContenuRoute
   '/_authenticated/admin/dossiers': typeof AuthenticatedAdminDossiersRoute
   '/_authenticated/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/_authenticated/admin/feature-flags': typeof AuthenticatedAdminFeatureFlagsRoute
   '/_authenticated/admin/fournisseurs': typeof AuthenticatedAdminFournisseursRoute
   '/_authenticated/admin/inventaire': typeof AuthenticatedAdminInventaireRoute
   '/_authenticated/admin/kb': typeof AuthenticatedAdminKbRoute
   '/_authenticated/admin/kpis': typeof AuthenticatedAdminKpisRoute
   '/_authenticated/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/_authenticated/admin/livraisons': typeof AuthenticatedAdminLivraisonsRoute
   '/_authenticated/admin/marketing': typeof AuthenticatedAdminMarketingRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/_authenticated/admin/parrainage': typeof AuthenticatedAdminParrainageRoute
@@ -870,7 +918,9 @@ export interface FileRoutesById {
   '/$locale/quartiers/': typeof LocaleQuartiersIndexRoute
   '/$locale/reparations/': typeof LocaleReparationsIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/app/organizations/$orgId/billing': typeof AppOrganizationsOrgIdBillingRoute
   '/app/organizations/$orgId/equipment': typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
@@ -936,17 +986,20 @@ export interface FileRouteTypes {
     | '/admin/atelier'
     | '/admin/ateliers'
     | '/admin/audit'
+    | '/admin/caisse'
     | '/admin/catalogue'
     | '/admin/chat'
     | '/admin/commandes'
     | '/admin/contenu'
     | '/admin/dossiers'
     | '/admin/equipe'
+    | '/admin/feature-flags'
     | '/admin/fournisseurs'
     | '/admin/inventaire'
     | '/admin/kb'
     | '/admin/kpis'
     | '/admin/leads'
+    | '/admin/livraisons'
     | '/admin/marketing'
     | '/admin/notifications'
     | '/admin/parrainage'
@@ -966,7 +1019,9 @@ export interface FileRouteTypes {
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
     | '/admin/'
+    | '/app/organizations/$orgId/billing'
     | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
     | '/app/organizations/$orgId/equipment/$equipmentId'
@@ -1027,17 +1082,20 @@ export interface FileRouteTypes {
     | '/admin/atelier'
     | '/admin/ateliers'
     | '/admin/audit'
+    | '/admin/caisse'
     | '/admin/catalogue'
     | '/admin/chat'
     | '/admin/commandes'
     | '/admin/contenu'
     | '/admin/dossiers'
     | '/admin/equipe'
+    | '/admin/feature-flags'
     | '/admin/fournisseurs'
     | '/admin/inventaire'
     | '/admin/kb'
     | '/admin/kpis'
     | '/admin/leads'
+    | '/admin/livraisons'
     | '/admin/marketing'
     | '/admin/notifications'
     | '/admin/parrainage'
@@ -1057,7 +1115,9 @@ export interface FileRouteTypes {
     | '/$locale/quartiers'
     | '/$locale/reparations'
     | '/admin'
+    | '/app/organizations/$orgId/billing'
     | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
     | '/app/organizations/$orgId/equipment/$equipmentId'
@@ -1122,17 +1182,20 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/atelier'
     | '/_authenticated/admin/ateliers'
     | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/caisse'
     | '/_authenticated/admin/catalogue'
     | '/_authenticated/admin/chat'
     | '/_authenticated/admin/commandes'
     | '/_authenticated/admin/contenu'
     | '/_authenticated/admin/dossiers'
     | '/_authenticated/admin/equipe'
+    | '/_authenticated/admin/feature-flags'
     | '/_authenticated/admin/fournisseurs'
     | '/_authenticated/admin/inventaire'
     | '/_authenticated/admin/kb'
     | '/_authenticated/admin/kpis'
     | '/_authenticated/admin/leads'
+    | '/_authenticated/admin/livraisons'
     | '/_authenticated/admin/marketing'
     | '/_authenticated/admin/notifications'
     | '/_authenticated/admin/parrainage'
@@ -1152,7 +1215,9 @@ export interface FileRouteTypes {
     | '/$locale/quartiers/'
     | '/$locale/reparations/'
     | '/_authenticated/admin/'
+    | '/app/organizations/$orgId/billing'
     | '/app/organizations/$orgId/equipment'
+    | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
     | '/app/organizations/$orgId/equipment/$equipmentId'
@@ -1622,6 +1687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/caisse': {
+      id: '/_authenticated/admin/caisse'
+      path: '/caisse'
+      fullPath: '/admin/caisse'
+      preLoaderRoute: typeof AuthenticatedAdminCaisseRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/catalogue': {
       id: '/_authenticated/admin/catalogue'
       path: '/catalogue'
@@ -1664,6 +1736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminEquipeRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/feature-flags': {
+      id: '/_authenticated/admin/feature-flags'
+      path: '/feature-flags'
+      fullPath: '/admin/feature-flags'
+      preLoaderRoute: typeof AuthenticatedAdminFeatureFlagsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/fournisseurs': {
       id: '/_authenticated/admin/fournisseurs'
       path: '/fournisseurs'
@@ -1697,6 +1776,13 @@ declare module '@tanstack/react-router' {
       path: '/leads'
       fullPath: '/admin/leads'
       preLoaderRoute: typeof AuthenticatedAdminLeadsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/livraisons': {
+      id: '/_authenticated/admin/livraisons'
+      path: '/livraisons'
+      fullPath: '/admin/livraisons'
+      preLoaderRoute: typeof AuthenticatedAdminLivraisonsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/marketing': {
@@ -1797,11 +1883,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrganizationsOrgIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/organizations/$orgId/billing': {
+      id: '/app/organizations/$orgId/billing'
+      path: '/billing'
+      fullPath: '/app/organizations/$orgId/billing'
+      preLoaderRoute: typeof AppOrganizationsOrgIdBillingRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdRoute
+    }
     '/app/organizations/$orgId/equipment': {
       id: '/app/organizations/$orgId/equipment'
       path: '/equipment'
       fullPath: '/app/organizations/$orgId/equipment'
       preLoaderRoute: typeof AppOrganizationsOrgIdEquipmentRouteImport
+      parentRoute: typeof AppOrganizationsOrgIdRoute
+    }
+    '/app/organizations/$orgId/maintenance': {
+      id: '/app/organizations/$orgId/maintenance'
+      path: '/maintenance'
+      fullPath: '/app/organizations/$orgId/maintenance'
+      preLoaderRoute: typeof AppOrganizationsOrgIdMaintenanceRouteImport
       parentRoute: typeof AppOrganizationsOrgIdRoute
     }
     '/app/organizations/$orgId/sites': {
@@ -1841,17 +1941,20 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAtelierRoute: typeof AuthenticatedAdminAtelierRoute
   AuthenticatedAdminAteliersRoute: typeof AuthenticatedAdminAteliersRoute
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminCaisseRoute: typeof AuthenticatedAdminCaisseRoute
   AuthenticatedAdminCatalogueRoute: typeof AuthenticatedAdminCatalogueRoute
   AuthenticatedAdminChatRoute: typeof AuthenticatedAdminChatRoute
   AuthenticatedAdminCommandesRoute: typeof AuthenticatedAdminCommandesRoute
   AuthenticatedAdminContenuRoute: typeof AuthenticatedAdminContenuRoute
   AuthenticatedAdminDossiersRoute: typeof AuthenticatedAdminDossiersRoute
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
+  AuthenticatedAdminFeatureFlagsRoute: typeof AuthenticatedAdminFeatureFlagsRoute
   AuthenticatedAdminFournisseursRoute: typeof AuthenticatedAdminFournisseursRoute
   AuthenticatedAdminInventaireRoute: typeof AuthenticatedAdminInventaireRoute
   AuthenticatedAdminKbRoute: typeof AuthenticatedAdminKbRoute
   AuthenticatedAdminKpisRoute: typeof AuthenticatedAdminKpisRoute
   AuthenticatedAdminLeadsRoute: typeof AuthenticatedAdminLeadsRoute
+  AuthenticatedAdminLivraisonsRoute: typeof AuthenticatedAdminLivraisonsRoute
   AuthenticatedAdminMarketingRoute: typeof AuthenticatedAdminMarketingRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
   AuthenticatedAdminParrainageRoute: typeof AuthenticatedAdminParrainageRoute
@@ -1874,17 +1977,20 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAtelierRoute: AuthenticatedAdminAtelierRoute,
   AuthenticatedAdminAteliersRoute: AuthenticatedAdminAteliersRoute,
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminCaisseRoute: AuthenticatedAdminCaisseRoute,
   AuthenticatedAdminCatalogueRoute: AuthenticatedAdminCatalogueRoute,
   AuthenticatedAdminChatRoute: AuthenticatedAdminChatRoute,
   AuthenticatedAdminCommandesRoute: AuthenticatedAdminCommandesRoute,
   AuthenticatedAdminContenuRoute: AuthenticatedAdminContenuRoute,
   AuthenticatedAdminDossiersRoute: AuthenticatedAdminDossiersRoute,
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
+  AuthenticatedAdminFeatureFlagsRoute: AuthenticatedAdminFeatureFlagsRoute,
   AuthenticatedAdminFournisseursRoute: AuthenticatedAdminFournisseursRoute,
   AuthenticatedAdminInventaireRoute: AuthenticatedAdminInventaireRoute,
   AuthenticatedAdminKbRoute: AuthenticatedAdminKbRoute,
   AuthenticatedAdminKpisRoute: AuthenticatedAdminKpisRoute,
   AuthenticatedAdminLeadsRoute: AuthenticatedAdminLeadsRoute,
+  AuthenticatedAdminLivraisonsRoute: AuthenticatedAdminLivraisonsRoute,
   AuthenticatedAdminMarketingRoute: AuthenticatedAdminMarketingRoute,
   AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
   AuthenticatedAdminParrainageRoute: AuthenticatedAdminParrainageRoute,
@@ -2030,14 +2136,18 @@ const AppOrganizationsOrgIdTicketsRouteWithChildren =
   )
 
 interface AppOrganizationsOrgIdRouteChildren {
+  AppOrganizationsOrgIdBillingRoute: typeof AppOrganizationsOrgIdBillingRoute
   AppOrganizationsOrgIdEquipmentRoute: typeof AppOrganizationsOrgIdEquipmentRouteWithChildren
+  AppOrganizationsOrgIdMaintenanceRoute: typeof AppOrganizationsOrgIdMaintenanceRoute
   AppOrganizationsOrgIdSitesRoute: typeof AppOrganizationsOrgIdSitesRoute
   AppOrganizationsOrgIdTicketsRoute: typeof AppOrganizationsOrgIdTicketsRouteWithChildren
 }
 
 const AppOrganizationsOrgIdRouteChildren: AppOrganizationsOrgIdRouteChildren = {
+  AppOrganizationsOrgIdBillingRoute: AppOrganizationsOrgIdBillingRoute,
   AppOrganizationsOrgIdEquipmentRoute:
     AppOrganizationsOrgIdEquipmentRouteWithChildren,
+  AppOrganizationsOrgIdMaintenanceRoute: AppOrganizationsOrgIdMaintenanceRoute,
   AppOrganizationsOrgIdSitesRoute: AppOrganizationsOrgIdSitesRoute,
   AppOrganizationsOrgIdTicketsRoute:
     AppOrganizationsOrgIdTicketsRouteWithChildren,

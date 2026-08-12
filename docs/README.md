@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.12-b37 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.12-b38 — [Changelog](./CHANGELOG.md)
 
 ## Phase 1 B2B (parc matériel & sites)
 
@@ -46,10 +46,16 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Retour en haut** : bouton flottant après 400px de scroll avec smooth scroll.
 - **Accessibilité** : labels ARIA sur toutes les navigations, formulaires et boutons icônes, prefers-reduced-motion global.
 
-### Côté atelier / admin (28 onglets)
+### Côté atelier / admin (30 onglets)
 
+- **Caisse & POS Comptoir** : encaissement direct espèces ou Mobile Money, vente rapide d'accessoires, calculatrice de monnaie, impression de ticket thermique.
+- **Étiquettes Thermiques Atelier** : impression d'étiquettes 58mm/80mm pour pochettes et appareils avec QR de suivi client.
+- **Inspection & Contrôle Qualité QA** : grille de vérification 10 points (écran, tactile, caméras, batterie, audio, boutons, châssis) pour admission et sortie.
+- **Actions Rapides WhatsApp & SMS** : envoi en 1 clic de notifications directes aux clients (prise en charge, devis, prêt, relance).
+- **Messagerie Chat Temps Réel** : multi-conversations en direct liées aux dossiers et à Supabase Realtime avec accusés de lecture.
+- **Feature Flags** : gestion et activation dynamique des fonctionnalités système.
 - **Dossiers** : liste + kanban avec drag-and-drop, filtres (statut/recherche/dates/technicien).
-- **Atelier** : tableau kanban des réparations en cours, assignment technicien, scan QR/barcode pour intake, signature de remise client.
+- **Atelier** : tableau kanban et calendrier des réparations, affectation technicien, transfert d'atelier, scan QR.
 - **Équipe** : gestion des rôles (staff, technicien).
 - **Leads** : suivi des demandes de devis.
 - **Réclamations** : tickets de garantie avec statuts.

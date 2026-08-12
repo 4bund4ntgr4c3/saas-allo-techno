@@ -139,3 +139,78 @@ export const deletePart = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { deleted: true };
   });
+
+export interface SupplierOrderDraft {
+  order_reference: string;
+  generated_at: string;
+  items: {
+    part_id: string;
+    name: string;
+    sku: string;
+    brand: string;
+    model: string;
+    current_quantity: number;
+    recommended_order: number;
+    estimated_unit_price: number;
+    total_cost: number;
+  }[];
+  total_estimated_cost: number;
+}
+
+export const createSupplierOrderFromLowStock = createServerFn({ method: "POST" }).handler(
+  async (): Promise<SupplierOrderDraft> => {
+    const { data: parts, error } = await supabaseAdmin
+      .from("inventory_parts" as never)
+      .select("*")
+      .order("quantity");
+    if (error) throw new Error(error.message);
+
+    const allParts = (parts ?? []) as unknown as Part[];
+    const lowStock = allParts.filter((p) => p.quantity <= p.min_quantity);
+
+    const items = lowStock.map((p) => {
+      const orderQty = Math.max(5, p.min_quantity * 2 - p.quantity);
+      return {
+        part_id: p.id,
+        name: p.name,
+        sku: p.sku,
+        brand: p.brand,
+        model: p.model,
+        current_quantity: p.quantity,
+        recommended_order: orderQty,
+        estimated_unit_price: p.unit_price || 5000,
+        total_cost: orderQty * (p.unit_price || 5000),
+      };
+    });
+
+    const total_estimated_cost = items.reduce((sum, item) => sum + item.total_cost, 0);
+    const order_reference = `BC-FOURN-${Date.now().toString().slice(-6)}`;
+
+    return {
+      order_reference,
+      generated_at: new Date().toISOString(),
+      items,
+      total_estimated_cost,
+    };
+  },
+);
+
+export const getInventoryValuation = createServerFn({ method: "GET" }).handler(async () => {
+  const { data: parts, error } = await supabaseAdmin
+    .from("inventory_parts" as never)
+    .select("quantity, unit_price, min_quantity");
+  if (error) throw new Error(error.message);
+
+  const allParts = (parts ?? []) as unknown as { quantity: number; unit_price: number; min_quantity: number }[];
+  const totalValue = allParts.reduce((sum, p) => sum + (p.quantity * (p.unit_price || 0)), 0);
+  const totalUnits = allParts.reduce((sum, p) => sum + p.quantity, 0);
+  const lowStockCount = allParts.filter((p) => p.quantity <= p.min_quantity).length;
+
+  return {
+    totalValue,
+    totalUnits,
+    totalReferences: allParts.length,
+    lowStockCount,
+  };
+});
+
