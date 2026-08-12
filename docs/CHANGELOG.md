@@ -7,6 +7,24 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.12-b39] — 2026-08-12 (B2B Form Overhaul & Cart Hydration Fix — Batch 39)
+
+### Added
+
+- **Formulaire de Demande B2B Dynamique (`B2BRequestForm.tsx`)** :
+  - **SLA & Tarification par Équipement** : placement exclusif des cartes de formules SLA (*ESSENTIEL*, *BUSINESS*, *Sur-Mesure*) à l'Étape 2 pour les contrats SLA.
+  - **Tarif Dégressif -10% Parc Élargi** : réduction automatique de 10% appliquée pour les parcs de 6 à 15 et 16 à 50 équipements, affichée avec badge `-10% Dégressif` sur les boutons de sélection.
+  - **Grille de Maintenance Préventive 4 Fréquences** : sélection parmi 4 périodicités (2 mois: 6 500 F, 3 mois: 8 000 F, 6 mois: 10 000 F, 12 mois: 15 000 F) avec calcul du montant total par passe directement affiché sur les boutons.
+  - **Auto-Liaison des Délais d'Urgence SLA** : verrouillage automatique du délai d'intervention selon la formule choisie (Essentiel $\rightarrow$ Sous 48h, Business $\rightarrow$ Urgent < 24h).
+  - **Zéro Pré-sélection par Défaut** : options non sélectionnées par défaut aux Étapes 1 et 2 pour inciter le client à faire un choix explicite, avec messages d'avertissement Toast en cas d'omission.
+  - **Boutons Techniques Uniformes** : hauteur uniforme `h-12` (48px) et style noir technique sur l'ensemble du formulaire.
+
+### Fixed
+
+- **Widget Panier & Hydratation (`AddToCartWidget.tsx` & `cart.tsx`)** : résolution de l'ouverture intempestive du tiroir panier lors des rafraîchissements de page en ignorant la phase d'hydratation `localStorage`.
+
+---
+
 ## [2026.08.12-b38] — 2026-08-12 (Strategic Enterprise & Operations Suite — Batch 38)
 
 ### Added

@@ -2,9 +2,18 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.12-b38 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.12-b39 — [Changelog](./CHANGELOG.md)
 
-## Phase 1 B2B (parc matériel & sites)
+## Refonte Formulaire B2B & Correctif Panier (Batch 39)
+
+- **Formulaire de Demande B2B (`B2BRequestForm.tsx`)** :
+  - Formules SLA intégrées exclusivement à l'Étape 2.
+  - Calculateur de réduction dégressive de -10% pour les équipements > 5.
+  - Grille à 4 fréquences de maintenance préventive (2, 3, 6, 12 mois) avec calcul du coût total par passe sur les boutons.
+  - Auto-liaison du délai d'intervention SLA et verrouillage du choix manuel.
+  - Démarrage sans pré-sélection par défaut aux étapes 1 & 2.
+  - Boutons uniformes `h-12` (48px) et style noir technique.
+- **Correctif Panier (`AddToCartWidget.tsx` & `cart.tsx`)** : suppression de l'ouverture intempestive du tiroir panier lors du chargement de page.
 
 - **Parc matériel** : tables `equipment` / `equipment_history` / `equipment_documents` / `warranties` isolées par organisation (RLS `org_is_member`/`org_is_admin`), 10 RPC CRUD sécurisés côté base, statuts (actif, en panne, maintenance, garantie, retiré).
 - **QR équipement** : `qr_id` unique généré à la création, QR imprimable sur la fiche (`/app/scan?q=…` résout la fiche).
