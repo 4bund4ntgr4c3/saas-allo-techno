@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Stars } from "@/components/site/Blocks";
@@ -18,6 +18,7 @@ import { logAudit } from "@/lib/audit";
 import { StockAdmin } from "@/components/admin/AdminStock";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 type ContentTab = "blog" | "avis" | "stock";
 
@@ -117,7 +118,7 @@ function BlogAdmin() {
       date: p.date,
       category: p.category,
       readingTime: p.readingTime,
-      bodyText: p.body.join("\n"),
+      bodyText: paragraphsToHtml(p.body),
     });
     setEditing(p);
     setError(null);
@@ -138,6 +139,32 @@ function BlogAdmin() {
     setError(null);
   };
 
+  const duplicateFromLocale = async (slug: string, fromLocale: string) => {
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("slug, title, excerpt, date, category, reading_time, body, locale")
+      .eq("slug", slug)
+      .eq("locale", fromLocale)
+      .maybeSingle();
+    if (!data) {
+      toast.error(t("admin.content.blog.toast.notFound"));
+      return;
+    }
+    setForm({
+      slug: data.slug,
+      locale,
+      title: data.title,
+      excerpt: data.excerpt,
+      date: data.date,
+      category: data.category,
+      readingTime: data.reading_time,
+      bodyText: paragraphsToHtml(parsePostBody(data.body)),
+    });
+    setEditing(null);
+    setError(null);
+    toast.success(t("admin.content.blog.toast.duplicated", [fromLocale.toUpperCase()]));
+  };
+
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -152,10 +179,7 @@ function BlogAdmin() {
           date: form.date,
           category: form.category.trim(),
           readingTime: form.readingTime.trim(),
-          body: form.bodyText
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean),
+          body: htmlToParagraphs(form.bodyText),
         },
       });
       queryClient.invalidateQueries({ queryKey: ["admin-blog"] });
@@ -239,6 +263,16 @@ function BlogAdmin() {
                 >
                   <Trash2 className="size-3.5" />
                 </Button>
+                {p.locale !== locale && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => duplicateFromLocale(p.slug, p.locale ?? "fr")}
+                    title={t("admin.content.blog.button.duplicate", [p.locale?.toUpperCase() ?? "FR"])}
+                  >
+                    <Copy className="size-3.5" />
+                  </Button>
+                )}
               </div>
             </div>
           ))
@@ -326,11 +360,10 @@ function BlogAdmin() {
           </div>
           <label className="block">
             <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.body_hint")}</span>
-            <textarea
-              className={`${field} h-56`}
+            <RichTextEditor
               value={form.bodyText}
-              onChange={(e) => setForm((f) => ({ ...f, bodyText: e.target.value }))}
-              required
+              onChange={(html) => setForm((f) => ({ ...f, bodyText: html }))}
+              placeholder={t("admin.content.blog.form.body_hint")}
             />
           </label>
           {error && <p className="text-sm text-destructive">{error}</p>}
@@ -361,6 +394,27 @@ export function parsePostBody(raw: string): string[] {
     /* ignore */
   }
   return [];
+}
+
+function htmlToParagraphs(html: string): string[] {
+  if (!html) return [];
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  const blocks: string[] = [];
+  for (const child of div.childNodes) {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const text = child.textContent?.trim();
+      if (text) blocks.push(text);
+    } else if (child instanceof HTMLElement) {
+      const text = child.textContent?.trim();
+      if (text) blocks.push(text);
+    }
+  }
+  return blocks;
+}
+
+function paragraphsToHtml(paragraphs: string[]): string {
+  return paragraphs.map((p) => `<p>${p}</p>`).join("");
 }
 
 function ReviewsAdmin() {

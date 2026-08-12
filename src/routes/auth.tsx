@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 
 type AuthMode = "login" | "signup" | "forgot" | "reset-sent" | "update-password";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ErrorRoute,
   component: AuthPage,
 });
 

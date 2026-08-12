@@ -18,6 +18,7 @@
 
 import { COMPANY } from "@/data/catalog/company";
 import { PERIOD_LABEL, formatDateFr } from "@/lib/reservation-schema";
+import { createLogger } from "@/lib/logger";
 
 const TZ = "Africa/Porto-Novo";
 const HOUR_MS = 3_600_000;
@@ -34,6 +35,8 @@ const WHATSAPP_PHONE_NUMBER_ID = process.env["WHATSAPP_PHONE_NUMBER_ID"];
 
 /** Préfixe téléphonique du pays (Bénin = 229). Configurable via PHONE_COUNTRY_PREFIX. */
 const PHONE_PREFIX = process.env["PHONE_COUNTRY_PREFIX"] ?? "229";
+
+const logger = createLogger("reminders");
 
 type SlotPeriod = "matin" | "apres-midi";
 
@@ -58,9 +61,7 @@ function normalizePhone(raw: string): string {
 
 async function sendWhatsApp(to: string, body: string): Promise<void> {
   if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-    console.warn(
-      "[reminders] WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID manquants — WhatsApp ignoré",
-    );
+    logger.warn("WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID not configured, skipping WhatsApp");
     return;
   }
   try {
@@ -81,16 +82,16 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
       },
     );
     if (!res.ok) {
-      console.error("[reminders] WhatsApp", res.status, await res.text());
+      logger.error("WhatsApp send failed", undefined, { status: res.status, body: await res.text() });
     }
   } catch (err) {
-    console.error("[reminders] WhatsApp échec réseau", err);
+    logger.error("WhatsApp network failure", err as Error);
   }
 }
 
 async function sendEmail(to: string, subject: string, html: string): Promise<void> {
   if (!RESEND_API_KEY) {
-    console.warn("[reminders] RESEND_API_KEY manquante — e-mail ignoré");
+    logger.warn("RESEND_API_KEY not configured, skipping email");
     return;
   }
   try {
@@ -103,10 +104,10 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
       body: JSON.stringify({ from: RESEND_FROM, to: [to], subject, html }),
     });
     if (!res.ok) {
-      console.error("[reminders] Resend", res.status, await res.text());
+      logger.error("Resend send failed", undefined, { status: res.status, body: await res.text() });
     }
   } catch (err) {
-    console.error("[reminders] Resend échec réseau", err);
+    logger.error("Resend network failure", err as Error);
   }
 }
 
@@ -269,14 +270,14 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
         counters.skipped += 1;
         return;
       }
-      console.error(`[reminders] déduplication impossible (${type}/${ref})`, error);
+      logger.error(`Deduplication failed (${type}/${ref})`, error as unknown as Error);
       counters.skipped += 1;
       return;
     }
     try {
       await send(r);
     } catch (err) {
-      console.error(`[reminders] envoi échoué (${type}/${ref})`, err);
+      logger.error(`Send failed (${type}/${ref})`, err as Error);
     }
     counters.sent += 1;
   };
@@ -288,7 +289,7 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
     .eq("status", "confirmee")
     .eq("slot_date", tomorrowIso());
   if (rdvError) {
-    console.error("[reminders] requête rdv_reminder échouée", rdvError);
+    logger.error("rdv_reminder query failed", rdvError);
   } else {
     for (const row of (rdvRows ?? []) as unknown as Candidate[]) {
       await tryNotify("rdv_reminder", row.reference, (r) => sendBoth(buildRdvReminder(r), r), row);
@@ -302,7 +303,7 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
     .eq("quote_status", "sent")
     .lt("created_at", cutoff48h);
   if (quoteError) {
-    console.error("[reminders] requête quote_relance échouée", quoteError);
+    logger.error("quote_relance query failed", quoteError);
   } else {
     for (const row of (quoteRows ?? []) as unknown as Candidate[]) {
       await tryNotify(
@@ -321,7 +322,7 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
     .eq("status", "pret")
     .gte("updated_at", cutoff48h);
   if (readyError) {
-    console.error("[reminders] requête ready_alert échouée", readyError);
+    logger.error("ready_alert query failed", readyError);
   } else {
     for (const row of (readyRows ?? []) as unknown as Candidate[]) {
       await tryNotify("ready_alert", row.reference, (r) => sendBoth(buildReadyAlert(r), r), row);
@@ -333,7 +334,7 @@ async function runReminders(): Promise<{ sent: number; skipped: number }> {
     .from("inventory")
     .select("slug, quantity, low_stock_threshold");
   if (invError) {
-    console.error("[reminders] requête low_stock_alert échouée", invError);
+    logger.error("low_stock_alert query failed", invError);
   } else {
     const lowStock = (inventoryRows ?? []).filter((row) => row.quantity <= row.low_stock_threshold);
     for (const item of lowStock) {
@@ -357,7 +358,7 @@ async function sendBoth(
     try {
       await sendEmail(r.email, message.subject, message.html);
     } catch (err) {
-      console.error(`[reminders] e-mail échoué (${r.reference})`, err);
+      logger.error(`Email failed (${r.reference})`, err as Error);
     }
   }
   let waOk = false;
@@ -365,7 +366,7 @@ async function sendBoth(
     await sendWhatsApp(r.phone, message.waBody);
     waOk = true;
   } catch (err) {
-    console.error(`[reminders] WhatsApp échoué (${r.reference})`, err);
+    logger.error(`WhatsApp failed (${r.reference})`, err as Error);
   }
   // Fallback SMS si WhatsApp échoue
   if (!waOk && message.smsBody) {
@@ -373,7 +374,7 @@ async function sendBoth(
       const { sendSimpleSms } = await import("@/lib/sms");
       await sendSimpleSms(r.phone, message.smsBody);
     } catch (err) {
-      console.error(`[reminders] SMS échoué (${r.reference})`, err);
+      logger.error(`SMS failed (${r.reference})`, err as Error);
     }
   }
 }

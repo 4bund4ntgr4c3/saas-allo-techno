@@ -136,11 +136,9 @@ function BlogPost() {
           </div>
           <h1 className="at-display mt-5 text-3xl md:text-5xl">{post.title}</h1>
           <p className="mt-6 text-lg text-muted-foreground">{post.excerpt}</p>
-          <div className="mt-10 space-y-5 border-t border-border pt-10">
+          <div className="mt-10 space-y-5 border-t border-border pt-10 prose prose-sm prose-headings:font-semibold prose-a:text-primary prose-a:underline max-w-none [&_blockquote]:border-l-2 [&_blockquote]:border-primary/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-lg [&_hr]:my-4 [&_hr]:border-border [&_li]:ml-4 [&_li]:list-disc [&_p]:mb-2">
             {post.body.map((par: string) => (
-              <p key={par.slice(0, 30)} className="text-sm leading-relaxed">
-                {par}
-              </p>
+              <div key={par.slice(0, 30)} dangerouslySetInnerHTML={{ __html: par }} />
             ))}
           </div>
         </div>

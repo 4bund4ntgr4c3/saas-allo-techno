@@ -6,6 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { Button } from "@/components/ui/button";
+import { ErrorRoute } from "@/components/ErrorRoute";
 
 const DevisComparison = lazy(() =>
   import("@/components/DevisComparison").then((m) => ({ default: m.DevisComparison })),
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/$locale/devis")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: Devis,
 });
 

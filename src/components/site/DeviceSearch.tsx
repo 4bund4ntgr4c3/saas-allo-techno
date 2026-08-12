@@ -14,6 +14,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import {
   BRANDS,
@@ -1404,11 +1405,11 @@ export function DeviceSearch({
                         key={`${f.name}-${i}`}
                         className="relative overflow-hidden rounded-sm border border-border bg-surface"
                       >
-                        <img
+                        <OptimizedImage
                           src={previewUrls[i]}
                           alt={t("wizard.photos.alt", [i + 1])}
-                          loading="lazy"
-                          className="aspect-square w-full object-cover"
+                          aspectRatio="1/1"
+                          className="w-full"
                         />
                         <button
                           type="button"
@@ -1555,11 +1556,10 @@ export function DeviceSearch({
                           key={i}
                           className="relative size-16 rounded-sm border border-border bg-surface"
                         >
-                          <img
+                          <OptimizedImage
                             src={previewUrls[i]}
                             alt={t("wizard.photos.alt", [i + 1])}
-                            loading="lazy"
-                            className="size-full object-cover"
+                            aspectRatio="1/1"
                           />
                           <button
                             type="button"

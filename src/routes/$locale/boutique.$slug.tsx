@@ -29,6 +29,7 @@ import { ProductReviewsSection } from "@/components/shop/ProductReviews";
 import { ImageZoom } from "@/components/shop/ImageZoom";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -60,6 +61,7 @@ export const Route = createFileRoute("/$locale/boutique/$slug")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: Produit,
 });
 

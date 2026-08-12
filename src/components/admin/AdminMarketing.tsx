@@ -238,7 +238,7 @@ export function AdminMarketing() {
                 onChange={(e) => setForm({ ...form, type: e.target.value as CampaignType })}
                 className={field}
               >
-                <option value="email">Email</option>
+                <option value="email">{t("admin.marketing.email")}</option>
                 <option value="sms">SMS</option>
                 <option value="whatsapp">WhatsApp</option>
               </select>

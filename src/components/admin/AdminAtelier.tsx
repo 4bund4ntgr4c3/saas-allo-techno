@@ -203,7 +203,7 @@ export function AtelierBoard() {
             }}
           >
             <RefreshCw className={`mr-2 size-4 ${board.isFetching ? "animate-spin" : ""}`} />
-            Rafraîchir
+            {t("admin.common.refresh")}
           </Button>
         </div>
       </div>

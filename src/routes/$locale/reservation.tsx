@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/$locale/reservation")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: ReservationRedirect,
 });
 

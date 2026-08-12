@@ -597,7 +597,20 @@ const en: Dictionary = {
   "auth.session.expired": "Your session has expired. Please sign in again.",
 };
 
-const dictionaries: Record<Locale, Dictionary> = { fr, en };
+const dictionariesBase: Record<Locale, Dictionary> = { fr, en };
+
+// Registre partagé global : lorsque le module est dupliqué par le code-splitting
+// (ex. pages ssr:false comme /auth), chaque copie doit lire/écrire le MÊME objet,
+// sinon les segments enregistrés dans une copie sont invisibles dans l'autre.
+const g = globalThis as unknown as { __at_i18n_registry?: Record<Locale, Dictionary> };
+const dictionaries: Record<Locale, Dictionary> = (g.__at_i18n_registry ??= { fr: {}, en: {} });
+
+// Initialise les clés de base SANS écraser les segments déjà enregistrés
+// (ordre d'évaluation non garanti entre les copies du module).
+for (const key of Object.keys(dictionariesBase)) {
+  const loc = key as Locale;
+  dictionaries[loc] = { ...(dictionaries[loc] ?? {}), ...dictionariesBase[loc] };
+}
 
 export type LocaleSegments = { fr: Dictionary; en: Dictionary };
 export function registerSegments(...segments: LocaleSegments[]) {

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Loader2, Send, Star } from "lucide-react";
 import { CtaBand, ReviewsGrid, SectionHeader, Stars, TrustStats } from "@/components/site/Blocks";
 import { REVIEWS } from "@/data/catalog";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import {
   getReviewInvite,
   listPublishedReviews,
@@ -60,6 +61,7 @@ export const Route = createFileRoute("/$locale/avis")({
       return [];
     }
   },
+  errorComponent: ErrorRoute,
   component: Avis,
 });
 

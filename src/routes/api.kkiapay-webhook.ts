@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { timingSafeEqual } from "node:crypto";
 
 /**
  * Webhook KKiaPay — notification de transaction de paiement (Mobile Money).
@@ -16,8 +17,15 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
           return new Response("Not configured", { status: 500 });
         }
 
-        const received = request.headers.get("x-kkiapay-secret");
-        if (!received || received !== secret) {
+        const received = request.headers.get("x-kkiapay-secret") ?? "";
+        const bufReceived = Buffer.from(received, "utf8");
+        const bufSecret = Buffer.from(secret, "utf8");
+        const isSecretValid =
+          bufReceived.length > 0 &&
+          bufReceived.length === bufSecret.length &&
+          timingSafeEqual(bufReceived, bufSecret);
+
+        if (!isSecretValid) {
           console.warn("[webhook] x-kkiapay-secret invalide");
           return new Response("Unauthorized", { status: 401 });
         }

@@ -40,6 +40,28 @@ vi.mock("@/lib/monitoring", () => ({
   trackMetric: vi.fn(),
 }));
 
+vi.mock("@tanstack/react-start", () => ({
+  createServerFn: () => {
+    const builder = {
+      middleware: () => builder,
+      inputValidator: (validator: (data: unknown) => unknown) => ({
+        handler:
+          (handlerFn: (ctx: { data: unknown }) => Promise<unknown>) =>
+          async (args: { data: unknown }) => {
+            const validated = validator ? validator(args?.data ?? args) : (args?.data ?? args);
+            return handlerFn({ data: validated });
+          },
+      }),
+      handler:
+        (handlerFn: (ctx: { data: unknown }) => Promise<unknown>) =>
+        async (args: { data: unknown }) => {
+          return handlerFn({ data: args?.data ?? args });
+        },
+    };
+    return builder;
+  },
+}));
+
 vi.mock("@tanstack/react-start/server", () => ({
   getRequestHeader: vi.fn(() => "Bearer test-token"),
 }));
@@ -58,7 +80,7 @@ describe("Reservation creation flow", () => {
         device: "iPhone 14",
         issue: "Écran fissuré",
         mode: "boutique",
-        payment: "sur_place",
+        payment: "especes",
         slot_date: "2026-08-15",
         slot_period: "matin",
         slot_hour: "09:00",
@@ -78,7 +100,7 @@ describe("Reservation creation flow", () => {
         appareil: "iPhone 14",
         panne: "Écran fissuré",
         mode: "boutique",
-        paiement: "sur_place",
+        paiement: "especes",
         date: "2026-08-15",
         creneau: "matin",
         heure: "09:00",
@@ -105,7 +127,7 @@ describe("Reservation creation flow", () => {
           appareil: "iPhone 14",
           panne: "Écran fissuré",
           mode: "boutique",
-          paiement: "sur_place",
+          paiement: "especes",
           date: "2026-08-15",
           creneau: "matin",
         },

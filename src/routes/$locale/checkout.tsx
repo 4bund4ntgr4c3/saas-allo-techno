@@ -11,6 +11,7 @@ import { getDeliveryOptions, FREE_DELIVERY_FROM, useCart } from "@/components/sh
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { submitShopOrder, validatePromoCode } from "@/lib/shop.functions";
 import { getOrderPaymentStatus, initiateFlutterwavePayment } from "@/lib/payments.functions";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -45,6 +46,7 @@ export const Route = createFileRoute("/$locale/checkout")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: Checkout,
 });
 

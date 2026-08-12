@@ -16,8 +16,8 @@ export const SECURITY_HEADERS: Record<string, string> = {
   "x-content-type-options": "nosniff",
   // Réduit les données envoyées dans le Referer (sorties vers l'extérieur)
   "referrer-policy": "strict-origin-when-cross-origin",
-  // Restreint les API navigateur exposées aux pages
-  "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  // Restreint les API navigateur exposées aux pages (camera et payment autorisés pour self pour scan QR et paiements)
+  "permissions-policy": "camera=(self), microphone=(), geolocation=(), payment=(self)",
 };
 
 // CSP stricte, construite par requête avec un nonce unique. `script-src`

@@ -5,7 +5,10 @@ import type { Enums } from "@/integrations/supabase/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
+import { createLogger } from "@/lib/logger";
 import { computeSlaForecast, type SlaForecast, type TimelineEntry } from "@/lib/suivi.functions";
+
+const logger = createLogger("admin");
 
 const setStatusSchema = z.object({
   id: z.string().uuid(),
@@ -87,7 +90,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
         ...(data.note ? { _note: data.note } : {}),
       });
       if (techRpcError) {
-        console.error("[admin] technician set status failed", techRpcError);
+        logger.error("Technician set status failed", techRpcError);
         throw new Error(techRpcError.message);
       }
     } else {
@@ -97,7 +100,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
         ...(data.note ? { _note: data.note } : {}),
       });
       if (error) {
-        console.error("[admin] set status failed", error);
+        logger.error("Set status failed", error);
         throw new Error(error.message);
       }
     }
@@ -124,7 +127,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
           _reference: row.reference,
         });
       } catch (err) {
-        console.error("[loyalty] crédit réparation terminée échoué", err);
+        logger.error("Loyalty credit for completed repair failed", err as Error);
       }
 
       try {
@@ -142,7 +145,7 @@ export const setReservationStatus = createServerFn({ method: "POST" })
           });
         }
       } catch (err) {
-        console.error("[loyalty] crédit parrain échoué", err);
+        logger.error("Loyalty referral credit failed", err as Error);
       }
     }
 
@@ -194,7 +197,7 @@ export const getReservationQuote = createServerFn({ method: "POST" })
       .maybeSingle();
 
     if (error) {
-      console.error("[admin] get reservation quote failed", error);
+      logger.error("Get reservation quote failed", error);
       throw new Error("Impossible de lire le devis de ce dossier.");
     }
     if (!row) return null;
@@ -278,7 +281,7 @@ export const getAtelierBoard = createServerFn({ method: "POST" })
       .limit(500);
 
     if (rError) {
-      console.error("[admin] atelier board failed", rError);
+      logger.error("Atelier board failed", rError);
       throw new Error("Impossible de charger le tableau de l'atelier.");
     }
     const rows = (reservations as unknown as AtelierCard[] | null) ?? [];
@@ -377,7 +380,7 @@ export const assignTechnician = createServerFn({ method: "POST" })
       .eq("id", data.reservationId);
 
     if (error) {
-      console.error("[admin] assign technician failed", error);
+      logger.error("Assign technician failed", error);
       throw new Error("Assignation impossible.");
     }
 
@@ -544,7 +547,7 @@ export const transferReservation = createServerFn({ method: "POST" })
     );
 
     if (error) {
-      console.error("[admin] transfer failed", error);
+      logger.error("Transfer failed", error);
       throw new Error("Transfert impossible.");
     }
 

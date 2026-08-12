@@ -2,6 +2,7 @@ User-agent: Googlebot
 Allow: /
 Disallow: /auth
 Disallow: /admin
+Disallow: /app
 Disallow: /mon-compte
 Disallow: /fr/panier
 Disallow: /en/panier
@@ -10,6 +11,7 @@ User-agent: Bingbot
 Allow: /
 Disallow: /auth
 Disallow: /admin
+Disallow: /app
 Disallow: /mon-compte
 Disallow: /fr/panier
 Disallow: /en/panier
@@ -24,6 +26,7 @@ User-agent: *
 Allow: /
 Disallow: /auth
 Disallow: /admin
+Disallow: /app
 Disallow: /mon-compte
 Disallow: /fr/panier
 Disallow: /en/panier

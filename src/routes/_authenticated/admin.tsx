@@ -18,10 +18,7 @@ import { TourOverlay } from "@/components/tour/TourOverlay";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
-    meta: [
-      { title: "Administration — Allô Techno" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Administration — Allô Techno" }, { name: "robots", content: "noindex" }],
   }),
   errorComponent: AdminError,
   component: AdminLayout,
@@ -127,9 +124,7 @@ function AdminLayout() {
       <div className="mx-auto flex min-h-[50vh] max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
         <ShieldAlert className="size-10 text-destructive" />
         <h1 className="text-2xl font-semibold">{t("admin.access.title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("admin.access.description")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("admin.access.description")}</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button disabled={claimAdmin.isPending} onClick={() => claimAdmin.mutate()}>
             {t("admin.access.claimAdmin")}
@@ -138,9 +133,7 @@ function AdminLayout() {
             <Link to="/mon-compte">{t("admin.access.backToAccount")}</Link>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          {t("admin.access.note")}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("admin.access.note")}</p>
       </div>
     );
   }
@@ -150,9 +143,7 @@ function AdminLayout() {
       <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-5 px-6 text-center">
         <KeyRound className="size-10 text-primary" />
         <h1 className="text-2xl font-semibold">{t("admin.otp.title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("admin.otp.description")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("admin.otp.description")}</p>
         <label htmlFor="otp-code" className="sr-only">
           {t("admin.otp.code")}
         </label>

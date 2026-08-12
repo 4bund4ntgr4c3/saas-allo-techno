@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("cron-reminders");
 
 /**
  * Déclencheur du job de rappels automatisés (GitHub Actions, cron quotidien
@@ -12,7 +15,7 @@ export const Route = createFileRoute("/api/cron-reminders")({
       POST: async ({ request }) => {
         const token = process.env["CRON_TOKEN"];
         if (!token) {
-          console.error("[reminders] CRON_TOKEN absent — job non configuré");
+          logger.error("CRON_TOKEN not configured, job will not run");
           return new Response("Not configured", { status: 503 });
         }
 
@@ -20,7 +23,7 @@ export const Route = createFileRoute("/api/cron-reminders")({
         const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : "";
         const { safeEqual } = await import("@/lib/security");
         if (!safeEqual(bearer, token)) {
-          console.warn("[reminders] jeton d'authentification invalide");
+          logger.warn("Invalid authentication token");
           return new Response("Unauthorized", { status: 401 });
         }
 
@@ -31,7 +34,7 @@ export const Route = createFileRoute("/api/cron-reminders")({
             headers: { "content-type": "application/json" },
           });
         } catch (err) {
-          console.error("[reminders] exécution échouée", err);
+          logger.error("Reminder execution failed", err as Error);
           return new Response("Server error", { status: 500 });
         }
       },

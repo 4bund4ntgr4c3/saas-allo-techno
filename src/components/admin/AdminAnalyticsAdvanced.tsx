@@ -94,7 +94,7 @@ export function AnalyticsAdvanced() {
             })}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground">Pas de données</p>
+          <p className="text-xs text-muted-foreground">{t("admin.common.noData")}</p>
         )}
       </div>
 

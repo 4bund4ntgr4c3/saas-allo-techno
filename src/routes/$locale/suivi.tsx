@@ -16,6 +16,7 @@ import {
   Truck,
   Wrench,
 } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { CtaBand } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { QrCode } from "@/components/site/QrCode";
@@ -921,11 +922,11 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
               onClick={() => setZoom(a.url)}
               className="group overflow-hidden rounded-sm border border-border bg-surface text-left"
             >
-              <img
+              <OptimizedImage
                 src={a.url}
                 alt={`${stageLabel(t, a.stage)} — ${t("suivi.dossier")} ${reference}`}
-                loading="lazy"
-                className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                aspectRatio="1/1"
+                className="transition-transform duration-300 group-hover:scale-105"
               />
               <span className="block px-2 py-1.5 text-[11px] text-muted-foreground">
                 {stageLabel(t, a.stage)}

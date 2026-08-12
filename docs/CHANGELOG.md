@@ -7,6 +7,23 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.12] — 2026-08-12 (Audit & Security Hardening)
+
+### Added
+
+- **Robots.txt** : protection de la route privée B2B (`Disallow: /app`) pour les moteurs de recherche.
+
+### Changed
+
+- **Security Headers** : ajustement de la `permissions-policy` pour autoriser la caméra (`camera=(self)`) et les paiements (`payment=(self)`) sur l'origine propre, nécessaires au scanner QR d'atelier et aux flux Mobile Money.
+- **Webhook KKiaPay** : comparaison du secret webhook en temps constant (`timingSafeEqual`) pour prévenir les attaques temporelles.
+
+### Fixed
+
+- **Tests Vitest** : mock de `createServerFn` dans `integration-reservation.test.ts` et correction du mode de paiement fixture (`especes`), rétablissant 100% de tests au vert (94/94 passants).
+
+---
+
 ## [2026.08.11] — 2026-08-11 (Phase 1 B2B — parc matériel & sites)
 
 ### Added

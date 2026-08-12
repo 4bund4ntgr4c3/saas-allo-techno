@@ -19,6 +19,7 @@ import { useRecentlyViewed } from "@/components/shop/use-recently-viewed";
 import { useCompare, MAX_COMPARE } from "@/components/shop/compare";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
 import { listInventory } from "@/lib/content.functions";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/$locale/boutique/")({
       links: [...seo.links],
     };
   },
+  errorComponent: ErrorRoute,
   component: Boutique,
 });
 

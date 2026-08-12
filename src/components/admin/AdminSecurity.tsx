@@ -61,7 +61,8 @@ function SecuritySection() {
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
   });
 
   const disable = useMutation({
@@ -72,7 +73,8 @@ function SecuritySection() {
       queryClient.invalidateQueries({ queryKey: ["otp", user.id] });
       queryClient.invalidateQueries({ queryKey: ["otp-enabled", user.id] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : t("admin.security.toast.invalidCode")),
   });
 
   const enrolling = pendingSecret !== null;
@@ -83,9 +85,7 @@ function SecuritySection() {
         <div>
           <p className="at-eyebrow">{t("admin.security.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.security.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("admin.security.description")}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.security.description")}</p>
         </div>
       </div>
 
@@ -95,9 +95,7 @@ function SecuritySection() {
 
       {enrolling ? (
         <div className="mt-6 space-y-5 border border-border bg-card p-6">
-          <p className="text-sm">
-            1. {t("admin.security.enroll.step1")}
-          </p>
+          <p className="text-sm">1. {t("admin.security.enroll.step1")}</p>
           <QrCode
             value={pendingUri ?? ""}
             size={180}
@@ -119,7 +117,9 @@ function SecuritySection() {
               disabled={confirm.isPending || code.length !== 6}
               onClick={() => confirm.mutate()}
             >
-              {confirm.isPending ? t("admin.security.enroll.verifying") : t("admin.security.enroll.activate")}
+              {confirm.isPending
+                ? t("admin.security.enroll.verifying")
+                : t("admin.security.enroll.activate")}
             </Button>
           </div>
         </div>
@@ -131,9 +131,7 @@ function SecuritySection() {
             <ShieldCheck className="size-4" />
             {t("admin.security.status.active")}
           </p>
-          <p className="text-sm text-muted-foreground">
-            {t("admin.security.status.activeDesc")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("admin.security.status.activeDesc")}</p>
           <div className="flex flex-wrap gap-3">
             <input
               className={`${field} max-w-40 text-center font-mono tracking-widest`}
@@ -158,11 +156,11 @@ function SecuritySection() {
             <KeyRound className="size-4" />
             {t("admin.security.status.inactive")}
           </p>
-          <p className="text-sm text-muted-foreground">
-            {t("admin.security.status.inactiveDesc")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("admin.security.status.inactiveDesc")}</p>
           <Button disabled={enroll.isPending} onClick={() => enroll.mutate()}>
-            {enroll.isPending ? t("admin.security.enroll.preparing") : t("admin.security.enroll.enable2fa")}
+            {enroll.isPending
+              ? t("admin.security.enroll.preparing")
+              : t("admin.security.enroll.enable2fa")}
           </Button>
         </div>
       )}
@@ -198,11 +196,15 @@ function RateLimitPanel() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-sm border border-border p-3 text-center">
               <p className="font-mono text-2xl font-bold">{stats.data.totalBuckets}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.activeBuckets")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("admin.security.rateLimit.activeBuckets")}
+              </p>
             </div>
             <div className="rounded-sm border border-border p-3 text-center">
               <p className="font-mono text-2xl font-bold">{stats.data.activeBuckets}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.inWindow")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("admin.security.rateLimit.inWindow")}
+              </p>
             </div>
             <div className="rounded-sm border border-border p-3 text-center">
               <p
@@ -210,7 +212,9 @@ function RateLimitPanel() {
               >
                 {stats.data.blockedBuckets}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">{t("admin.security.rateLimit.nearBlock")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("admin.security.rateLimit.nearBlock")}
+              </p>
             </div>
           </div>
           {stats.data.buckets.length > 0 && (

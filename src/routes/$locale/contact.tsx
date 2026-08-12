@@ -3,6 +3,7 @@ import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { CtaBand, MobileMoneyBar } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { COMPANY } from "@/data/catalog";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/$locale/contact")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: Contact,
 });
 

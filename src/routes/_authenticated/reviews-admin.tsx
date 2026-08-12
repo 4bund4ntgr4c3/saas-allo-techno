@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Stars } from "@/components/site/Blocks";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { formatDateFr } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/_authenticated/reviews-admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  errorComponent: ErrorRoute,
   component: ReviewsAdminPage,
 });
 

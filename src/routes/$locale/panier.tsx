@@ -10,6 +10,7 @@ import { PricingSidebar } from "@/components/shop/PricingSidebar";
 import { useCart } from "@/components/shop/cart";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { getOrderPaymentStatus } from "@/lib/payments.functions";
+import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/$locale/panier")({
       ],
     };
   },
+  errorComponent: ErrorRoute,
   component: Panier,
 });
 

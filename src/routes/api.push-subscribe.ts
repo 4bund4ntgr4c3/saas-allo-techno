@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/push-subscribe")({
 
         if (error) {
           console.error("[push] list subscriptions failed", error);
-          return Response.json({ error: "Erreur serveur" }, { status: 500 });
+          return Response.json({ error: "Server error" }, { status: 500 });
         }
 
         return Response.json({ subscriptions: subscriptions ?? [] });
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/api/push-subscribe")({
         try {
           body = await request.json();
         } catch {
-          return Response.json({ error: "JSON invalide" }, { status: 400 });
+          return Response.json({ error: "Invalid JSON" }, { status: 400 });
         }
 
         const endpoint = body.endpoint?.trim();
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/api/push-subscribe")({
         const userId = body.user_id?.trim();
 
         if (!endpoint || !p256dh || !authKey || !userId) {
-          return Response.json({ error: "Paramètres manquants" }, { status: 400 });
+          return Response.json({ error: "Missing parameters" }, { status: 400 });
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/api/push-subscribe")({
 
         if (error) {
           console.error("[push] upsert subscription failed", error);
-          return Response.json({ error: "Erreur serveur" }, { status: 500 });
+          return Response.json({ error: "Server error" }, { status: 500 });
         }
 
         return Response.json({ status: "ok" });

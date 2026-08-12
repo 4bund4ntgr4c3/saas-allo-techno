@@ -120,7 +120,8 @@ const fr = {
   // Admin — Feature flags (header)
   "admin.feature-flags.eyebrow": "Système",
   "admin.feature-flags.title": "Feature Flags",
-  "admin.feature-flags.headerDescription": "Activez ou désactivez les fonctionnalités en cours de développement.",
+  "admin.feature-flags.headerDescription":
+    "Activez ou désactivez les fonctionnalités en cours de développement.",
 
   // Admin — Webhooks
   "admin.webhooks": "Webhooks",
@@ -145,7 +146,8 @@ const fr = {
 
   // Admin — Referrals
   "admin.referrals.eyebrow": "Croissance",
-  "admin.referrals.description": "Statistiques du programme de parrainage et historique des parrainages.",
+  "admin.referrals.description":
+    "Statistiques du programme de parrainage et historique des parrainages.",
   "admin.referrals": "Programme de parrainage",
   "admin.referrals.total": "Total",
   "admin.referrals.completed": "Complétées",
@@ -236,7 +238,8 @@ const fr = {
   "admin.header.internal": "Espace interne",
   "admin.header.live": "Temps réel",
   "admin.header.title": "Administration des dossiers",
-  "admin.header.subtitle": "Mettez à jour le statut d'une réparation et consultez l'historique des changements.",
+  "admin.header.subtitle":
+    "Mettez à jour le statut d'une réparation et consultez l'historique des changements.",
 
   // Admin — Webhooks sortants
   "admin.webhooks.eyebrow": "Intégrations",
@@ -288,7 +291,8 @@ const fr = {
   // Admin — Catalogue
   "admin.catalog.loading": "Chargement du catalogue…",
   "admin.catalog.title": "Catalogue",
-  "admin.catalog.subtitle": "Marques, appareils et pannes affichés sur le site — les modifications sont immédiates.",
+  "admin.catalog.subtitle":
+    "Marques, appareils et pannes affichés sur le site — les modifications sont immédiates.",
   "admin.catalog.error.load": "Impossible de charger le catalogue. Réessayez.",
   "admin.catalog.error.save": "Enregistrement impossible",
   "admin.catalog.error.delete": "Suppression impossible",
@@ -379,11 +383,14 @@ const fr = {
   "admin.content.button.saving": "Enregistrement…",
   "admin.content.blog.toast.saved": "Article enregistré",
   "admin.content.blog.toast.deleted": "Article supprimé",
+  "admin.content.blog.toast.notFound": "Article non trouvé",
+  "admin.content.blog.toast.duplicated": "Contenu copié depuis {0} — traduisez et enregistrez",
   "admin.content.blog.error.save": "Enregistrement impossible",
   "admin.content.blog.error.delete": "Suppression impossible",
   "admin.content.blog.button.new": "Nouvel article",
   "admin.content.blog.button.save_edits": "Enregistrer les modifications",
   "admin.content.blog.button.publish": "Publier",
+  "admin.content.blog.button.duplicate": "Dupliquer depuis {0}",
   "admin.content.blog.form.editing": "Modifier l'article",
   "admin.content.blog.form.new": "Nouvel article",
   "admin.content.blog.form.language": "Langue",
@@ -432,6 +439,7 @@ const fr = {
   "admin.marketing.form.name": "Nom",
   "admin.marketing.form.namePlaceholder": "Campagne relance",
   "admin.marketing.form.type": "Type",
+  "admin.marketing.email": "Email",
   "admin.marketing.form.segment": "Segment",
   "admin.marketing.form.template": "Template",
   "admin.marketing.form.customTemplate": "— Personnalisé —",
@@ -510,7 +518,8 @@ const fr = {
   // Admin — Retours
   "admin.returns.loading": "Chargement des retours…",
   "admin.returns.title": "Retours",
-  "admin.returns.description": "Créez une demande de retour pour un client et suivez son traitement ; le client est prévenu par WhatsApp/e-mail à chaque changement de statut.",
+  "admin.returns.description":
+    "Créez une demande de retour pour un client et suivez son traitement ; le client est prévenu par WhatsApp/e-mail à chaque changement de statut.",
   "admin.returns.newRequest": "Nouvelle demande de retour",
   "admin.returns.creating": "Création…",
   "admin.returns.createButton": "Créer le retour",
@@ -540,7 +549,8 @@ const fr = {
   // Admin — Remboursements
   "admin.refunds.loading": "Chargement des paiements…",
   "admin.refunds.title": "Remboursements",
-  "admin.refunds.description": "Paiements confirmés éligibles au remboursement. Le statut passe à « Remboursé » et une entrée d'audit est créée.",
+  "admin.refunds.description":
+    "Paiements confirmés éligibles au remboursement. Le statut passe à « Remboursé » et une entrée d'audit est créée.",
   "admin.refunds.searchLabel": "Rechercher un paiement",
   "admin.refunds.searchPlaceholder": "Rechercher (référence, nom, téléphone)",
   "admin.refunds.empty": "Aucun paiement remboursable ne correspond à cette recherche.",
@@ -549,7 +559,8 @@ const fr = {
   "admin.refunds.processing": "Remboursement…",
   "admin.refunds.confirmButton": "Confirmer le remboursement",
   "admin.refunds.dialog.title": "Confirmer le remboursement",
-  "admin.refunds.dialog.description": "Le paiement de {0} sera marqué comme remboursé. Cette action est irréversible.",
+  "admin.refunds.dialog.description":
+    "Le paiement de {0} sera marqué comme remboursé. Cette action est irréversible.",
   "admin.refunds.form.reason": "Motif du remboursement",
   "admin.refunds.form.reasonPlaceholder": "Indiquez la raison du remboursement…",
   "admin.refunds.form.reasonRequired": "Un motif est requis pour créer l'entrée d'audit.",
@@ -612,12 +623,14 @@ const fr = {
   "admin.kanban.delivery.addressPlaceholder": "Adresse d'enlèvement / livraison",
   "admin.kanban.delivery.saveAddress": "Enregistrer l'adresse",
   "admin.kanban.empty": "Aucun dossier",
-  "admin.kanban.dragHelp": "Glissez-déposez une carte dans une autre colonne pour changer son statut.",
+  "admin.kanban.dragHelp":
+    "Glissez-déposez une carte dans une autre colonne pour changer son statut.",
   "admin.kanban.apply": "Appliquer",
   "admin.kanban.moveToNext": "Passer à « {0} »",
   "admin.kanban.hideHistory": "Masquer l'historique",
   "admin.kanban.history": "Historique",
-  "admin.kanban.notePlaceholder": "Note visible par le client (ex. : pièce commandée, écran remplacé…)",
+  "admin.kanban.notePlaceholder":
+    "Note visible par le client (ex. : pièce commandée, écran remplacé…)",
   "admin.kanban.historyLoading": "Chargement de l'historique…",
   "admin.kanban.historyEmpty": "Aucun changement enregistré.",
   "admin.kanban.history.creation": "Création :",
@@ -641,7 +654,8 @@ const fr = {
   "admin.claims.status.closed": "Clôturée",
   "admin.claims.loading": "Chargement des réclamations…",
   "admin.claims.empty": "Les réclamations de garantie soumises via le site apparaîtront ici.",
-  "admin.claims.description": "Réclamations de garantie soumises en ligne — traitez le statut, notez la décision et le client est prévenu par WhatsApp.",
+  "admin.claims.description":
+    "Réclamations de garantie soumises en ligne — traitez le statut, notez la décision et le client est prévenu par WhatsApp.",
   "admin.claims.statusUpdated": "Statut mis à jour : {0}",
   "admin.claims.noteSaved": "Note enregistrée",
   "admin.claims.saveError": "Enregistrement impossible",
@@ -650,7 +664,8 @@ const fr = {
   // Admin — Atelier (compléments)
   "admin.atelier.title.kanban": "Atelier — kanban",
   "admin.atelier.title.calendar": "Atelier — calendrier",
-  "admin.atelier.description": "Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au client.",
+  "admin.atelier.description":
+    "Suivez le flux de réparation : chaque changement de statut est immédiat et notifié au client.",
   "admin.atelier.view.kanban": "Kanban",
   "admin.atelier.view.calendar": "Calendrier",
   "admin.atelier.loading": "Chargement de l'atelier…",
@@ -674,7 +689,8 @@ const fr = {
 
   // Admin — Analytics avancées
   "admin.analytics.advanced.eyebrow": "Analytique avancée",
-  "admin.analytics.advanced.description": "Funnel de conversion, sources d'acquisition et erreurs récentes.",
+  "admin.analytics.advanced.description":
+    "Funnel de conversion, sources d'acquisition et erreurs récentes.",
   "admin.analytics.advanced.title": "Analytics avancées",
   "admin.analytics.funnel.title": "Funnel de conversion (30j)",
   "admin.analytics.funnel.conversionAbbrev": "conv.",
@@ -782,6 +798,8 @@ const fr = {
   "admin.dash.activeRepairs": "Réparations actives",
   "admin.dash.todayReservations": "Réservations aujourd'hui",
   "admin.dash.monthRevenue": "Revenus du mois",
+  "admin.dash.pendingQuotes": "Devis en attente",
+  "admin.dash.inPipeline": "En cours (total)",
   "admin.dash.onlineUsers": "Utilisateurs en ligne",
   "admin.dash.fromLastMonth": "{0} vs mois dernier",
   "admin.dash.sinceYesterday": "{0} vs hier",
@@ -804,7 +822,8 @@ const fr = {
   "admin.team.updateError": "Mise à jour impossible",
   "admin.team.loading": "Chargement de l'équipe…",
   "admin.team.title": "Équipe",
-  "admin.team.description": "Attribuez les rôles : administrateur, personnel atelier, technicien ou client.",
+  "admin.team.description":
+    "Attribuez les rôles : administrateur, personnel atelier, technicien ou client.",
   "admin.team.noName": "Sans nom",
 
   // Admin — SLA
@@ -845,7 +864,8 @@ const fr = {
   "admin.kpis.loading": "Chargement des indicateurs…",
   "admin.kpis.title": "Indicateurs avancés (KPI)",
   "admin.kpis.error": "Impossible de charger les indicateurs. Réessayez.",
-  "admin.kpis.description": "Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.",
+  "admin.kpis.description":
+    "Revenus encaissés, conversion des devis, durée des étapes et pannes les plus demandées.",
   "admin.kpis.revenue": "Chiffre d'affaires (30 j)",
   "admin.kpis.revenueDesc": "Paiements confirmés (atelier + boutique)",
   "admin.kpis.quotesSent": "Devis envoyés",
@@ -861,14 +881,16 @@ const fr = {
   "admin.kpis.avgTimeByStageDesc": "Temps passé dans chaque étape (historique des statuts).",
   "admin.kpis.avgTimeByStageEmpty": "Pas encore assez d'historique.",
   "admin.kpis.topFaults": "Pannes les plus estimées",
-  "admin.kpis.topFaultsDesc": "Catégories de pannes consultées à l'étape estimation du devis en ligne.",
+  "admin.kpis.topFaultsDesc":
+    "Catégories de pannes consultées à l'étape estimation du devis en ligne.",
   "admin.kpis.topFaultsEmpty": "Pas encore de données.",
   "admin.kpis.chart.revenu": "Revenus",
   "admin.kpis.exportPayments": "Export paiements",
 
   // Admin — Commandes
   "admin.orders.title": "Commandes",
-  "admin.orders.description": "Commandes boutique reçues via le site, avec le statut du paiement en ligne.",
+  "admin.orders.description":
+    "Commandes boutique reçues via le site, avec le statut du paiement en ligne.",
   "admin.orders.search": "Rechercher (référence, nom, téléphone)",
   "admin.orders.searchLabel": "Rechercher une commande",
   "admin.orders.empty": "Aucune commande boutique ne correspond à cette recherche.",
@@ -886,13 +908,15 @@ const fr = {
   "admin.orders.error.update": "Mise à jour impossible",
   // Admin — Sécurité
   "admin.security.title": "Sécurité du compte",
-  "admin.security.description": "La double authentification (TOTP) protège l'accès à l'administration.",
+  "admin.security.description":
+    "La double authentification (TOTP) protège l'accès à l'administration.",
   "admin.security.toast.scanQr": "Scanner le QR code dans votre application d'authentification.",
   "admin.security.toast.operationFailed": "Opération impossible",
   "admin.security.toast.2faEnabled": "Double authentification activée",
   "admin.security.toast.2faDisabled": "Double authentification désactivée",
   "admin.security.toast.invalidCode": "Code invalide",
-  "admin.security.enroll.step1": "Scannez le QR code avec Google Authenticator, Authy ou équivalent.",
+  "admin.security.enroll.step1":
+    "Scannez le QR code avec Google Authenticator, Authy ou équivalent.",
   "admin.security.enroll.totpKey": "Clé TOTP",
   "admin.security.enroll.qrCaption": "QR code d'activation de la double authentification",
   "admin.security.enroll.step2": "Saisissez le code à 6 chiffres affiché par l'application.",
@@ -901,13 +925,15 @@ const fr = {
   "admin.security.enroll.preparing": "Préparation…",
   "admin.security.enroll.enable2fa": "Activer la double authentification",
   "admin.security.status.active": "Double authentification active",
-  "admin.security.status.activeDesc": "À chaque session d'administration (24 h), un code à 6 chiffres sera demandé.",
+  "admin.security.status.activeDesc":
+    "À chaque session d'administration (24 h), un code à 6 chiffres sera demandé.",
   "admin.security.status.currentCode": "Code actuel",
   "admin.security.status.disable": "Désactiver",
   "admin.security.status.inactive": "Double authentification désactivée",
   "admin.security.status.inactiveDesc": "Recommandé pour protéger l'accès aux dossiers clients.",
   "admin.security.rateLimit.title": "Limiteur de débit",
-  "admin.security.rateLimit.description": "Surveillance des requêtes par IP et action (fenêtre de 60 secondes).",
+  "admin.security.rateLimit.description":
+    "Surveillance des requêtes par IP et action (fenêtre de 60 secondes).",
   "admin.security.rateLimit.activeBuckets": "Buckets actifs",
   "admin.security.rateLimit.inWindow": "Dans la fenêtre",
   "admin.security.rateLimit.nearBlock": "Proches du blocage",
@@ -915,7 +941,8 @@ const fr = {
   "admin.security.rateLimit.requests": "Requêtes",
   "admin.security.rateLimit.expiresIn": "Expire dans",
   "admin.security.metrics.title": "Métriques en temps réel",
-  "admin.security.metrics.description": "Événements trackés depuis le dernier redémarrage de l'isolat.",
+  "admin.security.metrics.description":
+    "Événements trackés depuis le dernier redémarrage de l'isolat.",
   "admin.security.metrics.event": "Événement",
   "admin.security.metrics.count": "Nombre",
   "admin.security.metrics.empty": "Aucune métrique enregistrée.",
@@ -923,11 +950,13 @@ const fr = {
   "admin.otp.invalidCode": "Code invalide ou expiré.",
   "admin.otp.verificationFailed": "Vérification impossible",
   "admin.otp.title": "Double authentification",
-  "admin.otp.description": "Votre compte est protégé par un code à 6 chiffres généré par votre application d'authentification.",
+  "admin.otp.description":
+    "Votre compte est protégé par un code à 6 chiffres généré par votre application d'authentification.",
   "admin.otp.verifying": "Vérification…",
   "admin.otp.unlock": "Déverrouiller",
   "admin.access.title": "Accès réservé au personnel",
-  "admin.access.description": "Votre compte n'a pas les droits d'administration sur les dossiers de réparation.",
+  "admin.access.description":
+    "Votre compte n'a pas les droits d'administration sur les dossiers de réparation.",
   "admin.access.claimAdmin": "Devenir administrateur",
   "admin.access.backToAccount": "Retour à mon compte",
   "admin.access.note": "Cette action n'est possible que tant qu'aucun administrateur n'existe.",
@@ -953,7 +982,8 @@ const fr = {
   "admin.audit.action.postCreated": "Article créé",
   "admin.audit.action.postUpdated": "Article mis à jour",
   "admin.audit.error": "Impossible de charger le journal d'audit. Réessayez.",
-  "admin.audit.description": "Historique des opérations effectuées par le personnel (100 dernières entrées).",
+  "admin.audit.description":
+    "Historique des opérations effectuées par le personnel (100 dernières entrées).",
   "admin.audit.col.date": "Date",
   "admin.audit.col.action": "Action",
   "admin.audit.col.entity": "Entité",
@@ -980,6 +1010,8 @@ const fr = {
   "admin.common.previousPage": "Page précédente",
   "admin.common.nextPage": "Page suivante",
   "admin.common.lastPage": "Dernière page",
+  "admin.common.noData": "Pas de données",
+  "admin.common.refresh": "Rafraîchir",
 
   // Reviews admin
   "reviews.invite.sent": "Invitation envoyée le",
@@ -1292,7 +1324,8 @@ const en = {
 
   // Admin — Catalogue
   "admin.catalog.loading": "Loading catalogue…",
-  "admin.catalog.subtitle": "Brands, devices and faults displayed on the site — changes are immediate.",
+  "admin.catalog.subtitle":
+    "Brands, devices and faults displayed on the site — changes are immediate.",
   "admin.catalog.error.load": "Unable to load catalogue. Please retry.",
   "admin.catalog.error.save": "Unable to save",
   "admin.catalog.error.delete": "Unable to delete",
@@ -1383,11 +1416,14 @@ const en = {
   "admin.content.button.saving": "Saving…",
   "admin.content.blog.toast.saved": "Article saved",
   "admin.content.blog.toast.deleted": "Article deleted",
+  "admin.content.blog.toast.notFound": "Article not found",
+  "admin.content.blog.toast.duplicated": "Content copied from {0} — translate and save",
   "admin.content.blog.error.save": "Unable to save",
   "admin.content.blog.error.delete": "Unable to delete",
   "admin.content.blog.button.new": "New article",
   "admin.content.blog.button.save_edits": "Save changes",
   "admin.content.blog.button.publish": "Publish",
+  "admin.content.blog.button.duplicate": "Duplicate from {0}",
   "admin.content.blog.form.editing": "Edit article",
   "admin.content.blog.form.new": "New article",
   "admin.content.blog.form.language": "Language",
@@ -1436,6 +1472,7 @@ const en = {
   "admin.marketing.form.name": "Name",
   "admin.marketing.form.namePlaceholder": "Re-engagement campaign",
   "admin.marketing.form.type": "Type",
+  "admin.marketing.email": "Email",
   "admin.marketing.form.segment": "Segment",
   "admin.marketing.form.template": "Template",
   "admin.marketing.form.customTemplate": "— Custom —",
@@ -1514,7 +1551,8 @@ const en = {
   // Admin — Returns
   "admin.returns.loading": "Loading returns…",
   "admin.returns.title": "Returns",
-  "admin.returns.description": "Create a return request for a customer and track its progress; the customer is notified by WhatsApp/email on each status change.",
+  "admin.returns.description":
+    "Create a return request for a customer and track its progress; the customer is notified by WhatsApp/email on each status change.",
   "admin.returns.newRequest": "New return request",
   "admin.returns.creating": "Creating…",
   "admin.returns.createButton": "Create return",
@@ -1544,7 +1582,8 @@ const en = {
   // Admin — Refunds
   "admin.refunds.loading": "Loading payments…",
   "admin.refunds.title": "Refunds",
-  "admin.refunds.description": "Confirmed payments eligible for refund. Status changes to 'Refunded' and an audit entry is created.",
+  "admin.refunds.description":
+    "Confirmed payments eligible for refund. Status changes to 'Refunded' and an audit entry is created.",
   "admin.refunds.searchLabel": "Search a payment",
   "admin.refunds.searchPlaceholder": "Search (reference, name, phone)",
   "admin.refunds.empty": "No refundable payments match this search.",
@@ -1553,7 +1592,8 @@ const en = {
   "admin.refunds.processing": "Refunding…",
   "admin.refunds.confirmButton": "Confirm refund",
   "admin.refunds.dialog.title": "Confirm refund",
-  "admin.refunds.dialog.description": "The payment of {0} will be marked as refunded. This action is irreversible.",
+  "admin.refunds.dialog.description":
+    "The payment of {0} will be marked as refunded. This action is irreversible.",
   "admin.refunds.form.reason": "Refund reason",
   "admin.refunds.form.reasonPlaceholder": "Enter the reason for the refund…",
   "admin.refunds.form.reasonRequired": "A reason is required to create the audit entry.",
@@ -1604,7 +1644,7 @@ const en = {
   "admin.kanban.photoStage.diagnostic": "Diagnostic",
   "admin.kanban.photoStage.pieces": "Parts",
   "admin.kanban.photoStage.repair": "Repair",
-  "admin.kanban.photo.addedSuccess": "Photo \"{0}\" added to case",
+  "admin.kanban.photo.addedSuccess": 'Photo "{0}" added to case',
   "admin.kanban.photo.uploadError": "Upload failed",
   "admin.kanban.photo.authRequired": "Please confirm your authentication code.",
   "admin.kanban.photo.label": "Tracking photos:",
@@ -1616,9 +1656,10 @@ const en = {
   "admin.kanban.delivery.addressPlaceholder": "Pickup / delivery address",
   "admin.kanban.delivery.saveAddress": "Save address",
   "admin.kanban.empty": "No cases",
-  "admin.kanban.dragHelp": "Drag a card to another column to change its status. Changes are saved immediately and the team is notified.",
+  "admin.kanban.dragHelp":
+    "Drag a card to another column to change its status. Changes are saved immediately and the team is notified.",
   "admin.kanban.apply": "Apply",
-  "admin.kanban.moveToNext": "Move to \"{0}\"",
+  "admin.kanban.moveToNext": 'Move to "{0}"',
   "admin.kanban.hideHistory": "Hide history",
   "admin.kanban.history": "History",
   "admin.kanban.notePlaceholder": "Note visible to customer (e.g.: part ordered, screen replaced…)",
@@ -1645,7 +1686,8 @@ const en = {
   "admin.claims.status.closed": "Closed",
   "admin.claims.loading": "Loading claims…",
   "admin.claims.empty": "Warranty claims submitted on the site will appear here.",
-  "admin.claims.description": "Warranty claims submitted online — update status, add decision notes, and the customer is notified by WhatsApp.",
+  "admin.claims.description":
+    "Warranty claims submitted online — update status, add decision notes, and the customer is notified by WhatsApp.",
   "admin.claims.statusUpdated": "Status updated: {0}",
   "admin.claims.noteSaved": "Note saved",
   "admin.claims.saveError": "Save failed",
@@ -1654,7 +1696,8 @@ const en = {
   // Admin — Atelier (complements)
   "admin.atelier.title.kanban": "Workshop — kanban",
   "admin.atelier.title.calendar": "Workshop — calendar",
-  "admin.atelier.description": "Track the repair flow: every status change is immediate and the customer is notified.",
+  "admin.atelier.description":
+    "Track the repair flow: every status change is immediate and the customer is notified.",
   "admin.atelier.view.kanban": "Kanban",
   "admin.atelier.view.calendar": "Calendar",
   "admin.atelier.loading": "Loading workshop…",
@@ -1669,7 +1712,7 @@ const en = {
   "admin.atelier.unassigned": "Unassigned",
   "admin.atelier.technicianFallback": "Technician",
   "admin.atelier.transferPlaceholder": "Transfer…",
-  "admin.atelier.statusChanged": "Case moved to \"{0}\"",
+  "admin.atelier.statusChanged": 'Case moved to "{0}"',
   "admin.atelier.technicianAssigned": "Technician assigned",
   "admin.atelier.assignError": "Assignment failed",
   "admin.atelier.transferred": "Case transferred to {0}",
@@ -1678,7 +1721,8 @@ const en = {
 
   // Admin — Analytics advanced
   "admin.analytics.advanced.eyebrow": "Advanced Analytics",
-  "admin.analytics.advanced.description": "Conversion funnel, acquisition sources and recent errors.",
+  "admin.analytics.advanced.description":
+    "Conversion funnel, acquisition sources and recent errors.",
   "admin.analytics.advanced.title": "Advanced analytics",
   "admin.analytics.funnel.title": "Conversion funnel (30d)",
   "admin.analytics.funnel.conversionAbbrev": "conv.",
@@ -1786,6 +1830,8 @@ const en = {
   "admin.dash.activeRepairs": "Active repairs",
   "admin.dash.todayReservations": "Today's reservations",
   "admin.dash.monthRevenue": "Monthly revenue",
+  "admin.dash.pendingQuotes": "Pending quotes",
+  "admin.dash.inPipeline": "In pipeline (total)",
   "admin.dash.onlineUsers": "Online users",
   "admin.dash.fromLastMonth": "{0} from last month",
   "admin.dash.sinceYesterday": "{0} since yesterday",
@@ -1849,7 +1895,8 @@ const en = {
   "admin.kpis.loading": "Loading indicators…",
   "admin.kpis.title": "Advanced KPIs",
   "admin.kpis.error": "Unable to load indicators. Please retry.",
-  "admin.kpis.description": "Collected revenue, quote conversion, stage duration and most requested faults.",
+  "admin.kpis.description":
+    "Collected revenue, quote conversion, stage duration and most requested faults.",
   "admin.kpis.revenue": "Revenue (30d)",
   "admin.kpis.revenueDesc": "Confirmed payments (workshop + shop)",
   "admin.kpis.quotesSent": "Quotes sent",
@@ -1872,7 +1919,8 @@ const en = {
 
   // Admin — Orders
   "admin.orders.title": "Orders",
-  "admin.orders.description": "Online shop orders received via the website, with online payment status.",
+  "admin.orders.description":
+    "Online shop orders received via the website, with online payment status.",
   "admin.orders.search": "Search (reference, name, phone)",
   "admin.orders.searchLabel": "Search an order",
   "admin.orders.empty": "No shop orders match this search.",
@@ -1911,7 +1959,8 @@ const en = {
   "admin.security.status.inactive": "Two-factor authentication disabled",
   "admin.security.status.inactiveDesc": "Recommended to protect access to client files.",
   "admin.security.rateLimit.title": "Rate Limiter",
-  "admin.security.rateLimit.description": "Monitoring requests by IP and action (60-second window).",
+  "admin.security.rateLimit.description":
+    "Monitoring requests by IP and action (60-second window).",
   "admin.security.rateLimit.activeBuckets": "Active buckets",
   "admin.security.rateLimit.inWindow": "In window",
   "admin.security.rateLimit.nearBlock": "Near blocking",
@@ -1927,7 +1976,8 @@ const en = {
   "admin.otp.invalidCode": "Invalid or expired code.",
   "admin.otp.verificationFailed": "Verification failed",
   "admin.otp.title": "Two-factor authentication",
-  "admin.otp.description": "Your account is protected by a 6-digit code generated by your authenticator app.",
+  "admin.otp.description":
+    "Your account is protected by a 6-digit code generated by your authenticator app.",
   "admin.otp.verifying": "Verifying…",
   "admin.otp.unlock": "Unlock",
   "admin.access.title": "Staff only",
@@ -1984,6 +2034,8 @@ const en = {
   "admin.common.previousPage": "Previous page",
   "admin.common.nextPage": "Next page",
   "admin.common.lastPage": "Last page",
+  "admin.common.noData": "No data",
+  "admin.common.refresh": "Refresh",
 
   // Reviews admin
   "reviews.invite.sent": "Invitation sent on",

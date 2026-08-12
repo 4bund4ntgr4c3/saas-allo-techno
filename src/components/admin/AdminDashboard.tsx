@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
-  Activity, Calendar, DollarSign, LayoutGrid, Loader2,
-  RadioTower, ShoppingCart, Users, Wrench,
+  Activity, Calendar, Clock, DollarSign, LayoutGrid, Loader2,
+  RadioTower, ShoppingCart, Wrench,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
@@ -65,6 +65,29 @@ export function AdminDashboard() {
     },
   });
 
+  const pendingQuotes = useQuery({
+    queryKey: ["dash-pending-quotes"],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "en_attente" as never);
+      return count ?? 0;
+    },
+  });
+
+  const realtimeActive = useQuery({
+    queryKey: ["dash-realtime"],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["en_attente", "en_cours", "pieces", "pret"] as never[]);
+      return count ?? 0;
+    },
+    refetchInterval: 30_000,
+  });
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -85,7 +108,7 @@ export function AdminDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           {
             label: t("admin.dash.activeRepairs"),
@@ -100,16 +123,22 @@ export function AdminDashboard() {
             loading: todayReservations.isLoading,
           },
           {
+            label: t("admin.dash.pendingQuotes"),
+            value: pendingQuotes.data ?? 0,
+            icon: Clock,
+            loading: pendingQuotes.isLoading,
+          },
+          {
             label: t("admin.dash.monthRevenue"),
             value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
             icon: DollarSign,
             loading: monthRevenue.isLoading,
           },
           {
-            label: t("admin.dash.onlineUsers"),
-            value: "—",
-            icon: Users,
-            loading: false,
+            label: t("admin.dash.inPipeline"),
+            value: realtimeActive.data ?? 0,
+            icon: RadioTower,
+            loading: realtimeActive.isLoading,
           },
         ].map((kpi) => (
           <div key={kpi.label} className="border border-border bg-card p-4">

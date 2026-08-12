@@ -71,7 +71,7 @@ export function AdminWorkshops() {
       });
       load();
     } catch (e) {
-      console.error(e);
+      console.error("[admin:workshops] save failed", e);
     }
   };
 
