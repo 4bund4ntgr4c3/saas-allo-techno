@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, ChevronDown, Check, Plus, ShieldCheck } from "lucide-react";
+import { Building2, ChevronDown, Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export type OrgOption = {
