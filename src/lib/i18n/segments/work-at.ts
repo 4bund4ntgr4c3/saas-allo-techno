@@ -17,7 +17,8 @@ const fr = {
   "work-at.perks.stabilite": "Stabilité",
   "work-at.perks.stabilite.text": "CDI et horaires fixes pour un équilibre de vie sain.",
   "work-at.perks.formation": "Formation continue",
-  "work-at.perks.formation.text": "Sessions de formation mensuelles sur les nouvelles technologies.",
+  "work-at.perks.formation.text":
+    "Sessions de formation mensuelles sur les nouvelles technologies.",
   "work-at.perks.equilibre": "Équilibre vie pro/perso",
   "work-at.perks.equilibre.text": "Horaires flexibles et respect du temps personnel.",
   "work-at.perks.proximite": "Proximité",
@@ -79,7 +80,8 @@ const en = {
   "work-at.why.text":
     "At Allô Techno, your professional development is at the heart of our policy. We invest in training and create a stimulating work environment.",
   "work-at.perks.stabilite": "Stability",
-  "work-at.perks.stabilite.text": "Permanent contracts and fixed hours for a healthy work-life balance.",
+  "work-at.perks.stabilite.text":
+    "Permanent contracts and fixed hours for a healthy work-life balance.",
   "work-at.perks.formation": "Continuous training",
   "work-at.perks.formation.text": "Monthly training sessions on new technologies.",
   "work-at.perks.equilibre": "Work-life balance",
@@ -103,8 +105,7 @@ const en = {
   "work-at.roles.stagiare.type": "Internship",
   "work-at.roles.stagiare.location": "Abomey-Calavi",
   "work-at.roles.manager": "Workshop manager",
-  "work-at.roles.manager.text":
-    "Team management, intervention planning and process optimization.",
+  "work-at.roles.manager.text": "Team management, intervention planning and process optimization.",
   "work-at.roles.manager.type": "Full-time",
   "work-at.roles.manager.location": "Abomey-Calavi",
   "work-at.process.eyebrow": "Our process",
@@ -116,8 +117,7 @@ const en = {
   "work-at.process.entretien.text":
     "A 30-minute chat to assess your technical skills and motivation.",
   "work-at.process.essai": "Practical test",
-  "work-at.process.essai.text":
-    "A hands-on workshop session to validate your skills in the field.",
+  "work-at.process.essai.text": "A hands-on workshop session to validate your skills in the field.",
   "work-at.process.embauche": "Welcome!",
   "work-at.process.embauche.text":
     "Onboarding with a dedicated tutor and training on Allô Techno processes.",

@@ -272,7 +272,9 @@ export function AtelierBoard() {
                                 ? "qa"
                                 : "intake",
                             initial:
-                              (c.status === "pret" || c.status === "livre" || c.status === "terminee"
+                              (c.status === "pret" ||
+                              c.status === "livre" ||
+                              c.status === "terminee"
                                 ? (c as any).qa_checklist?.items
                                 : (c as any).intake_checklist?.items) ?? null,
                           })
@@ -292,9 +294,7 @@ export function AtelierBoard() {
         </div>
       )}
 
-      {labelTarget && (
-        <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />
-      )}
+      {labelTarget && <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />}
       {checklistTarget && (
         <AdminChecklistModal
           reservationId={checklistTarget.id}
@@ -412,7 +412,9 @@ export function AtelierCard({
             title={t("admin.atelier.sla.estimatedReturn", [card.sla.expectedDate])}
           >
             SLA {shortDate(card.sla.expectedDate)} ·{" "}
-            {card.sla.remainingDays < 0 ? t("admin.atelier.sla.overdue") : t("admin.atelier.sla.countdown", [Math.round(card.sla.remainingDays)])}
+            {card.sla.remainingDays < 0
+              ? t("admin.atelier.sla.overdue")
+              : t("admin.atelier.sla.countdown", [Math.round(card.sla.remainingDays)])}
           </span>
         )}
       </div>

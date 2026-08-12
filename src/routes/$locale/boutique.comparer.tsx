@@ -61,13 +61,17 @@ function ComparePage() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                    <Link to="/$locale" params={{ locale }}>
+                      {t("action.accueil")}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
+                    <Link to="/$locale/boutique" params={{ locale }}>
+                      {t("boutique.title")}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -90,7 +94,9 @@ function ComparePage() {
             <div className="border border-border bg-card p-12 text-center">
               <p className="text-sm text-muted-foreground">{t("boutique.compare.empty")}</p>
               <Button asChild variant="technical" className="mt-6">
-                <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.compare.browse")}</Link>
+                <Link to="/$locale/boutique" params={{ locale }}>
+                  {t("boutique.compare.browse")}
+                </Link>
               </Button>
             </div>
           ) : (
@@ -143,7 +149,9 @@ function ComparePage() {
 
               <div className="mt-8 flex gap-3">
                 <Button asChild variant="technical">
-                  <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.compare.browse")}</Link>
+                  <Link to="/$locale/boutique" params={{ locale }}>
+                    {t("boutique.compare.browse")}
+                  </Link>
                 </Button>
                 <Button variant="technicalOutline" onClick={clear}>
                   <Trash2 className="size-4" /> {t("boutique.compare.clear")}

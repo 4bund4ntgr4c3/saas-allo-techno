@@ -46,9 +46,7 @@ export function AuditSection() {
             <h2 className="mt-1 text-xl font-semibold">{t("admin.audit.title")}</h2>
           </div>
         </div>
-        <p className="text-sm text-destructive">
-          {t("admin.audit.error")}
-        </p>
+        <p className="text-sm text-destructive">{t("admin.audit.error")}</p>
       </div>
     );
   }
@@ -112,9 +110,7 @@ export function AuditSection() {
         <div>
           <p className="at-eyebrow">{t("admin.audit.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.audit.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("admin.audit.description")}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.audit.description")}</p>
         </div>
       </div>
       <div>

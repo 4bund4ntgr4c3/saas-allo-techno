@@ -18,14 +18,7 @@ import {
 } from "@/lib/inventory.functions";
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
-import {
-  Plus,
-  ArrowDown,
-  ArrowUp,
-  Check,
-  X,
-  History,
-} from "lucide-react";
+import { Plus, ArrowDown, ArrowUp, Check, X, History } from "lucide-react";
 
 export function AdminInventory() {
   const { t } = useI18n();
@@ -36,7 +29,12 @@ export function AdminInventory() {
   const [movementsPartId, setMovementsPartId] = useState<string | null>(null);
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [supplierOrder, setSupplierOrder] = useState<SupplierOrderDraft | null>(null);
-  const [valuation, setValuation] = useState<{ totalValue: number; totalUnits: number; totalReferences: number; lowStockCount: number } | null>(null);
+  const [valuation, setValuation] = useState<{
+    totalValue: number;
+    totalUnits: number;
+    totalReferences: number;
+    lowStockCount: number;
+  } | null>(null);
   const [form, setForm] = useState({
     name: "",
     sku: "",
@@ -104,9 +102,7 @@ export function AdminInventory() {
     {
       accessorKey: "sku",
       header: "SKU",
-      cell: ({ row }) => (
-        <span className="text-xs font-mono">{row.original.sku}</span>
-      ),
+      cell: ({ row }) => <span className="text-xs font-mono">{row.original.sku}</span>,
     },
     {
       accessorKey: "quantity",
@@ -132,9 +128,7 @@ export function AdminInventory() {
     {
       accessorKey: "unit_price",
       header: t("admin.inventory.table.price"),
-      cell: ({ row }) => (
-        <span className="text-xs">{formatFcfa(row.original.unit_price)}</span>
-      ),
+      cell: ({ row }) => <span className="text-xs">{formatFcfa(row.original.unit_price)}</span>,
     },
     {
       id: "actions",
@@ -205,14 +199,21 @@ export function AdminInventory() {
   };
 
   const handleMovement = async (partId: string, type: "in" | "out") => {
-    const qty = prompt(type === "in" ? t("admin.inventory.prompt.addQuantity") : t("admin.inventory.prompt.removeQuantity"));
+    const qty = prompt(
+      type === "in"
+        ? t("admin.inventory.prompt.addQuantity")
+        : t("admin.inventory.prompt.removeQuantity"),
+    );
     if (!qty || isNaN(parseInt(qty))) return;
     await recordMovement({
       data: {
         part_id: partId,
         type,
         quantity: parseInt(qty),
-        reason: type === "in" ? t("admin.inventory.reason.supply") : t("admin.inventory.reason.repairUse"),
+        reason:
+          type === "in"
+            ? t("admin.inventory.reason.supply")
+            : t("admin.inventory.reason.repairUse"),
         reservation_id: null,
         performed_by: "admin",
       },
@@ -236,7 +237,12 @@ export function AdminInventory() {
         </div>
         <div className="flex items-center gap-2">
           {lowStock.length > 0 && (
-            <Button size="sm" variant="secondary" onClick={handleGenerateSupplierOrder} className="gap-1.5 font-bold">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleGenerateSupplierOrder}
+              className="gap-1.5 font-bold"
+            >
               <ShoppingBag className="size-3.5" />
               <span>Générer Bon Fournisseur</span>
             </Button>
@@ -251,20 +257,36 @@ export function AdminInventory() {
       {valuation && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-            <p className="text-[11px] font-medium text-muted-foreground uppercase">Valeur du Stock</p>
-            <p className="text-lg font-black font-mono text-primary">{formatFcfa(valuation.totalValue)}</p>
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">
+              Valeur du Stock
+            </p>
+            <p className="text-lg font-black font-mono text-primary">
+              {formatFcfa(valuation.totalValue)}
+            </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-            <p className="text-[11px] font-medium text-muted-foreground uppercase">Unités Totales</p>
-            <p className="text-lg font-black font-mono text-foreground">{valuation.totalUnits} pièces</p>
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">
+              Unités Totales
+            </p>
+            <p className="text-lg font-black font-mono text-foreground">
+              {valuation.totalUnits} pièces
+            </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-            <p className="text-[11px] font-medium text-muted-foreground uppercase">Références Actives</p>
-            <p className="text-lg font-black font-mono text-foreground">{valuation.totalReferences}</p>
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">
+              Références Actives
+            </p>
+            <p className="text-lg font-black font-mono text-foreground">
+              {valuation.totalReferences}
+            </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-            <p className="text-[11px] font-medium text-muted-foreground uppercase">Sous Seuil Critique</p>
-            <p className={`text-lg font-black font-mono ${valuation.lowStockCount > 0 ? "text-amber-500" : "text-success"}`}>
+            <p className="text-[11px] font-medium text-muted-foreground uppercase">
+              Sous Seuil Critique
+            </p>
+            <p
+              className={`text-lg font-black font-mono ${valuation.lowStockCount > 0 ? "text-amber-500" : "text-success"}`}
+            >
               {valuation.lowStockCount}
             </p>
           </div>
@@ -311,17 +333,26 @@ export function AdminInventory() {
               <div>
                 <h3 className="font-bold text-base">Bon de Commande Fournisseur Rapide</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Réf : <span className="font-mono font-bold text-foreground">{supplierOrder.order_reference}</span>
+                  Réf :{" "}
+                  <span className="font-mono font-bold text-foreground">
+                    {supplierOrder.order_reference}
+                  </span>
                 </p>
               </div>
-              <button onClick={() => setSupplierOrder(null)} className="p-1 rounded text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setSupplierOrder(null)}
+                className="p-1 rounded text-muted-foreground hover:text-foreground"
+              >
                 <X className="size-4" />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto divide-y divide-border/60 pr-1">
               {supplierOrder.items.map((item) => (
-                <div key={item.part_id} className="py-2.5 flex items-center justify-between text-xs">
+                <div
+                  key={item.part_id}
+                  className="py-2.5 flex items-center justify-between text-xs"
+                >
                   <div>
                     <p className="font-semibold text-foreground">{item.name}</p>
                     <p className="text-[11px] text-muted-foreground font-mono">
@@ -330,7 +361,8 @@ export function AdminInventory() {
                   </div>
                   <div className="text-right space-y-0.5">
                     <p className="font-bold text-primary">
-                      Quantité conseillée : <span className="font-mono text-sm">{item.recommended_order}</span>
+                      Quantité conseillée :{" "}
+                      <span className="font-mono text-sm">{item.recommended_order}</span>
                     </p>
                     <p className="text-[11px] text-muted-foreground font-mono">
                       {formatFcfa(item.total_cost)}
@@ -445,7 +477,9 @@ export function AdminInventory() {
           ))}
         </div>
       ) : parts.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">{t("admin.inventory.empty")}</p>
+        <p className="text-sm text-muted-foreground text-center py-8">
+          {t("admin.inventory.empty")}
+        </p>
       ) : (
         <DataTable
           columns={columns}

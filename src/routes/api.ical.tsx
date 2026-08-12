@@ -7,7 +7,9 @@ export const Route = createFileRoute("/api/ical")({
       GET: async () => {
         const { data: reservations, error } = await supabaseAdmin
           .from("reservations")
-          .select("id, reference, customer_name, device, issue, slot_date, slot_hour, status, assigned_technician_id")
+          .select(
+            "id, reference, customer_name, device, issue, slot_date, slot_hour, status, assigned_technician_id",
+          )
           .not("slot_date", "is", null)
           .not("status", "in", ["annulee", "livre", "terminee"])
           .order("slot_date", { ascending: true })
@@ -68,5 +70,8 @@ export const Route = createFileRoute("/api/ical")({
 });
 
 function formatIcalDate(d: Date): string {
-  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 }

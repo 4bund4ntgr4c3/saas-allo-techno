@@ -96,13 +96,17 @@ function Produit() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                    <Link to="/$locale" params={{ locale }}>
+                      {t("action.accueil")}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale/boutique" params={{ locale }}>{t("boutique.title")}</Link>
+                    <Link to="/$locale/boutique" params={{ locale }}>
+                      {t("boutique.title")}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />

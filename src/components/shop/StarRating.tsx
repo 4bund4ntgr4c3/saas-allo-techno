@@ -23,7 +23,12 @@ export function StarRating({
   const sizeClass = size === "sm" ? "size-3" : "size-4";
 
   return (
-    <div id={id} role="group" aria-label={interactive ? "Note" : undefined} className={cn("flex items-center gap-0.5", className)}>
+    <div
+      id={id}
+      role="group"
+      aria-label={interactive ? "Note" : undefined}
+      className={cn("flex items-center gap-0.5", className)}
+    >
       {Array.from({ length: max }, (_, i) => {
         const starValue = i + 1;
         const filled = starValue <= rating;

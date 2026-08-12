@@ -39,7 +39,9 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
           onScan(decodedText);
           scanner.stop().catch(() => {});
         },
-        () => { /* ignore scan errors during active scanning */ },
+        () => {
+          /* ignore scan errors during active scanning */
+        },
       )
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : String(err);
@@ -56,7 +58,11 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
       if (scannerRef.current?.isScanning) {
         scannerRef.current.stop().catch(() => {});
       }
-      try { scannerRef.current?.clear(); } catch { /* ignore */ }
+      try {
+        scannerRef.current?.clear();
+      } catch {
+        /* ignore */
+      }
     };
   }, [onScan, qrOnly]);
 
@@ -95,11 +101,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
           </div>
         ) : (
           <>
-            <div
-              id="qr-scanner-region"
-              ref={containerRef}
-              className="overflow-hidden border"
-            />
+            <div id="qr-scanner-region" ref={containerRef} className="overflow-hidden border" />
             <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <ScanLine className="size-3 animate-pulse" />
               {scanning ? t("qr.scanning") : t("qr.detected")}

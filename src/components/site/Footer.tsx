@@ -36,11 +36,7 @@ function OpenNow() {
             open ? "bg-success" : "bg-destructive"
           }`}
         />
-        <span
-          className={`relative inline-flex size-2 ${
-            open ? "bg-success" : "bg-destructive"
-          }`}
-        />
+        <span className={`relative inline-flex size-2 ${open ? "bg-success" : "bg-destructive"}`} />
       </span>
       <span
         className={`text-[11px] font-bold uppercase tracking-wider ${

@@ -55,28 +55,36 @@ export function AdminReferrals() {
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <Users className="size-4 text-primary" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.referrals.total")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.referrals.total")}
+            </span>
           </div>
           <p className="text-2xl font-bold">{stats?.total_referrals ?? 0}</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <Check className="size-4 text-success" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.referrals.completed")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.referrals.completed")}
+            </span>
           </div>
           <p className="text-2xl font-bold">{stats?.successful_referrals ?? 0}</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <Gift className="size-4 text-amber-500" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.referrals.earned")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.referrals.earned")}
+            </span>
           </div>
           <p className="text-2xl font-bold">{stats?.total_earned ?? 0} FCFA</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <Award className="size-4 text-purple-500" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.referrals.level")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.referrals.level")}
+            </span>
           </div>
           <p className="text-2xl font-bold capitalize">{stats?.tier ?? "bronze"}</p>
         </div>
@@ -86,12 +94,18 @@ export function AdminReferrals() {
         <div className="space-y-2">
           <h4 className="text-sm font-bold">{t("admin.referrals.history")}</h4>
           {entries.map((e) => (
-            <div key={e.id} className="flex items-center justify-between rounded-lg border bg-card p-3">
+            <div
+              key={e.id}
+              className="flex items-center justify-between rounded-lg border bg-card p-3"
+            >
               <div>
                 <p className="text-xs font-medium">
-                  {t("admin.referrals.referral")} — {new Date(e.created_at).toLocaleDateString(t("locale") as string)}
+                  {t("admin.referrals.referral")} —{" "}
+                  {new Date(e.created_at).toLocaleDateString(t("locale") as string)}
                 </p>
-                <p className="text-[10px] text-muted-foreground">{t("admin.referrals.status")} {e.status}</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {t("admin.referrals.status")} {e.status}
+                </p>
               </div>
               <span className="text-sm font-bold text-primary">{e.reward_amount} FCFA</span>
             </div>

@@ -12,8 +12,8 @@ export type SourceStat = {
   percentage: number;
 };
 
-export const getConversionFunnel = createServerFn({ method: "GET" })
-  .handler(async (): Promise<FunnelStep[]> => {
+export const getConversionFunnel = createServerFn({ method: "GET" }).handler(
+  async (): Promise<FunnelStep[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
@@ -45,10 +45,11 @@ export const getConversionFunnel = createServerFn({ method: "GET" })
       { step: "reservation", count: rCount, label: "Réservations" },
       { step: "completed", count: cCount, label: "Terminées" },
     ];
-  });
+  },
+);
 
-export const getSourceStats = createServerFn({ method: "GET" })
-  .handler(async (): Promise<SourceStat[]> => {
+export const getSourceStats = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SourceStat[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
@@ -77,10 +78,11 @@ export const getSourceStats = createServerFn({ method: "GET" })
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
-  });
+  },
+);
 
-export const getRecentErrors = createServerFn({ method: "GET" })
-  .handler(async (): Promise<{ message: string; count: number; last: string }[]> => {
+export const getRecentErrors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ message: string; count: number; last: string }[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const oneDayAgo = new Date(Date.now() - 86400000).toISOString();
@@ -110,4 +112,5 @@ export const getRecentErrors = createServerFn({ method: "GET" })
       .map(([message, { count, last }]) => ({ message, count, last }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 20);
-  });
+  },
+);

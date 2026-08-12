@@ -82,7 +82,10 @@ async function sendWhatsApp(to: string, body: string): Promise<void> {
       },
     );
     if (!res.ok) {
-      logger.error("WhatsApp send failed", undefined, { status: res.status, body: await res.text() });
+      logger.error("WhatsApp send failed", undefined, {
+        status: res.status,
+        body: await res.text(),
+      });
     }
   } catch (err) {
     logger.error("WhatsApp network failure", err as Error);

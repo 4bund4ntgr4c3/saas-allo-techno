@@ -39,7 +39,8 @@ export function AdminWebhooks() {
   const { data: logs } = useQuery({
     queryKey: ["webhook-logs", expandedId],
     enabled: !!expandedId,
-    queryFn: async () => (await listWebhookLogs({ data: { webhook_id: expandedId! } })) as WebhookLog[],
+    queryFn: async () =>
+      (await listWebhookLogs({ data: { webhook_id: expandedId! } })) as WebhookLog[],
   });
 
   const createMut = useMutation({
@@ -54,8 +55,7 @@ export function AdminWebhooks() {
   });
 
   const toggleMut = useMutation({
-    mutationFn: (w: OutboundWebhook) =>
-      updateWebhook({ data: { id: w.id, active: !w.active } }),
+    mutationFn: (w: OutboundWebhook) => updateWebhook({ data: { id: w.id, active: !w.active } }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outbound-webhooks"] }),
   });
 
@@ -93,7 +93,7 @@ export function AdminWebhooks() {
         <WebhookForm onSubmit={(v) => createMut.mutate(v)} onCancel={() => setShowCreate(false)} />
       )}
 
-      {(!webhooks || webhooks.length === 0) ? (
+      {!webhooks || webhooks.length === 0 ? (
         <div className="rounded-lg border bg-card p-8 text-center">
           <Webhook className="mx-auto size-8 text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">{t("admin.webhooks.empty")}</p>
@@ -130,7 +130,11 @@ export function AdminWebhooks() {
                     size="icon"
                     className="size-8"
                     onClick={() => toggleMut.mutate(w)}
-                    title={w.active ? t("admin.webhooks.action.deactivate") : t("admin.webhooks.action.activate")}
+                    title={
+                      w.active
+                        ? t("admin.webhooks.action.deactivate")
+                        : t("admin.webhooks.action.activate")
+                    }
                   >
                     {w.active ? (
                       <Power className="size-4 text-success" />
@@ -163,7 +167,9 @@ export function AdminWebhooks() {
               {expandedId === w.id && logs && (
                 <div className="border-t p-3">
                   {logs.length === 0 ? (
-                    <p className="text-xs text-muted-foreground">{t("admin.webhooks.logs.empty")}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("admin.webhooks.logs.empty")}
+                    </p>
                   ) : (
                     <div className="space-y-1">
                       {logs.map((log) => (

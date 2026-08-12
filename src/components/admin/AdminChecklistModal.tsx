@@ -3,14 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  ClipboardCheck,
-  CheckCircle2,
-  XCircle,
-  HelpCircle,
-  Save,
-  X,
-} from "lucide-react";
+import { ClipboardCheck, CheckCircle2, XCircle, HelpCircle, Save, X } from "lucide-react";
 
 export type CheckStatus = "ok" | "ko" | "na";
 
@@ -104,11 +97,14 @@ export function AdminChecklistModal({
             <div className="flex items-center gap-2">
               <ClipboardCheck className="size-5 text-primary" />
               <h3 className="font-bold text-base">
-                {type === "intake" ? "Inspection d'Admission (Entrée)" : "Contrôle Qualité & Sortie (QA)"}
+                {type === "intake"
+                  ? "Inspection d'Admission (Entrée)"
+                  : "Contrôle Qualité & Sortie (QA)"}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Dossier <span className="font-mono font-bold text-foreground">{reference}</span> • {device}
+              Dossier <span className="font-mono font-bold text-foreground">{reference}</span> •{" "}
+              {device}
             </p>
           </div>
           <button
@@ -121,7 +117,9 @@ export function AdminChecklistModal({
 
         {/* Counter badges */}
         <div className="flex items-center justify-between bg-muted/40 p-2.5 rounded-lg border border-border text-xs shrink-0">
-          <span className="text-muted-foreground font-medium">Bilan des 10 points de contrôle :</span>
+          <span className="text-muted-foreground font-medium">
+            Bilan des 10 points de contrôle :
+          </span>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 text-success font-bold bg-success/10 px-2 py-0.5 rounded">
               <CheckCircle2 className="size-3.5" />
@@ -141,7 +139,10 @@ export function AdminChecklistModal({
           {CHECKPOINTS.map((cp) => {
             const current = items[cp.id] ?? { status: "ok", notes: "" };
             return (
-              <div key={cp.id} className="pt-3 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div
+                key={cp.id}
+                className="pt-3 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
                 <div className="space-y-1 sm:max-w-[55%]">
                   <p className="text-xs font-semibold text-foreground">{cp.label}</p>
                   <input

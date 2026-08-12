@@ -45,8 +45,8 @@ export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 // ---------------------------------------------------------------------------
 
 /** Liste tous les webhooks. */
-export const listWebhooks = createServerFn({ method: "GET" })
-  .handler(async (): Promise<OutboundWebhook[]> => {
+export const listWebhooks = createServerFn({ method: "GET" }).handler(
+  async (): Promise<OutboundWebhook[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("list-webhooks", 20))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin
@@ -55,7 +55,8 @@ export const listWebhooks = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []) as unknown as OutboundWebhook[];
-  });
+  },
+);
 
 /** Liste les logs d'un webhook. */
 export const listWebhookLogs = createServerFn({ method: "POST" })

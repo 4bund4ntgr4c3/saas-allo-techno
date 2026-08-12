@@ -103,9 +103,13 @@ function Entreprises() {
             {t("entreprises.intro", [COMPANY.city])}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button variant="technical" size="lg" onClick={() => {
-              document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
-            }}>
+            <Button
+              variant="technical"
+              size="lg"
+              onClick={() => {
+                document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               {t("entreprises.cta.request")} &rarr;
             </Button>
             <Button asChild variant="outline" size="lg">
@@ -173,8 +177,13 @@ function Entreprises() {
                   variant="technical"
                   className="mt-8 w-full"
                   onClick={() => {
-                    const formulaKey: "essentiel" | "business" | "custom" =
-                      p.name.includes("essentiel") ? "essentiel" : p.name.includes("business") ? "business" : "custom";
+                    const formulaKey: "essentiel" | "business" | "custom" = p.name.includes(
+                      "essentiel",
+                    )
+                      ? "essentiel"
+                      : p.name.includes("business")
+                        ? "business"
+                        : "custom";
                     setSelectedFormula(formulaKey);
                     document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
                   }}

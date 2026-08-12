@@ -32,8 +32,8 @@ export function AdminQuickContact({ data, variant = "button" }: AdminQuickContac
   const formattedPhone = cleanPhone.startsWith("+")
     ? cleanPhone.slice(1)
     : cleanPhone.startsWith("229")
-    ? cleanPhone
-    : `229${cleanPhone}`;
+      ? cleanPhone
+      : `229${cleanPhone}`;
 
   const trackingUrl = `https://allotechno.africa/suivi?ref=${data.reference}`;
 
@@ -118,7 +118,9 @@ export function AdminQuickContact({ data, variant = "button" }: AdminQuickContac
 
           <DropdownMenuItem
             onClick={() => {
-              setCustomMsg(`Bonjour ${data.customer_name}, concernant votre ${data.device} (${data.reference}) : `);
+              setCustomMsg(
+                `Bonjour ${data.customer_name}, concernant votre ${data.device} (${data.reference}) : `,
+              );
               setCustomOpen(true);
             }}
             className="text-xs cursor-pointer font-medium text-primary"
@@ -127,7 +129,11 @@ export function AdminQuickContact({ data, variant = "button" }: AdminQuickContac
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => openSms(`Allô Techno (Dossier ${data.reference}) : Bonjour ${data.customer_name}, votre appareil est prêt.`)}
+            onClick={() =>
+              openSms(
+                `Allô Techno (Dossier ${data.reference}) : Bonjour ${data.customer_name}, votre appareil est prêt.`,
+              )
+            }
             className="text-xs cursor-pointer flex items-center justify-between text-muted-foreground"
           >
             <span>Envoyer un SMS classique</span>

@@ -9,7 +9,14 @@ type Props = ImgHTMLAttributes<HTMLImageElement> & {
  * Responsive image with aspect-ratio stability, lazy loading, and decoding="async".
  * Uses CSS aspect-ratio to prevent layout shift.
  */
-export function OptimizedImage({ aspectRatio, style, className, loading, decoding, ...props }: Props) {
+export function OptimizedImage({
+  aspectRatio,
+  style,
+  className,
+  loading,
+  decoding,
+  ...props
+}: Props) {
   const [loaded, setLoaded] = useState(false);
   return (
     <div

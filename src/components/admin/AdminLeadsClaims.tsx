@@ -146,7 +146,9 @@ export function LeadsSection() {
               >
                 {(["nouveau", "contacte", "clos"] as const).map((value) => (
                   <option key={value} value={value}>
-                    {t(`admin.leads.status.${value === "contacte" ? "contacted" : value === "clos" ? "closed" : "new"}` as any)}
+                    {t(
+                      `admin.leads.status.${value === "contacte" ? "contacted" : value === "clos" ? "closed" : "new"}` as any,
+                    )}
                   </option>
                 ))}
               </select>
@@ -286,7 +288,9 @@ export function ClaimCard({
         >
           {CLAIM_STATUS_ORDER.map((value) => (
             <option key={value} value={value}>
-              {t(`admin.claims.status.${value === "acceptee" ? "accepted" : value === "refuse" ? "refused" : value === "cloturee" ? "closed" : value === "en_cours" ? "inProgress" : "new"}` as any)}
+              {t(
+                `admin.claims.status.${value === "acceptee" ? "accepted" : value === "refuse" ? "refused" : value === "cloturee" ? "closed" : value === "en_cours" ? "inProgress" : "new"}` as any,
+              )}
             </option>
           ))}
         </select>
@@ -301,9 +305,7 @@ export function ClaimCard({
         </span>
       </div>
 
-      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">
-        {claim.message}
-      </p>
+      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">{claim.message}</p>
 
       <div className="mt-3 flex flex-wrap items-end gap-3">
         <textarea

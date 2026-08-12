@@ -42,6 +42,7 @@
 Format : `type(scope): description`
 
 Types autorisés :
+
 - `feat` — nouvelle fonctionnalité
 - `fix` — correction de bug
 - `refactor` — refactorisation sans changement de comportement
@@ -51,6 +52,7 @@ Types autorisés :
 - `chore` — maintenance, dépendances, config
 
 Exemples :
+
 ```
 feat(payments): add refund flow with audit log
 fix(auth): redirect to login on session expiry
@@ -61,6 +63,7 @@ docs: update CHANGELOG and README for batch 18
 ## Vérification pré-commit
 
 Avant chaque commit, s'assurer que :
+
 - [ ] `npx tsc --noEmit` passe (0 erreurs)
 - [ ] `npx vitest run` passe (92+ tests)
 - [ ] `npm run build` réussit

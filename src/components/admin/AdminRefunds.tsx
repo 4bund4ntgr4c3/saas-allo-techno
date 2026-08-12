@@ -85,9 +85,7 @@ export function RefundsSection() {
         onChange={(e) => setQuery(e.target.value)}
       />
       {rows.length === 0 ? (
-        <p className="mt-6 text-sm text-muted-foreground">
-          {t("admin.refunds.empty")}
-        </p>
+        <p className="mt-6 text-sm text-muted-foreground">{t("admin.refunds.empty")}</p>
       ) : (
         <ul className="mt-6 space-y-3">
           {rows.map((p) => (
@@ -139,7 +137,11 @@ export function RefundsSection() {
           <DialogHeader>
             <DialogTitle>{t("admin.refunds.dialog.title")}</DialogTitle>
             <DialogDescription>
-              {t("admin.refunds.dialog.description", [confirmPayment ? `${confirmPayment.reference} (${formatFcfa(confirmPayment.amount)})` : ""])}
+              {t("admin.refunds.dialog.description", [
+                confirmPayment
+                  ? `${confirmPayment.reference} (${formatFcfa(confirmPayment.amount)})`
+                  : "",
+              ])}
             </DialogDescription>
           </DialogHeader>
           <label htmlFor="refund-reason" className="block">
@@ -175,7 +177,9 @@ export function RefundsSection() {
               disabled={doRefund.isPending || !reason.trim()}
               onClick={() => doRefund.mutate()}
             >
-              {doRefund.isPending ? t("admin.refunds.processing") : t("admin.refunds.confirmButton")}
+              {doRefund.isPending
+                ? t("admin.refunds.processing")
+                : t("admin.refunds.confirmButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

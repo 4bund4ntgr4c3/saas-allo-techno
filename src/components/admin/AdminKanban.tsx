@@ -210,7 +210,8 @@ function KanbanBoard({
                     {r.customer_name} — {r.device}
                   </p>
                   <p className="mt-1 text-[11px] text-muted-foreground">
-                    {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)} · {r.phone}
+                    {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)} ·{" "}
+                    {r.phone}
                   </p>
                 </Button>
               ))}
@@ -338,7 +339,9 @@ function StatusHistoryList({ reservationId }: { reservationId: string }) {
             {new Date(h.created_at).toLocaleString(t("locale") as string)}
           </time>
           <span>
-            {h.old_status ? `${t("admin.status." + h.old_status)} → ` : t("admin.kanban.history.creation")}
+            {h.old_status
+              ? `${t("admin.status." + h.old_status)} → `
+              : t("admin.kanban.history.creation")}
             <strong>{t("admin.status." + h.new_status)}</strong>
           </span>
           {h.note ? <span className="text-muted-foreground">— {h.note}</span> : null}
@@ -416,7 +419,9 @@ function QuotePanel({
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <Banknote className="size-3.5 text-muted-foreground" />
         <span className="text-muted-foreground">{t("admin.kanban.quote.label")}</span>
-        <span className="font-medium">{status === "none" ? t("admin.kanban.quote.none") : status}</span>
+        <span className="font-medium">
+          {status === "none" ? t("admin.kanban.quote.none") : status}
+        </span>
         {sentAmount != null && (
           <span className="font-mono text-muted-foreground">{formatFcfa(sentAmount)}</span>
         )}
@@ -568,7 +573,9 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
             key={stage}
             className="flex cursor-pointer items-center gap-2 border border-border px-3 py-1.5 text-xs hover:bg-surface"
           >
-            <span className="text-muted-foreground">{t(`admin.kanban.photoStage.${stage}` as any)}</span>
+            <span className="text-muted-foreground">
+              {t(`admin.kanban.photoStage.${stage}` as any)}
+            </span>
             {busyStage === stage ? (
               <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
             ) : (
@@ -602,9 +609,4 @@ export {
   PhotoPanel,
 };
 export type { KanbanRow, Status };
-export {
-  STATUSES,
-  NEXT_STATUS,
-  STATUS_TONE,
-  PHOTO_STAGES,
-};
+export { STATUSES, NEXT_STATUS, STATUS_TONE, PHOTO_STAGES };

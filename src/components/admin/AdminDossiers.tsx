@@ -2,7 +2,15 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Building2, FileDown, LayoutGrid, RadioTower, Wrench, Tag, ClipboardCheck } from "lucide-react";
+import {
+  Building2,
+  FileDown,
+  LayoutGrid,
+  RadioTower,
+  Wrench,
+  Tag,
+  ClipboardCheck,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
@@ -246,17 +254,21 @@ export function DossiersSection() {
     const matchDateFrom = !dateFrom || r.slot_date >= dateFrom;
     const matchDateTo = !dateTo || r.slot_date <= dateTo;
     const matchType =
-      typeFilter === "tous" ||
-      (typeFilter === "b2b" ? Boolean(r.org_id) : !r.org_id);
+      typeFilter === "tous" || (typeFilter === "b2b" ? Boolean(r.org_id) : !r.org_id);
     return matchStatus && matchQuery && matchTech && matchDateFrom && matchDateTo && matchType;
   });
 
   const hasFilters =
-    filter !== "toutes" || query || dateFrom || dateTo || techFilter !== "tous" || typeFilter !== "tous";
+    filter !== "toutes" ||
+    query ||
+    dateFrom ||
+    dateTo ||
+    techFilter !== "tous" ||
+    typeFilter !== "tous";
 
   const rowsWithOrg = rows.map((r) => ({
     ...r,
-    org_name: r.org_id ? orgName.get(r.org_id) ?? "" : "",
+    org_name: r.org_id ? (orgName.get(r.org_id) ?? "") : "",
   }));
 
   return (
@@ -459,7 +471,9 @@ export function DossiersSection() {
                                 ? "qa"
                                 : "intake",
                             initial:
-                              (r.status === "pret" || r.status === "livre" || r.status === "terminee"
+                              (r.status === "pret" ||
+                              r.status === "livre" ||
+                              r.status === "terminee"
                                 ? (r as any).qa_checklist?.items
                                 : (r as any).intake_checklist?.items) ?? null,
                           })
@@ -470,7 +484,12 @@ export function DossiersSection() {
                         <ClipboardCheck className="size-3.5" />
                         <span>Contrôle QA</span>
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => downloadInvoicePdf(r)} title="Télécharger facture PDF">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => downloadInvoicePdf(r)}
+                        title="Télécharger facture PDF"
+                      >
                         <FileDown className="size-4" />
                       </Button>
                     </div>
@@ -499,7 +518,10 @@ export function DossiersSection() {
 
                   {!isTechnicien && <PhotoPanel reservationId={r.id} />}
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs" data-tour="admin-technician">
+                  <div
+                    className="mt-4 flex flex-wrap items-center gap-2 text-xs"
+                    data-tour="admin-technician"
+                  >
                     <Wrench className="size-3.5 text-muted-foreground" />
                     <span className="text-muted-foreground">{t("admin.dossier.technician")} :</span>
                     {isTechnicien ? (
@@ -550,9 +572,7 @@ export function DossiersSection() {
         </>
       )}
 
-      {labelTarget && (
-        <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />
-      )}
+      {labelTarget && <AdminDeviceLabel data={labelTarget} onClose={() => setLabelTarget(null)} />}
       {checklistTarget && (
         <AdminChecklistModal
           reservationId={checklistTarget.id}

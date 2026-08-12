@@ -28,9 +28,7 @@ export function CartDrawer() {
           <h2 className="text-lg font-extrabold uppercase tracking-tight">
             {t("panier.title")}
             {count > 0 && (
-              <span className="ml-2 font-mono text-xs text-muted-foreground">
-                ({count})
-              </span>
+              <span className="ml-2 font-mono text-xs text-muted-foreground">({count})</span>
             )}
           </h2>
           <button
@@ -54,9 +52,7 @@ export function CartDrawer() {
               {items.map(({ accessory, qty }) => (
                 <li key={accessory.slug} className="flex gap-4 px-5 py-4">
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold uppercase tracking-tight">
-                      {accessory.name}
-                    </p>
+                    <p className="text-xs font-bold uppercase tracking-tight">{accessory.name}</p>
                     <p className="mt-0.5 font-mono text-[10px] uppercase text-muted-foreground">
                       {accessory.category}
                     </p>

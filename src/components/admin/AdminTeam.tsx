@@ -78,9 +78,7 @@ export function TeamSection() {
         <div>
           <p className="at-eyebrow">{t("admin.team.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.team.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("admin.team.description")}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.team.description")}</p>
         </div>
       </div>
       <ul className="space-y-3">

@@ -117,9 +117,7 @@ export function OrdersSection() {
         <div>
           <p className="at-eyebrow">{t("admin.orders.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.orders.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("admin.orders.description")}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("admin.orders.description")}</p>
         </div>
       </div>
       <label htmlFor="orders-search" className="sr-only">
@@ -133,9 +131,7 @@ export function OrdersSection() {
         onChange={(e) => setQuery(e.target.value)}
       />
       {rows.length === 0 ? (
-        <p className="mt-6 text-sm text-muted-foreground">
-          {t("admin.orders.empty")}
-        </p>
+        <p className="mt-6 text-sm text-muted-foreground">{t("admin.orders.empty")}</p>
       ) : (
         <ul className="mt-6 space-y-3">
           {rows.map((o) => {

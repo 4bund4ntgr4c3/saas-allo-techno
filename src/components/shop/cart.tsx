@@ -126,9 +126,29 @@ export const FREE_DELIVERY_FROM = 50000;
 
 export function getDeliveryOptions(t: (key: string) => string) {
   return [
-    { id: "retrait", label: t("shop.delivery.retrait"), fee: 0, eta: t("shop.delivery.eta.retrait") },
-    { id: "calavi", label: t("shop.delivery.calavi"), fee: 1000, eta: t("shop.delivery.eta.calavi") },
-    { id: "cotonou", label: t("shop.delivery.cotonou"), fee: 2000, eta: t("shop.delivery.eta.cotonou") },
-    { id: "interieur", label: t("shop.delivery.interior"), fee: 2000, eta: t("shop.delivery.eta.interior") },
+    {
+      id: "retrait",
+      label: t("shop.delivery.retrait"),
+      fee: 0,
+      eta: t("shop.delivery.eta.retrait"),
+    },
+    {
+      id: "calavi",
+      label: t("shop.delivery.calavi"),
+      fee: 1000,
+      eta: t("shop.delivery.eta.calavi"),
+    },
+    {
+      id: "cotonou",
+      label: t("shop.delivery.cotonou"),
+      fee: 2000,
+      eta: t("shop.delivery.eta.cotonou"),
+    },
+    {
+      id: "interieur",
+      label: t("shop.delivery.interior"),
+      fee: 2000,
+      eta: t("shop.delivery.eta.interior"),
+    },
   ] as const;
 }

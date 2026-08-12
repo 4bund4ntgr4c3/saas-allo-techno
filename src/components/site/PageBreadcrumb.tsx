@@ -22,7 +22,9 @@ export function PageBreadcrumb({ items }: { items: Crumb[] }) {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+            <Link to="/$locale" params={{ locale }}>
+              {t("action.accueil")}
+            </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         {items.map((item, i) => (
@@ -30,7 +32,9 @@ export function PageBreadcrumb({ items }: { items: Crumb[] }) {
             <BreadcrumbSeparator />
             {item.to ? (
               <BreadcrumbLink asChild>
-                <Link to={item.to} params={{ locale }}>{item.label}</Link>
+                <Link to={item.to} params={{ locale }}>
+                  {item.label}
+                </Link>
               </BreadcrumbLink>
             ) : (
               <BreadcrumbPage>{item.label}</BreadcrumbPage>

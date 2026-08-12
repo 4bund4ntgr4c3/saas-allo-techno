@@ -243,22 +243,27 @@ export function SearchModal() {
           // Fuzzy: prefix match
           const textWords = lower.split(/\s+/);
           for (const tw of textWords) {
-            if (tw.startsWith(w) || w.startsWith(tw)) { score += 5; break; }
+            if (tw.startsWith(w) || w.startsWith(tw)) {
+              score += 5;
+              break;
+            }
           }
         }
       }
       return score;
     };
 
-    const pages: Item[] = PAGES
-      .map((p) => ({ ...p, icon: PAGE_ICON, score: scoreMatch(`${p.label} ${p.keywords}`) }))
+    const pages: Item[] = PAGES.map((p) => ({
+      ...p,
+      icon: PAGE_ICON,
+      score: scoreMatch(`${p.label} ${p.keywords}`),
+    }))
       .filter((p) => p.score > 0)
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, q ? cap : 15);
 
     const categories: Item[] = q
-      ? CATEGORIES
-          .map((c) => ({ c, score: scoreMatch(c) }))
+      ? CATEGORIES.map((c) => ({ c, score: scoreMatch(c) }))
           .filter(({ score }) => score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, 8)
@@ -276,8 +281,7 @@ export function SearchModal() {
           }))
       : [];
 
-    const brands: Item[] = BRANDS
-      .map((b) => ({ b, score: scoreMatch(`${b.name} ${b.tag}`) }))
+    const brands: Item[] = BRANDS.map((b) => ({ b, score: scoreMatch(`${b.name} ${b.tag}`) }))
       .filter(({ score }) => score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, q ? 8 : 19)
@@ -304,12 +308,20 @@ export function SearchModal() {
           const words = q.split(/\s+/);
           for (const w of words) {
             if (w.length < 2) continue;
-            if (searchText.includes(w)) { rank = Math.min(rank, 2); break; }
+            if (searchText.includes(w)) {
+              rank = Math.min(rank, 2);
+              break;
+            }
           }
           return { d, b, rank, score: scoreMatch(searchText) };
         })
           .filter(({ score }) => score > 0)
-          .sort((a, z) => (z.score ?? 0) - (a.score ?? 0) || a.rank - z.rank || a.d.name.localeCompare(z.d.name))
+          .sort(
+            (a, z) =>
+              (z.score ?? 0) - (a.score ?? 0) ||
+              a.rank - z.rank ||
+              a.d.name.localeCompare(z.d.name),
+          )
           .slice(0, cap)
           .map(({ d, b }) => ({
             id: `device-${d.slug}`,
@@ -322,8 +334,7 @@ export function SearchModal() {
       : [];
 
     const accessories: Item[] = q
-      ? ACCESSORIES
-          .map((a) => ({ a, score: scoreMatch(`${a.name} ${a.category}`) }))
+      ? ACCESSORIES.map((a) => ({ a, score: scoreMatch(`${a.name} ${a.category}`) }))
           .filter(({ score }) => score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, cap)
@@ -339,8 +350,7 @@ export function SearchModal() {
       : [];
 
     const posts: Item[] = q
-      ? POSTS
-          .map((p) => ({ p, score: scoreMatch(`${p.title} ${p.excerpt} ${p.category}`) }))
+      ? POSTS.map((p) => ({ p, score: scoreMatch(`${p.title} ${p.excerpt} ${p.category}`) }))
           .filter(({ score }) => score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, cap)
@@ -356,8 +366,7 @@ export function SearchModal() {
       : [];
 
     const faq: Item[] = q
-      ? FAQ
-          .map((f, i) => ({ f, i, score: scoreMatch(`${f.q} ${f.a} ${f.cat}`) }))
+      ? FAQ.map((f, i) => ({ f, i, score: scoreMatch(`${f.q} ${f.a} ${f.cat}`) }))
           .filter(({ score }) => score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, cap)
@@ -377,22 +386,25 @@ export function SearchModal() {
 
   const total = useMemo(() => Object.values(groups).reduce((n, g) => n + g.length, 0), [groups]);
 
-  const go = useCallback((item: Item) => {
-    // Save to recent searches
-    if (query.trim()) {
-      setRecentSearches((prev) => {
-        const updated = [query.trim(), ...prev.filter((s) => s !== query.trim())].slice(0, 5);
-        localStorage.setItem("at-recent-searches", JSON.stringify(updated));
-        return updated;
+  const go = useCallback(
+    (item: Item) => {
+      // Save to recent searches
+      if (query.trim()) {
+        setRecentSearches((prev) => {
+          const updated = [query.trim(), ...prev.filter((s) => s !== query.trim())].slice(0, 5);
+          localStorage.setItem("at-recent-searches", JSON.stringify(updated));
+          return updated;
+        });
+      }
+      setOpen(false);
+      setQuery("");
+      navigate({
+        to: `/${locale}${item.target.to}` as never,
+        search: (item.target.search ?? {}) as never,
       });
-    }
-    setOpen(false);
-    setQuery("");
-    navigate({
-      to: `/${locale}${item.target.to}` as never,
-      search: (item.target.search ?? {}) as never,
-    });
-  }, [query, locale, navigate]);
+    },
+    [query, locale, navigate],
+  );
 
   const clearRecent = useCallback(() => {
     setRecentSearches([]);
@@ -422,7 +434,10 @@ export function SearchModal() {
         />
         <CommandList>
           {!query.trim() && recentSearches.length > 0 && (
-            <CommandGroup heading={t("search.group.recent") ?? "Recherches récentes"} className={GROUP_CLASS}>
+            <CommandGroup
+              heading={t("search.group.recent") ?? "Recherches récentes"}
+              className={GROUP_CLASS}
+            >
               {recentSearches.map((s, i) => (
                 <CommandItem key={`recent-${i}`} value={`recent-${s}`} onSelect={() => setQuery(s)}>
                   <Clock className="size-3 text-muted-foreground" />

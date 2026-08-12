@@ -198,12 +198,14 @@ export async function getRateLimitStats(): Promise<{
 /**
  * Retourne l'état des buckets pour le tableau de bord admin (lecture seule).
  */
-export async function getRateLimitBuckets(): Promise<Array<{
-  key: string;
-  count: number;
-  resetIn: number;
-  isBlocked: boolean;
-}>> {
+export async function getRateLimitBuckets(): Promise<
+  Array<{
+    key: string;
+    count: number;
+    resetIn: number;
+    isBlocked: boolean;
+  }>
+> {
   const now = Date.now();
 
   if (KV_NAMESPACE) return [];

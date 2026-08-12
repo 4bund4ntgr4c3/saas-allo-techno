@@ -89,7 +89,12 @@ function QuartierPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <span className="at-eyebrow">{t("quartiers.page.eyebrow")}</span>
-            <PageBreadcrumb items={[{ to: `/$locale/quartiers`, label: t("nav.quartiers") }, { label: quartier.name }]} />
+            <PageBreadcrumb
+              items={[
+                { to: `/$locale/quartiers`, label: t("nav.quartiers") },
+                { label: quartier.name },
+              ]}
+            />
           </div>
           <h1 className="at-display text-4xl md:text-6xl">
             {t("quartiers.slug.title", [quartier.name])}

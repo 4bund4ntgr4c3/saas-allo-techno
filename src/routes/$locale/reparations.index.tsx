@@ -181,7 +181,11 @@ function Reparations() {
                 params={{ locale, brand: b.slug }}
                 className="group bg-card p-8 transition-colors hover:bg-surface"
               >
-                <BrandLogo slug={b.slug} name={b.name} className="mb-4 block size-10 text-primary" />
+                <BrandLogo
+                  slug={b.slug}
+                  name={b.name}
+                  className="mb-4 block size-10 text-primary"
+                />
                 <h2 className="text-xl font-extrabold uppercase tracking-tight">{b.name}</h2>
                 <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">
                   {t(b.tag)}

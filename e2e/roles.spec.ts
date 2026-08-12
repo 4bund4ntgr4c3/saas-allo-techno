@@ -51,7 +51,11 @@ async function login(page: Page, email: string) {
 }
 
 for (const item of ROLES) {
-  test(`${item.role} se connecte et accède à ${item.url}`, async ({ browser }: { browser: Browser }) => {
+  test(`${item.role} se connecte et accède à ${item.url}`, async ({
+    browser,
+  }: {
+    browser: Browser;
+  }) => {
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
     try {

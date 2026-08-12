@@ -157,7 +157,8 @@ const fr = {
   "org.tickets.form.type": "Type de demande",
   "org.tickets.form.priority": "Priorité",
   "org.tickets.form.issue": "Description du problème *",
-  "org.tickets.form.issue.placeholder": "Ex. : le serveur principal est hors ligne, l'imprimante n'imprime plus…",
+  "org.tickets.form.issue.placeholder":
+    "Ex. : le serveur principal est hors ligne, l'imprimante n'imprime plus…",
   "org.tickets.form.location": "Localisation (site, étage…)",
   "org.tickets.form.phone": "Téléphone de contact",
   "org.tickets.form.email": "Email de contact",
@@ -227,7 +228,8 @@ const fr = {
   "org.maintenance.interval.annual": "Tous les ans (Annuel)",
   "org.maintenance.list.title": "Cycles de maintenance",
   "org.maintenance.empty.title": "Aucun calendrier actif",
-  "org.maintenance.empty.text": "Planifiez des révisions régulières pour maximiser la durée de vie de vos équipements.",
+  "org.maintenance.empty.text":
+    "Planifiez des révisions régulières pour maximiser la durée de vie de vos équipements.",
   "org.maintenance.status.overdue": "Échéance dépassée",
   "org.maintenance.status.scheduled": "Planifiée",
   "org.maintenance.nextDue": "Prochaine révision",
@@ -401,7 +403,8 @@ const en = {
   "org.tickets.form.type": "Request type",
   "org.tickets.form.priority": "Priority",
   "org.tickets.form.issue": "Issue description *",
-  "org.tickets.form.issue.placeholder": "E.g.: the main server is offline, the printer won't print…",
+  "org.tickets.form.issue.placeholder":
+    "E.g.: the main server is offline, the printer won't print…",
   "org.tickets.form.location": "Location (site, floor…)",
   "org.tickets.form.phone": "Contact phone",
   "org.tickets.form.email": "Contact email",
@@ -471,7 +474,8 @@ const en = {
   "org.maintenance.interval.annual": "Every year (Annual)",
   "org.maintenance.list.title": "Maintenance cycles",
   "org.maintenance.empty.title": "No active schedule",
-  "org.maintenance.empty.text": "Schedule regular maintenance to maximize the lifespan of your equipment.",
+  "org.maintenance.empty.text":
+    "Schedule regular maintenance to maximize the lifespan of your equipment.",
   "org.maintenance.status.overdue": "Overdue",
   "org.maintenance.status.scheduled": "Scheduled",
   "org.maintenance.nextDue": "Next maintenance",

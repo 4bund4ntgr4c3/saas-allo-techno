@@ -94,7 +94,12 @@ function BrandPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <span className="at-eyebrow">{t("reparations.brand.eyebrow")}</span>
-            <PageBreadcrumb items={[{ to: `/$locale/reparations`, label: t("nav.reparations") }, { label: brand.name }]} />
+            <PageBreadcrumb
+              items={[
+                { to: `/$locale/reparations`, label: t("nav.reparations") },
+                { label: brand.name },
+              ]}
+            />
           </div>
           <h1 className="at-display text-4xl md:text-6xl">
             {t("reparations.brand.title", [brand.name])}

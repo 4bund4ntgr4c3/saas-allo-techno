@@ -44,9 +44,7 @@ export function DevisComparison({ devis, onRemove, onSelect, selectedId }: Props
             onClick={() => setHighlightDiffs(!highlightDiffs)}
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            {highlightDiffs
-              ? t("devis.compare.hideDiffs")
-              : t("devis.compare.showDiffs")}
+            {highlightDiffs ? t("devis.compare.hideDiffs") : t("devis.compare.showDiffs")}
           </button>
         )}
       </div>
@@ -126,9 +124,7 @@ export function DevisComparison({ devis, onRemove, onSelect, selectedId }: Props
                   className="w-full"
                   onClick={() => onSelect(d.id)}
                 >
-                  {selectedId === d.id
-                    ? t("devis.compare.selected")
-                    : t("devis.compare.choose")}
+                  {selectedId === d.id ? t("devis.compare.selected") : t("devis.compare.choose")}
                 </Button>
               )}
             </div>

@@ -99,9 +99,10 @@ export const submitB2BLead = createServerFn({ method: "POST" })
     }
 
     const reference = data.reference;
-    const clientEmail = data.email && data.email.trim()
-      ? data.email.trim()
-      : `b2b.${data.phone.replace(/\D/g, "")}@allotechno.africa`;
+    const clientEmail =
+      data.email && data.email.trim()
+        ? data.email.trim()
+        : `b2b.${data.phone.replace(/\D/g, "")}@allotechno.africa`;
 
     const fullName = `${data.companyName} (${data.contactName})`;
     const message = `Demande B2B: ${data.needType} | Formule: ${data.slaFormula} | Parc: ${data.fleetSize} | Urgence: ${data.urgency} | Équipements: ${data.equipmentTypes?.join(", ") || "Non spécifié"} | Ville: ${data.city || "Non spécifiée"} | Notes: ${data.notes || "Aucune"}`;
@@ -173,4 +174,3 @@ export const submitB2BLead = createServerFn({ method: "POST" })
       existingAccount,
     };
   });
-

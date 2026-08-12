@@ -88,7 +88,13 @@ const SLA_FORMULAS = [
 ];
 
 const FLEET_SIZES = ["1-5 équipements", "6-15 équipements", "16-50 équipements", "50+ équipements"];
-const EQUIPMENT_TYPES = ["Laptops / PC", "Serveurs", "Imprimantes", "Réseau / Switch", "Smartphones / Tablettes"];
+const EQUIPMENT_TYPES = [
+  "Laptops / PC",
+  "Serveurs",
+  "Imprimantes",
+  "Réseau / Switch",
+  "Smartphones / Tablettes",
+];
 const URGENCY_LEVELS = [
   { id: "urgent", label: "Urgent (Intervention < 24h)" },
   { id: "48h", label: "Sous 48 heures" },
@@ -96,17 +102,41 @@ const URGENCY_LEVELS = [
 ];
 
 export const PREVENTIVE_PERIODS = [
-  { id: "2m", shortLabel: "2 mois", label: "2 mois (Bimensuel)", ratePerDevice: 6500, desc: "Passage tous les 2 mois" },
-  { id: "3m", shortLabel: "3 mois", label: "3 mois (Trimestriel)", ratePerDevice: 8000, desc: "Passage trimestriel recommandé" },
-  { id: "6m", shortLabel: "6 mois", label: "6 mois (Semestriel)", ratePerDevice: 10000, desc: "Passage tous les 6 mois" },
-  { id: "12m", shortLabel: "12 mois", label: "12 mois (Annuel)", ratePerDevice: 15000, desc: "Révision annuelle complète" },
+  {
+    id: "2m",
+    shortLabel: "2 mois",
+    label: "2 mois (Bimensuel)",
+    ratePerDevice: 6500,
+    desc: "Passage tous les 2 mois",
+  },
+  {
+    id: "3m",
+    shortLabel: "3 mois",
+    label: "3 mois (Trimestriel)",
+    ratePerDevice: 8000,
+    desc: "Passage trimestriel recommandé",
+  },
+  {
+    id: "6m",
+    shortLabel: "6 mois",
+    label: "6 mois (Semestriel)",
+    ratePerDevice: 10000,
+    desc: "Passage tous les 6 mois",
+  },
+  {
+    id: "12m",
+    shortLabel: "12 mois",
+    label: "12 mois (Annuel)",
+    ratePerDevice: 15000,
+    desc: "Révision annuelle complète",
+  },
 ];
 
 export function calculateEstimate(
   needType: B2BNeedType | null,
   slaFormula: SlaFormulaType | null,
   fleetSize: string | null,
-  preventivePeriodId: string | null
+  preventivePeriodId: string | null,
 ): string {
   if (!needType) return "Sélectionnez votre prestation";
   if (!fleetSize) return "Sélectionnez la taille du parc";
@@ -120,10 +150,10 @@ export function calculateEstimate(
 
   if (fleetSize === "6-15 équipements") {
     count = 10;
-    discount = 0.10; // -10% remise dégressive
+    discount = 0.1; // -10% remise dégressive
   } else if (fleetSize === "16-50 équipements") {
     count = 25;
-    discount = 0.10; // -10% remise dégressive (4500 FCFA/app sur Essentiel)
+    discount = 0.1; // -10% remise dégressive (4500 FCFA/app sur Essentiel)
   }
 
   if (needType === "contract") {
@@ -175,18 +205,14 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(initialFormula ? 2 : 1);
   const [needType, setNeedType] = useState<B2BNeedType | null>(
-    initialFormula ? "contract" : initialNeedType || null
+    initialFormula ? "contract" : initialNeedType || null,
   );
   const [slaFormula, setSlaFormula] = useState<SlaFormulaType | null>(initialFormula || null);
   const [preventivePeriod, setPreventivePeriod] = useState<string | null>(null);
   const [fleetSize, setFleetSize] = useState<string | null>(null);
   const [selectedEqTypes, setSelectedEqTypes] = useState<string[]>([]);
   const [urgency, setUrgency] = useState<string | null>(
-    initialFormula === "essentiel"
-      ? "48h"
-      : initialFormula === "business"
-      ? "urgent"
-      : null
+    initialFormula === "essentiel" ? "48h" : initialFormula === "business" ? "urgent" : null,
   );
 
   const [companyName, setCompanyName] = useState("");
@@ -210,7 +236,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
   const toggleEqType = (type: string) => {
     setSelectedEqTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
@@ -243,7 +269,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
           email: email.trim() || undefined,
           city: city.trim() || undefined,
           needType: needType || "contract",
-          slaFormula: needType === "preventive" ? (preventivePeriod ? `preventive_${preventivePeriod}` : undefined) : slaFormula || undefined,
+          slaFormula:
+            needType === "preventive"
+              ? preventivePeriod
+                ? `preventive_${preventivePeriod}`
+                : undefined
+              : slaFormula || undefined,
           fleetSize: fleetSize || "1-5 équipements",
           equipmentTypes: selectedEqTypes,
           urgency: urgency || "48h",
@@ -297,12 +328,26 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
-    doc.text(`Date de génération : ${new Date().toLocaleDateString("fr-FR")} - Statut : Demande Validée & Compte Client Activé`, 14, 50);
+    doc.text(
+      `Date de génération : ${new Date().toLocaleDateString("fr-FR")} - Statut : Demande Validée & Compte Client Activé`,
+      14,
+      50,
+    );
 
     const bodyRows = [
       ["Référence Dossier B2B", successCode],
-      ["Type d'Intervention / Service", NEED_TYPES.find((n) => n.id === needType)?.title || needType],
-      ["Formule Contrat SLA", slaFormula === "essentiel" ? "Formule ESSENTIEL SLA" : slaFormula === "business" ? "Formule BUSINESS SLA" : "Sur-Mesure / Multi-sites"],
+      [
+        "Type d'Intervention / Service",
+        NEED_TYPES.find((n) => n.id === needType)?.title || needType,
+      ],
+      [
+        "Formule Contrat SLA",
+        slaFormula === "essentiel"
+          ? "Formule ESSENTIEL SLA"
+          : slaFormula === "business"
+            ? "Formule BUSINESS SLA"
+            : "Sur-Mesure / Multi-sites",
+      ],
       ["Estimation Tarifaire Mensuelle", slaEstimate],
       ["Taille Estimée du Parc", fleetSize],
       ["Types d'Équipements Concernés", selectedEqTypes.join(", ") || "Non spécifié"],
@@ -316,7 +361,10 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
     ];
 
     if (accountDetails?.tempPassword) {
-      bodyRows.push(["Identifiants Compte Client B2B", `E-mail: ${accountDetails.email} | Mot de passe prov: ${accountDetails.tempPassword}`]);
+      bodyRows.push([
+        "Identifiants Compte Client B2B",
+        `E-mail: ${accountDetails.email} | Mot de passe prov: ${accountDetails.tempPassword}`,
+      ]);
     }
 
     // Breakdown Table using autoTable
@@ -324,7 +372,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
       startY: 55,
       head: [["Caractéristique / Élément", "Spécification retenue"]],
       body: bodyRows,
-      headStyles: { fillColor: [20, 20, 20], textColor: [255, 255, 255], fontStyle: "bold", fontSize: 10 },
+      headStyles: {
+        fillColor: [20, 20, 20],
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 10,
+      },
       styles: { fontSize: 9, cellPadding: 3.5 },
       theme: "grid",
     });
@@ -360,7 +413,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
     const waDigits = COMPANY.whatsapp.replace(/\D/g, "");
     const phoneDigits = COMPANY.phone.replace(/\D/g, "");
     const waText = encodeURIComponent(
-      `Bonjour Allô Techno, je viens de soumettre la demande B2B (Réf: ${successCode}) pour l'entreprise ${companyName}. Formule: ${slaFormula}. Identifiant: ${accountDetails?.email || email}. Pouvons-nous échanger ?`
+      `Bonjour Allô Techno, je viens de soumettre la demande B2B (Réf: ${successCode}) pour l'entreprise ${companyName}. Formule: ${slaFormula}. Identifiant: ${accountDetails?.email || email}. Pouvons-nous échanger ?`,
     );
     const waUrl = `https://wa.me/${waDigits}?text=${waText}`;
 
@@ -373,12 +426,18 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               <CheckCircle2 className="size-7" />
             </div>
             <div>
-              <span className="at-eyebrow text-success">Demande B2B &amp; Compte Client Activés</span>
-              <h3 className="at-display text-2xl font-bold">Récapitulatif Complet &amp; Accès Espace Client</h3>
+              <span className="at-eyebrow text-success">
+                Demande B2B &amp; Compte Client Activés
+              </span>
+              <h3 className="at-display text-2xl font-bold">
+                Récapitulatif Complet &amp; Accès Espace Client
+              </h3>
             </div>
           </div>
           <div className="text-right">
-            <span className="font-mono text-xs text-muted-foreground block">Code Référence B2B :</span>
+            <span className="font-mono text-xs text-muted-foreground block">
+              Code Référence B2B :
+            </span>
             <span className="font-mono text-lg font-extrabold text-primary border border-primary/30 bg-primary/10 px-3 py-1 inline-block">
               {successCode}
             </span>
@@ -392,8 +451,8 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             {accountDetails?.accountCreated
               ? "Compte Client B2B Créé Automatiquement pour votre Entreprise"
               : accountDetails?.existingAccount
-              ? "Compte Client B2B Reconnu & Rattaché"
-              : "Compte Client B2B Activé"}
+                ? "Compte Client B2B Reconnu & Rattaché"
+                : "Compte Client B2B Activé"}
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 text-xs">
@@ -440,10 +499,13 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
           </div>
 
           <div className="flex justify-end pt-1">
-            <Button asChild variant="outline" size="sm" className="text-xs font-bold uppercase tracking-wider">
-              <Link to="/mon-compte">
-                Accéder à mon Espace Client B2B &rarr;
-              </Link>
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="text-xs font-bold uppercase tracking-wider"
+            >
+              <Link to="/mon-compte">Accéder à mon Espace Client B2B &rarr;</Link>
             </Button>
           </div>
         </div>
@@ -481,9 +543,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs border-b border-border pb-2">
               <span className="text-muted-foreground">Équipements :</span>
-              <span className="font-medium text-right truncate">
-                {selectedEqTypes.join(", ")}
-              </span>
+              <span className="font-medium text-right truncate">{selectedEqTypes.join(", ")}</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs border-b border-border pb-2">
               <span className="text-muted-foreground">Délai d'intervention :</span>
@@ -499,7 +559,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <span className="text-muted-foreground">Téléphone &amp; Localisation :</span>
-              <span className="font-mono text-right">{phone} — {city}</span>
+              <span className="font-mono text-right">
+                {phone} — {city}
+              </span>
             </div>
           </div>
 
@@ -533,7 +595,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
         {/* Direct Action Buttons */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
           <p className="text-xs text-muted-foreground max-w-md">
-            Un technicien B2B dédié valide votre étude sous 2 heures. Vous pouvez également nous contacter directement via WhatsApp avec la référence <strong className="text-foreground">{successCode}</strong>.
+            Un technicien B2B dédié valide votre étude sous 2 heures. Vous pouvez également nous
+            contacter directement via WhatsApp avec la référence{" "}
+            <strong className="text-foreground">{successCode}</strong>.
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="technical" size="lg">
@@ -647,7 +711,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                       }`}
                     >
                       <div className="flex items-center justify-between w-full mb-3">
-                        <div className={`flex size-10 items-center justify-center border ${isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}>
+                        <div
+                          className={`flex size-10 items-center justify-center border ${isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
+                        >
                           <Icon className="size-5" />
                         </div>
                         <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 border border-border bg-card text-foreground">
@@ -695,7 +761,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
               {/* Fleet Size */}
               <div>
-                <label className="at-eyebrow mb-2 block">1. Taille estimée du parc matériel :</label>
+                <label className="at-eyebrow mb-2 block">
+                  1. Taille estimée du parc matériel :
+                </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {FLEET_SIZES.map((size) => {
                     const hasDiscount = size === "6-15 équipements" || size === "16-50 équipements";
@@ -712,7 +780,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                       >
                         <span>{size}</span>
                         {hasDiscount && (
-                          <span className={`text-[8px] font-bold uppercase ${fleetSize === size ? "text-primary-foreground opacity-90" : "text-success"}`}>
+                          <span
+                            className={`text-[8px] font-bold uppercase ${fleetSize === size ? "text-primary-foreground opacity-90" : "text-success"}`}
+                          >
                             -10% Dégressif
                           </span>
                         )}
@@ -726,7 +796,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               {needType === "contract" && (
                 <div className="border-t border-border pt-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="at-eyebrow text-primary block">2. Choisissez votre Formule Contrat SLA :</label>
+                    <label className="at-eyebrow text-primary block">
+                      2. Choisissez votre Formule Contrat SLA :
+                    </label>
                     <span className="font-mono text-[10px] text-muted-foreground uppercase">
                       1-15 app: 5 000 F/app | &gt;15 app: 4 500 F/app
                     </span>
@@ -748,7 +820,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                         }`}
                       >
                         <div className="flex justify-between items-center mb-1">
-                          <span className="font-mono text-xs uppercase font-extrabold">{formula.name}</span>
+                          <span className="font-mono text-xs uppercase font-extrabold">
+                            {formula.name}
+                          </span>
                         </div>
                         <p className="text-[11px] opacity-80">{formula.desc}</p>
                         <div className="mt-2 font-mono text-[10px] font-bold uppercase underline">
@@ -764,7 +838,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               {needType === "preventive" && (
                 <div className="border-t border-border pt-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="at-eyebrow text-primary block">2. Choisissez la Périodicité d'Entretien :</label>
+                    <label className="at-eyebrow text-primary block">
+                      2. Choisissez la Périodicité d'Entretien :
+                    </label>
                     <span className="font-mono text-[10px] text-muted-foreground uppercase">
                       Tarification par équipement / passe
                     </span>
@@ -775,14 +851,15 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                       let discount = 0;
                       if (fleetSize === "6-15 équipements") {
                         count = 10;
-                        discount = 0.10;
+                        discount = 0.1;
                       } else if (fleetSize === "16-50 équipements") {
                         count = 25;
-                        discount = 0.10;
+                        discount = 0.1;
                       }
 
                       const unitRate = Math.round(period.ratePerDevice * (1 - discount));
-                      const totalPrice = fleetSize && fleetSize !== "50+ équipements" ? count * unitRate : null;
+                      const totalPrice =
+                        fleetSize && fleetSize !== "50+ équipements" ? count * unitRate : null;
 
                       return (
                         <button
@@ -795,12 +872,18 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                               : "border-border bg-surface text-muted-foreground hover:text-foreground"
                           }`}
                         >
-                          <span className="font-mono text-xs font-extrabold uppercase block">{period.shortLabel}</span>
+                          <span className="font-mono text-xs font-extrabold uppercase block">
+                            {period.shortLabel}
+                          </span>
                           <span className="text-[11px] font-bold font-mono block opacity-95 mt-0.5">
-                            {totalPrice ? formatFcfa(totalPrice) : `${formatFcfa(period.ratePerDevice)}/app`}
+                            {totalPrice
+                              ? formatFcfa(totalPrice)
+                              : `${formatFcfa(period.ratePerDevice)}/app`}
                           </span>
                           {totalPrice && (
-                            <span className={`text-[9px] block font-mono ${preventivePeriod === period.id ? "opacity-85 text-primary-foreground" : "text-muted-foreground"}`}>
+                            <span
+                              className={`text-[9px] block font-mono ${preventivePeriod === period.id ? "opacity-85 text-primary-foreground" : "text-muted-foreground"}`}
+                            >
                               ({formatFcfa(unitRate)}/app)
                             </span>
                           )}
@@ -813,7 +896,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
               {/* Equipment types */}
               <div className="border-t border-border pt-4">
-                <label className="at-eyebrow mb-2 block">3. Matériels concernés (choix multiples) :</label>
+                <label className="at-eyebrow mb-2 block">
+                  3. Matériels concernés (choix multiples) :
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {EQUIPMENT_TYPES.map((type) => {
                     const active = selectedEqTypes.includes(type);
@@ -828,7 +913,8 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                             : "border-border bg-surface text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        {active ? "✓ " : "+ "}{type}
+                        {active ? "✓ " : "+ "}
+                        {type}
                       </button>
                     );
                   })}
@@ -859,8 +945,8 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                           isSelected
                             ? "border-primary bg-primary text-primary-foreground font-bold"
                             : isLocked
-                            ? "border-border bg-surface/50 text-muted-foreground opacity-50 cursor-not-allowed"
-                            : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                              ? "border-border bg-surface/50 text-muted-foreground opacity-50 cursor-not-allowed"
+                              : "border-border bg-surface text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         {u.label}
@@ -921,7 +1007,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="at-eyebrow mb-1 block">Nom de l'Entreprise / Institution *</label>
+                  <label className="at-eyebrow mb-1 block">
+                    Nom de l'Entreprise / Institution *
+                  </label>
                   <input
                     type="text"
                     required
@@ -1004,7 +1092,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                   type="button"
                   onClick={() => {
                     if (!companyName.trim() || !contactName.trim() || !phone.trim()) {
-                      toast.error("Veuillez renseigner le nom de l'entreprise, du contact et le téléphone.");
+                      toast.error(
+                        "Veuillez renseigner le nom de l'entreprise, du contact et le téléphone.",
+                      );
                       return;
                     }
                     setStep(4);
@@ -1032,19 +1122,28 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               <div className="border border-border bg-surface p-4 space-y-2">
                 <div className="flex justify-between items-center border-b border-border pb-2">
                   <span className="at-eyebrow text-foreground">1. Prestation &amp; Offre</span>
-                  <Button variant="ghost" size="sm" onClick={() => setStep(1)} className="h-7 text-xs font-mono">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStep(1)}
+                    className="h-7 text-xs font-mono"
+                  >
                     <Edit3 className="mr-1 size-3" /> Modifier
                   </Button>
                 </div>
                 <div className="text-xs space-y-1">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Besoin principal :</span>
-                    <span className="font-bold">{NEED_TYPES.find((n) => n.id === needType)?.title}</span>
+                    <span className="font-bold">
+                      {NEED_TYPES.find((n) => n.id === needType)?.title}
+                    </span>
                   </div>
                   {needType === "contract" && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Formule SLA :</span>
-                      <span className="font-mono font-bold text-primary">{SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}</span>
+                      <span className="font-mono font-bold text-primary">
+                        {SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between">
@@ -1058,7 +1157,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               <div className="border border-border bg-surface p-4 space-y-2">
                 <div className="flex justify-between items-center border-b border-border pb-2">
                   <span className="at-eyebrow text-foreground">2. Parc &amp; Urgence</span>
-                  <Button variant="ghost" size="sm" onClick={() => setStep(2)} className="h-7 text-xs font-mono">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStep(2)}
+                    className="h-7 text-xs font-mono"
+                  >
                     <Edit3 className="mr-1 size-3" /> Modifier
                   </Button>
                 </div>
@@ -1073,7 +1177,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Niveau d'urgence :</span>
-                    <span className="font-mono font-bold text-primary">{URGENCY_LEVELS.find((u) => u.id === urgency)?.label}</span>
+                    <span className="font-mono font-bold text-primary">
+                      {URGENCY_LEVELS.find((u) => u.id === urgency)?.label}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1082,7 +1188,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               <div className="border border-border bg-surface p-4 space-y-2">
                 <div className="flex justify-between items-center border-b border-border pb-2">
                   <span className="at-eyebrow text-foreground">3. Coordonnées Entreprise</span>
-                  <Button variant="ghost" size="sm" onClick={() => setStep(3)} className="h-7 text-xs font-mono">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStep(3)}
+                    className="h-7 text-xs font-mono"
+                  >
                     <Edit3 className="mr-1 size-3" /> Modifier
                   </Button>
                 </div>
@@ -1116,8 +1227,18 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 <Button variant="outline" type="button" onClick={() => setStep(3)}>
                   &larr; Retour aux coordonnées
                 </Button>
-                <Button variant="technical" size="lg" type="button" onClick={onSubmitFinal} disabled={busy}>
-                  {busy ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
+                <Button
+                  variant="technical"
+                  size="lg"
+                  type="button"
+                  onClick={onSubmitFinal}
+                  disabled={busy}
+                >
+                  {busy ? (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 size-4" />
+                  )}
                   {busy ? "Traitement..." : "Valider & Générer la Proposition B2B"}
                 </Button>
               </div>
@@ -1140,7 +1261,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
             {/* Selected Prestation */}
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground uppercase font-mono">Prestation :</span>
+              <span className="text-xs text-muted-foreground uppercase font-mono">
+                Prestation :
+              </span>
               <div className="flex items-center justify-between">
                 <span className="font-bold text-sm text-foreground">
                   {NEED_TYPES.find((n) => n.id === needType)?.title}
@@ -1161,7 +1284,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
             {/* Dynamic SLA Price Estimation */}
             <div className="border-t border-border pt-3 space-y-1">
-              <span className="text-xs text-muted-foreground uppercase font-mono">Estimation Tarifaire :</span>
+              <span className="text-xs text-muted-foreground uppercase font-mono">
+                Estimation Tarifaire :
+              </span>
               <div className="font-mono text-base font-extrabold text-foreground">
                 {slaEstimate}
               </div>

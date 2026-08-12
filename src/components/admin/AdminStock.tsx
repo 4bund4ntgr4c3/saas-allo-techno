@@ -106,9 +106,7 @@ export function StockAdmin() {
       {
         accessorKey: "slug",
         header: t("admin.stock.col.reference"),
-        cell: ({ row }) => (
-          <span className="font-mono text-xs uppercase">{row.original.slug}</span>
-        ),
+        cell: ({ row }) => <span className="font-mono text-xs uppercase">{row.original.slug}</span>,
       },
       {
         accessorKey: "name",
@@ -117,9 +115,7 @@ export function StockAdmin() {
       {
         accessorKey: "price",
         header: t("admin.stock.col.price"),
-        cell: ({ row }) => (
-          <span className="font-mono">{formatFcfa(row.original.price)}</span>
-        ),
+        cell: ({ row }) => <span className="font-mono">{formatFcfa(row.original.price)}</span>,
       },
       {
         accessorKey: "stock",
@@ -203,7 +199,12 @@ export function StockAdmin() {
           </ul>
         </div>
       )}
-      <DataTable columns={columns} data={parts} searchKey="slug" searchPlaceholder={t("admin.stock.search")} />
+      <DataTable
+        columns={columns}
+        data={parts}
+        searchKey="slug"
+        searchPlaceholder={t("admin.stock.search")}
+      />
     </div>
   );
 }

@@ -29,27 +29,24 @@ export function AdminSLA() {
   const critical = breaches.filter((b) => b.breach_severity === "critical");
   const warnings = breaches.filter((b) => b.breach_severity === "warning");
 
-  const stageColumns: ColumnDef<{ stage: string; avg_hours: number; p90_hours: number; count: number }, unknown>[] = [
+  const stageColumns: ColumnDef<
+    { stage: string; avg_hours: number; p90_hours: number; count: number },
+    unknown
+  >[] = [
     {
       accessorKey: "stage",
       header: t("admin.sla.transition"),
-      cell: ({ row }) => (
-        <span className="text-xs font-mono">{row.original.stage}</span>
-      ),
+      cell: ({ row }) => <span className="text-xs font-mono">{row.original.stage}</span>,
     },
     {
       accessorKey: "avg_hours",
       header: t("admin.sla.average"),
-      cell: ({ row }) => (
-        <span className="text-xs font-bold">{row.original.avg_hours}h</span>
-      ),
+      cell: ({ row }) => <span className="text-xs font-bold">{row.original.avg_hours}h</span>,
     },
     {
       accessorKey: "p90_hours",
       header: "P90",
-      cell: ({ row }) => (
-        <span className="text-xs">{row.original.p90_hours}h</span>
-      ),
+      cell: ({ row }) => <span className="text-xs">{row.original.p90_hours}h</span>,
     },
     {
       accessorKey: "count",
@@ -83,21 +80,27 @@ export function AdminSLA() {
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <AlertTriangle className="size-4 text-destructive" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.sla.critical")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.sla.critical")}
+            </span>
           </div>
           <p className="text-2xl font-bold text-destructive">{critical.length}</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <Clock className="size-4 text-amber-500" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.sla.alerts")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.sla.alerts")}
+            </span>
           </div>
           <p className="text-2xl font-bold text-amber-600">{warnings.length}</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
             <CheckCircle className="size-4 text-success" />
-            <span className="text-[10px] uppercase text-muted-foreground">{t("admin.sla.onTime")}</span>
+            <span className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.sla.onTime")}
+            </span>
           </div>
           <p className="text-2xl font-bold">{Math.max(0, 100 - breaches.length)}</p>
         </div>
@@ -130,7 +133,9 @@ export function AdminSLA() {
                 <p
                   className={`text-[10px] font-medium ${b.breach_severity === "critical" ? "text-destructive" : "text-amber-600"}`}
                 >
-                  {b.breach_severity === "critical" ? t("admin.sla.exceeded") : t("admin.sla.alert")}
+                  {b.breach_severity === "critical"
+                    ? t("admin.sla.exceeded")
+                    : t("admin.sla.alert")}
                 </p>
               </div>
             </div>

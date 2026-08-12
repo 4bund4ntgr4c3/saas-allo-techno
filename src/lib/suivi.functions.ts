@@ -339,14 +339,13 @@ export const getReservationComments = createServerFn({ method: "POST" })
   });
 
 export const addReservationComment = createServerFn({ method: "POST" })
-  .inputValidator(
-    (data: unknown) =>
-      lookupSchema
-        .extend({
-          body: z.string().trim().min(1, "Message requis").max(1000),
-          author_name: z.string().trim().max(100).optional(),
-        })
-        .parse(data),
+  .inputValidator((data: unknown) =>
+    lookupSchema
+      .extend({
+        body: z.string().trim().min(1, "Message requis").max(1000),
+        author_name: z.string().trim().max(100).optional(),
+      })
+      .parse(data),
   )
   .handler(async ({ data }): Promise<{ id: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

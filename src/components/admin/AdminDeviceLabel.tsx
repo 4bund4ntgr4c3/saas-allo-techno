@@ -63,7 +63,9 @@ export function AdminDeviceLabel({ data, onClose }: AdminDeviceLabelProps) {
             <button
               onClick={() => setFormat("58mm")}
               className={`px-3 py-1 rounded-md transition-all font-mono ${
-                format === "58mm" ? "bg-primary text-primary-foreground font-bold shadow-sm" : "text-muted-foreground hover:text-foreground"
+                format === "58mm"
+                  ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               58 mm
@@ -71,7 +73,9 @@ export function AdminDeviceLabel({ data, onClose }: AdminDeviceLabelProps) {
             <button
               onClick={() => setFormat("80mm")}
               className={`px-3 py-1 rounded-md transition-all font-mono ${
-                format === "80mm" ? "bg-primary text-primary-foreground font-bold shadow-sm" : "text-muted-foreground hover:text-foreground"
+                format === "80mm"
+                  ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               80 mm (Standard)
@@ -90,21 +94,31 @@ export function AdminDeviceLabel({ data, onClose }: AdminDeviceLabelProps) {
           >
             {/* Header label */}
             <div className="text-center border-b border-black pb-1.5 mb-2">
-              <p className="font-black text-sm uppercase tracking-widest leading-none">ALLÔ TECHNO</p>
-              <p className="text-[9px] uppercase tracking-wider text-black/70 mt-0.5">Atelier Abomey-Calavi</p>
+              <p className="font-black text-sm uppercase tracking-widest leading-none">
+                ALLÔ TECHNO
+              </p>
+              <p className="text-[9px] uppercase tracking-wider text-black/70 mt-0.5">
+                Atelier Abomey-Calavi
+              </p>
             </div>
 
             {/* Reference & QR */}
             <div className="flex items-center justify-between gap-2 border-b border-black/30 pb-2 mb-2">
               <div>
                 <span className="text-[9px] uppercase font-bold text-black/60 block">Dossier</span>
-                <span className="font-mono text-base font-black tracking-tight">{data.reference}</span>
+                <span className="font-mono text-base font-black tracking-tight">
+                  {data.reference}
+                </span>
                 <span className="text-[10px] text-black/70 block mt-0.5">
                   {data.slot_date ? `Date : ${data.slot_date}` : ""}
                 </span>
               </div>
               {qrUrl && (
-                <img src={qrUrl} alt="QR Code" className="size-16 shrink-0 border border-black/20 p-0.5" />
+                <img
+                  src={qrUrl}
+                  alt="QR Code"
+                  className="size-16 shrink-0 border border-black/20 p-0.5"
+                />
               )}
             </div>
 
@@ -122,7 +136,9 @@ export function AdminDeviceLabel({ data, onClose }: AdminDeviceLabelProps) {
               </div>
 
               <div className="border-t border-dashed border-black/30 pt-1 mt-1">
-                <span className="text-[9px] uppercase font-bold text-black/60 block">Panne signalée</span>
+                <span className="text-[9px] uppercase font-bold text-black/60 block">
+                  Panne signalée
+                </span>
                 <p className="text-[11px] leading-tight text-black/90 font-medium">{data.issue}</p>
               </div>
 

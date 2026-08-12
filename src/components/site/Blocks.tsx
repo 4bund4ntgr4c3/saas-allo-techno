@@ -111,7 +111,9 @@ export function CtaBand() {
     <section className="border-t border-border bg-foreground py-16 text-background">
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 px-4 sm:px-6 lg:flex-row lg:items-center">
         <div className="max-w-xl space-y-4">
-          <h2 className="at-display text-3xl md:text-4xl text-background">{t("blocks.cta.title")}</h2>
+          <h2 className="at-display text-3xl md:text-4xl text-background">
+            {t("blocks.cta.title")}
+          </h2>
           <p className="text-sm leading-relaxed text-background/80">
             {t("blocks.cta.text", [COMPANY.city, formatFcfa(50000)])}
           </p>

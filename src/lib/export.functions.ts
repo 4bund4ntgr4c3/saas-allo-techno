@@ -173,7 +173,9 @@ export const exportDashboardXlsx = createServerFn({ method: "POST" }).handler(as
   // Sheet 1: Réservations
   const { data: reservations } = await supabaseAdmin
     .from("reservations")
-    .select("reference, customer_name, phone, device, issue, status, slot_date, payment, created_at")
+    .select(
+      "reference, customer_name, phone, device, issue, status, slot_date, payment, created_at",
+    )
     .order("created_at", { ascending: false })
     .limit(2000);
   const resRows = (reservations ?? []).map((r) => ({

@@ -11,7 +11,9 @@ export function CompareBar() {
 
   if (slugs.length === 0) return null;
 
-  const products = slugs.map((s) => ACCESSORIES.find((a) => a.slug === s)).filter((p): p is Accessory => p !== undefined);
+  const products = slugs
+    .map((s) => ACCESSORIES.find((a) => a.slug === s))
+    .filter((p): p is Accessory => p !== undefined);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 shadow-[0_-4px_16px_rgba(0,0,0,.08)] backdrop-blur">

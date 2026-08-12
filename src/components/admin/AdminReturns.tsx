@@ -276,9 +276,7 @@ export function ReturnCard({
         </span>
       </div>
 
-      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">
-        {returnRow.reason}
-      </p>
+      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">{returnRow.reason}</p>
 
       <div className="mt-3 flex flex-wrap items-end gap-3">
         <textarea

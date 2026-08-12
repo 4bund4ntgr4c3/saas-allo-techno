@@ -71,7 +71,11 @@ function EquipmentDetail() {
   const changeStatus = useMutation({
     mutationFn: () =>
       setEquipmentStatus({
-        data: { equipment_id: equipmentId, status: status as EquipmentStatus, reason: statusReason || null },
+        data: {
+          equipment_id: equipmentId,
+          status: status as EquipmentStatus,
+          reason: statusReason || null,
+        },
       }),
     onSuccess: async () => {
       toast.success(t("org.equipment.detail.status.updated"));
@@ -111,8 +115,7 @@ function EquipmentDetail() {
   });
 
   const removeWarranty = useMutation({
-    mutationFn: (warrantyId: string) =>
-      deleteWarranty({ data: { warranty_id: warrantyId } }),
+    mutationFn: (warrantyId: string) => deleteWarranty({ data: { warranty_id: warrantyId } }),
     onSuccess: async () => {
       await invalidate();
     },
@@ -308,8 +311,7 @@ function EquipmentDetail() {
                 onClick={() => addWarranty.mutate()}
                 disabled={addWarranty.isPending}
               >
-                <Plus className="size-4" />
-                1 an
+                <Plus className="size-4" />1 an
               </Button>
             </div>
             {detail.data.warranties.length === 0 ? (

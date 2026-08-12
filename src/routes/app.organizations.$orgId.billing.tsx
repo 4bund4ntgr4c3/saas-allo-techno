@@ -98,10 +98,7 @@ function OrgBillingPage() {
             <p className="mt-1 text-sm text-muted-foreground">{t("org.billing.subtitle")}</p>
           </div>
           {org?.member_role && ["admin_org", "comptabilite"].includes(org.member_role) && (
-            <Button
-              variant="primaryBlock"
-              onClick={() => setShowGenerate(!showGenerate)}
-            >
+            <Button variant="primaryBlock" onClick={() => setShowGenerate(!showGenerate)}>
               {showGenerate ? <X className="size-4" /> : <Plus className="size-4" />}
               {t("org.billing.generate")}
             </Button>

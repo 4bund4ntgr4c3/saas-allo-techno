@@ -2,15 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  AlertTriangle,
-  ArrowLeft,
-  Clock,
-  LifeBuoy,
-  Loader2,
-  MapPin,
-  Send,
-} from "lucide-react";
+import { AlertTriangle, ArrowLeft, Clock, LifeBuoy, Loader2, MapPin, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -127,9 +119,7 @@ function OrgTickets() {
 
   const ticketList = tickets.data ?? [];
   const kpis = useMemo(() => {
-    const open = ticketList.filter(
-      (t) => t.status !== "fermé" && t.status !== "annulé",
-    ).length;
+    const open = ticketList.filter((t) => t.status !== "fermé" && t.status !== "annulé").length;
     const critical = ticketList.filter((t) => t.priority === "critique").length;
     return { total: ticketList.length, open, critical };
   }, [ticketList]);
@@ -183,7 +173,9 @@ function OrgTickets() {
           </div>
         </div>
         <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center ${kpis.open > 0 ? "bg-amber-500/10 text-amber-600" : "bg-muted text-success"}`}>
+          <div
+            className={`flex size-10 items-center justify-center ${kpis.open > 0 ? "bg-amber-500/10 text-amber-600" : "bg-muted text-success"}`}
+          >
             <Clock className="size-5" />
           </div>
           <div>
@@ -192,7 +184,9 @@ function OrgTickets() {
           </div>
         </div>
         <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center ${kpis.critical > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
+          <div
+            className={`flex size-10 items-center justify-center ${kpis.critical > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}
+          >
             <AlertTriangle className="size-5" />
           </div>
           <div>
@@ -256,9 +250,7 @@ function OrgTickets() {
             <Label className="text-xs">{t("org.tickets.form.priority")}</Label>
             <Select
               value={form.priority}
-              onValueChange={(v) =>
-                setForm((f) => ({ ...f, priority: v as B2BTicketPriority }))
-              }
+              onValueChange={(v) => setForm((f) => ({ ...f, priority: v as B2BTicketPriority }))}
             >
               <SelectTrigger className="mt-1.5">
                 <SelectValue />

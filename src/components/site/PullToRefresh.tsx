@@ -44,11 +44,7 @@ export function PullToRefresh({ onRefresh, children, threshold = 80 }: PullToRef
   }, [pullDistance, threshold, onRefresh]);
 
   return (
-    <div
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
       {(pullDistance > 0 || isRefreshing) && (
         <div
           className="flex justify-center overflow-hidden transition-all"

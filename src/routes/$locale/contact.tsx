@@ -97,10 +97,11 @@ function Contact() {
                 <span className="at-eyebrow">{t("contact.hours")}</span>
                 <ul className="mt-2 space-y-1 text-xs font-medium text-muted-foreground">
                   {COMPANY.hours.map((h) => {
-                    const hourKey =
-                      h.d.includes("Lundi") ? t("contact.hours.monfri") :
-                      h.d.includes("Samedi") ? t("contact.hours.sat") :
-                      t("contact.hours.sun");
+                    const hourKey = h.d.includes("Lundi")
+                      ? t("contact.hours.monfri")
+                      : h.d.includes("Samedi")
+                        ? t("contact.hours.sat")
+                        : t("contact.hours.sun");
                     return (
                       <li key={h.d} className="flex justify-between gap-6">
                         <span>{hourKey}</span>

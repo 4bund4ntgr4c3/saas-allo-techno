@@ -96,7 +96,13 @@ function AnalyticsSection() {
 
       <div>
         <h2 className="mb-4 text-xl font-semibold">{t("admin.analytics.events.title")}</h2>
-        <DataTable columns={columns} data={events.data ?? []} searchKey="event" searchPlaceholder={t("admin.analytics.search")} pageSize={50} />
+        <DataTable
+          columns={columns}
+          data={events.data ?? []}
+          searchKey="event"
+          searchPlaceholder={t("admin.analytics.search")}
+          pageSize={50}
+        />
       </div>
     </div>
   );

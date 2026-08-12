@@ -199,7 +199,11 @@ function KpiCard({
               up ? "text-green-600" : down ? "text-red-500" : "text-muted-foreground"
             }`}
           >
-            {up ? <TrendingUp className="size-3" /> : down ? <TrendingDown className="size-3" /> : null}
+            {up ? (
+              <TrendingUp className="size-3" />
+            ) : down ? (
+              <TrendingDown className="size-3" />
+            ) : null}
             {up ? "+" : ""}
             {trend.value}%
           </span>
@@ -409,17 +413,21 @@ export function StatsDashboard() {
     const prevMonth = monthlyRevenueData[monthlyRevenueData.length - 2]?.revenue ?? 0;
     const revenueTrend =
       prevMonth > 0
-        ? { value: Math.round(((currentMonth - prevMonth) / prevMonth) * 100), label: "vs mois précédent" }
+        ? {
+            value: Math.round(((currentMonth - prevMonth) / prevMonth) * 100),
+            label: "vs mois précédent",
+          }
         : null;
 
-    const currentMonthReservations = reservations.filter((r) => isSameMonth(r.created_at, nowIso)).length;
+    const currentMonthReservations = reservations.filter((r) =>
+      isSameMonth(r.created_at, nowIso),
+    ).length;
     const prevMonthDate = new Date();
     prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
     const prevMonthReservations = reservations.filter((r) => {
       const d = new Date(r.created_at);
       return (
-        d.getMonth() === prevMonthDate.getMonth() &&
-        d.getFullYear() === prevMonthDate.getFullYear()
+        d.getMonth() === prevMonthDate.getMonth() && d.getFullYear() === prevMonthDate.getFullYear()
       );
     }).length;
     const repairsTrend =
@@ -491,7 +499,9 @@ export function StatsDashboard() {
     try {
       const stored = localStorage.getItem("at-admin-kpis");
       if (stored) setKpiConfig(JSON.parse(stored));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   const toggleKpi = useCallback((key: keyof typeof kpiConfig) => {
@@ -573,12 +583,14 @@ export function StatsDashboard() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {([
-          ["repairs", t("admin.stats.kpi.repairs")],
-          ["boutiqueOrders", t("admin.stats.kpi.boutiqueOrders")],
-          ["repairRevenue", t("admin.stats.kpi.repairRevenue")],
-          ["boutiqueRevenue", t("admin.stats.kpi.boutiqueRevenue")],
-        ] as const).map(([key, lbl]) => (
+        {(
+          [
+            ["repairs", t("admin.stats.kpi.repairs")],
+            ["boutiqueOrders", t("admin.stats.kpi.boutiqueOrders")],
+            ["repairRevenue", t("admin.stats.kpi.repairRevenue")],
+            ["boutiqueRevenue", t("admin.stats.kpi.boutiqueRevenue")],
+          ] as const
+        ).map(([key, lbl]) => (
           <Button
             key={key}
             type="button"
@@ -842,10 +854,7 @@ export function StatsDashboard() {
               <div className="flex-1 space-y-2">
                 {stats.statusDistribution.map((d) => (
                   <div key={d.status} className="flex items-center gap-2 text-sm">
-                    <span
-                      className="h-3 w-3 shrink-0"
-                      style={{ backgroundColor: d.fill }}
-                    />
+                    <span className="h-3 w-3 shrink-0" style={{ backgroundColor: d.fill }} />
                     <span className="flex-1 truncate text-muted-foreground">
                       {t(`admin.stats.status.${d.status}`)}
                     </span>

@@ -201,8 +201,12 @@ export const getInventoryValuation = createServerFn({ method: "GET" }).handler(a
     .select("quantity, unit_price, min_quantity");
   if (error) throw new Error(error.message);
 
-  const allParts = (parts ?? []) as unknown as { quantity: number; unit_price: number; min_quantity: number }[];
-  const totalValue = allParts.reduce((sum, p) => sum + (p.quantity * (p.unit_price || 0)), 0);
+  const allParts = (parts ?? []) as unknown as {
+    quantity: number;
+    unit_price: number;
+    min_quantity: number;
+  }[];
+  const totalValue = allParts.reduce((sum, p) => sum + p.quantity * (p.unit_price || 0), 0);
   const totalUnits = allParts.reduce((sum, p) => sum + p.quantity, 0);
   const lowStockCount = allParts.filter((p) => p.quantity <= p.min_quantity).length;
 
@@ -213,4 +217,3 @@ export const getInventoryValuation = createServerFn({ method: "GET" }).handler(a
     lowStockCount,
   };
 });
-

@@ -424,16 +424,8 @@ function StatusResult({
             {t("suivi.timelinePdf")}
           </Button>
           {result.slot_date && (
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-            >
-              <a
-                href={buildGoogleCalendarUrl(result)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+            <Button variant="outline" size="sm" asChild>
+              <a href={buildGoogleCalendarUrl(result)} target="_blank" rel="noopener noreferrer">
                 <CalendarDays className="mr-2 size-4" />
                 {t("suivi.addToCalendar")}
               </a>
@@ -1006,10 +998,7 @@ function CommentsBlock({ reference, code }: { reference: string; code: string })
       {items.length > 0 && (
         <div className="mt-4 space-y-4">
           {items.map((c) => (
-            <div
-              key={c.id}
-              className="rounded-sm border border-border bg-surface p-4"
-            >
+            <div key={c.id} className="rounded-sm border border-border bg-surface p-4">
               <p className="text-sm">{c.body}</p>
               <p className="mt-2 text-[11px] text-muted-foreground">
                 {c.author_name
@@ -1061,12 +1050,8 @@ function CommentsBlock({ reference, code }: { reference: string; code: string })
             {sending ? t("suivi.comments.sending") : t("suivi.comments.send")}
           </Button>
         </div>
-        {flash === "ok" && (
-          <p className="text-xs text-green-600">{t("suivi.comments.success")}</p>
-        )}
-        {flash === "err" && (
-          <p className="text-xs text-destructive">{t("suivi.comments.error")}</p>
-        )}
+        {flash === "ok" && <p className="text-xs text-green-600">{t("suivi.comments.success")}</p>}
+        {flash === "err" && <p className="text-xs text-destructive">{t("suivi.comments.error")}</p>}
       </div>
     </div>
   );

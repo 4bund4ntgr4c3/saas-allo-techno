@@ -26,14 +26,7 @@ export function BrandLogo({
       style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <svg viewBox="0 0 24 24" className="size-full" fill="currentColor">
-        <text
-          x="12"
-          y="16"
-          textAnchor="middle"
-          fontSize="8"
-          fontWeight="bold"
-          fill="currentColor"
-        >
+        <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor">
           {name.slice(0, 6).toUpperCase()}
         </text>
       </svg>

@@ -2,15 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  History,
-  Loader2,
-  MapPin,
-  Paperclip,
-  ShieldCheck,
-  Upload,
-} from "lucide-react";
+import { ArrowLeft, History, Loader2, MapPin, Paperclip, ShieldCheck, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -163,14 +155,10 @@ function OrgTicketDetail() {
                     <div className="min-w-0 flex-1">
                       <p className="flex flex-wrap items-center gap-2 text-sm">
                         {h.old_status ? (
-                          <Badge variant="outline">
-                            {t(`org.tickets.status.${h.old_status}`)}
-                          </Badge>
+                          <Badge variant="outline">{t(`org.tickets.status.${h.old_status}`)}</Badge>
                         ) : null}
                         <span className="text-muted-foreground">→</span>
-                        <Badge variant="outline">
-                          {t(`org.tickets.status.${h.new_status}`)}
-                        </Badge>
+                        <Badge variant="outline">{t(`org.tickets.status.${h.new_status}`)}</Badge>
                       </p>
                       {h.note ? <p className="mt-1 text-sm">{h.note}</p> : null}
                       <p className="mt-0.5 text-xs text-muted-foreground">
@@ -309,9 +297,7 @@ function OrgTicketDetail() {
                 ) : null}
               </Link>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {t("org.tickets.detail.noEquipment")}
-              </p>
+              <p className="text-sm text-muted-foreground">{t("org.tickets.detail.noEquipment")}</p>
             )}
           </div>
 

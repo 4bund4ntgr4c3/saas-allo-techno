@@ -67,7 +67,9 @@ export function PricingSidebar({
                 {item.accessory.category} · ×{item.qty}
               </p>
             </div>
-            <span className="text-xs font-medium">{formatFcfa(item.accessory.price * item.qty)}</span>
+            <span className="text-xs font-medium">
+              {formatFcfa(item.accessory.price * item.qty)}
+            </span>
           </div>
         ))}
       </div>
@@ -109,9 +111,7 @@ export function PricingSidebar({
             {shippingLabel || t("panier.shipping-estimate", [""])}
           </span>
           <span className={shippingFee === 0 ? "text-green-600" : ""}>
-            {shippingFee === 0
-              ? t("panier.freeShipping")
-              : formatFcfa(shippingFee)}
+            {shippingFee === 0 ? t("panier.freeShipping") : formatFcfa(shippingFee)}
           </span>
         </div>
         {discount > 0 && (

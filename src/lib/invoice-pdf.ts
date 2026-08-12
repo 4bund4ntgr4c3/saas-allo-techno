@@ -135,7 +135,9 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
     doc.setFont("helvetica", "bold");
     doc.setTextColor(220, 38, 38);
     doc.text("Reste à payer", margin, y);
-    doc.text(formatFcfa(invoice.totalAmount - invoice.paidAmount), pageWidth - margin - 25, y, { align: "right" });
+    doc.text(formatFcfa(invoice.totalAmount - invoice.paidAmount), pageWidth - margin - 25, y, {
+      align: "right",
+    });
   }
 
   // Footer

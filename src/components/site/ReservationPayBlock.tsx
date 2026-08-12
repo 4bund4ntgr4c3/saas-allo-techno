@@ -222,7 +222,11 @@ export function ReservationPayBlock({
         </p>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label={t("reservation.pay.provider")}>
+      <div
+        className="mt-4 flex flex-wrap items-center gap-2"
+        role="group"
+        aria-label={t("reservation.pay.provider")}
+      >
         {PROVIDERS.map((p) => (
           <button
             key={p.key}

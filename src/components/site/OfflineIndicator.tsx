@@ -25,16 +25,20 @@ export function OfflineIndicator() {
           if (parsed.timestamp) {
             const ago = Date.now() - parsed.timestamp;
             if (ago < 5 * 60 * 1000) {
-              setLastSync(new Date(parsed.timestamp).toLocaleTimeString(undefined, {
-                hour: "2-digit",
-                minute: "2-digit",
-              }));
+              setLastSync(
+                new Date(parsed.timestamp).toLocaleTimeString(undefined, {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              );
               setHasCache(true);
               return;
             }
           }
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       setHasCache(false);
       setLastSync(null);
     };

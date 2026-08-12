@@ -128,11 +128,7 @@ export function AdminSuppliers() {
             <Button size="sm" onClick={handleCreate}>
               <Check className="mr-1 size-3" /> {t("admin.webhooks.form.save")}
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setShowNew(false)}
-            >
+            <Button size="sm" variant="outline" onClick={() => setShowNew(false)}>
               <X className="mr-1 size-3" /> {t("admin.webhooks.form.cancel")}
             </Button>
           </div>
@@ -162,9 +158,7 @@ export function AdminSuppliers() {
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">{s.phone}</p>
-                {s.email && (
-                  <p className="text-xs text-muted-foreground">{s.email}</p>
-                )}
+                {s.email && <p className="text-xs text-muted-foreground">{s.email}</p>}
                 <div className="flex items-center gap-1 mt-2">
                   <span className="text-xs font-medium">{s.rating}</span>
                   <span className="text-xs text-muted-foreground">/5</span>
@@ -185,7 +179,8 @@ export function AdminSuppliers() {
                     <Package className="size-4 text-muted-foreground" />
                     <div>
                       <p className="text-xs font-medium">
-                        {o.parts.length} {t("admin.suppliers.orders.pieces")} — {formatFcfa(o.total)}
+                        {o.parts.length} {t("admin.suppliers.orders.pieces")} —{" "}
+                        {formatFcfa(o.total)}
                       </p>
                       <p className="text-[10px] text-muted-foreground">{o.status}</p>
                     </div>

@@ -30,11 +30,7 @@ export function CheckoutStepper({ current }: { current: CheckoutStep }) {
                   : "text-muted-foreground"
             }`}
           >
-            {done ? (
-              <Check className="size-3.5" />
-            ) : (
-              <Icon className="size-3.5" />
-            )}
+            {done ? <Check className="size-3.5" /> : <Icon className="size-3.5" />}
             {step.label}
           </span>
         );

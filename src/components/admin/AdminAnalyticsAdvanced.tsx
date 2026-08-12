@@ -19,7 +19,18 @@ import {
 import { useI18n } from "@/lib/i18n/context";
 
 const FUNNEL_COLORS = ["#d83100", "#f59e0b", "#22c55e"];
-const SOURCE_COLORS = ["#d83100", "#3b82f6", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#6366f1", "#14b8a6", "#64748b"];
+const SOURCE_COLORS = [
+  "#d83100",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#84cc16",
+  "#f97316",
+  "#6366f1",
+  "#14b8a6",
+  "#64748b",
+];
 
 export function AnalyticsAdvanced() {
   const { t } = useI18n();
@@ -48,7 +59,9 @@ export function AnalyticsAdvanced() {
         <div>
           <p className="at-eyebrow">{t("admin.analytics.advanced.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.analytics.advanced.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("admin.analytics.advanced.description")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.analytics.advanced.description")}
+          </p>
         </div>
       </div>
 
@@ -64,9 +77,10 @@ export function AnalyticsAdvanced() {
               const maxCount = Math.max(...funnel.map((s) => s.count), 1);
               const width = Math.max((step.count / maxCount) * 100, 4);
               const prevStep = funnel[i - 1];
-              const convRate = i > 0 && prevStep && prevStep.count > 0
-                ? Math.round((step.count / prevStep.count) * 100)
-                : 100;
+              const convRate =
+                i > 0 && prevStep && prevStep.count > 0
+                  ? Math.round((step.count / prevStep.count) * 100)
+                  : 100;
               return (
                 <div key={step.step} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
@@ -109,12 +123,7 @@ export function AnalyticsAdvanced() {
             <BarChart data={sources} layout="vertical" margin={{ left: 60 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10 }} />
-              <YAxis
-                type="category"
-                dataKey="source"
-                tick={{ fontSize: 10 }}
-                width={60}
-              />
+              <YAxis type="category" dataKey="source" tick={{ fontSize: 10 }} width={60} />
               <Tooltip
                 formatter={(value: number) => [`${value} hits`, t("admin.analytics.sources.hits")]}
                 contentStyle={{ fontSize: 11 }}
@@ -144,12 +153,15 @@ export function AnalyticsAdvanced() {
                 key={err.message}
                 className="flex items-center justify-between border border-destructive/20 bg-destructive/5 p-2"
               >
-                <p className="text-xs font-mono truncate max-w-[70%]">
-                  {err.message}
-                </p>
+                <p className="text-xs font-mono truncate max-w-[70%]">{err.message}</p>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                   <span className="font-bold text-destructive">{err.count}×</span>
-                  <span>{new Date(err.last).toLocaleTimeString(t("locale") as string, { hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>
+                    {new Date(err.last).toLocaleTimeString(t("locale") as string, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
                 </div>
               </div>
             ))}

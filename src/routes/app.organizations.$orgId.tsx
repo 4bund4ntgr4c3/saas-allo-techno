@@ -222,10 +222,7 @@ function OrgDetail() {
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
         {kpiCards.map((kpi) => (
-          <div
-            key={kpi.label}
-            className="flex items-center gap-3 border border-border bg-card p-4"
-          >
+          <div key={kpi.label} className="flex items-center gap-3 border border-border bg-card p-4">
             <div className={`flex size-10 items-center justify-center bg-muted ${kpi.color}`}>
               <kpi.icon className="size-5" />
             </div>
@@ -264,16 +261,16 @@ function OrgDetail() {
 
       {/* ─── Organization Info ─── */}
       <div className="at-in" style={{ animationDelay: "180ms" }}>
-        <span className="at-eyebrow mb-3 block">{t("org.form.registrationNumber").split(" ")[0]}</span>
+        <span className="at-eyebrow mb-3 block">
+          {t("org.form.registrationNumber").split(" ")[0]}
+        </span>
         <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {orgInfoItems.map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex items-start gap-3 bg-card p-4">
               <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0">
                 <dt className="text-xs text-muted-foreground">{label}</dt>
-                <dd className="mt-0.5 truncate text-sm font-medium">
-                  {value ?? "—"}
-                </dd>
+                <dd className="mt-0.5 truncate text-sm font-medium">{value ?? "—"}</dd>
               </div>
             </div>
           ))}
@@ -329,7 +326,12 @@ function OrgDetail() {
             </Select>
           </div>
           <div className="flex items-end">
-            <Button type="submit" variant="primaryBlock" disabled={invite.isPending} className="w-full">
+            <Button
+              type="submit"
+              variant="primaryBlock"
+              disabled={invite.isPending}
+              className="w-full"
+            >
               {invite.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (

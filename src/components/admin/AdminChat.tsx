@@ -94,7 +94,9 @@ export function AdminChat() {
         },
         () => {
           queryClient.invalidateQueries({ queryKey: ["chat-messages", selectedResId] });
-          markReadFn({ data: { reservation_id: selectedResId, reader_type: "staff" } }).catch(() => {});
+          markReadFn({ data: { reservation_id: selectedResId, reader_type: "staff" } }).catch(
+            () => {},
+          );
         },
       )
       .subscribe();
@@ -169,7 +171,9 @@ export function AdminChat() {
 
           <div className="flex-1 overflow-y-auto divide-y divide-border/50">
             {reservationsQuery.isLoading ? (
-              <p className="p-4 text-center text-xs text-muted-foreground">Chargement des dossiers...</p>
+              <p className="p-4 text-center text-xs text-muted-foreground">
+                Chargement des dossiers...
+              </p>
             ) : filteredConversations.length === 0 ? (
               <p className="p-4 text-center text-xs text-muted-foreground">Aucun dossier trouvé</p>
             ) : (
@@ -184,10 +188,16 @@ export function AdminChat() {
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-primary">{r.reference}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase">{r.status}</span>
+                      <span className="font-mono text-xs font-bold text-primary">
+                        {r.reference}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground uppercase">
+                        {r.status}
+                      </span>
                     </div>
-                    <p className="text-xs font-medium text-foreground truncate">{r.customer_name}</p>
+                    <p className="text-xs font-medium text-foreground truncate">
+                      {r.customer_name}
+                    </p>
                     <p className="text-[11px] text-muted-foreground truncate">{r.device}</p>
                   </button>
                 );
@@ -204,10 +214,14 @@ export function AdminChat() {
               <div className="p-3 border-b border-border bg-card flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-primary">{selectedRes.reference}</span>
+                    <span className="font-mono text-xs font-bold text-primary">
+                      {selectedRes.reference}
+                    </span>
                     <span className="text-xs font-semibold">{selectedRes.customer_name}</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground">{selectedRes.device} • {selectedRes.phone}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {selectedRes.device} • {selectedRes.phone}
+                  </p>
                 </div>
                 <Link
                   to="/admin/dossiers"
@@ -222,12 +236,18 @@ export function AdminChat() {
               {/* Message Feed */}
               <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/5">
                 {messagesQuery.isLoading ? (
-                  <p className="text-xs text-muted-foreground text-center py-8">Chargement des messages...</p>
+                  <p className="text-xs text-muted-foreground text-center py-8">
+                    Chargement des messages...
+                  </p>
                 ) : (messagesQuery.data ?? []).length === 0 ? (
                   <div className="text-center py-16 space-y-2">
                     <MessageSquare className="size-8 mx-auto text-muted-foreground/40" />
-                    <p className="text-xs text-muted-foreground">Aucun message échangé sur ce dossier.</p>
-                    <p className="text-[11px] text-muted-foreground/70">Envoyez le premier message au client ci-dessous.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Aucun message échangé sur ce dossier.
+                    </p>
+                    <p className="text-[11px] text-muted-foreground/70">
+                      Envoyez le premier message au client ci-dessous.
+                    </p>
                   </div>
                 ) : (
                   (messagesQuery.data ?? []).map((m: ChatMessage) => {
@@ -242,7 +262,9 @@ export function AdminChat() {
                         >
                           <div
                             className={`flex size-6 shrink-0 items-center justify-center text-[10px] ${
-                              isStaff ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-foreground"
+                              isStaff
+                                ? "bg-primary text-primary-foreground font-bold"
+                                : "bg-muted text-foreground"
                             }`}
                           >
                             {isStaff ? <Wrench className="size-3" /> : <User className="size-3" />}

@@ -153,7 +153,9 @@ export function AdminWorkshops() {
           ))}
         </div>
       ) : workshops.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">{t("admin.workshops.empty")}</p>
+        <p className="text-sm text-muted-foreground text-center py-8">
+          {t("admin.workshops.empty")}
+        </p>
       ) : (
         <div className="space-y-2">
           {workshops.map((w) => (

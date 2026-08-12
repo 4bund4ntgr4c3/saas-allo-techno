@@ -146,7 +146,8 @@ const fr = {
   "suivi.scan.title": "Scanner un code",
   "suivi.scan.hint": "Alignez le code dans le cadre",
   "suivi.scan.detected": "Code détecté !",
-  "suivi.scan.camera.error": "Caméra refusée. Autorisez l'accès dans les paramètres de votre navigateur.",
+  "suivi.scan.camera.error":
+    "Caméra refusée. Autorisez l'accès dans les paramètres de votre navigateur.",
   "suivi.scan.no.device": "Aucune caméra détectée.",
   "suivi.scan.generic.error": "Impossible de démarrer le scanner.",
   "suivi.signature.title": "Signature du client",

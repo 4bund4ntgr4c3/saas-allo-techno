@@ -114,7 +114,8 @@ export function AdminMarketing() {
       setForm({ name: "", type: "email", subject: "", body: "", segment: "all", templateId: "" });
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   const handleSend = useMutation({
@@ -123,7 +124,8 @@ export function AdminMarketing() {
       toast.success(t("admin.marketing.toast.sendsLaunched", [result?.sent ?? 0]));
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   const handleDelete = useMutation({
@@ -132,7 +134,8 @@ export function AdminMarketing() {
       toast.success(t("admin.marketing.toast.campaignDeleted"));
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : t("admin.marketing.toast.error")),
   });
 
   function applyTemplate(templateId: string) {
@@ -151,7 +154,7 @@ export function AdminMarketing() {
   const segData = segments.data ?? [];
   const countData = counts.data ?? { vip: 0, loyal: 0, active: 0, new: 0, inactive: 0, total: 0 };
 
-  const segmentColumns: ColumnDef<typeof segData[number], unknown>[] = [
+  const segmentColumns: ColumnDef<(typeof segData)[number], unknown>[] = [
     {
       accessorKey: "customer_name",
       header: () => t("admin.marketing.table.name"),
@@ -168,7 +171,9 @@ export function AdminMarketing() {
       cell: ({ row }) => {
         const seg = row.getValue("segment") as string;
         return (
-          <span className={`inline-flex border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg] ?? ""}`}>
+          <span
+            className={`inline-flex border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg] ?? ""}`}
+          >
             {segmentLabel(seg)}
           </span>
         );
@@ -177,17 +182,25 @@ export function AdminMarketing() {
     {
       accessorKey: "frequency",
       header: () => t("admin.marketing.table.frequency"),
-      cell: ({ row }) => <span className="font-mono text-right">{row.getValue("frequency") as number}</span>,
+      cell: ({ row }) => (
+        <span className="font-mono text-right">{row.getValue("frequency") as number}</span>
+      ),
     },
     {
       accessorKey: "recency_days",
       header: () => t("admin.marketing.table.recency"),
-      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("recency_days") as number)}j</span>,
+      cell: ({ row }) => (
+        <span className="font-mono text-right">{row.getValue("recency_days") as number}j</span>
+      ),
     },
     {
       accessorKey: "monetary",
       header: () => t("admin.marketing.table.total"),
-      cell: ({ row }) => <span className="font-mono text-right">{(row.getValue("monetary") as number).toLocaleString(t("locale") as string)}</span>,
+      cell: ({ row }) => (
+        <span className="font-mono text-right">
+          {(row.getValue("monetary") as number).toLocaleString(t("locale") as string)}
+        </span>
+      ),
     },
   ];
 
@@ -292,8 +305,8 @@ export function AdminMarketing() {
                 className={field}
               />
               <p className="mt-1 text-[10px] text-muted-foreground">
-                {t("admin.marketing.form.variables")} {"{name}"} {"{device}"} {"{company}"} {"{code}"} {"{discount}"}{" "}
-                {"{expiry}"} {"{review_link}"} {"{booking_link}"}
+                {t("admin.marketing.form.variables")} {"{name}"} {"{device}"} {"{company}"}{" "}
+                {"{code}"} {"{discount}"} {"{expiry}"} {"{review_link}"} {"{booking_link}"}
               </p>
             </div>
           </div>
@@ -387,8 +400,16 @@ export function AdminMarketing() {
 
       {segData.length > 0 && (
         <div>
-          <h3 className="font-bold text-sm">{t("admin.marketing.clientPreview")} ({segData.length})</h3>
-          <DataTable columns={segmentColumns} data={segData} searchKey="name" searchPlaceholder={t("admin.marketing.search")} pageSize={50} />
+          <h3 className="font-bold text-sm">
+            {t("admin.marketing.clientPreview")} ({segData.length})
+          </h3>
+          <DataTable
+            columns={segmentColumns}
+            data={segData}
+            searchKey="name"
+            searchPlaceholder={t("admin.marketing.search")}
+            pageSize={50}
+          />
         </div>
       )}
     </div>

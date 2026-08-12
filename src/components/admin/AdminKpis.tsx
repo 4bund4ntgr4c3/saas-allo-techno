@@ -78,9 +78,7 @@ function KpisSection() {
     return (
       <div>
         <h2 className="text-lg font-semibold">{t("admin.kpis.title")}</h2>
-        <p className="mt-4 text-sm text-destructive">
-          {t("admin.kpis.error")}
-        </p>
+        <p className="mt-4 text-sm text-destructive">{t("admin.kpis.error")}</p>
       </div>
     );
   }
@@ -112,9 +110,7 @@ function KpisSection() {
         <div className="border border-border bg-card p-4">
           <p className="at-eyebrow">{t("admin.kpis.revenue")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{formatFcfa(totalRevenue)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("admin.kpis.revenueDesc")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.revenueDesc")}</p>
         </div>
         <div className="border border-border bg-card p-4">
           <p className="at-eyebrow">{t("admin.kpis.quotesSent")}</p>
@@ -129,27 +125,31 @@ function KpisSection() {
         <div className="border border-border bg-card p-4">
           <p className="at-eyebrow">{t("admin.kpis.paymentsReceived")}</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums">{paid}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.paymentsReceivedDesc")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("admin.kpis.paymentsReceivedDesc")}
+          </p>
         </div>
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="rounded-sm border border-border bg-card p-5">
           <h3 className="text-sm font-semibold">{t("admin.kpis.conversion")}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("admin.kpis.conversionDesc")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.conversionDesc")}</p>
           <p className="mt-4 text-3xl font-bold tabular-nums">{rate}%</p>
           <div className="mt-4 space-y-2">
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesSent")}</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">
+                {t("admin.kpis.quotesSent")}
+              </span>
               <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: "100%" }} />
               </div>
               <span className="w-12 text-right font-mono text-xs tabular-nums">{quotesSent}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesApproved")}</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">
+                {t("admin.kpis.quotesApproved")}
+              </span>
               <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: `${approvedShare}%` }} />
               </div>
@@ -158,7 +158,9 @@ function KpisSection() {
               </span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.paymentsReceived")}</span>
+              <span className="w-40 shrink-0 truncate text-muted-foreground">
+                {t("admin.kpis.paymentsReceived")}
+              </span>
               <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-success/70" style={{ width: `${paidShare}%` }} />
               </div>
@@ -205,9 +207,7 @@ function KpisSection() {
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <div className="rounded-sm border border-border bg-card p-5">
           <h3 className="text-sm font-semibold">{t("admin.kpis.avgTimeByStage")}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("admin.kpis.avgTimeByStageDesc")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.avgTimeByStageDesc")}</p>
           <ul className="mt-4 space-y-2">
             {data.avgStageDuration.map((s) => (
               <li key={s.stage} className="flex items-center gap-3 text-sm">
@@ -228,16 +228,16 @@ function KpisSection() {
               </li>
             ))}
             {data.avgStageDuration.length === 0 && (
-              <li className="text-sm text-muted-foreground">{t("admin.kpis.avgTimeByStageEmpty")}</li>
+              <li className="text-sm text-muted-foreground">
+                {t("admin.kpis.avgTimeByStageEmpty")}
+              </li>
             )}
           </ul>
         </div>
 
         <div className="rounded-sm border border-border bg-card p-5">
           <h3 className="text-sm font-semibold">{t("admin.kpis.topFaults")}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("admin.kpis.topFaultsDesc")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("admin.kpis.topFaultsDesc")}</p>
           <ul className="mt-4 space-y-2">
             {data.topFaults.map((f) => (
               <li key={f.fault} className="flex items-center gap-3 text-sm">

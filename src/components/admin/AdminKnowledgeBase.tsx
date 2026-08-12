@@ -170,7 +170,8 @@ export function AdminKnowledgeBase() {
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={editingId ? handleUpdate : handleCreate}>
-              <Check className="mr-1 size-3" /> {editingId ? t("admin.webhooks.form.save") : t("admin.webhooks.form.save")}
+              <Check className="mr-1 size-3" />{" "}
+              {editingId ? t("admin.webhooks.form.save") : t("admin.webhooks.form.save")}
             </Button>
             <Button
               size="sm"

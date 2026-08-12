@@ -49,7 +49,9 @@ export function AdminFeatureFlags() {
         <div>
           <p className="at-eyebrow">{t("admin.feature-flags.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.feature-flags.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("admin.feature-flags.headerDescription")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.feature-flags.headerDescription")}
+          </p>
         </div>
       </div>
 

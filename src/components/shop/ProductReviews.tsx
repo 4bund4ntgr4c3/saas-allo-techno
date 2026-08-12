@@ -113,11 +113,21 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
         {showForm && (
           <div className="mt-6 border border-border bg-card p-6">
             <div className="mb-4">
-              <label htmlFor="review-rating" className="at-eyebrow block">{t("boutique.rating")}</label>
-              <StarRating rating={stars} interactive onChange={setStars} className="mt-2" id="review-rating" />
+              <label htmlFor="review-rating" className="at-eyebrow block">
+                {t("boutique.rating")}
+              </label>
+              <StarRating
+                rating={stars}
+                interactive
+                onChange={setStars}
+                className="mt-2"
+                id="review-rating"
+              />
             </div>
             <div className="mb-4">
-              <label htmlFor="review-name" className="at-eyebrow block">{t("boutique.review-name")}</label>
+              <label htmlFor="review-name" className="at-eyebrow block">
+                {t("boutique.review-name")}
+              </label>
               <input
                 id="review-name"
                 value={name}
@@ -126,7 +136,9 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="review-text" className="at-eyebrow block">{t("boutique.review-text")}</label>
+              <label htmlFor="review-text" className="at-eyebrow block">
+                {t("boutique.review-text")}
+              </label>
               <textarea
                 id="review-text"
                 value={text}

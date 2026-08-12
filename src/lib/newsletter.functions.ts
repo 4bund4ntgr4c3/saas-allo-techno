@@ -20,7 +20,8 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!(await rateLimit("newsletter", 5))) throw new Error("Trop de demandes. Réessayez dans 1 minute.");
+    if (!(await rateLimit("newsletter", 5)))
+      throw new Error("Trop de demandes. Réessayez dans 1 minute.");
 
     const { error } = await supabaseAdmin.from("newsletter_subscribers" as never).upsert(
       {

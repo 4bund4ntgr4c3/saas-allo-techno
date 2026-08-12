@@ -152,10 +152,7 @@ function OrgMaintenancePage() {
           </div>
           {org?.member_role &&
             ["admin_org", "responsable_maintenance"].includes(org.member_role) && (
-              <Button
-                variant="primaryBlock"
-                onClick={() => setShowScheduleForm(!showScheduleForm)}
-              >
+              <Button variant="primaryBlock" onClick={() => setShowScheduleForm(!showScheduleForm)}>
                 {showScheduleForm ? <X className="size-4" /> : <Plus className="size-4" />}
                 {t("org.maintenance.schedule")}
               </Button>
@@ -175,7 +172,9 @@ function OrgMaintenancePage() {
           </div>
         </div>
         <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center ${overdueCount > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
+          <div
+            className={`flex size-10 items-center justify-center ${overdueCount > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}
+          >
             <AlertTriangle className="size-5" />
           </div>
           <div>
@@ -357,9 +356,7 @@ function OrgMaintenancePage() {
                           <Calendar className="size-3" />
                           <span>
                             {t("org.maintenance.nextDue")}:{" "}
-                            <strong>
-                              {new Date(s.next_due_at).toLocaleDateString("fr-FR")}
-                            </strong>
+                            <strong>{new Date(s.next_due_at).toLocaleDateString("fr-FR")}</strong>
                           </span>
                           {s.last_performed_at && (
                             <span className="text-muted-foreground">

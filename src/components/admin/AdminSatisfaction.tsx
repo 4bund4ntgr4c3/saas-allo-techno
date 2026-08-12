@@ -51,7 +51,11 @@ export function AdminSatisfaction() {
 
   const sendSurveyWhatsApp = (d: CompletedDossier) => {
     const clean = d.phone.replace(/[^\d+]/g, "").replace(/^00/, "+");
-    const formatted = clean.startsWith("+") ? clean.slice(1) : clean.startsWith("229") ? clean : `229${clean}`;
+    const formatted = clean.startsWith("+")
+      ? clean.slice(1)
+      : clean.startsWith("229")
+        ? clean
+        : `229${clean}`;
     const text = encodeURIComponent(
       `Bonjour ${d.customer_name}, suite à la récupération de votre ${d.device} à l'atelier Allô Techno (Dossier ${d.reference}), tout fonctionne-t-il parfaitement ?\n\nDonnez votre avis en 30 secondes pour recevoir 50 points de fidélité : https://allotechno.africa/avis?ref=${d.reference}`,
     );
@@ -69,14 +73,18 @@ export function AdminSatisfaction() {
         <div>
           <p className="at-eyebrow">{t("admin.satisfaction.eyebrow")}</p>
           <h2 className="mt-1 text-xl font-semibold">{t("admin.satisfaction.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("admin.satisfaction.description")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("admin.satisfaction.description")}
+          </p>
         </div>
       </div>
 
       {stats && (
         <div className="grid gap-3 sm:grid-cols-4">
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.nps")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.satisfaction.nps")}
+            </p>
             <p
               className={`text-2xl font-bold ${stats.nps >= 50 ? "text-success" : stats.nps >= 0 ? "text-amber-600" : "text-destructive"}`}
             >
@@ -85,21 +93,27 @@ export function AdminSatisfaction() {
             </p>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.avgRating")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.satisfaction.avgRating")}
+            </p>
             <div className="flex items-center gap-1">
               <p className="text-2xl font-bold">{stats.avgRating}</p>
               <Star className="size-4 fill-amber-400 text-amber-400" />
             </div>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.promoters")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.satisfaction.promoters")}
+            </p>
             <div className="flex items-center gap-1">
               <ThumbsUp className="size-4 text-success" />
               <p className="text-2xl font-bold">{stats.promoters}</p>
             </div>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.satisfaction.detractors")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.satisfaction.detractors")}
+            </p>
             <div className="flex items-center gap-1">
               <ThumbsDown className="size-4 text-destructive" />
               <p className="text-2xl font-bold">{stats.detractors}</p>
@@ -120,10 +134,7 @@ export function AdminSatisfaction() {
                   <span className="w-4 text-right">{star}</span>
                   <Star className="size-3 fill-amber-400 text-amber-400" />
                   <div className="flex-1 h-2 bg-muted overflow-hidden">
-                    <div
-                      className="h-full bg-amber-400"
-                      style={{ width: `${pct}%` }}
-                    />
+                    <div className="h-full bg-amber-400" style={{ width: `${pct}%` }} />
                   </div>
                   <span className="w-8 text-right text-muted-foreground">{count}</span>
                 </div>
@@ -139,19 +150,25 @@ export function AdminSatisfaction() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Gift className="size-4 text-primary" />
-              <h3 className="font-bold text-sm text-foreground">Relances Enquêtes de Satisfaction J+2</h3>
+              <h3 className="font-bold text-sm text-foreground">
+                Relances Enquêtes de Satisfaction J+2
+              </h3>
             </div>
             <span className="text-xs text-muted-foreground bg-primary/10 text-primary font-medium px-2 py-0.5">
               +50 pts fidélité offerts
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            Dossiers clôturés récemment prêts pour une relance automatique de satisfaction par WhatsApp.
+            Dossiers clôturés récemment prêts pour une relance automatique de satisfaction par
+            WhatsApp.
           </p>
 
           <div className="divide-y divide-border/60 rounded-lg border border-border bg-card overflow-hidden">
             {completedDossiers.map((d) => (
-              <div key={d.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/30">
+              <div
+                key={d.id}
+                className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/30"
+              >
                 <div className="space-y-0.5 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-primary">{d.reference}</span>

@@ -69,21 +69,11 @@ export function SignatureCapture({
           {t("signature.title")}
         </h3>
         <div className="flex gap-1">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleClear}
-            disabled={!hasSignature}
-          >
+          <Button variant="outline" size="sm" onClick={handleClear} disabled={!hasSignature}>
             <RotateCcw className="mr-1 size-3" />
             {t("signature.clear")}
           </Button>
-          <Button
-            variant="technical"
-            size="sm"
-            onClick={handleSign}
-            disabled={!hasSignature}
-          >
+          <Button variant="technical" size="sm" onClick={handleSign} disabled={!hasSignature}>
             <Check className="mr-1 size-3" />
             {t("signature.validate")}
           </Button>
@@ -91,16 +81,10 @@ export function SignatureCapture({
       </div>
 
       <div className="relative border-2 border-dashed border-border">
-        <canvas
-          ref={canvasRef}
-          className="cursor-crosshair"
-          style={{ touchAction: "none" }}
-        />
+        <canvas ref={canvasRef} className="cursor-crosshair" style={{ touchAction: "none" }} />
         {!hasSignature && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <p className="text-xs text-muted-foreground">
-              {t("signature.instruction")}
-            </p>
+            <p className="text-xs text-muted-foreground">{t("signature.instruction")}</p>
           </div>
         )}
       </div>

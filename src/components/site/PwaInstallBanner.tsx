@@ -59,9 +59,7 @@ export function PwaInstallBanner() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">{t("pwa.title")}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("pwa.description")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("pwa.description")}</p>
           <div className="mt-3 flex gap-2">
             <Button size="sm" onClick={handleInstall}>
               {t("pwa.install")}

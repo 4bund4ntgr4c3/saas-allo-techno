@@ -19,12 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n/context";
-import {
-  createOrgSite,
-  deleteOrgSite,
-  getMyOrganizations,
-  getOrgSites,
-} from "@/lib/org.functions";
+import { createOrgSite, deleteOrgSite, getMyOrganizations, getOrgSites } from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/sites")({
   component: SitesList,
@@ -68,7 +63,10 @@ function SitesList() {
           phone,
           manager: manager || null,
           departments: departments
-            ? departments.split(",").map((d) => d.trim()).filter(Boolean)
+            ? departments
+                .split(",")
+                .map((d) => d.trim())
+                .filter(Boolean)
             : [],
         },
       }),
@@ -310,11 +308,7 @@ function SitesList() {
                   {s.departments.length > 0 ? (
                     <div className="flex flex-wrap gap-1 pt-1">
                       {s.departments.map((d) => (
-                        <Badge
-                          key={d}
-                          variant="outline"
-                          className="text-[10px] font-normal"
-                        >
+                        <Badge key={d} variant="outline" className="text-[10px] font-normal">
                           {d}
                         </Badge>
                       ))}

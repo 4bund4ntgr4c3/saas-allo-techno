@@ -368,7 +368,11 @@ function Home() {
                 params={{ locale, brand: b.slug }}
                 className="group bg-card p-6 transition-colors hover:bg-foreground hover:text-background"
               >
-                <BrandLogo slug={b.slug} name={b.name} className="mb-3 block size-8 text-foreground group-hover:text-background" />
+                <BrandLogo
+                  slug={b.slug}
+                  name={b.name}
+                  className="mb-3 block size-8 text-foreground group-hover:text-background"
+                />
                 <span className="block text-sm font-extrabold uppercase tracking-tight">
                   {b.name}
                 </span>

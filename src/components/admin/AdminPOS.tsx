@@ -3,15 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  Search,
-  CheckCircle2,
-  Printer,
-  Receipt,
-  Plus,
-  Trash2,
-  ShoppingBag,
-} from "lucide-react";
+import { Search, CheckCircle2, Printer, Receipt, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
 
@@ -36,7 +28,9 @@ export function AdminPOS() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedReservation, setSelectedReservation] = useState<any | null>(null);
   const [cartItems, setCartItems] = useState<PosItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<"especes" | "mtn" | "moov" | "celtiis">("especes");
+  const [paymentMethod, setPaymentMethod] = useState<"especes" | "mtn" | "moov" | "celtiis">(
+    "especes",
+  );
   const [amountReceived, setAmountReceived] = useState<string>("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -50,7 +44,9 @@ export function AdminPOS() {
       const q = searchQuery.trim();
       const { data, error } = await supabase
         .from("reservations")
-        .select("id, reference, customer_name, phone, device, issue, quote_amount, payment_status, status")
+        .select(
+          "id, reference, customer_name, phone, device, issue, quote_amount, payment_status, status",
+        )
         .or(`reference.ilike.%${q}%,customer_name.ilike.%${q}%,phone.ilike.%${q}%`)
         .order("created_at", { ascending: false })
         .limit(6);
@@ -192,9 +188,13 @@ export function AdminPOS() {
             {searchQuery.trim().length >= 2 && (
               <div className="rounded-lg border border-border bg-background divide-y divide-border overflow-hidden max-h-56 overflow-y-auto">
                 {reservationsQuery.isLoading ? (
-                  <p className="p-3 text-xs text-muted-foreground text-center">Recherche en cours...</p>
+                  <p className="p-3 text-xs text-muted-foreground text-center">
+                    Recherche en cours...
+                  </p>
                 ) : (reservationsQuery.data ?? []).length === 0 ? (
-                  <p className="p-3 text-xs text-muted-foreground text-center">Aucun dossier trouvé.</p>
+                  <p className="p-3 text-xs text-muted-foreground text-center">
+                    Aucun dossier trouvé.
+                  </p>
                 ) : (
                   (reservationsQuery.data ?? []).map((r) => (
                     <button
@@ -203,15 +203,23 @@ export function AdminPOS() {
                       className="w-full text-left p-3 hover:bg-muted/60 transition-colors flex items-center justify-between"
                     >
                       <div>
-                        <span className="font-mono text-xs font-bold text-primary mr-2">{r.reference}</span>
-                        <span className="text-xs font-medium text-foreground">{r.customer_name}</span>
-                        <p className="text-[11px] text-muted-foreground">{r.device} • {r.issue}</p>
+                        <span className="font-mono text-xs font-bold text-primary mr-2">
+                          {r.reference}
+                        </span>
+                        <span className="text-xs font-medium text-foreground">
+                          {r.customer_name}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground">
+                          {r.device} • {r.issue}
+                        </p>
                       </div>
                       <div className="text-right">
                         <span className="text-xs font-bold text-success block">
                           {r.quote_amount ? formatFcfa(r.quote_amount) : "Devis en attente"}
                         </span>
-                        <span className="text-[10px] text-muted-foreground uppercase">{r.payment_status}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase">
+                          {r.payment_status}
+                        </span>
                       </div>
                     </button>
                   ))
@@ -222,8 +230,12 @@ export function AdminPOS() {
             {selectedReservation && (
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-center justify-between">
                 <div>
-                  <span className="font-mono text-xs font-bold text-primary">{selectedReservation.reference}</span>
-                  <p className="text-xs font-medium text-foreground">{selectedReservation.customer_name} • {selectedReservation.device}</p>
+                  <span className="font-mono text-xs font-bold text-primary">
+                    {selectedReservation.reference}
+                  </span>
+                  <p className="text-xs font-medium text-foreground">
+                    {selectedReservation.customer_name} • {selectedReservation.device}
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
@@ -281,7 +293,10 @@ export function AdminPOS() {
                 </p>
               ) : (
                 cartItems.map((item) => (
-                  <div key={item.id} className="pt-2 first:pt-0 flex items-center justify-between text-xs">
+                  <div
+                    key={item.id}
+                    className="pt-2 first:pt-0 flex items-center justify-between text-xs"
+                  >
                     <div className="flex-1 pr-2">
                       <p className="font-medium">{item.name}</p>
                       <p className="text-[11px] text-muted-foreground">
@@ -312,7 +327,9 @@ export function AdminPOS() {
 
             {/* Payment Method Selector */}
             <div className="space-y-2 pt-2 border-t border-border">
-              <label className="text-xs font-bold text-muted-foreground block">Mode de règlement :</label>
+              <label className="text-xs font-bold text-muted-foreground block">
+                Mode de règlement :
+              </label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: "especes", label: "💵 Espèces", sub: "Rendu monnaie" },
@@ -382,13 +399,19 @@ export function AdminPOS() {
           <div className="relative w-full max-w-sm rounded-xl bg-card border border-border p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-border pb-2">
               <h4 className="font-bold text-sm">Ticket d'encaissement</h4>
-              <button onClick={() => setLastReceipt(null)} className="p-1 text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setLastReceipt(null)}
+                className="p-1 text-muted-foreground hover:text-foreground"
+              >
                 ✕
               </button>
             </div>
 
             {/* Receipt Body */}
-            <div id="pos-thermal-receipt" className="bg-white text-black p-4 rounded font-mono text-xs space-y-3 border">
+            <div
+              id="pos-thermal-receipt"
+              className="bg-white text-black p-4 rounded font-mono text-xs space-y-3 border"
+            >
               <div className="text-center border-b border-black pb-2">
                 <p className="font-bold text-sm">ALLÔ TECHNO</p>
                 <p className="text-[10px]">Atelier Abomey-Calavi</p>
@@ -398,15 +421,27 @@ export function AdminPOS() {
               </div>
 
               <div className="space-y-1 border-b border-black pb-2">
-                <p className="text-[10px]"><span className="font-bold">Client :</span> {lastReceipt.customerName}</p>
-                {lastReceipt.customerPhone && <p className="text-[10px]"><span className="font-bold">Tél :</span> {lastReceipt.customerPhone}</p>}
-                {lastReceipt.reservationRef && <p className="text-[10px]"><span className="font-bold">Dossier :</span> {lastReceipt.reservationRef}</p>}
+                <p className="text-[10px]">
+                  <span className="font-bold">Client :</span> {lastReceipt.customerName}
+                </p>
+                {lastReceipt.customerPhone && (
+                  <p className="text-[10px]">
+                    <span className="font-bold">Tél :</span> {lastReceipt.customerPhone}
+                  </p>
+                )}
+                {lastReceipt.reservationRef && (
+                  <p className="text-[10px]">
+                    <span className="font-bold">Dossier :</span> {lastReceipt.reservationRef}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1 border-b border-black pb-2">
                 {lastReceipt.items.map((it: any, i: number) => (
                   <div key={i} className="flex justify-between text-[10px]">
-                    <span className="truncate max-w-[160px]">{it.quantity}x {it.name}</span>
+                    <span className="truncate max-w-[160px]">
+                      {it.quantity}x {it.name}
+                    </span>
                     <span className="font-bold">{formatFcfa(it.price * it.quantity)}</span>
                   </div>
                 ))}

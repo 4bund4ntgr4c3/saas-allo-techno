@@ -34,9 +34,7 @@ export function ShopFilterSidebar({
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  const categories = mode === "refurbished"
-    ? ["Reconditionnés"]
-    : ACCESSORY_CATEGORIES;
+  const categories = mode === "refurbished" ? ["Reconditionnés"] : ACCESSORY_CATEGORIES;
 
   // Focus trap + Escape for mobile drawer
   useEffect(() => {
@@ -96,9 +94,7 @@ export function ShopFilterSidebar({
               key={c}
               onClick={() => onChange({ ...filters, category: c })}
               className={`block w-full px-3 py-2 text-left text-xs font-medium transition-colors ${
-                filters.category === c
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted"
+                filters.category === c ? "bg-primary text-primary-foreground" : "hover:bg-muted"
               }`}
             >
               {c}
@@ -151,7 +147,9 @@ export function ShopFilterSidebar({
         <p className="mt-1 font-mono text-sm font-medium text-primary">
           {formatFcfa(FREE_DELIVERY_FROM)}
         </p>
-        <p className="mt-1 text-[10px] text-muted-foreground">{t("shop.filter.free-delivery.hint")}</p>
+        <p className="mt-1 text-[10px] text-muted-foreground">
+          {t("shop.filter.free-delivery.hint")}
+        </p>
       </div>
     </div>
   );
@@ -159,12 +157,7 @@ export function ShopFilterSidebar({
   return (
     <>
       {/* Mobile toggle */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="lg:hidden"
-        onClick={() => setMobileOpen(true)}
-      >
+      <Button variant="outline" size="sm" className="lg:hidden" onClick={() => setMobileOpen(true)}>
         <SlidersHorizontal className="size-4" /> {t("shop.filter.open")}
       </Button>
 
@@ -174,7 +167,11 @@ export function ShopFilterSidebar({
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
           <div
             ref={drawerRef}
             role="dialog"

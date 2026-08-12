@@ -26,8 +26,7 @@ const fr = {
 
 const en = {
   "historique.meta.title": "Your device repair history — Allô Techno",
-  "historique.meta.description":
-    "Search your device repair history by phone number or email.",
+  "historique.meta.description": "Search your device repair history by phone number or email.",
   "historique.eyebrow": "Device history",
   "historique.title": "Your repaired devices",
   "historique.intro":

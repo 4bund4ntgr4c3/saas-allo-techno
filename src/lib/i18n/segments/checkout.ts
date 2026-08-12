@@ -32,7 +32,8 @@ const fr = {
   "checkout.payment.cash": "Espèces à la remise",
   "checkout.payment.phone-label": "Numéro de téléphone",
   "checkout.payment.phone-placeholder": "+229 XX XX XX XX",
-  "checkout.payment.cash-desc": "Réglez en espèces lors de la réception de votre commande à l'adresse indiquée.",
+  "checkout.payment.cash-desc":
+    "Réglez en espèces lors de la réception de votre commande à l'adresse indiquée.",
   "checkout.payment.place-order": "Passer la commande — {0}",
   "checkout.proceed": "Passer la commande",
   "checkout.pay": "Payer {0}",
@@ -43,8 +44,7 @@ const fr = {
 const en = {
   "checkout.hero": "Complete your details, choose delivery and pay securely.",
   "checkout.meta.title": "Checkout — Allô Techno",
-  "checkout.meta.description":
-    "Finalize your order: details, delivery and secure payment.",
+  "checkout.meta.description": "Finalize your order: details, delivery and secure payment.",
   "checkout.meta.og.title": "Checkout — Allô Techno",
   "checkout.meta.og.description": "Accessory order with delivery in Benin.",
   "checkout.back-to-cart": "Back to cart",

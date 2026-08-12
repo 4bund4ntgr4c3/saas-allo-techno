@@ -138,7 +138,9 @@ function Boutique() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/$locale" params={{ locale }}>{t("action.accueil")}</Link>
+                    <Link to="/$locale" params={{ locale }}>
+                      {t("action.accueil")}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -189,8 +191,10 @@ function Boutique() {
                     setQ(val);
                     const params = new URLSearchParams();
                     if (filters.category !== "toutes") params.set("category", filters.category);
-                    if (filters.priceRange[0] > 0) params.set("priceMin", String(filters.priceRange[0]));
-                    if (filters.priceRange[1] < Infinity) params.set("priceMax", String(filters.priceRange[1]));
+                    if (filters.priceRange[0] > 0)
+                      params.set("priceMin", String(filters.priceRange[0]));
+                    if (filters.priceRange[1] < Infinity)
+                      params.set("priceMax", String(filters.priceRange[1]));
                     if (filters.inStock) params.set("inStock", "1");
                     if (filters.sort !== "populaire") params.set("sort", filters.sort);
                     if (val.trim()) params.set("q", val.trim());

@@ -46,7 +46,15 @@ function Devis() {
   const [sourceDetail, setSourceDetail] = useState<string | undefined>(undefined);
   const [leadSent, setLeadSent] = useState(false);
   const [compareItems, setCompareItems] = useState<
-    { id: string; device: string; fault: string; price: number; duration: string; warranty: string; parts: string[] }[]
+    {
+      id: string;
+      device: string;
+      fault: string;
+      price: number;
+      duration: string;
+      warranty: string;
+      parts: string[];
+    }[]
   >([]);
   const { locale, t } = useI18n();
 
@@ -270,7 +278,13 @@ function Devis() {
 
               {compareItems.length >= 2 && (
                 <div className="mt-8">
-                  <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
+                  <Suspense
+                    fallback={
+                      <div className="flex justify-center py-8">
+                        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                      </div>
+                    }
+                  >
                     <DevisComparison
                       devis={compareItems}
                       onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}

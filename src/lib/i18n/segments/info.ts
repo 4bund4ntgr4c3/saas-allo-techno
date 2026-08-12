@@ -276,7 +276,8 @@ const fr = {
   "reschedule.close": "Fermer",
   "reschedule.newDay": "Nouveau jour",
   "reschedule.loading": "Chargement des disponibilités…",
-  "reschedule.noSlots": "Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.",
+  "reschedule.noSlots":
+    "Aucun créneau libre sur les 10 prochains jours — appelez-nous directement.",
   "reschedule.newTime": "Nouvelle heure",
   "reschedule.selectDay": "Choisissez d'abord un jour.",
   "reschedule.noHours": "Plus aucune heure libre ce jour-là — choisissez un autre jour.",

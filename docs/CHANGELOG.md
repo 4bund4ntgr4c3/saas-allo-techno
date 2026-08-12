@@ -12,7 +12,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ### Added
 
 - **Formulaire de Demande B2B Dynamique (`B2BRequestForm.tsx`)** :
-  - **SLA & Tarification par Équipement** : placement exclusif des cartes de formules SLA (*ESSENTIEL*, *BUSINESS*, *Sur-Mesure*) à l'Étape 2 pour les contrats SLA.
+  - **SLA & Tarification par Équipement** : placement exclusif des cartes de formules SLA (_ESSENTIEL_, _BUSINESS_, _Sur-Mesure_) à l'Étape 2 pour les contrats SLA.
   - **Tarif Dégressif -10% Parc Élargi** : réduction automatique de 10% appliquée pour les parcs de 6 à 15 et 16 à 50 équipements, affichée avec badge `-10% Dégressif` sur les boutons de sélection.
   - **Grille de Maintenance Préventive 4 Fréquences** : sélection parmi 4 périodicités (2 mois: 6 500 F, 3 mois: 8 000 F, 6 mois: 10 000 F, 12 mois: 15 000 F) avec calcul du montant total par passe directement affiché sur les boutons.
   - **Auto-Liaison des Délais d'Urgence SLA** : verrouillage automatique du délai d'intervention selon la formule choisie (Essentiel $\rightarrow$ Sous 48h, Business $\rightarrow$ Urgent < 24h).

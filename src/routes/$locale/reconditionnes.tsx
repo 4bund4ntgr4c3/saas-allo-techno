@@ -156,7 +156,9 @@ function Reconditionnes() {
                           )}
                         </div>
                         <span className="at-eyebrow mt-4">
-                          {t("reconditionnes.warranty.tile", [p.warranty ?? t("reconditionnes.default-warranty")])}
+                          {t("reconditionnes.warranty.tile", [
+                            p.warranty ?? t("reconditionnes.default-warranty"),
+                          ])}
                         </span>
                         <h3 className="mt-3 text-base font-bold tracking-tight">
                           <Link
@@ -187,7 +189,11 @@ function Reconditionnes() {
                               toast.success(t("reconditionnes.toast.added", [p.name]));
                             }}
                           >
-                            {inCart > 0 ? <Check className="size-4" /> : <Plus className="size-4" />}
+                            {inCart > 0 ? (
+                              <Check className="size-4" />
+                            ) : (
+                              <Plus className="size-4" />
+                            )}
                             {available <= 0
                               ? t("reconditionnes.unavailable")
                               : inCart > 0

@@ -416,72 +416,72 @@ function ChangelogPage() {
                     </time>
                   </div>
 
-                <div className="mt-6 space-y-6">
-                  {entry.added && entry.added.length > 0 && (
-                    <div>
-                      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-success">
-                        {t("changelog.added")}
-                      </h3>
-                      <ul className="space-y-1">
-                        {entry.added.map((item) => (
-                          <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 bg-success" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <div className="mt-6 space-y-6">
+                    {entry.added && entry.added.length > 0 && (
+                      <div>
+                        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-success">
+                          {t("changelog.added")}
+                        </h3>
+                        <ul className="space-y-1">
+                          {entry.added.map((item) => (
+                            <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                              <span className="mt-1.5 size-1.5 shrink-0 bg-success" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {entry.changed && entry.changed.length > 0 && (
-                    <div>
-                      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
-                        {t("changelog.changed")}
-                      </h3>
-                      <ul className="space-y-1">
-                        {entry.changed.map((item) => (
-                          <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 bg-primary" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                    {entry.changed && entry.changed.length > 0 && (
+                      <div>
+                        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("changelog.changed")}
+                        </h3>
+                        <ul className="space-y-1">
+                          {entry.changed.map((item) => (
+                            <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                              <span className="mt-1.5 size-1.5 shrink-0 bg-primary" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {entry.fixed && entry.fixed.length > 0 && (
-                    <div>
-                      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-amber-500">
-                        {t("changelog.fixed")}
-                      </h3>
-                      <ul className="space-y-1">
-                        {entry.fixed.map((item) => (
-                          <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 bg-amber-500" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                    {entry.fixed && entry.fixed.length > 0 && (
+                      <div>
+                        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-amber-500">
+                          {t("changelog.fixed")}
+                        </h3>
+                        <ul className="space-y-1">
+                          {entry.fixed.map((item) => (
+                            <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                              <span className="mt-1.5 size-1.5 shrink-0 bg-amber-500" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {entry.removed && entry.removed.length > 0 && (
-                    <div>
-                      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-destructive">
-                        {t("changelog.removed")}
-                      </h3>
-                      <ul className="space-y-1">
-                        {entry.removed.map((item) => (
-                          <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 bg-destructive" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </article>
+                    {entry.removed && entry.removed.length > 0 && (
+                      <div>
+                        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-destructive">
+                          {t("changelog.removed")}
+                        </h3>
+                        <ul className="space-y-1">
+                          {entry.removed.map((item) => (
+                            <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                              <span className="mt-1.5 size-1.5 shrink-0 bg-destructive" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </article>
               ))}
             </div>
           </div>

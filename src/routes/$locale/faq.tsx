@@ -97,7 +97,7 @@ function Faq() {
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {c === ALL ? t("faq.all") : (CAT_I18N[c] ? t(CAT_I18N[c]) : c)}
+                {c === ALL ? t("faq.all") : CAT_I18N[c] ? t(CAT_I18N[c]) : c}
               </button>
             ))}
           </div>

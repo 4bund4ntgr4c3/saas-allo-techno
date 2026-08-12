@@ -97,7 +97,12 @@ function DevicePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <span className="at-eyebrow">{t("appareil.eyebrow")}</span>
-            <PageBreadcrumb items={[{ to: `/$locale/catalogue`, label: t("nav.catalogue") }, { label: device.name }]} />
+            <PageBreadcrumb
+              items={[
+                { to: `/$locale/catalogue`, label: t("nav.catalogue") },
+                { label: device.name },
+              ]}
+            />
           </div>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>

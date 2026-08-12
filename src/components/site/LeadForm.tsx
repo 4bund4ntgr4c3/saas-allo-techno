@@ -137,7 +137,8 @@ export function LeadForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={label} htmlFor={`${source}-email`}>
-            {t("lead.email")} <span className="font-normal text-muted-foreground">{t("lead.optional")}</span>
+            {t("lead.email")}{" "}
+            <span className="font-normal text-muted-foreground">{t("lead.optional")}</span>
           </label>
           <input
             id={`${source}-email`}
@@ -151,7 +152,8 @@ export function LeadForm({
         {showReference ? (
           <div>
             <label className={label} htmlFor={`${source}-reference`}>
-              {t("lead.reference")} <span className="font-normal text-muted-foreground">{t("lead.referenceHint")}</span>
+              {t("lead.reference")}{" "}
+              <span className="font-normal text-muted-foreground">{t("lead.referenceHint")}</span>
             </label>
             <input
               id={`${source}-reference`}

@@ -268,7 +268,9 @@ function BlogAdmin() {
                     variant="ghost"
                     size="sm"
                     onClick={() => duplicateFromLocale(p.slug, p.locale ?? "fr")}
-                    title={t("admin.content.blog.button.duplicate", [p.locale?.toUpperCase() ?? "FR"])}
+                    title={t("admin.content.blog.button.duplicate", [
+                      p.locale?.toUpperCase() ?? "FR",
+                    ])}
                   >
                     <Copy className="size-3.5" />
                   </Button>
@@ -286,7 +288,8 @@ function BlogAdmin() {
               {editing ? t("admin.content.blog.form.editing") : t("admin.content.blog.form.new")}
             </p>
             <span className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("admin.content.blog.form.language")} : {form.locale === "en" ? "English" : "Français"}
+              {t("admin.content.blog.form.language")} :{" "}
+              {form.locale === "en" ? "English" : "Français"}
             </span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -348,7 +351,9 @@ function BlogAdmin() {
               />
             </label>
             <label className="block">
-              <span className="at-eyebrow mb-2 block">{t("admin.content.blog.form.reading_time")}</span>
+              <span className="at-eyebrow mb-2 block">
+                {t("admin.content.blog.form.reading_time")}
+              </span>
               <input
                 className={field}
                 value={form.readingTime}
@@ -369,7 +374,11 @@ function BlogAdmin() {
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex flex-wrap gap-3">
             <Button type="submit" variant="technical" disabled={saving}>
-              {saving ? t("admin.content.button.saving") : editing ? t("admin.content.blog.button.save_edits") : t("admin.content.blog.button.publish")}
+              {saving
+                ? t("admin.content.button.saving")
+                : editing
+                  ? t("admin.content.blog.button.save_edits")
+                  : t("admin.content.blog.button.publish")}
             </Button>
             <Button
               type="button"
@@ -474,7 +483,9 @@ function ReviewsAdmin() {
         },
       });
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success(form.id ? t("admin.content.review.toast.updated") : t("admin.content.review.toast.added"));
+      toast.success(
+        form.id ? t("admin.content.review.toast.updated") : t("admin.content.review.toast.added"),
+      );
       void logAudit(supabase as never, {
         user_id: user.id,
         action: form.status === "published" ? "review.published" : "review.hidden",
@@ -546,7 +557,9 @@ function ReviewsAdmin() {
       </div>
 
       <form onSubmit={save} className="space-y-4 border border-border bg-card p-5 h-fit">
-        <h3 className="text-sm font-semibold">{form.id ? t("admin.content.review.form.editing") : t("admin.content.review.form.new")}</h3>
+        <h3 className="text-sm font-semibold">
+          {form.id ? t("admin.content.review.form.editing") : t("admin.content.review.form.new")}
+        </h3>
         <label className="block">
           <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.name")}</span>
           <input
@@ -575,7 +588,9 @@ function ReviewsAdmin() {
           />
         </label>
         <label className="block">
-          <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.rating", [form.rating])}</span>
+          <span className="at-eyebrow mb-2 block">
+            {t("admin.content.review.form.rating", [form.rating])}
+          </span>
           <input
             type="range"
             min={1}
@@ -598,7 +613,11 @@ function ReviewsAdmin() {
         {error && <p className="text-sm text-destructive">{error}</p>}
         <div className="flex flex-wrap gap-3">
           <Button type="submit" variant="technical" disabled={saving}>
-            {saving ? t("admin.content.button.saving") : form.id ? t("admin.webhooks.form.save") : t("admin.content.review.form.new")}
+            {saving
+              ? t("admin.content.button.saving")
+              : form.id
+                ? t("admin.webhooks.form.save")
+                : t("admin.content.review.form.new")}
           </Button>
           {form.id && (
             <Button type="button" variant="outline" onClick={reset} disabled={saving}>

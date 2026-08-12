@@ -288,7 +288,11 @@ function EquipmentList() {
           </div>
           <div className="sm:col-span-2 lg:col-span-3">
             <Button type="submit" variant="primaryBlock" disabled={create.isPending}>
-              {create.isPending ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />}
+              {create.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Plus className="size-4" />
+              )}
               {t("org.equipment.form.submit")}
             </Button>
           </div>

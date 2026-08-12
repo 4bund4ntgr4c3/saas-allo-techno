@@ -49,9 +49,7 @@ export function CatalogSection() {
     return (
       <div>
         <h2 className="text-lg font-semibold">{t("admin.catalog.title")}</h2>
-        <p className="mt-4 text-sm text-destructive">
-          {t("admin.catalog.error.load")}
-        </p>
+        <p className="mt-4 text-sm text-destructive">{t("admin.catalog.error.load")}</p>
       </div>
     );
   }
@@ -136,7 +134,11 @@ function CategoriesPanel({
           active: form.active,
         },
       });
-      toast.success(editing ? t("admin.catalog.category.toast.updated") : t("admin.catalog.category.toast.added"));
+      toast.success(
+        editing
+          ? t("admin.catalog.category.toast.updated")
+          : t("admin.catalog.category.toast.added"),
+      );
       reset();
       onChanged();
     } catch (err) {
@@ -174,7 +176,9 @@ function CategoriesPanel({
             className="inline-flex items-center gap-2 border border-border bg-surface px-2 py-1 text-xs"
           >
             {c.label}
-            {!c.active && <span className="text-muted-foreground">{t("admin.catalog.status.inactive")}</span>}
+            {!c.active && (
+              <span className="text-muted-foreground">{t("admin.catalog.status.inactive")}</span>
+            )}
             <Button
               type="button"
               variant="ghost"
@@ -259,7 +263,11 @@ function CategoriesPanel({
             size="sm"
             disabled={busy || !form.label.trim() || !form.slug.trim()}
           >
-            {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
+            {busy
+              ? t("admin.catalog.button.saving")
+              : editing
+                ? t("admin.catalog.button.save")
+                : t("admin.catalog.button.add")}
           </Button>
         </div>
       </form>
@@ -306,7 +314,9 @@ function BrandPanel({
           active: form.active,
         },
       });
-      toast.success(editing ? t("admin.catalog.brand.toast.updated") : t("admin.catalog.brand.toast.added"));
+      toast.success(
+        editing ? t("admin.catalog.brand.toast.updated") : t("admin.catalog.brand.toast.added"),
+      );
       reset();
       onChanged();
     } catch (err) {
@@ -442,7 +452,9 @@ function BrandPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.sort")}
+            </span>
             <input
               type="number"
               min={0}
@@ -467,7 +479,11 @@ function BrandPanel({
           size="sm"
           disabled={busy || !form.name.trim() || !form.slug.trim()}
         >
-          {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
+          {busy
+            ? t("admin.catalog.button.saving")
+            : editing
+              ? t("admin.catalog.button.save")
+              : t("admin.catalog.button.add")}
         </Button>
       </form>
     </div>
@@ -551,7 +567,9 @@ function DevicePanel({
           active: form.active,
         },
       });
-      toast.success(editing ? t("admin.catalog.device.toast.updated") : t("admin.catalog.device.toast.added"));
+      toast.success(
+        editing ? t("admin.catalog.device.toast.updated") : t("admin.catalog.device.toast.added"),
+      );
       reset();
       onChanged();
     } catch (err) {
@@ -580,7 +598,9 @@ function DevicePanel({
   return (
     <div className="rounded-sm border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">{t("admin.catalog.device.title_for")} {brand.name}</h3>
+        <h3 className="text-sm font-semibold">
+          {t("admin.catalog.device.title_for")} {brand.name}
+        </h3>
         <Button variant="outline" size="sm" onClick={reset}>
           <Plus className="size-3.5" /> {t("admin.catalog.button.add")}
         </Button>
@@ -651,11 +671,15 @@ function DevicePanel({
       </ul>
       <form onSubmit={save} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editing ? t("admin.catalog.form.editing", [editing]) : t("admin.catalog.device.form.new")}
+          {editing
+            ? t("admin.catalog.form.editing", [editing])
+            : t("admin.catalog.device.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.name")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.name")}
+            </span>
             <input
               className={field}
               value={form.name}
@@ -664,7 +688,9 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.slug")}
+            </span>
             <input
               className={field}
               value={form.slug}
@@ -682,7 +708,9 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.category")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.category")}
+            </span>
             <select
               className={field}
               value={form.categorySlug}
@@ -696,7 +724,9 @@ function DevicePanel({
             </select>
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.series")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.series")}
+            </span>
             <input
               className={field}
               value={form.series}
@@ -705,7 +735,9 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.year")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.year")}
+            </span>
             <input
               type="number"
               min={1990}
@@ -716,7 +748,9 @@ function DevicePanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.sort")}
+            </span>
             <input
               type="number"
               min={0}
@@ -741,7 +775,11 @@ function DevicePanel({
           size="sm"
           disabled={busy || !form.name.trim() || !form.slug.trim()}
         >
-          {busy ? t("admin.catalog.button.saving") : editing ? t("admin.catalog.button.save") : t("admin.catalog.button.add")}
+          {busy
+            ? t("admin.catalog.button.saving")
+            : editing
+              ? t("admin.catalog.button.save")
+              : t("admin.catalog.button.add")}
         </Button>
       </form>
     </div>
@@ -815,7 +853,11 @@ function DeviceDetailPanel({
           sort: faultForm.sort,
         },
       });
-      toast.success(editingFault ? t("admin.catalog.fault.toast.updated") : t("admin.catalog.fault.toast.added"));
+      toast.success(
+        editingFault
+          ? t("admin.catalog.fault.toast.updated")
+          : t("admin.catalog.fault.toast.added"),
+      );
       resetFault();
       onChanged();
     } catch (err) {
@@ -911,9 +953,7 @@ function DeviceDetailPanel({
     {
       accessorKey: "price",
       header: t("admin.catalog.fault.table.price"),
-      cell: ({ row }) => (
-        <span className="font-mono">{formatFcfa(row.original.price)}</span>
-      ),
+      cell: ({ row }) => <span className="font-mono">{formatFcfa(row.original.price)}</span>,
     },
     {
       accessorKey: "duration",
@@ -976,7 +1016,9 @@ function DeviceDetailPanel({
 
   return (
     <div className="rounded-sm border border-border bg-card p-5">
-      <h3 className="text-sm font-semibold">{t("admin.catalog.fault.title_for")} {device.name}</h3>
+      <h3 className="text-sm font-semibold">
+        {t("admin.catalog.fault.title_for")} {device.name}
+      </h3>
       <div className="mt-4">
         <DataTable
           columns={faultColumns}
@@ -988,11 +1030,15 @@ function DeviceDetailPanel({
       </div>
       <form onSubmit={saveFault} className="mt-4 space-y-3 border-t border-border pt-4">
         <p className="text-xs font-semibold">
-          {editingFault ? t("admin.catalog.fault.form.editing", [editingFault]) : t("admin.catalog.fault.form.new")}
+          {editingFault
+            ? t("admin.catalog.fault.form.editing", [editingFault])
+            : t("admin.catalog.fault.form.new")}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.label")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.label")}
+            </span>
             <input
               className={field}
               value={faultForm.label}
@@ -1001,7 +1047,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.slug")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.slug")}
+            </span>
             <input
               className={field}
               value={faultForm.slug}
@@ -1018,7 +1066,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.form.price")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.fault.form.price")}
+            </span>
             <input
               type="number"
               min={0}
@@ -1030,7 +1080,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.duration")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.fault.table.duration")}
+            </span>
             <input
               className={field}
               value={faultForm.duration}
@@ -1039,7 +1091,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.warranty")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.fault.table.warranty")}
+            </span>
             <input
               className={field}
               value={faultForm.warranty}
@@ -1048,7 +1102,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.fault.table.part")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.fault.table.part")}
+            </span>
             <input
               className={field}
               value={faultForm.part}
@@ -1057,7 +1113,9 @@ function DeviceDetailPanel({
             />
           </label>
           <label className="block">
-            <span className="at-eyebrow mb-1 block text-[11px]">{t("admin.catalog.form.sort")}</span>
+            <span className="at-eyebrow mb-1 block text-[11px]">
+              {t("admin.catalog.form.sort")}
+            </span>
             <input
               type="number"
               min={0}
@@ -1075,7 +1133,11 @@ function DeviceDetailPanel({
             size="sm"
             disabled={busy || !faultForm.label.trim() || !faultForm.slug.trim()}
           >
-            {busy ? t("admin.catalog.button.saving") : editingFault ? t("admin.catalog.button.save") : t("admin.catalog.fault.button.add")}
+            {busy
+              ? t("admin.catalog.button.saving")
+              : editingFault
+                ? t("admin.catalog.button.save")
+                : t("admin.catalog.fault.button.add")}
           </Button>
           {editingFault !== null && (
             <Button type="button" variant="outline" size="sm" onClick={resetFault} disabled={busy}>
@@ -1109,7 +1171,9 @@ function DeviceDetailPanel({
               </Button>
             </div>
           ))}
-          {photos.length === 0 && <p className="text-xs text-muted-foreground">{t("admin.catalog.photo.empty")}</p>}
+          {photos.length === 0 && (
+            <p className="text-xs text-muted-foreground">{t("admin.catalog.photo.empty")}</p>
+          )}
         </div>
         <div className="mt-3 flex flex-wrap items-end gap-3">
           <div>

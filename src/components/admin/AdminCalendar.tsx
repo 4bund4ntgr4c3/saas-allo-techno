@@ -47,7 +47,15 @@ export function AdminCalendar({ events, onEventClick }: Props) {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
 
-  const DAYS = [t("admin.calendar.day.sunday"), t("admin.calendar.day.monday"), t("admin.calendar.day.tuesday"), t("admin.calendar.day.wednesday"), t("admin.calendar.day.thursday"), t("admin.calendar.day.friday"), t("admin.calendar.day.saturday")];
+  const DAYS = [
+    t("admin.calendar.day.sunday"),
+    t("admin.calendar.day.monday"),
+    t("admin.calendar.day.tuesday"),
+    t("admin.calendar.day.wednesday"),
+    t("admin.calendar.day.thursday"),
+    t("admin.calendar.day.friday"),
+    t("admin.calendar.day.saturday"),
+  ];
   const MONTHS = [
     t("admin.calendar.month.january"),
     t("admin.calendar.month.february"),

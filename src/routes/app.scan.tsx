@@ -30,9 +30,7 @@ function ScanPage() {
   });
 
   if (!q) {
-    return (
-      <p className="text-sm text-muted-foreground">Scannez un QR code d'équipement.</p>
-    );
+    return <p className="text-sm text-muted-foreground">Scannez un QR code d'équipement.</p>;
   }
   if (result.isLoading) {
     return <Loader2 className="size-5 animate-spin text-muted-foreground" />;

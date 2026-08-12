@@ -94,7 +94,9 @@ export function PushNotificationToggle() {
         setStatus("subscribed");
         toast.success(t("push.enabled"));
         // Send subscription to server
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user) {
           const subJson = subscription.toJSON();
           const keys = subJson.keys as { p256dh: string; auth: string } | undefined;

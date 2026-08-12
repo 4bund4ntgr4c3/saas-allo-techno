@@ -76,9 +76,7 @@ function Services() {
                   <h2 className="mt-4 text-base font-bold tracking-tight">
                     {t(`${prefix}.label`)}
                   </h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {t(`${prefix}.short`)}
-                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">{t(`${prefix}.short`)}</p>
                   <ul className="mt-4 space-y-1">
                     {[1, 2, 3].map((i) => (
                       <li key={i} className="flex gap-2 text-sm">
@@ -90,9 +88,7 @@ function Services() {
                   <div className="mt-4 font-mono text-xl font-medium text-primary">
                     {formatFcfa(s.price)}
                   </div>
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    {t("services.reservation")}
-                  </p>
+                  <p className="mt-3 text-xs text-muted-foreground">{t("services.reservation")}</p>
                   <Button asChild variant="technical" size="sm" className="mt-6">
                     <Link
                       to="/$locale/reparations"

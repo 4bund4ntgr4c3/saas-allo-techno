@@ -109,7 +109,11 @@ function Panier() {
                   variant="technical"
                   className="mt-8"
                   onClick={() => {
-                    navigate({ to: "/$locale/panier", search: { ref: order.ref, status: "redirect" }, params: { locale } });
+                    navigate({
+                      to: "/$locale/panier",
+                      search: { ref: order.ref, status: "redirect" },
+                      params: { locale },
+                    });
                   }}
                 >
                   {t("panier.redirect.btn")}

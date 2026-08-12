@@ -12,9 +12,7 @@ const API_SWRevalidate = ["/fr/suivi", "/en/suivi", "/api/ical"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) =>
-      cache.addAll(["/offline.html"]).catch(() => {}),
-    ),
+    caches.open(CACHE).then((cache) => cache.addAll(["/offline.html"]).catch(() => {})),
   );
   self.skipWaiting();
 });
@@ -41,11 +39,16 @@ async function cacheFirst(req) {
   try {
     const cached = await caches.match(req);
     if (cached) return cached;
-  } catch { /* cache injoignable */ }
+  } catch {
+    /* cache injoignable */
+  }
   const res = await fetch(req);
   if (res && res.ok && (res.type === "basic" || res.type === "cors")) {
     const clone = res.clone();
-    caches.open(STATIC_CACHE).then((c) => c.put(req, clone)).catch(() => {});
+    caches
+      .open(STATIC_CACHE)
+      .then((c) => c.put(req, clone))
+      .catch(() => {});
   }
   return res;
 }
@@ -55,7 +58,10 @@ async function networkFirst(req) {
     const res = await fetch(req);
     if (res && res.ok) {
       const clone = res.clone();
-      caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
+      caches
+        .open(CACHE)
+        .then((c) => c.put(req, clone))
+        .catch(() => {});
     }
     return res;
   } catch {
@@ -134,7 +140,9 @@ async function processSyncQueue() {
         body: entry.body,
       });
       store.delete(entry.timestamp);
-    } catch { /* keep in queue for next sync */ }
+    } catch {
+      /* keep in queue for next sync */
+    }
   }
   await tx.done;
 }
@@ -146,7 +154,11 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET" && req.method !== "POST") return;
 
   let url;
-  try { url = new URL(req.url); } catch { return; }
+  try {
+    url = new URL(req.url);
+  } catch {
+    return;
+  }
   if (url.origin !== self.location.origin) return;
 
   /* POST → background sync queue */

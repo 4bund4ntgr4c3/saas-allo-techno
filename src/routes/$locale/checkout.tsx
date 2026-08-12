@@ -92,9 +92,7 @@ function Checkout() {
 
   useEffect(() => {
     if (manualDelivery) return;
-    const raw = differentAddress
-      ? `${altAddress.street} ${altAddress.city}`
-      : form.address;
+    const raw = differentAddress ? `${altAddress.street} ${altAddress.city}` : form.address;
     if (raw.length < 3) return;
     const detected = detectZone(raw);
     setDelivery((prev) => (prev !== detected ? detected : prev));
@@ -515,7 +513,9 @@ function Checkout() {
                           <input
                             id="alt-street"
                             value={altAddress.street}
-                            onChange={(e) => setAltAddress({ ...altAddress, street: e.target.value })}
+                            onChange={(e) =>
+                              setAltAddress({ ...altAddress, street: e.target.value })
+                            }
                             className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                           />
                         </div>
@@ -527,7 +527,9 @@ function Checkout() {
                             <input
                               id="alt-city"
                               value={altAddress.city}
-                              onChange={(e) => setAltAddress({ ...altAddress, city: e.target.value })}
+                              onChange={(e) =>
+                                setAltAddress({ ...altAddress, city: e.target.value })
+                              }
                               className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                             />
                           </div>
@@ -538,7 +540,9 @@ function Checkout() {
                             <input
                               id="alt-zip"
                               value={altAddress.zip}
-                              onChange={(e) => setAltAddress({ ...altAddress, zip: e.target.value })}
+                              onChange={(e) =>
+                                setAltAddress({ ...altAddress, zip: e.target.value })
+                              }
                               className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                             />
                           </div>
@@ -561,25 +565,26 @@ function Checkout() {
                   </div>
                 </form>
 
-              <PricingSidebar
-                items={cart.items}
-                t={t}
-                onContinue={goToPayment}
-                continueLabel={t("checkout.address.continue")}
-                showCoupon={false}
-                showDelivery
-                deliveryOptions={getDeliveryOptions(t)}
-                selectedDelivery={delivery}
-                onSelectDelivery={(id) => { setManualDelivery(true); setDelivery(id); }}
-                shippingFee={shipping}
-                shippingLabel={t("panier.delivery", [option.eta])}
-                discount={promoDiscount}
-                discountLabel={
-                  promoApplied
-                    ? t("panier.promo.discount", [promoApplied.code])
-                    : undefined
-                }
-              />
+                <PricingSidebar
+                  items={cart.items}
+                  t={t}
+                  onContinue={goToPayment}
+                  continueLabel={t("checkout.address.continue")}
+                  showCoupon={false}
+                  showDelivery
+                  deliveryOptions={getDeliveryOptions(t)}
+                  selectedDelivery={delivery}
+                  onSelectDelivery={(id) => {
+                    setManualDelivery(true);
+                    setDelivery(id);
+                  }}
+                  shippingFee={shipping}
+                  shippingLabel={t("panier.delivery", [option.eta])}
+                  discount={promoDiscount}
+                  discountLabel={
+                    promoApplied ? t("panier.promo.discount", [promoApplied.code]) : undefined
+                  }
+                />
               </>
             ) : (
               <>
@@ -693,14 +698,15 @@ function Checkout() {
                   showDelivery
                   deliveryOptions={getDeliveryOptions(t)}
                   selectedDelivery={delivery}
-                onSelectDelivery={(id) => { setManualDelivery(true); setDelivery(id); }}
+                  onSelectDelivery={(id) => {
+                    setManualDelivery(true);
+                    setDelivery(id);
+                  }}
                   shippingFee={shipping}
                   shippingLabel={t("panier.delivery", [option.eta])}
                   discount={promoDiscount}
                   discountLabel={
-                    promoApplied
-                      ? t("panier.promo.discount", [promoApplied.code])
-                      : undefined
+                    promoApplied ? t("panier.promo.discount", [promoApplied.code]) : undefined
                   }
                   loading={submitting || redirecting}
                   disabled={submitting}

@@ -69,7 +69,12 @@ export function AdminAdvancedReports() {
 
       <div className="flex flex-wrap gap-3">
         <div>
-          <label htmlFor="admin-report-date-from" className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateFrom")}</label>
+          <label
+            htmlFor="admin-report-date-from"
+            className="text-[10px] uppercase text-muted-foreground"
+          >
+            {t("admin.reports.dateFrom")}
+          </label>
           <input
             id="admin-report-date-from"
             type="date"
@@ -79,7 +84,12 @@ export function AdminAdvancedReports() {
           />
         </div>
         <div>
-          <label htmlFor="admin-report-date-to" className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.dateTo")}</label>
+          <label
+            htmlFor="admin-report-date-to"
+            className="text-[10px] uppercase text-muted-foreground"
+          >
+            {t("admin.reports.dateTo")}
+          </label>
           <input
             id="admin-report-date-to"
             type="date"
@@ -104,16 +114,22 @@ export function AdminAdvancedReports() {
       {result && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.totalReservations")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.reports.totalReservations")}
+            </p>
             <p className="text-2xl font-bold">{String(result.total_reservations ?? 0)}</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <p className="text-[10px] uppercase text-muted-foreground">{t("admin.reports.revenue")}</p>
+            <p className="text-[10px] uppercase text-muted-foreground">
+              {t("admin.reports.revenue")}
+            </p>
             <p className="text-2xl font-bold">{String(result.total_revenue ?? 0)} FCFA</p>
           </div>
           {result.brand_breakdown && (
             <div className="rounded-lg border bg-card p-4 sm:col-span-2">
-              <p className="text-[10px] uppercase text-muted-foreground mb-2">{t("admin.reports.brands")}</p>
+              <p className="text-[10px] uppercase text-muted-foreground mb-2">
+                {t("admin.reports.brands")}
+              </p>
               {Object.entries(result.brand_breakdown)
                 .slice(0, 5)
                 .map(([brand, count]) => (

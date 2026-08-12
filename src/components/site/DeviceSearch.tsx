@@ -502,9 +502,12 @@ export function DeviceSearch({
     const deviceResults = fullTextResults.filter((r) => r.type === "device");
     const blogResults = fullTextResults.filter((r) => r.type === "blog");
     const pageResults = fullTextResults.filter((r) => r.type === "page");
-    if (deviceResults.length > 0) groups.push({ type: "device", label: t("search.group.devices"), items: deviceResults });
-    if (blogResults.length > 0) groups.push({ type: "blog", label: t("search.group.blog"), items: blogResults });
-    if (pageResults.length > 0) groups.push({ type: "page", label: t("search.group.pages"), items: pageResults });
+    if (deviceResults.length > 0)
+      groups.push({ type: "device", label: t("search.group.devices"), items: deviceResults });
+    if (blogResults.length > 0)
+      groups.push({ type: "blog", label: t("search.group.blog"), items: blogResults });
+    if (pageResults.length > 0)
+      groups.push({ type: "page", label: t("search.group.pages"), items: pageResults });
     return groups;
   }, [fullTextResults, t]);
 
@@ -749,7 +752,11 @@ export function DeviceSearch({
                         )}
                       </span>
                       <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                        {item.type === "device" ? t("search.type.device") : item.type === "blog" ? t("search.type.blog") : t("search.type.page")}
+                        {item.type === "device"
+                          ? t("search.type.device")
+                          : item.type === "blog"
+                            ? t("search.type.blog")
+                            : t("search.type.page")}
                       </span>
                     </button>
                   </li>
@@ -757,7 +764,10 @@ export function DeviceSearch({
               </li>
             ))}
             <li className="border-t border-border px-4 py-2 font-mono text-[10px] uppercase text-muted-foreground">
-              {fullTextResults.length} {fullTextResults.length > 1 ? t("wizard.search.results.plural") : t("wizard.search.results.single")}
+              {fullTextResults.length}{" "}
+              {fullTextResults.length > 1
+                ? t("wizard.search.results.plural")
+                : t("wizard.search.results.single")}
             </li>
           </ul>
         )}
@@ -1552,10 +1562,7 @@ export function DeviceSearch({
                   {photos.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {photos.map((_f, i) => (
-                        <div
-                          key={i}
-                          className="relative size-16 border border-border bg-surface"
-                        >
+                        <div key={i} className="relative size-16 border border-border bg-surface">
                           <OptimizedImage
                             src={previewUrls[i]}
                             alt={t("wizard.photos.alt", [i + 1])}

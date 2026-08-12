@@ -18,7 +18,11 @@ export interface SearchFilters {
 }
 
 const PAGE_TRANSLATIONS: Record<string, { fr: string; en: string; keywords: string }> = {
-  reparations: { fr: "Réparations", en: "Repairs", keywords: "diagnostic reparer panne atelier ecran batterie" },
+  reparations: {
+    fr: "Réparations",
+    en: "Repairs",
+    keywords: "diagnostic reparer panne atelier ecran batterie",
+  },
   tarifs: { fr: "Tarifs", en: "Pricing", keywords: "prix cout combien tarif" },
   boutique: { fr: "Boutique", en: "Shop", keywords: "acheter accessoire coque chargeur" },
   services: { fr: "Services", en: "Services", keywords: "nettoyage transfert sauvegarde reset" },
@@ -53,9 +57,10 @@ export function fullTextSearch(
     const deviceText = normalizeText(
       `${brandName(device.brand)} ${device.name} ${device.category} ${device.series} ${device.brand}`,
     );
-    const score = normalizedQuery.length >= 2
-      ? calculateEnhancedScore(normalizedQuery, queryTokens, deviceText)
-      : 1;
+    const score =
+      normalizedQuery.length >= 2
+        ? calculateEnhancedScore(normalizedQuery, queryTokens, deviceText)
+        : 1;
 
     if (score > 0 || filters?.brand || filters?.category) {
       results.push({
@@ -226,11 +231,7 @@ function levenshteinDistance(a: string, b: string): number {
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i]![j] = Math.min(
-        dp[i - 1]![j]! + 1,
-        dp[i]![j - 1]! + 1,
-        dp[i - 1]![j - 1]! + cost,
-      );
+      dp[i]![j] = Math.min(dp[i - 1]![j]! + 1, dp[i]![j - 1]! + 1, dp[i - 1]![j - 1]! + cost);
     }
   }
 

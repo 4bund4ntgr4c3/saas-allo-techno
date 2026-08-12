@@ -66,9 +66,7 @@ function AppLayout() {
                 Allô&nbsp;Techno
               </span>
             </Link>
-            <span className="text-xs text-muted-foreground">
-              / {t("org.nav.app")}
-            </span>
+            <span className="text-xs text-muted-foreground">/ {t("org.nav.app")}</span>
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" size="sm">
@@ -88,7 +86,10 @@ function AppLayout() {
       <div className="mx-auto flex max-w-[1400px] gap-0 md:flex-row">
         {/* ─── Sidebar ─── */}
         <aside className="hidden w-60 shrink-0 border-r border-border bg-card md:block">
-          <nav className="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col overflow-y-auto" data-tour="app-nav">
+          <nav
+            className="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col overflow-y-auto"
+            data-tour="app-nav"
+          >
             {/* Org list section */}
             <div className="p-3">
               <p className="at-eyebrow mb-2 px-2">{t("org.nav.organizations")}</p>
@@ -104,7 +105,9 @@ function AppLayout() {
                 {location.pathname === "/app" && (
                   <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
                 )}
-                <Home className={`size-4 shrink-0 ${location.pathname === "/app" ? "text-primary" : ""}`} />
+                <Home
+                  className={`size-4 shrink-0 ${location.pathname === "/app" ? "text-primary" : ""}`}
+                />
                 {t("org.title")}
               </Link>
 
@@ -121,9 +124,7 @@ function AppLayout() {
                         : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
                     }`}
                   >
-                    {isActive && (
-                      <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
-                    )}
+                    {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
                     <Building2 className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
                     <span className="truncate">{org.name}</span>
                   </Link>
@@ -148,9 +149,7 @@ function AppLayout() {
                           : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
                       }`}
                     >
-                      {isActive && (
-                        <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
-                      )}
+                      {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
                       <item.icon className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
                       <span className="truncate">{t(item.labelKey)}</span>
                     </Link>

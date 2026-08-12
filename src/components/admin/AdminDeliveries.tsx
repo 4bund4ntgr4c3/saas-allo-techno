@@ -25,14 +25,20 @@ export function AdminDeliveries() {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [signatureModal, setSignatureModal] = useState<{ id: string; reference: string; customer: string } | null>(null);
+  const [signatureModal, setSignatureModal] = useState<{
+    id: string;
+    reference: string;
+    customer: string;
+  } | null>(null);
 
   const deliveriesQuery = useQuery({
     queryKey: ["admin-deliveries"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reservations")
-        .select("id, reference, customer_name, phone, device, issue, delivery_status, delivery_address, slot_date, slot_period, status")
+        .select(
+          "id, reference, customer_name, phone, device, issue, delivery_status, delivery_address, slot_date, slot_period, status",
+        )
         .eq("mode", "domicile")
         .order("slot_date", { ascending: false });
       if (error) throw error;
@@ -79,7 +85,11 @@ export function AdminDeliveries() {
 
   const openWhatsAppCourier = (phone: string, customer: string, reference: string) => {
     const clean = phone.replace(/[^\d+]/g, "").replace(/^00/, "+");
-    const formatted = clean.startsWith("+") ? clean.slice(1) : clean.startsWith("229") ? clean : `229${clean}`;
+    const formatted = clean.startsWith("+")
+      ? clean.slice(1)
+      : clean.startsWith("229")
+        ? clean
+        : `229${clean}`;
     const text = encodeURIComponent(
       `Bonjour ${customer}, le coursier Allô Techno est en route avec votre appareil (Dossier ${reference}). Merci de préparer la remise.`,
     );
@@ -94,7 +104,8 @@ export function AdminDeliveries() {
           <p className="at-eyebrow">Logistique & Tournées</p>
           <h2 className="mt-1 text-xl font-semibold">Gestion des Livraisons & Coursiers</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Suivi des enlèvements et livraisons à domicile, navigation GPS et preuve de remise client.
+            Suivi des enlèvements et livraisons à domicile, navigation GPS et preuve de remise
+            client.
           </p>
         </div>
       </div>
@@ -142,8 +153,8 @@ export function AdminDeliveries() {
                 d.delivery_status === "en_route"
                   ? "border-primary/60 bg-primary/5"
                   : d.delivery_status === "livre"
-                  ? "border-success/40 bg-success/5"
-                  : "border-border"
+                    ? "border-success/40 bg-success/5"
+                    : "border-border"
               }`}
             >
               <div className="space-y-3">
@@ -158,15 +169,15 @@ export function AdminDeliveries() {
                       d.delivery_status === "en_route"
                         ? "bg-primary text-primary-foreground animate-pulse"
                         : d.delivery_status === "livre"
-                        ? "bg-success text-white"
-                        : "bg-muted text-muted-foreground"
+                          ? "bg-success text-white"
+                          : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {d.delivery_status === "en_route"
                       ? "En route"
                       : d.delivery_status === "livre"
-                      ? "Livré"
-                      : "À planifier"}
+                        ? "Livré"
+                        : "À planifier"}
                   </span>
                 </div>
 
@@ -229,7 +240,11 @@ export function AdminDeliveries() {
                       size="sm"
                       className="w-full text-xs font-bold gap-1.5"
                       onClick={() =>
-                        updateDeliveryMut.mutate({ id: d.id, status: "en_route", address: d.delivery_address ?? "" })
+                        updateDeliveryMut.mutate({
+                          id: d.id,
+                          status: "en_route",
+                          address: d.delivery_address ?? "",
+                        })
                       }
                     >
                       <Truck className="size-3.5" />
@@ -242,7 +257,11 @@ export function AdminDeliveries() {
                       size="sm"
                       className="w-full text-xs font-bold bg-success text-white hover:bg-success/90 gap-1.5"
                       onClick={() =>
-                        setSignatureModal({ id: d.id, reference: d.reference, customer: d.customer_name })
+                        setSignatureModal({
+                          id: d.id,
+                          reference: d.reference,
+                          customer: d.customer_name,
+                        })
                       }
                     >
                       <CheckCircle2 className="size-3.5" />
@@ -280,9 +299,14 @@ export function AdminDeliveries() {
             <div className="flex items-center justify-between border-b border-border pb-2">
               <div>
                 <h4 className="font-bold text-sm">Preuve de Réception Client</h4>
-                <p className="text-xs text-muted-foreground">{signatureModal.customer} • {signatureModal.reference}</p>
+                <p className="text-xs text-muted-foreground">
+                  {signatureModal.customer} • {signatureModal.reference}
+                </p>
               </div>
-              <button onClick={() => setSignatureModal(null)} className="p-1 text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setSignatureModal(null)}
+                className="p-1 text-muted-foreground hover:text-foreground"
+              >
                 <X className="size-4" />
               </button>
             </div>
@@ -290,7 +314,9 @@ export function AdminDeliveries() {
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">Faites signer le client ci-dessous :</p>
               <div className="h-32 bg-white rounded-lg border-2 border-dashed border-black/30 flex items-center justify-center relative">
-                <p className="text-black/30 text-xs italic select-none">Zone de signature tactile</p>
+                <p className="text-black/30 text-xs italic select-none">
+                  Zone de signature tactile
+                </p>
               </div>
             </div>
 

@@ -85,7 +85,8 @@ const fr = {
   "boutique.compare.go": "Comparer",
   "boutique.compare.eyebrow": "Comparateur",
   "boutique.compare.title": "Comparer les accessoires",
-  "boutique.compare.text": "{0} accessoires sélectionnés. Comparez prix, stock et caractéristiques.",
+  "boutique.compare.text":
+    "{0} accessoires sélectionnés. Comparez prix, stock et caractéristiques.",
   "boutique.compare.empty": "Aucun produit sélectionné. Ajoutez des produits depuis la boutique.",
   "boutique.compare.browse": "Retour à la boutique",
   "boutique.compare.clear": "Tout effacer",
@@ -97,7 +98,8 @@ const fr = {
   "boutique.compare.storage": "Stockage",
   "boutique.compare.warranty": "Garantie",
   "boutique.compare.meta-title": "Comparer les accessoires — Boutique Allô Techno",
-  "boutique.compare.meta-description": "Comparez les accessoires de la boutique Allô Techno : prix, stock et caractéristiques.",
+  "boutique.compare.meta-description":
+    "Comparez les accessoires de la boutique Allô Techno : prix, stock et caractéristiques.",
   "boutique.toast.compare-added": "{0} ajouté à la comparaison",
   "boutique.toast.compare-max": "3 produits maximum dans le comparateur",
   "boutique.toast.compare-exists": "Déjà dans le comparateur",
@@ -218,7 +220,8 @@ const en = {
   "boutique.compare.storage": "Storage",
   "boutique.compare.warranty": "Warranty",
   "boutique.compare.meta-title": "Compare accessories — Allô Techno Shop",
-  "boutique.compare.meta-description": "Compare Allô Techno shop accessories: price, stock and specs.",
+  "boutique.compare.meta-description":
+    "Compare Allô Techno shop accessories: price, stock and specs.",
   "boutique.toast.compare-added": "{0} added to comparison",
   "boutique.toast.compare-max": "3 products max in comparison",
   "boutique.toast.compare-exists": "Already in comparison",
