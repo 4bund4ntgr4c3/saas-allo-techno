@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Laptop, Loader2, Plus, QrCode, Search, X } from "lucide-react";
+import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Plus, QrCode, Search, Upload, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useI18n } from "@/lib/i18n/context";
+import { parseEquipmentFile } from "@/lib/equipment-import";
 import {
   createEquipment,
   getMyOrganizations,
@@ -130,6 +131,47 @@ function EquipmentList() {
     onError: (err) => toast.error(t("org.equipment.form.error").replace("{0}", err.message)),
   });
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const summary = parseEquipmentFile(buffer);
+
+      if (summary.validRows.length === 0) {
+        toast.error("Aucun équipement valide trouvé dans le fichier.");
+        return;
+      }
+
+      toast.success(
+        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`
+      );
+
+      // Create each valid item batch
+      for (const item of summary.validRows) {
+        await createEquipment({
+          data: {
+            org_id: orgId,
+            name: `${item.brand} ${item.model}`,
+            type: item.type,
+            brand: item.brand,
+            model: item.model,
+            serial_number: item.serial_number,
+            notes: item.notes ?? null,
+          },
+        }).catch(() => null);
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
+      toast.success("Importation terminée et ajoutée au parc matériel !");
+    } catch {
+      toast.error("Erreur lors de la lecture du fichier Excel/CSV.");
+    } finally {
+      event.target.value = "";
+    }
+  };
+
   if (!org) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -154,10 +196,22 @@ function EquipmentList() {
             <h1 className="at-display text-2xl font-bold">{t("org.equipment.title")}</h1>
             <p className="text-sm text-muted-foreground">{t("org.equipment.subtitle")}</p>
           </div>
-          <Button variant="primaryBlock" onClick={() => setShowForm((v) => !v)}>
-            {showForm ? <X className="size-4" /> : <Plus className="size-4" />}
-            {t("org.equipment.add")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <label className="inline-flex cursor-pointer items-center gap-1.5 px-3 py-2 border border-border bg-card hover:bg-muted text-foreground text-xs font-bold transition-all rounded-xs shadow-xs">
+              <FileSpreadsheet className="size-4 text-primary" />
+              <span>Import Excel/CSV</span>
+              <input
+                type="file"
+                accept=".xlsx, .xls, .csv"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+            </label>
+            <Button variant="primaryBlock" onClick={() => setShowForm((v) => !v)}>
+              {showForm ? <X className="size-4" /> : <Plus className="size-4" />}
+              {t("org.equipment.add")}
+            </Button>
+          </div>
         </div>
       </div>
 

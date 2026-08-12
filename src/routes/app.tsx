@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -17,6 +17,7 @@ import { getMyOrganizations } from "@/lib/org.functions";
 import { Button } from "@/components/ui/button";
 import { TourLauncher } from "@/components/tour/TourLauncher";
 import { TourOverlay } from "@/components/tour/TourOverlay";
+import { OrgSwitcher } from "@/components/site/OrgSwitcher";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -38,6 +39,7 @@ const ORG_NAV = [
 function AppLayout() {
   const { t } = useI18n();
   const location = useLocation();
+  const navigate = useNavigate();
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
 
   const onLogout = async () => {
@@ -48,7 +50,12 @@ function AppLayout() {
   // Detect if we're inside an org
   const orgMatch = location.pathname.match(/\/app\/organizations\/([^/]+)/);
   const activeOrgId = orgMatch?.[1];
-  const activeOrg = activeOrgId ? orgs.data?.find((o) => o.id === activeOrgId) : null;
+
+  const orgOptions = (orgs.data ?? []).map((o) => ({
+    id: o.id,
+    name: o.name,
+    role: (o.user_role as "owner" | "admin" | "member") ?? "admin",
+  }));
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -68,7 +75,19 @@ function AppLayout() {
             </Link>
             <span className="text-xs text-muted-foreground">/ {t("org.nav.app")}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {orgOptions.length > 0 && (
+              <OrgSwitcher
+                organizations={orgOptions}
+                currentOrgId={activeOrgId}
+                onSelectOrg={(orgId) => {
+                  navigate({
+                    to: "/app/organizations/$orgId",
+                    params: { orgId },
+                  });
+                }}
+              />
+            )}
             <Button asChild variant="outline" size="sm">
               <Link to="/">
                 <ArrowLeft className="mr-1 inline size-3.5" />
