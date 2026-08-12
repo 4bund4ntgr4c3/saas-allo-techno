@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useI18n } from "@/lib/i18n/context";
+import { getMaintenancePlansFn } from "@/lib/maintenance-plans.functions";
 import {
   completeMaintenanceTask,
   getMyOrganizations,
@@ -65,6 +66,12 @@ function OrgMaintenancePage() {
   const schedulesQuery = useQuery({
     queryKey: ["app", "org", orgId, "maintenance-schedules"],
     queryFn: () => getOrgMaintenanceSchedules({ data: { org_id: orgId } }),
+    enabled: Boolean(org),
+  });
+
+  const mPlansQuery = useQuery({
+    queryKey: ["app", "org", orgId, "maintenance-plans"],
+    queryFn: () => getMaintenancePlansFn({ data: { orgId } }),
     enabled: Boolean(org),
   });
 
@@ -159,6 +166,34 @@ function OrgMaintenancePage() {
             )}
         </div>
       </div>
+
+      {/* ─── Preventive Maintenance Plans Cards ─── */}
+      {mPlansQuery.data && mPlansQuery.data.length > 0 && (
+        <div className="space-y-3 at-in">
+          <h2 className="at-eyebrow text-xs uppercase tracking-wider text-muted-foreground block">
+            Programmes de Maintenance Récurrente
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {mPlansQuery.data.map((plan) => (
+              <div key={plan.id} className="border border-border bg-card p-4 space-y-3 shadow-xs">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="size-5 text-primary shrink-0" />
+                    <h3 className="font-bold text-sm leading-tight">{plan.title}</h3>
+                  </div>
+                  <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10 shrink-0">
+                    Tous les {plan.frequencyMonths} mois
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/60">
+                  <span>Sites : <strong className="text-foreground">{plan.targetSites.join(", ")}</strong></span>
+                  <span className="font-mono font-bold text-foreground">Prochaine échéance : {plan.nextDueDate}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>

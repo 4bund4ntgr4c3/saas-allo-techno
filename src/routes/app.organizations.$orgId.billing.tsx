@@ -11,6 +11,7 @@ import {
   Loader2,
   Plus,
   Receipt,
+  ShieldCheck,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
+import { getOrgContractFn } from "@/lib/contracts.functions";
+import { exportSyscohadaJournalFn } from "@/lib/accounting.functions";
 import {
   createOrgInvoice,
   getMyOrganizations,
@@ -44,6 +47,12 @@ function OrgBillingPage() {
     enabled: Boolean(org),
   });
 
+  const contract = useQuery({
+    queryKey: ["app", "org", orgId, "contract"],
+    queryFn: () => getOrgContractFn({ data: { orgId } }),
+    enabled: Boolean(org),
+  });
+
   const [showGenerate, setShowGenerate] = useState(false);
   const [periodMonth, setPeriodMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [notes, setNotes] = useState("");
@@ -66,6 +75,23 @@ function OrgBillingPage() {
       toast.error(err instanceof Error ? err.message : t("org.billing.generate.error"));
     },
   });
+
+  const handleExportSyscohada = async () => {
+    try {
+      const res = await exportSyscohadaJournalFn({ data: {} });
+      const blob = new Blob([res.csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `journal-syscohada-${periodMonth}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("Journal comptable SYSCOHADA exporté avec succès (TVA 18%) !");
+    } catch {
+      toast.error("Erreur lors de l'exportation du journal SYSCOHADA.");
+    }
+  };
 
   const STATUS_BADGE: Record<string, string> = {
     draft: "bg-muted text-muted-foreground",
@@ -97,14 +123,52 @@ function OrgBillingPage() {
             <h1 className="at-display text-2xl font-bold">{t("org.billing.title")}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{t("org.billing.subtitle")}</p>
           </div>
-          {org?.member_role && ["admin_org", "comptabilite"].includes(org.member_role) && (
-            <Button variant="primaryBlock" onClick={() => setShowGenerate(!showGenerate)}>
-              {showGenerate ? <X className="size-4" /> : <Plus className="size-4" />}
-              {t("org.billing.generate")}
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleExportSyscohada} className="gap-1.5 font-mono text-xs">
+              <Download className="size-3.5" />
+              <span>Export SYSCOHADA (TVA 18%)</span>
             </Button>
-          )}
+            {org?.member_role && ["admin_org", "comptabilite"].includes(org.member_role) && (
+              <Button variant="primaryBlock" onClick={() => setShowGenerate(!showGenerate)}>
+                {showGenerate ? <X className="size-4" /> : <Plus className="size-4" />}
+                {t("org.billing.generate")}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* ─── Active SLA Contract Banner ─── */}
+      {contract.data && (
+        <div className="border border-primary/40 bg-primary/5 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 at-in">
+          <div className="flex items-center gap-4">
+            <div className="size-12 border border-primary bg-primary text-primary-foreground flex items-center justify-center font-bold">
+              <ShieldCheck className="size-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-mono text-base font-extrabold uppercase">Contrat SLA Actif — {contract.data.contractNumber}</h3>
+                <Badge variant="outline" className="border-success text-success bg-success/10 uppercase font-mono text-[10px]">
+                  {contract.data.formula} SLA
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Engagements : <strong className="text-foreground">Garantie Prise en Charge {contract.data.responseSlaHours}h</strong> · <strong className="text-foreground">Résolution {contract.data.resolutionSlaHours}h</strong>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-primary/20 pt-3 md:pt-0 md:pl-6">
+            <div>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block">Forfait Mensuel</span>
+              <span className="font-mono text-lg font-bold text-primary">{formatFcfa(contract.data.monthlyPrice)} /mois</span>
+            </div>
+            <div>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block">Flotte Couverte</span>
+              <span className="font-mono text-sm font-bold">{contract.data.coveredEquipmentCount} / {contract.data.equipmentLimit} appareils</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
