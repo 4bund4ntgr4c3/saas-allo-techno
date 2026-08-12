@@ -27,9 +27,9 @@ export const APPROVAL_TIERS: ApprovalTier[] = [
 ];
 
 export function getRequiredApprovalTier(amountFcfa: number): ApprovalTier {
-  if (amountFcfa <= 100000) return APPROVAL_TIERS[0];
-  if (amountFcfa <= 500000) return APPROVAL_TIERS[1];
-  return APPROVAL_TIERS[2];
+  if (amountFcfa <= 100000) return APPROVAL_TIERS[0]!;
+  if (amountFcfa <= 500000) return APPROVAL_TIERS[1]!;
+  return APPROVAL_TIERS[2]!;
 }
 
 export function canUserApproveQuote(opts: {
