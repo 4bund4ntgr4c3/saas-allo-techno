@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
+import { COMPANY } from "@/data/catalog/company";
 
 export type RepairGuaranteeData = {
   reference: string;
@@ -20,110 +21,203 @@ export async function generateGuaranteePDF(data: RepairGuaranteeData): Promise<B
     unit: "mm",
     format: "a4",
   });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 16;
+  const contentWidth = pageWidth - margin * 2;
+  let y = 0;
 
-  // Background Header Bar (Technical Dark)
-  doc.setFillColor(15, 23, 42); // Slate-900 / Dark
-  doc.rect(0, 0, 210, 38, "F");
+  // 1. Premium Brand Header (Dark Slate #0f172a)
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, pageWidth, 36, "F");
 
-  // Header Title
+  // Orange Technical Accent Line (#f97316)
+  doc.setFillColor(249, 115, 22);
+  doc.rect(0, 36, pageWidth, 2.5, "F");
+
+  // Brand Name & Subtitle
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("ALLÔ TECHNO — CERTIFICAT DE GARANTIE", 14, 18);
+  doc.setFontSize(18);
+  doc.text(COMPANY.name.toUpperCase(), margin, 16);
 
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text("Service de Réparation & Maintenance High-Tech — Abomey-Calavi, Bénin", 14, 26);
-  doc.text("Support Client: +229 01 97 00 00 00 | contact@allotechno.africa", 14, 32);
-
-  // Reference Banner
-  doc.setFillColor(241, 245, 249); // Slate-100
-  doc.rect(14, 46, 182, 16, "F");
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(203, 213, 225);
-  doc.rect(14, 46, 182, 16, "S");
-
-  doc.setTextColor(15, 23, 42);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text(`RÉFÉRENCE GARANTIE : ${data.reference}`, 20, 56);
-
-  // Information Section
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.text("1. INFORMATIONS DU CLIENT & APPAREIL", 14, 74);
-  doc.setLineWidth(0.3);
-  doc.setDrawColor(15, 23, 42);
-  doc.line(14, 76, 196, 76);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text(`Nom du Client : ${data.clientName}`, 14, 84);
-  doc.text(`Téléphone : ${data.phone}`, 14, 91);
-  doc.text(`Modèle Appareil : ${data.deviceModel}`, 14, 98);
-  if (data.serialOrImei) {
-    doc.text(`N° Série / IMEI : ${data.serialOrImei}`, 14, 105);
-  }
-
-  // Guarantee Coverage Section
-  const startY = data.serialOrImei ? 116 : 109;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("2. COUVERTURE & DURÉE DE GARANTIE", 14, startY);
-  doc.line(14, startY + 2, 196, startY + 2);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text(`Intervention Réalisée : ${data.repairType}`, 14, startY + 10);
-  doc.text(`Durée de Garantie : ${data.guaranteeMonths} mois`, 14, startY + 17);
-  doc.text(`Date de Début : ${data.startDate}`, 14, startY + 24);
-  doc.text(`Date d'Échéance : ${data.endDate}`, 14, startY + 31);
-  if (data.notes) {
-    doc.text(`Notes d'Atelier : ${data.notes}`, 14, startY + 38);
-  }
-
-  // Generate QR Code for digital verification
-  const qrDataUrl = await QRCode.toDataURL(
-    `https://allotechno.africa/suivi?ref=${data.reference}`,
-    {
-      width: 120,
-      margin: 1,
-    },
-  );
-  doc.addImage(qrDataUrl, "PNG", 148, startY + 5, 38, 38);
-  doc.setFontSize(8);
-  doc.text("Scan pour vérification", 150, startY + 47);
-
-  // Terms and Conditions Section
-  const termsY = startY + 54;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("3. CONDITIONS D'APPLICATION DE LA GARANTIE", 14, termsY);
-  doc.line(14, termsY + 2, 196, termsY + 2);
-
-  doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
-  const terms = [
-    "• La garantie couvre exclusivement le composant réparé ou remplacé et les défauts de main-d'œuvre associés.",
-    "• Sont exclus de la garantie : les dommages liquides (oxydation), les chocs physiques, la casse d'écran ultérieure et les interventions d'un tiers.",
-    "• En cas de réclamation validée, Allô Techno procédera au remplacement gratuit de la pièce défectueuse sous 48h.",
+  doc.setFont("helvetica", "normal");
+  doc.text("CERTIFICAT DE GARANTIE DE RÉPARATION OFFICIEL", margin, 23);
+  doc.text(`${COMPANY.address} · Abomey-Calavi, Bénin`, margin, 29);
+
+  // Company Contact (Right aligned)
+  doc.text(`Tél: ${COMPANY.phone}`, pageWidth - margin, 16, { align: "right" });
+  doc.text(`Email: ${COMPANY.email}`, pageWidth - margin, 22, { align: "right" });
+  doc.text(`Web: allotechno.africa`, pageWidth - margin, 28, { align: "right" });
+
+  y = 46;
+
+  // 2. Title & Document Meta Card
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("CERTIFICAT DE GARANTIE ATELIER", margin, y);
+
+  // Status Badge
+  doc.setFillColor(220, 252, 231);
+  doc.setDrawColor(134, 239, 172);
+  doc.rect(pageWidth - margin - 42, y - 6, 42, 8, "FD");
+  doc.setFontSize(8.5);
+  doc.setTextColor(22, 101, 52);
+  doc.setFont("helvetica", "bold");
+  doc.text(`GARANTIE ${data.guaranteeMonths} MOIS`, pageWidth - margin - 21, y - 0.5, { align: "center" });
+
+  y += 7;
+
+  // Meta Box (Gray #f8fafc)
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(margin, y, contentWidth, 18, "FD");
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(`CODE DOSSIER :`, margin + 4, y + 6);
+  doc.setFont("courier", "bold");
+  doc.text(data.reference, margin + 30, y + 6);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`DATE DÉBUT :`, margin + 4, y + 13);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.startDate, margin + 28, y + 13);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`DATE EXPIRATION :`, margin + 100, y + 6);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.endDate, margin + 135, y + 6);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`COUVERTURE :`, margin + 100, y + 13);
+  doc.setFont("helvetica", "normal");
+  doc.text("Pièces & Main-d'œuvre", margin + 126, y + 13);
+
+  y += 24;
+
+  // 3. Information Grid (Client & Appareil)
+  const colWidth = (contentWidth - 6) / 2;
+
+  // Client Box
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(203, 213, 225);
+  doc.rect(margin, y, colWidth, 34, "D");
+  doc.setFillColor(241, 245, 249);
+  doc.rect(margin, y, colWidth, 7, "F");
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("1. TITULAIRE DE LA GARANTIE", margin + 4, y + 5);
+
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Nom Client :`, margin + 4, y + 13);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.clientName, margin + 25, y + 13);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`Téléphone :`, margin + 4, y + 20);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.phone, margin + 24, y + 20);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`Lieu Dépôt :`, margin + 4, y + 27);
+  doc.setFont("helvetica", "normal");
+  doc.text("Atelier Allô Techno (Abomey-Calavi)", margin + 24, y + 27);
+
+  // Appareil Box
+  doc.rect(margin + colWidth + 6, y, colWidth, 34, "D");
+  doc.setFillColor(241, 245, 249);
+  doc.rect(margin + colWidth + 6, y, colWidth, 7, "F");
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("2. ÉQUIPEMENT COUVERT", margin + colWidth + 10, y + 5);
+
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Modèle :`, margin + colWidth + 10, y + 13);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.deviceModel, margin + colWidth + 26, y + 13);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`N° Série / IMEI :`, margin + colWidth + 10, y + 20);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.serialOrImei || "Enregistré au dossier", margin + colWidth + 37, y + 20);
+
+  doc.setFont("helvetica", "bold");
+  doc.text(`Intervention :`, margin + colWidth + 10, y + 27);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.repairType, margin + colWidth + 32, y + 27);
+
+  y += 40;
+
+  // 4. Conditions d'Application Card
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("3. CONDITIONS GENERALES ET EXCLUSIONS", margin, y);
+  y += 4;
+
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(203, 213, 225);
+  doc.rect(margin, y, contentWidth, 38, "FD");
+
+  doc.setFontSize(8.2);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(51, 65, 85);
+  const termsLines = [
+    "• La présente garantie couvre exclusivement la pièce remplacée ainsi que les défauts de montage liés à l'intervention.",
+    "• Exclusions formelles : les dommages causés par choc physique, fissure ultérieure, contact avec tout liquide (oxydation),",
+    "  ou toute ouverture / tentative de réparation effectuée par un tiers ou par le client sans accord d'Allô Techno.",
+    "• En cas de panne couverte validée par nos techniciens, l'échange du composant est effectué sans frais supplémentaires.",
+    "• Ce certificat doit être présenté en boutique avec l'appareil pour tout exercice du droit de garantie.",
   ];
-  let tY = termsY + 8;
-  terms.forEach((t) => {
-    doc.text(t, 14, tY);
-    tY += 5.5;
+
+  let lineY = y + 6;
+  termsLines.forEach((l) => {
+    doc.text(l, margin + 4, lineY);
+    lineY += 6.5;
   });
 
-  // Footer Signature Lines
-  doc.setLineWidth(0.2);
-  doc.setDrawColor(203, 213, 225);
-  doc.line(14, 255, 80, 255);
-  doc.line(130, 255, 196, 255);
+  y += 44;
 
-  doc.setFontSize(8);
+  // 5. Verification QR Code & Signature Section
+  const footerY = pageHeight - 34;
+
+  doc.setDrawColor(203, 213, 225);
+  doc.line(margin, footerY - 8, margin + contentWidth, footerY - 8);
+
+  // QR Code Image
+  const qrUrl = await QRCode.toDataURL(
+    `https://allotechno.africa/suivi?ref=${data.reference}`,
+    { width: 120, margin: 1, color: { dark: "#0f172a" } }
+  );
+  doc.addImage(qrUrl, "PNG", margin, footerY - 6, 22, 22);
+
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("AUTHENTIFICATION NUMÉRIQUE", margin + 25, footerY - 2);
   doc.setFont("helvetica", "normal");
-  doc.text("Signature & Cachet Atelier Allô Techno", 14, 260);
-  doc.text("Signature du Client", 130, 260);
+  doc.setTextColor(100, 116, 139);
+  doc.text("Scannez ce QR Code pour vérifier l'authenticité du certificat de garantie.", margin + 25, footerY + 3);
+  doc.text("Support technique direct : contact@allotechno.africa | +229 01 97 00 00 00", margin + 25, footerY + 8);
+
+  // Signature Box
+  doc.setDrawColor(203, 213, 225);
+  doc.rect(pageWidth - margin - 55, footerY - 6, 55, 20, "D");
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("CACHE / SIGNATURE ATELIER", pageWidth - margin - 51, footerY - 2);
 
   return doc.output("blob");
 }
+

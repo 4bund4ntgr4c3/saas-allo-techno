@@ -48,40 +48,48 @@ export async function downloadInvoicePdf(r: InvoiceRow) {
   const { estimate, found } = await invoiceEstimate(r.device, r.issue);
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
-  const margin = 18;
+  const margin = 16;
 
+  // Header Dark Slate #0f172a
   doc.setFillColor(15, 23, 42);
-  doc.rect(0, 0, pageW, 30, "F");
+  doc.rect(0, 0, pageW, 34, "F");
+
+  // Orange Accent Line #f97316
+  doc.setFillColor(249, 115, 22);
+  doc.rect(0, 34, pageW, 2.5, "F");
+
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16);
+  doc.setFontSize(17);
   doc.setFont("helvetica", "bold");
-  doc.text(COMPANY.name, margin, 15);
-  doc.setFontSize(9);
+  doc.text(COMPANY.name.toUpperCase(), margin, 15);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "normal");
   doc.text(
     [COMPANY.address, `Tél. ${COMPANY.phone} — ${COMPANY.email}`, COMPANY.city + ", Bénin"],
     pageW - margin,
-    15,
+    14,
     { align: "right" },
   );
 
-  doc.setTextColor(20, 20, 20);
-  doc.setFontSize(13);
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text(`Reçu de dépôt — dossier ${r.reference}`, margin, 44);
+  doc.text(`REÇU DE DÉPÔT — DOSSIER ${r.reference}`, margin, 45);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
+  doc.setTextColor(100, 116, 139);
   doc.text(
     `Édité le ${new Date().toLocaleDateString("fr-FR")} · ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
     margin,
-    50,
+    51,
   );
 
   autoTable(doc, {
-    startY: 58,
+    startY: 57,
     margin: { left: margin, right: margin },
     theme: "grid",
-    styles: { fontSize: 9.5, cellPadding: 2.5 },
+    headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontStyle: "bold" },
+    styles: { fontSize: 9, cellPadding: 2.5 },
     head: [["Dossier", "Client", "Téléphone", "E-mail"]],
     body: [[r.reference, r.customer_name, r.phone, r.email ?? "—"]],
   });
