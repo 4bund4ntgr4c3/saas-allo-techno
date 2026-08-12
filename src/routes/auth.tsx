@@ -33,7 +33,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  "h-11 w-full border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 function AuthPage() {
   const navigate = useNavigate();

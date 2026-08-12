@@ -31,7 +31,7 @@ import { AuthErrorHandler } from "@/components/AuthErrorHandler";
 initSentry();
 
 // Lazy-load components that could crash at import time (zustand, etc.)
-// Without lazy, an import failure in these kills the entire root → I18nProvider never renders.
+// Without lazy, an import failure in these kills the entire root ? I18nProvider never renders.
 const CompareBar = lazy(() =>
   import("@/components/shop/CompareBar").then((m) => ({ default: m.CompareBar })),
 );
@@ -40,7 +40,7 @@ const CookieConsent = lazy(() =>
 );
 
 // La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
-// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargée
+// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera charg�e
 // juste avant/sur le premier besoin (voir RootComponent).
 const SearchModal = lazy(() =>
   import("@/components/site/SearchModal").then((m) => ({ default: m.SearchModal })),
@@ -57,7 +57,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-sm bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
+            className="inline-flex items-center justify-center bg-primary px-5 py-3 text-sm font-extrabold uppercase tracking-widest text-primary-foreground"
           >
             {t("error.notFound.backToHome")}
           </Link>
@@ -122,13 +122,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Allô Techno — Réparation d'appareils à Abomey-Calavi" },
+      { title: "All� Techno � R�paration d'appareils � Abomey-Calavi" },
       {
         name: "description",
         content:
-          "Réparation de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi, Bénin.",
+          "R�paration de smartphones, tablettes, MacBook, iMac, consoles et montres connect�es � Abomey-Calavi, B�nin.",
       },
-      { property: "og:site_name", content: "Allô Techno" },
+      { property: "og:site_name", content: "All� Techno" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: `${COMPANY.url}/og-image.png` },
       { name: "twitter:card", content: "summary_large_image" },
@@ -136,7 +136,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#d83100" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
-      { name: "apple-mobile-web-app-title", content: "Allô Techno" },
+      { name: "apple-mobile-web-app-title", content: "All� Techno" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -158,13 +158,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "LocalBusiness",
           name: COMPANY.name,
           description:
-            "Atelier de réparation de smartphones, tablettes, ordinateurs, consoles et montres connectées.",
+            "Atelier de r�paration de smartphones, tablettes, ordinateurs, consoles et montres connect�es.",
           telephone: COMPANY.phone,
           email: COMPANY.email,
           priceRange: "3.500 - 195.000 FCFA",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Quartier Zogbadjè, Rue de l'Université",
+            streetAddress: "Quartier Zogbadj�, Rue de l'Universit�",
             addressLocality: COMPANY.city,
             addressCountry: "BJ",
           },
@@ -181,7 +181,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon français.
+  // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon fran�ais.
   const lang = useRouterState({ select: (s) => s.location.pathname.split("/")[1] ?? "fr" });
   const locale = normalizeLocale(lang);
   return (

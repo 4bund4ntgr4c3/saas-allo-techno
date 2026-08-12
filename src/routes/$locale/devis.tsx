@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Clock, Download, Loader2, Plus, ShieldCheck } from "lucide-react";
+import { Clock, Loader2, Plus, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
+import { B2BRequestForm } from "@/components/site/B2BRequestForm";
 import { Button } from "@/components/ui/button";
 import { ErrorRoute } from "@/components/ErrorRoute";
 
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/$locale/devis")({
 });
 
 function Devis() {
+  const [clientType, setClientType] = useState<"particulier" | "entreprise">("particulier");
   const [brand, setBrand] = useState<string>("");
   const [deviceSlug, setDeviceSlug] = useState<string>("");
   const [faultSlug, setFaultSlug] = useState<string>("");
@@ -97,186 +99,196 @@ function Devis() {
       </section>
 
       <section className="py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="grid gap-px border border-border bg-border md:grid-cols-3">
-            <div className="bg-card p-6">
-              <label htmlFor="brand" className="at-eyebrow mb-3 block">
-                {t("devis.step1")}
-              </label>
-              <select
-                id="brand"
-                value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  setDeviceSlug("");
-                  setFaultSlug("");
-                  setLeadSent(false);
-                }}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
-              >
-                <option value="">{t("devis.select")}</option>
-                {BRANDS.map((b) => (
-                  <option key={b.slug} value={b.slug}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="bg-card p-6">
-              <label htmlFor="device" className="at-eyebrow mb-3 block">
-                {t("devis.step2")}
-              </label>
-              <select
-                id="device"
-                value={deviceSlug}
-                disabled={!brand}
-                onChange={(e) => {
-                  setDeviceSlug(e.target.value);
-                  setFaultSlug("");
-                  setLeadSent(false);
-                }}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
-              >
-                <option value="">{t("devis.select")}</option>
-                {devices.map((d) => (
-                  <option key={d.slug} value={d.slug}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="bg-card p-6">
-              <label htmlFor="fault" className="at-eyebrow mb-3 block">
-                {t("devis.step3")}
-              </label>
-              <select
-                id="fault"
-                value={faultSlug}
-                disabled={!device}
-                onChange={(e) => {
-                  setFaultSlug(e.target.value);
-                  setLeadSent(false);
-                }}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
-              >
-                <option value="">{t("devis.select")}</option>
-                {device?.faults.map((f) => (
-                  <option key={f.slug} value={f.slug}>
-                    {t(f.label)}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-8 flex border border-border bg-card p-1">
+            <button
+              type="button"
+              onClick={() => setClientType("particulier")}
+              className={`flex-1 py-3 text-xs md:text-sm font-extrabold uppercase tracking-wider transition-colors ${
+                clientType === "particulier"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Client Particulier
+            </button>
+            <button
+              type="button"
+              onClick={() => setClientType("entreprise")}
+              className={`flex-1 py-3 text-xs md:text-sm font-extrabold uppercase tracking-wider transition-colors ${
+                clientType === "entreprise"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Entreprise &amp; Pro (B2B)
+            </button>
           </div>
 
-          {fault && device ? (
-            <div className="mt-8 border border-border bg-card p-8">
-              <span className="at-eyebrow">{t("devis.estimation")}</span>
-              <h2 className="at-display mt-2 text-3xl">
-                {device.name} — {t(fault.label)}
-              </h2>
-              <div className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-3">
-                <div className="bg-card p-6">
-                  <div className="font-mono text-3xl font-medium text-primary">
-                    {formatFcfa(fault.price)}
-                  </div>
-                  <div className="at-eyebrow mt-2">{t("devis.priceAll")}</div>
-                </div>
-                <div className="bg-card p-6">
-                  <div className="flex items-center gap-2 font-mono text-2xl font-medium">
-                    <Clock className="size-5 text-muted-foreground" />
-                    {t(fault.duration)}
-                  </div>
-                  <div className="at-eyebrow mt-2">{t("devis.delay")}</div>
-                </div>
-                <div className="bg-card p-6">
-                  <div className="flex items-center gap-2 font-mono text-2xl font-medium">
-                    <ShieldCheck className="size-5 text-muted-foreground" />
-                    {t(fault.warranty)}
-                  </div>
-                  <div className="at-eyebrow mt-2">{t("devis.warranty")}</div>
-                </div>
-              </div>
-              <p className="mt-6 text-sm text-muted-foreground">
-                {t("devis.partNote", [t(fault.part)])}
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild variant="technical" size="lg">
-                  <Link to="/$locale/reservation" params={{ locale }}>
-                    {t("devis.reserve")} <ArrowRight className="ml-2 size-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="technicalOutline" size="lg">
-                  <Link to="/$locale/appareil/$slug" params={{ locale, slug: device.slug }}>
-                    {t("devis.allFaults")}
-                  </Link>
-                </Button>
-                {!leadSent ? (
-                  <Button variant="secondary" size="lg" onClick={handleDemandeDevis}>
-                    <Download className="mr-2 size-4" />
-                    {t("devis.request")}
-                  </Button>
-                ) : (
-                  <span className="inline-flex items-center gap-2 rounded-sm border border-success/40 bg-success/10 px-4 py-2 text-sm font-medium text-success">
-                    {t("devis.lead.sent")}
-                  </span>
-                )}
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => {
-                    const id = `${device.slug}||${fault.slug}`;
-                    if (compareItems.some((c) => c.id === id)) {
-                      toast.info(t("devis.compare.added"));
-                      return;
-                    }
-                    setCompareItems((prev) => [
-                      ...prev,
-                      {
-                        id,
-                        device: device.name,
-                        fault: t(fault.label),
-                        price: fault.price,
-                        duration: t(fault.duration),
-                        warranty: t(fault.warranty),
-                        parts: [],
-                      },
-                    ]);
-                    toast.success(t("devis.compare.added"));
-                  }}
-                >
-                  <Plus className="mr-1 size-4" />
-                  {t("devis.compare.addTo")}
-                </Button>
-              </div>
-            </div>
+          {clientType === "entreprise" ? (
+            <B2BRequestForm />
           ) : (
-            <p className="mt-8 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-              {t("devis.emptyHint")}
-            </p>
-          )}
+            <>
+              <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+                <div className="bg-card p-6">
+                  <label htmlFor="brand" className="at-eyebrow mb-3 block">
+                    {t("devis.step1")}
+                  </label>
+                  <select
+                    id="brand"
+                    value={brand}
+                    onChange={(e) => {
+                      setBrand(e.target.value);
+                      setDeviceSlug("");
+                      setFaultSlug("");
+                      setLeadSent(false);
+                    }}
+                    className="h-11 w-full border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
+                  >
+                    <option value="">{t("devis.select")}</option>
+                    {BRANDS.map((b) => (
+                      <option key={b.slug} value={b.slug}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          {compareItems.length >= 2 && (
-            <div className="mt-8">
-              <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
-                <DevisComparison
-                  devis={compareItems}
-                  onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}
-                />
-              </Suspense>
-            </div>
-          )}
-          {compareItems.length === 1 && (
-            <div className="mt-8 rounded-sm border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
-              {t("devis.compare.empty")}
-            </div>
-          )}
+                <div className="bg-card p-6">
+                  <label htmlFor="device" className="at-eyebrow mb-3 block">
+                    {t("devis.step2")}
+                  </label>
+                  <select
+                    id="device"
+                    value={deviceSlug}
+                    disabled={!brand}
+                    onChange={(e) => {
+                      setDeviceSlug(e.target.value);
+                      setFaultSlug("");
+                      setLeadSent(false);
+                    }}
+                    className="h-11 w-full border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
+                  >
+                    <option value="">{t("devis.select")}</option>
+                    {devices.map((d) => (
+                      <option key={d.slug} value={d.slug}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          <div className="mt-8">
-            <MobileMoneyBar />
-          </div>
+                <div className="bg-card p-6">
+                  <label htmlFor="fault" className="at-eyebrow mb-3 block">
+                    {t("devis.step3")}
+                  </label>
+                  <select
+                    id="fault"
+                    value={faultSlug}
+                    disabled={!device}
+                    onChange={(e) => {
+                      setFaultSlug(e.target.value);
+                      setLeadSent(false);
+                    }}
+                    className="h-11 w-full border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
+                  >
+                    <option value="">{t("devis.select")}</option>
+                    {device?.faults.map((f) => (
+                      <option key={f.slug} value={f.slug}>
+                        {t(f.label)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {fault && device ? (
+                <div className="mt-8 border border-border bg-card p-8">
+                  <span className="at-eyebrow">{t("devis.estimation")}</span>
+                  <h2 className="at-display mt-2 text-3xl">
+                    {device.name} — {t(fault.label)}
+                  </h2>
+                  <div className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-3">
+                    <div className="bg-card p-6">
+                      <div className="font-mono text-3xl font-medium text-primary">
+                        {formatFcfa(fault.price)}
+                      </div>
+                      <div className="at-eyebrow mt-2">{t("devis.priceAll")}</div>
+                    </div>
+                    <div className="bg-card p-6">
+                      <div className="flex items-center gap-2 font-mono text-2xl font-medium">
+                        <Clock className="size-5 text-muted-foreground" />
+                        {t(fault.duration)}
+                      </div>
+                      <div className="at-eyebrow mt-2">{t("devis.delay")}</div>
+                    </div>
+                    <div className="bg-card p-6">
+                      <div className="flex items-center gap-2 font-mono text-2xl font-medium">
+                        <ShieldCheck className="size-5 text-muted-foreground" />
+                        {t(fault.warranty)}
+                      </div>
+                      <div className="at-eyebrow mt-2">{t("devis.warranty")}</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <Button
+                      variant="primaryBlock"
+                      size="lg"
+                      onClick={handleDemandeDevis}
+                      disabled={leadSent}
+                    >
+                      {leadSent ? t("devis.leadSent") : t("devis.requestThisEstimate")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => {
+                        const item = {
+                          id: `${device.slug}-${fault.slug}-${Date.now()}`,
+                          device: device.name,
+                          fault: t(fault.label),
+                          price: fault.price,
+                          duration: t(fault.duration),
+                          warranty: t(fault.warranty),
+                          parts: [t("devis.partOriginal"), t("devis.mainOE")],
+                        };
+                        if (compareItems.length < 3) {
+                          setCompareItems((prev) => [...prev, item]);
+                          toast.success(t("devis.compare.added"));
+                        } else {
+                          toast.error(t("devis.compare.max"));
+                        }
+                      }}
+                    >
+                      <Plus className="mr-2 size-4" />
+                      {t("devis.compare.add")}
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
+              {compareItems.length >= 2 && (
+                <div className="mt-8">
+                  <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}>
+                    <DevisComparison
+                      devis={compareItems}
+                      onRemove={(id) => setCompareItems((prev) => prev.filter((c) => c.id !== id))}
+                    />
+                  </Suspense>
+                </div>
+              )}
+              {compareItems.length === 1 && (
+                <div className="mt-8 border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
+                  {t("devis.compare.empty")}
+                </div>
+              )}
+
+              <div className="mt-8">
+                <MobileMoneyBar />
+              </div>
+            </>
+          )}
         </div>
       </section>
 

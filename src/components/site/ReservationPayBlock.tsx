@@ -154,7 +154,7 @@ export function ReservationPayBlock({
       <p className="mt-2 text-xs text-muted-foreground">{t("suivi.pay.intro")}</p>
 
       {loyaltyQuery.data && loyaltyQuery.data.pointsUsed > 0 && (
-        <label className="mt-4 flex items-center gap-3 rounded-sm border border-border bg-background p-3 text-sm cursor-pointer hover:border-primary/50 transition-colors">
+        <label className="mt-4 flex items-center gap-3 border border-border bg-background p-3 text-sm cursor-pointer hover:border-primary/50 transition-colors">
           <input
             type="checkbox"
             checked={useLoyalty}
@@ -266,7 +266,7 @@ export function ReservationPayBlock({
         <p className="mt-3 text-xs text-muted-foreground">{t("suivi.pay.pending")}</p>
       )}
       {phase === "paid" && (
-        <p className="mt-3 w-fit rounded-sm border border-success/50 px-3 py-1 font-mono text-xs uppercase text-success">
+        <p className="mt-3 w-fit border border-success/50 px-3 py-1 font-mono text-xs uppercase text-success">
           {t("suivi.pay.paid")}
         </p>
       )}

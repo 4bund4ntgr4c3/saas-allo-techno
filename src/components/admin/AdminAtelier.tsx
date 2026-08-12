@@ -162,7 +162,7 @@ export function AtelierBoard() {
         <div className="flex items-center gap-2">
           {viewMode === "kanban" && (
             <select
-              className="h-8 rounded-sm border border-border bg-card px-2 text-xs focus:outline-none"
+              className="h-8 border border-border bg-card px-2 text-xs focus:outline-none"
               value={workshopFilter}
               onChange={(e) => setWorkshopFilter(e.target.value)}
             >
@@ -175,10 +175,10 @@ export function AtelierBoard() {
               ))}
             </select>
           )}
-          <div className="flex rounded-sm border border-border p-0.5">
+          <div className="flex border border-border p-0.5">
             <button
               onClick={() => setViewMode("kanban")}
-              className={`flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
                 viewMode === "kanban"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -189,7 +189,7 @@ export function AtelierBoard() {
             </button>
             <button
               onClick={() => setViewMode("calendar")}
-              className={`flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
                 viewMode === "calendar"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -356,7 +356,7 @@ export function AtelierCard({
         <p className="truncate font-mono text-[10px] text-muted-foreground">{card.reference}</p>
         <div className="flex items-center gap-1">
           {card.status === "en_attente" && (
-            <span className="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
+            <span className="shrink-0 bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-500">
               {t("admin.atelier.badge.new")}
             </span>
           )}
@@ -439,7 +439,7 @@ export function AtelierCard({
         <div className="mt-2 flex items-center gap-1">
           <ArrowRightLeft className="size-3 text-muted-foreground" />
           <select
-            className="h-7 flex-1 rounded-sm border border-border bg-card px-1.5 text-[10px] focus:outline-none"
+            className="h-7 flex-1 border border-border bg-card px-1.5 text-[10px] focus:outline-none"
             value=""
             disabled={busy}
             onChange={(e) => {

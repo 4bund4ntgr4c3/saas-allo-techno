@@ -131,7 +131,7 @@ export function ReturnsSection() {
         </div>
       </div>
 
-      <form onSubmit={create} className="space-y-4 rounded-sm border border-border bg-card p-5">
+      <form onSubmit={create} className="space-y-4 border border-border bg-card p-5">
         <h3 className="text-sm font-semibold">{t("admin.returns.newRequest")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
@@ -276,7 +276,7 @@ export function ReturnCard({
         </span>
       </div>
 
-      <p className="mt-3 rounded-sm bg-surface p-3 text-sm text-muted-foreground">
+      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">
         {returnRow.reason}
       </p>
 

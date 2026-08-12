@@ -110,7 +110,7 @@ export function AdminWebhooks() {
                     {w.events.map((ev) => (
                       <span
                         key={ev}
-                        className="inline-block rounded-sm bg-muted px-1.5 py-0.5 text-[10px] font-medium"
+                        className="inline-block bg-muted px-1.5 py-0.5 text-[10px] font-medium"
                       >
                         {EVENT_LABELS[ev] ?? ev}
                       </span>

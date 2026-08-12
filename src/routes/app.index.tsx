@@ -88,11 +88,11 @@ function AppHome() {
                 key={org.id}
                 to="/app/organizations/$orgId"
                 params={{ orgId: org.id }}
-                className="group rounded-sm border border-border bg-card p-5 transition-colors hover:border-primary/50"
+                className="group border border-border bg-card p-5 transition-colors hover:border-primary/50"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-sm bg-foreground text-background">
+                    <div className="flex size-10 items-center justify-center bg-foreground text-background">
                       <Building2 className="size-5" />
                     </div>
                     <div>
@@ -127,7 +127,7 @@ function AppHome() {
 
       {showForm && (
         <form
-          className="max-w-2xl space-y-5 rounded-sm border border-border bg-card p-6"
+          className="max-w-2xl space-y-5 border border-border bg-card p-6"
           onSubmit={(e) => {
             e.preventDefault();
             createOrg.mutate();

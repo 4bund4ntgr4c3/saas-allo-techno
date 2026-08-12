@@ -301,7 +301,7 @@ export function ClaimCard({
         </span>
       </div>
 
-      <p className="mt-3 rounded-sm bg-surface p-3 text-sm text-muted-foreground">
+      <p className="mt-3 bg-surface p-3 text-sm text-muted-foreground">
         {claim.message}
       </p>
 

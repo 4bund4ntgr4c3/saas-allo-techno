@@ -1,8 +1,26 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  BarChart3, BadgeCheck, CreditCard, FileText, History,
-  LayoutDashboard, MailPlus, Package, PieChart, RadioTower, RotateCcw,
-  ShieldCheck, ShoppingCart, ToggleLeft, TrendingUp, Truck, Users, Wrench, Webhook,
+  BarChart3,
+  BadgeCheck,
+  Bell,
+  BookOpen,
+  CreditCard,
+  FileText,
+  History,
+  LayoutDashboard,
+  Megaphone,
+  MessageSquare,
+  Package,
+  PieChart,
+  RotateCcw,
+  ShieldCheck,
+  ShoppingCart,
+  ToggleLeft,
+  TrendingUp,
+  Truck,
+  Users,
+  Wrench,
+  Webhook,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/context";
@@ -31,14 +49,12 @@ type NavGroup = {
 const NAV_GROUPS: NavGroup[] = [
   {
     labelKey: "admin.nav.overview",
-    items: [
-      { labelKey: "admin.nav.dashboard", to: "/admin", icon: LayoutDashboard },
-    ],
+    items: [{ labelKey: "admin.nav.dashboard", to: "/admin", icon: LayoutDashboard }],
   },
   {
     labelKey: "admin.nav.operations",
     items: [
-      { labelKey: "admin.tab.dossiers", to: "/admin/dossiers", icon: RadioTower },
+      { labelKey: "admin.tab.dossiers", to: "/admin/dossiers", icon: FileText },
       { labelKey: "admin.tab.atelier", to: "/admin/atelier", icon: Wrench },
       { labelKey: "admin.tab.caisse", to: "/admin/caisse", icon: CreditCard },
       { labelKey: "admin.tab.livraisons", to: "/admin/livraisons", icon: Truck },
@@ -71,14 +87,14 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { labelKey: "admin.tab.contenu", to: "/admin/contenu", icon: FileText },
       { labelKey: "admin.tab.catalogue", to: "/admin/catalogue", icon: Package },
-      { labelKey: "admin.tab.kb", to: "/admin/kb", icon: FileText },
+      { labelKey: "admin.tab.kb", to: "/admin/kb", icon: BookOpen },
       { labelKey: "admin.tab.inventaire", to: "/admin/inventaire", icon: Package },
     ],
   },
   {
     labelKey: "admin.nav.tools",
     items: [
-      { labelKey: "admin.tab.leads", to: "/admin/leads", icon: MailPlus },
+      { labelKey: "admin.tab.leads", to: "/admin/leads", icon: TrendingUp },
       { labelKey: "admin.tab.reclamations", to: "/admin/reclamations", icon: BadgeCheck },
       { labelKey: "admin.tab.parrainage", to: "/admin/parrainage", icon: Users },
       { labelKey: "admin.tab.rapports", to: "/admin/rapports", icon: BarChart3 },
@@ -89,11 +105,11 @@ const NAV_GROUPS: NavGroup[] = [
     labelKey: "admin.nav.system",
     items: [
       { labelKey: "admin.tab.securite", to: "/admin/securite", icon: ShieldCheck },
-      { labelKey: "admin.tab.notifs", to: "/admin/notifications", icon: MailPlus },
-      { labelKey: "admin.tab.marketing", to: "/admin/marketing", icon: MailPlus },
+      { labelKey: "admin.tab.notifs", to: "/admin/notifications", icon: Bell },
+      { labelKey: "admin.tab.marketing", to: "/admin/marketing", icon: Megaphone },
       { labelKey: "admin.tab.webhooks", to: "/admin/webhooks", icon: Webhook },
       { labelKey: "admin.tab.featureFlags", to: "/admin/feature-flags", icon: ToggleLeft },
-      { labelKey: "admin.tab.chat", to: "/admin/chat", icon: MailPlus, badge: "3" },
+      { labelKey: "admin.tab.chat", to: "/admin/chat", icon: MessageSquare, badge: "3" },
     ],
   },
 ];
@@ -108,31 +124,26 @@ function isItemActive(pathname: string, item: NavItem, locale: string): boolean 
   return false;
 }
 
-function NavItemLink({
-  item,
-  isActive,
-}: {
-  item: NavItem;
-  isActive: boolean;
-}) {
+function NavItemLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
   const { t } = useI18n();
 
   return (
     <Link
       to={item.to!}
       className={cn(
-        "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors duration-150",
-        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        "relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         isActive
-          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-          : "text-sidebar-foreground/70",
+          ? "bg-primary/8 text-foreground"
+          : "text-sidebar-foreground/65 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
       )}
     >
+      {/* Active indicator bar */}
+      {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
       <item.icon
         className={cn(
           "size-4 shrink-0 transition-colors",
-          isActive ? "text-foreground" : "text-muted-foreground",
+          isActive ? "text-primary" : "text-muted-foreground",
         )}
       />
       <span className="truncate">{t(item.labelKey)}</span>
@@ -149,12 +160,13 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold tracking-tight">
-            AT
+          {/* Logo mark */}
+          <div className="flex size-9 shrink-0 items-center justify-center border border-primary/20 bg-primary text-primary-foreground">
+            <span className="at-display text-sm">AT</span>
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
             <span className="at-display truncate text-base">Allô Techno</span>
-            <span className="at-eyebrow">Admin</span>
+            <span className="at-eyebrow mt-0.5">Backoffice</span>
           </div>
         </div>
       </SidebarHeader>
@@ -177,7 +189,7 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
                       <div key={item.labelKey} className="relative">
                         <NavItemLink item={item} isActive={isActive} />
                         {item.badge && (
-                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary group-data-[collapsible=icon]:hidden">
+                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 flex size-5 items-center justify-center bg-primary/10 text-[10px] font-bold text-primary group-data-[collapsible=icon]:hidden">
                             {item.badge}
                           </span>
                         )}
@@ -202,7 +214,7 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
             <span className="truncate font-medium">{user.email ?? "Admin"}</span>
-            <span className="text-xs text-muted-foreground">{t("admin.nav.administrator")}</span>
+            <span className="at-eyebrow mt-0.5">{t("admin.nav.administrator")}</span>
           </div>
         </div>
       </SidebarFooter>

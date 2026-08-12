@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("animate-pulse rounded-sm bg-muted", className)} {...props} />;
+  return <div className={cn("animate-pulse bg-muted", className)} {...props} />;
 }
 
 export function ProductCardSkeleton() {
@@ -9,7 +9,7 @@ export function ProductCardSkeleton() {
     <article className="flex flex-col bg-card p-6">
       <div className="flex items-start justify-between">
         <Skeleton className="h-4 w-20" />
-        <Skeleton className="size-4 rounded-full" />
+        <Skeleton className="size-4" />
       </div>
       <Skeleton className="mt-3 h-5 w-3/4" />
       <Skeleton className="mt-4 h-7 w-1/3" />

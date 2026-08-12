@@ -23,7 +23,7 @@ export function CompareBar() {
           {products.map((p) => (
             <div
               key={p.slug}
-              className="flex shrink-0 items-center gap-2 rounded-sm border border-border bg-surface px-3 py-1.5"
+              className="flex shrink-0 items-center gap-2 border border-border bg-surface px-3 py-1.5"
             >
               <span className="text-xs font-bold line-clamp-1">{p.name}</span>
               <span className="font-mono text-[10px] text-primary">{formatFcfa(p.price)}</span>
@@ -41,7 +41,7 @@ export function CompareBar() {
           <Link
             to="/$locale/boutique/comparer"
             params={{ locale }}
-            className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex shrink-0 items-center gap-2 bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {t("boutique.compare.go")} <ArrowRight className="size-3" />
           </Link>

@@ -168,7 +168,7 @@ export function AdminMarketing() {
       cell: ({ row }) => {
         const seg = row.getValue("segment") as string;
         return (
-          <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg] ?? ""}`}>
+          <span className={`inline-flex border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg] ?? ""}`}>
             {segmentLabel(seg)}
           </span>
         );
@@ -208,7 +208,7 @@ export function AdminMarketing() {
         {(["vip", "loyal", "active", "new", "inactive"] as const).map((seg) => (
           <div key={seg} className="rounded-sm border border-border bg-card p-3 text-center">
             <span
-              className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg]}`}
+              className={`inline-flex border px-2 py-0.5 text-[10px] font-bold uppercase ${SEGMENT_COLORS[seg]}`}
             >
               {segmentLabel(seg)}
             </span>

@@ -116,7 +116,7 @@ function WorkAt() {
               <ol className="mt-8 space-y-6">
                 {(["candidature", "entretien", "essai", "embauche"] as const).map((step, i) => (
                   <li key={step} className="flex gap-4">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-primary font-mono text-sm font-bold text-primary">
+                    <span className="flex size-8 shrink-0 items-center justify-center border border-primary font-mono text-sm font-bold text-primary">
                       {i + 1}
                     </span>
                     <div>

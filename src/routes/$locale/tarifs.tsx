@@ -79,7 +79,7 @@ function Tarifs() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder={t("tarifs.searchPlaceholder")}
-                className="h-11 w-full rounded-sm border border-border bg-card px-4 font-mono text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="h-11 w-full border border-border bg-card px-4 font-mono text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />
             </div>
             <div>
@@ -90,7 +90,7 @@ function Tarifs() {
                 id="t-brand"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
               >
                 <option value="tous">{t("tarifs.brandAll")}</option>
                 {BRANDS.map((b) => (
@@ -108,7 +108,7 @@ function Tarifs() {
                 id="t-cat"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
               >
                 <option value="toutes">{t("tarifs.categoryAll")}</option>
                 {CATEGORIES.map((c) => (

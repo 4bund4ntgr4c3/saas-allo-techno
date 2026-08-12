@@ -251,7 +251,7 @@ function Home() {
                       AT-7K3M9Q
                     </span>
                     <span className="flex items-center gap-1.5 rounded-lg bg-success/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-success">
-                      <span className="size-1.5 rounded-full bg-success animate-pulse" />
+                      <span className="size-1.5 bg-success animate-pulse" />
                       {t("home.hero.tracking.ref")}
                     </span>
                   </div>
@@ -272,11 +272,11 @@ function Home() {
                       >
                         <div className="flex flex-col items-center">
                           {step.current ? (
-                            <div className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md shadow-primary/30 transition-transform duration-200 hover:scale-110">
+                            <div className="flex size-6 items-center justify-center bg-primary text-primary-foreground shadow-md shadow-primary/30 transition-transform duration-200 hover:scale-110">
                               <Check className="size-3.5" strokeWidth={3} />
                             </div>
                           ) : (
-                            <div className="flex size-6 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors duration-200 hover:bg-primary/20 hover:text-primary">
+                            <div className="flex size-6 items-center justify-center bg-muted text-muted-foreground transition-colors duration-200 hover:bg-primary/20 hover:text-primary">
                               <Check className="size-3.5" strokeWidth={3} />
                             </div>
                           )}
@@ -389,8 +389,8 @@ function Home() {
             title={t("home.prices.title")}
             text={t("home.prices.text")}
             right={
-              <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5">
-                <span className="size-2 animate-pulse rounded-full bg-success" />
+              <div className="flex items-center gap-2 border border-border bg-card px-3 py-1.5">
+                <span className="size-2 animate-pulse bg-success" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">
                   {t("home.prices.stock")}
                 </span>

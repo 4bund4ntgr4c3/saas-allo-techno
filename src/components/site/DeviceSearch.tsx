@@ -702,7 +702,7 @@ export function DeviceSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("wizard.search.placeholder")}
-          className="h-14 w-full rounded-sm border border-border bg-card pr-4 pl-12 font-mono text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="h-14 w-full border border-border bg-card pr-4 pl-12 font-mono text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         />
         {query.trim().length >= 2 && (
           <p role="status" className="sr-only">
@@ -1078,7 +1078,7 @@ export function DeviceSearch({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t("wizard.description.placeholder")}
-                  className="w-full rounded-sm border border-border bg-background p-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="w-full border border-border bg-background p-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 />
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
@@ -1151,11 +1151,11 @@ export function DeviceSearch({
                       >
                         <span
                           aria-hidden="true"
-                          className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                          className={`flex size-4 shrink-0 items-center justify-center border ${
                             on ? "border-primary" : "border-border"
                           }`}
                         >
-                          {on && <span className="size-2 rounded-full bg-primary" />}
+                          {on && <span className="size-2 bg-primary" />}
                         </span>
                         <span>
                           <span className="block text-sm font-bold tracking-tight">
@@ -1370,7 +1370,7 @@ export function DeviceSearch({
 
                 <label
                   htmlFor="wizard-photos"
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
+                  className="inline-flex cursor-pointer items-center gap-2 border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
                 >
                   <ImagePlus className="size-4" />
                   {t("wizard.photos.select")}
@@ -1403,7 +1403,7 @@ export function DeviceSearch({
                     {photos.map((f, i) => (
                       <li
                         key={`${f.name}-${i}`}
-                        className="relative overflow-hidden rounded-sm border border-border bg-surface"
+                        className="relative overflow-hidden border border-border bg-surface"
                       >
                         <OptimizedImage
                           src={previewUrls[i]}
@@ -1415,7 +1415,7 @@ export function DeviceSearch({
                           type="button"
                           aria-label={t("wizard.photos.remove", [i + 1])}
                           onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
-                          className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-destructive text-xs text-white"
+                          className="absolute -right-1 -top-1 grid size-5 place-items-center bg-destructive text-xs text-white"
                         >
                           ×
                         </button>
@@ -1497,7 +1497,7 @@ export function DeviceSearch({
                         <span className="at-eyebrow mb-1 block">
                           {t("wizard.success.tracking.code")}
                         </span>
-                        <span className="inline-block rounded-sm border border-primary/50 bg-primary/10 px-3 py-1 font-mono text-sm font-bold tracking-[0.2em] text-primary">
+                        <span className="inline-block border border-primary/50 bg-primary/10 px-3 py-1 font-mono text-sm font-bold tracking-[0.2em] text-primary">
                           {trackingCode}
                         </span>
                       </p>
@@ -1533,7 +1533,7 @@ export function DeviceSearch({
                   <p className="mb-3 text-xs text-muted-foreground">{t("wizard.photos.hint")}</p>
                   <label
                     htmlFor="photo-upload"
-                    className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
+                    className="inline-flex cursor-pointer items-center gap-2 border border-dashed border-border px-4 py-3 text-sm hover:bg-surface"
                   >
                     <ImagePlus className="size-4" />
                     {t("wizard.photos.add")}
@@ -1554,7 +1554,7 @@ export function DeviceSearch({
                       {photos.map((_f, i) => (
                         <div
                           key={i}
-                          className="relative size-16 rounded-sm border border-border bg-surface"
+                          className="relative size-16 border border-border bg-surface"
                         >
                           <OptimizedImage
                             src={previewUrls[i]}
@@ -1564,7 +1564,7 @@ export function DeviceSearch({
                           <button
                             type="button"
                             onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
-                            className="absolute -right-2 -top-2 size-5 rounded-full bg-destructive text-xs text-white"
+                            className="absolute -right-2 -top-2 size-5 bg-destructive text-xs text-white"
                             aria-label={t("wizard.photos.remove", [i + 1])}
                           >
                             ×

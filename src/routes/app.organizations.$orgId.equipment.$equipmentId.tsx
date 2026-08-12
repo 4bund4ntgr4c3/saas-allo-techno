@@ -193,7 +193,7 @@ function EquipmentDetail() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <dl className="grid gap-4 rounded-sm border border-border bg-card p-5 text-sm sm:grid-cols-2">
+          <dl className="grid gap-4 border border-border bg-card p-5 text-sm sm:grid-cols-2">
             {[
               [t("org.equipment.form.type"), eq.type ? t(`org.equipment.type.${eq.type}`) : "—"],
               [t("org.equipment.form.brand"), eq.brand ?? "—"],
@@ -212,7 +212,7 @@ function EquipmentDetail() {
             ))}
           </dl>
 
-          <div className="flex flex-wrap items-end gap-3 rounded-sm border border-border bg-card p-5">
+          <div className="flex flex-wrap items-end gap-3 border border-border bg-card p-5">
             <div className="sm:w-52">
               <Label>{t("org.equipment.form.type")} / statut</Label>
               <Select value={status} onValueChange={(v) => setStatus(v as EquipmentStatus)}>
@@ -340,7 +340,7 @@ function EquipmentDetail() {
         </div>
 
         <div className="space-y-6">
-          <div className="flex flex-col items-center gap-3 rounded-sm border border-border bg-card p-5">
+          <div className="flex flex-col items-center gap-3 border border-border bg-card p-5">
             <QrCode
               value={`https://allotechno.africa/app/scan?q=${eq.qr_id}`}
               size={160}
@@ -370,7 +370,7 @@ function EquipmentDetail() {
               </ul>
             )}
           </div>
-          <p className="flex items-center gap-2 rounded-sm border border-dashed border-border p-4 text-xs text-muted-foreground">
+          <p className="flex items-center gap-2 border border-dashed border-border p-4 text-xs text-muted-foreground">
             <CalendarDays className="size-4 shrink-0" />
             {t("org.phase1.hint")}
           </p>

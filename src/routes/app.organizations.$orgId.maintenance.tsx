@@ -165,8 +165,8 @@ function OrgMaintenancePage() {
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-primary">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-primary">
             <ShieldCheck className="size-5" />
           </div>
           <div>
@@ -174,8 +174,8 @@ function OrgMaintenancePage() {
             <p className="text-xs text-muted-foreground">{t("org.maintenance.kpi.total")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center rounded-sm ${overdueCount > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className={`flex size-10 items-center justify-center ${overdueCount > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
             <AlertTriangle className="size-5" />
           </div>
           <div>
@@ -183,8 +183,8 @@ function OrgMaintenancePage() {
             <p className="text-xs text-muted-foreground">{t("org.maintenance.kpi.overdue")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-accent">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-accent">
             <Clock className="size-5" />
           </div>
           <div>
@@ -196,7 +196,7 @@ function OrgMaintenancePage() {
 
       {/* ─── Schedule Form ─── */}
       {showScheduleForm && (
-        <div className="at-in rounded-sm border border-border bg-card p-5 space-y-4">
+        <div className="at-in border border-border bg-card p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h3 className="text-sm font-bold">{t("org.maintenance.form.title")}</h3>
             <button
@@ -292,7 +292,7 @@ function OrgMaintenancePage() {
       <div className="at-in" style={{ animationDelay: "120ms" }}>
         <span className="at-eyebrow mb-3 block">{t("org.maintenance.list.title")}</span>
 
-        <div className="overflow-hidden rounded-sm border border-border bg-card">
+        <div className="overflow-hidden border border-border bg-card">
           {schedulesQuery.isLoading ? (
             <div className="flex justify-center py-16">
               <Loader2 className="size-6 animate-spin text-muted-foreground" />
@@ -316,7 +316,7 @@ function OrgMaintenancePage() {
                   >
                     <div className="flex items-start gap-3">
                       <div
-                        className={`flex size-10 shrink-0 items-center justify-center rounded-sm ${
+                        className={`flex size-10 shrink-0 items-center justify-center ${
                           isOverdue
                             ? "bg-destructive/10 text-destructive"
                             : "bg-primary/10 text-primary"

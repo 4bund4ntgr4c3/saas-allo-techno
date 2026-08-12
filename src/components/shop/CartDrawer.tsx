@@ -35,7 +35,7 @@ export function CartDrawer() {
           </h2>
           <button
             onClick={closeDrawer}
-            className="grid size-8 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+            className="grid size-8 place-items-center border border-border text-muted-foreground transition-colors hover:text-foreground"
             aria-label="Fermer"
           >
             <X className="size-4" />
@@ -108,7 +108,7 @@ export function CartDrawer() {
                 to="/$locale/panier"
                 params={{ locale }}
                 onClick={closeDrawer}
-                className="flex items-center justify-center gap-2 rounded-sm border border-border bg-card px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors hover:bg-surface"
+                className="flex items-center justify-center gap-2 border border-border bg-card px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors hover:bg-surface"
               >
                 <ShoppingBag className="size-3.5" />
                 {t("cart.widget.checkout")}
@@ -117,7 +117,7 @@ export function CartDrawer() {
                 to="/$locale/checkout"
                 params={{ locale }}
                 onClick={closeDrawer}
-                className="flex items-center justify-center gap-2 rounded-sm bg-primary px-4 py-3 text-xs font-extrabold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-hover"
+                className="flex items-center justify-center gap-2 bg-primary px-4 py-3 text-xs font-extrabold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-hover"
               >
                 {t("checkout.proceed")}
               </Link>

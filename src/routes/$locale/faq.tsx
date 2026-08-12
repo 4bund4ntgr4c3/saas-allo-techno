@@ -84,7 +84,7 @@ function Faq() {
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("faq.searchPlaceholder")}
             aria-label={t("faq.searchAria")}
-            className="h-11 w-full rounded-sm border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none"
+            className="h-11 w-full border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none"
           />
           <div className="mt-4 flex flex-wrap gap-2">
             {CATS.map((c) => (

@@ -134,7 +134,7 @@ export function PushNotificationToggle() {
       disabled={status === "loading" || status === "denied"}
       aria-label={label}
       title={label}
-      className={`grid size-11 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground ${
+      className={`grid size-11 place-items-center border border-border text-muted-foreground transition-colors hover:text-foreground ${
         status === "subscribed" ? "text-primary" : ""
       } ${status === "denied" ? "opacity-50" : ""}`}
     >

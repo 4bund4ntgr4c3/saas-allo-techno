@@ -73,18 +73,28 @@ export function AdminSectionTabs() {
 
   return (
     <div className="mb-6">
-      <nav className="flex gap-1 rounded-lg bg-muted p-1">
+      {/* Section eyebrow */}
+      <p className="at-eyebrow mb-3">{t(section.labelKey)}</p>
+      {/* Underline tab bar */}
+      <nav
+        className="flex items-end gap-0 border-b border-border"
+        role="tablist"
+        aria-label={t(section.labelKey)}
+      >
         {section.tabs.map((tab) => {
           const isActive = location.pathname.includes(tab.to);
           return (
             <Link
               key={tab.to}
               to={tab.to}
+              role="tab"
+              aria-selected={isActive}
               className={cn(
-                "rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                "relative -mb-px whitespace-nowrap px-4 py-2.5 text-sm font-medium transition-colors duration-150",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                 isActive
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
+                  ? "border-b-2 border-primary text-foreground"
+                  : "border-b-2 border-transparent text-muted-foreground hover:text-foreground",
               )}
             >
               {t(tab.labelKey)}

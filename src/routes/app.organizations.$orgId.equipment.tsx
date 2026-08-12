@@ -163,7 +163,7 @@ function EquipmentList() {
 
       {showForm ? (
         <form
-          className="grid gap-4 rounded-sm border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-4 border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3"
           onSubmit={(e) => {
             e.preventDefault();
             create.mutate();
@@ -335,11 +335,11 @@ function EquipmentList() {
               <Link
                 to="/app/organizations/$orgId/equipment/$equipmentId"
                 params={{ orgId, equipmentId: e.id }}
-                className="group flex h-full flex-col gap-3 rounded-sm border border-border bg-card p-4 transition-colors hover:border-primary"
+                className="group flex h-full flex-col gap-3 border border-border bg-card p-4 transition-colors hover:border-primary"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-sm bg-accent">
+                    <div className="flex size-10 items-center justify-center bg-accent">
                       <Laptop className="size-5" />
                     </div>
                     <div className="min-w-0">

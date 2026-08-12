@@ -80,9 +80,9 @@ export function AnalyticsAdvanced() {
                       )}
                     </span>
                   </div>
-                  <div className="h-6 rounded-sm bg-muted overflow-hidden">
+                  <div className="h-6 bg-muted overflow-hidden">
                     <div
-                      className="h-full rounded-sm transition-all duration-500"
+                      className="h-full transition-all duration-500"
                       style={{
                         width: `${width}%`,
                         backgroundColor: FUNNEL_COLORS[i] ?? "#64748b",
@@ -142,7 +142,7 @@ export function AnalyticsAdvanced() {
             {errors.map((err) => (
               <div
                 key={err.message}
-                className="flex items-center justify-between rounded-sm border border-destructive/20 bg-destructive/5 p-2"
+                className="flex items-center justify-between border border-destructive/20 bg-destructive/5 p-2"
               >
                 <p className="text-xs font-mono truncate max-w-[70%]">
                   {err.message}

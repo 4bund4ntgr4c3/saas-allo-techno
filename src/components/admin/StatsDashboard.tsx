@@ -214,7 +214,7 @@ function BarRow({ label, count, total }: { label: string; count: number; total: 
   return (
     <div className="flex items-center gap-3 text-sm">
       <span className="w-40 shrink-0 truncate text-muted-foreground">{label}</span>
-      <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+      <div className="h-2 flex-1 overflow-hidden bg-surface">
         <div className="h-full bg-primary/70" style={{ width: `${width}%` }} />
       </div>
       <span className="w-10 text-right font-mono text-xs tabular-nums">{count}</span>
@@ -643,7 +643,7 @@ export function StatsDashboard() {
                     <span>{name}</span>
                     <span className="font-mono text-xs text-muted-foreground">{count}</span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-sm bg-surface">
+                  <div className="mt-1 h-2 overflow-hidden bg-surface">
                     <div
                       className="h-full bg-primary/70"
                       style={{ width: `${Math.round((count / stats.brandMax) * 100)}%` }}
@@ -843,7 +843,7 @@ export function StatsDashboard() {
                 {stats.statusDistribution.map((d) => (
                   <div key={d.status} className="flex items-center gap-2 text-sm">
                     <span
-                      className="h-3 w-3 shrink-0 rounded-sm"
+                      className="h-3 w-3 shrink-0"
                       style={{ backgroundColor: d.fill }}
                     />
                     <span className="flex-1 truncate text-muted-foreground">

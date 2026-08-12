@@ -232,13 +232,13 @@ function OrgTicketDetail() {
                       href={attachmentUrls.data?.[a.url] ?? a.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="block rounded-sm border border-border p-3 text-sm transition-colors hover:border-primary"
+                      className="block border border-border p-3 text-sm transition-colors hover:border-primary"
                     >
                       {a.kind === "video" ? (
                         <video
                           src={attachmentUrls.data?.[a.url] ?? a.url}
                           controls
-                          className="mb-2 aspect-video w-full rounded-sm bg-black"
+                          className="mb-2 aspect-video w-full bg-black"
                         />
                       ) : null}
                       <p className="truncate font-medium">{a.caption ?? "Pièce jointe"}</p>
@@ -293,7 +293,7 @@ function OrgTicketDetail() {
               <Link
                 to="/app/organizations/$orgId/equipment/$equipmentId"
                 params={{ orgId, equipmentId: tk.equipment.id }}
-                className="block rounded-sm border border-border p-3 text-sm transition-colors hover:border-primary"
+                className="block border border-border p-3 text-sm transition-colors hover:border-primary"
               >
                 <p className="font-medium">{tk.equipment.name}</p>
                 <p className="text-xs text-muted-foreground">
@@ -340,7 +340,7 @@ function OrgTicketDetail() {
           </div>
 
           {tk.equipment?.warranty_expires_at ? (
-            <p className="flex items-center gap-2 rounded-sm border border-dashed border-border p-4 text-xs text-muted-foreground">
+            <p className="flex items-center gap-2 border border-dashed border-border p-4 text-xs text-muted-foreground">
               <ShieldCheck className="size-4 shrink-0" />
               Garantie jusqu'au {tk.equipment.warranty_expires_at.slice(0, 10)}
             </p>

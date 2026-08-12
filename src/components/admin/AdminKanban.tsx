@@ -197,11 +197,11 @@ function KanbanBoard({
                     setDragId(null);
                     setOverCol(null);
                   }}
-                  className="block w-full cursor-grab rounded-sm border border-border bg-surface p-3 text-left transition-shadow hover:shadow-md active:cursor-grabbing"
+                  className="block w-full cursor-grab border border-border bg-surface p-3 text-left transition-shadow hover:shadow-md active:cursor-grabbing"
                 >
                   <p className="font-mono text-[10px] text-muted-foreground">{r.reference}</p>
                   {r.org_id && (
-                    <p className="mt-1 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium">
+                    <p className="mt-1 inline-flex items-center gap-1 border border-border bg-muted px-2 py-0.5 text-[10px] font-medium">
                       <Building2 className="size-3 text-muted-foreground" />
                       {orgName?.get(r.org_id) ?? "B2B"}
                     </p>
@@ -297,7 +297,7 @@ function StageControls({
         </Button>
       </div>
       <textarea
-        className="min-h-16 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="min-h-16 w-full border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         placeholder={t("admin.kanban.notePlaceholder")}
         value={note}
         onChange={(e) => setNote(e.target.value)}
@@ -566,7 +566,7 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
         {PHOTO_STAGES.map((stage) => (
           <label
             key={stage}
-            className="flex cursor-pointer items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-xs hover:bg-surface"
+            className="flex cursor-pointer items-center gap-2 border border-border px-3 py-1.5 text-xs hover:bg-surface"
           >
             <span className="text-muted-foreground">{t(`admin.kanban.photoStage.${stage}` as any)}</span>
             {busyStage === stage ? (

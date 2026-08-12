@@ -133,7 +133,7 @@ function AvisHero() {
 }
 
 const textareaClass =
-  "w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  "w-full border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 function ReviewForm({ token }: { token: string }) {
   const { t } = useI18n();
@@ -276,7 +276,7 @@ function ReviewForm({ token }: { token: string }) {
                   }
                   send.mutate();
                 }}
-                className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-sm bg-foreground px-6 text-sm font-bold uppercase tracking-wide text-background hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-6 inline-flex h-11 items-center justify-center gap-2 bg-foreground px-6 text-sm font-bold uppercase tracking-wide text-background hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {send.isPending ? (
                   <>

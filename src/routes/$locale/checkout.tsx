@@ -586,13 +586,13 @@ function Checkout() {
                 <div className="space-y-px border border-border bg-border">
                   <div className="bg-card p-6">
                     <h3 className="at-eyebrow mb-4">{t("checkout.payment.title")}</h3>
-                    <div className="flex flex-wrap gap-1 rounded-sm border border-border bg-surface p-1">
+                    <div className="flex flex-wrap gap-1 border border-border bg-surface p-1">
                       {PAYMENTS.map((p) => (
                         <button
                           key={p}
                           type="button"
                           onClick={() => setPayment(p)}
-                          className={`flex-1 rounded-sm px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                          className={`flex-1 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                             payment === p
                               ? "bg-card text-foreground shadow-sm"
                               : "text-muted-foreground hover:text-foreground"

@@ -142,7 +142,7 @@ export function StockAdmin() {
               )}
               {a.isLow && (
                 <span
-                  className="size-2 shrink-0 rounded-full bg-destructive"
+                  className="size-2 shrink-0 bg-destructive"
                   title={t("admin.stock.lowStock")}
                 />
               )}
@@ -184,7 +184,7 @@ export function StockAdmin() {
         </div>
       </div>
       {lowItems.length > 0 && (
-        <div className="mb-4 rounded-sm border border-destructive/40 bg-destructive/5 p-4">
+        <div className="mb-4 border border-destructive/40 bg-destructive/5 p-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-destructive">
             <ShieldAlert className="size-4" />
             {t("admin.stock.low.title")}

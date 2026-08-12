@@ -73,7 +73,7 @@ export function AdminInternalNotifs() {
           <h2 className="mt-1 text-xl font-semibold">
             {t("admin.notifs.title")}
             {unread.length > 0 && (
-              <span className="ml-2 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
+              <span className="ml-2 bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
                 {unread.length}
               </span>
             )}

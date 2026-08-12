@@ -87,7 +87,7 @@ function DemoPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-14">
       <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+        <span className="inline-flex items-center gap-1.5 border border-primary/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
           {t("demo.warning")}
         </span>
       </div>
@@ -101,10 +101,10 @@ function DemoPage() {
           return (
             <div
               key={account.id}
-              className="flex flex-col rounded-sm border border-border bg-card p-5 transition-shadow hover:shadow-md"
+              className="flex flex-col border border-border bg-card p-5 transition-shadow hover:shadow-md"
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-sm border border-border bg-muted">
+                <div className="flex size-10 items-center justify-center border border-border bg-muted">
                   <Icon className="size-5 text-primary" />
                 </div>
                 <div>
@@ -115,7 +115,7 @@ function DemoPage() {
               <p className="mt-4 flex-1 text-sm text-muted-foreground">
                 {t("demo.features." + account.id)}
               </p>
-              <div className="mt-4 space-y-1 rounded-sm border border-border bg-surface p-3 text-xs">
+              <div className="mt-4 space-y-1 border border-border bg-surface p-3 text-xs">
                 <p>
                   <span className="text-muted-foreground">{t("demo.credentials")} :</span>{" "}
                   <span className="font-mono">{account.email}</span>
@@ -126,7 +126,7 @@ function DemoPage() {
                 </p>
               </div>
               {account.id === "client" && tracking && (
-                <div className="mt-2 rounded-sm border border-success/30 bg-success/5 p-3 text-xs">
+                <div className="mt-2 border border-success/30 bg-success/5 p-3 text-xs">
                   <p className="text-muted-foreground">{t("demo.trackingInfo")}</p>
                   <p className="mt-1 font-mono font-bold text-success">
                     {t("demo.trackingCode")} : {tracking.code} · {tracking.reference}
@@ -145,7 +145,7 @@ function DemoPage() {
           );
         })}
 
-        <div className="flex flex-col justify-center rounded-sm border border-dashed border-border bg-card/50 p-5">
+        <div className="flex flex-col justify-center border border-dashed border-border bg-card/50 p-5">
           <h2 className="text-base font-semibold">{t("demo.visitTour")}</h2>
           <p className="mt-3 flex-1 text-sm text-muted-foreground">
             {t("demo.tourAdmin")} · {t("demo.tourApp")} · {t("demo.tourAccount")}

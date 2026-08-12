@@ -111,8 +111,8 @@ function OrgBillingPage() {
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-primary">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-primary">
             <Receipt className="size-5" />
           </div>
           <div>
@@ -120,8 +120,8 @@ function OrgBillingPage() {
             <p className="text-xs text-muted-foreground">{t("org.billing.kpi.total")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-success">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-success">
             <FileText className="size-5" />
           </div>
           <div>
@@ -129,8 +129,8 @@ function OrgBillingPage() {
             <p className="text-xs text-muted-foreground">{t("org.billing.kpi.paid")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-amber-600">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-amber-600">
             <CreditCard className="size-5" />
           </div>
           <div>
@@ -142,7 +142,7 @@ function OrgBillingPage() {
 
       {/* ─── Generate Invoice Form ─── */}
       {showGenerate && (
-        <div className="at-in rounded-sm border border-border bg-card p-5 space-y-4">
+        <div className="at-in border border-border bg-card p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h3 className="text-sm font-bold">{t("org.billing.generate.title")}</h3>
             <button
@@ -200,7 +200,7 @@ function OrgBillingPage() {
       <div className="at-in" style={{ animationDelay: "120ms" }}>
         <span className="at-eyebrow mb-3 block">{t("org.billing.list.title")}</span>
 
-        <div className="overflow-hidden rounded-sm border border-border bg-card">
+        <div className="overflow-hidden border border-border bg-card">
           {invoices.isLoading ? (
             <div className="flex justify-center py-16">
               <Loader2 className="size-6 animate-spin text-muted-foreground" />

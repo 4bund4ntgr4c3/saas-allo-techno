@@ -267,7 +267,7 @@ export function DossiersSection() {
           <h2 className="mt-1 text-xl font-semibold tracking-tight">{t("admin.tab.dossiers")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("admin.header.subtitle")}</p>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-success/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-success">
+        <span className="inline-flex items-center gap-1.5 border border-success/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-success">
           <RadioTower className="size-3 animate-pulse" />
           {t("admin.header.live")}
         </span>
@@ -429,7 +429,7 @@ export function DossiersSection() {
                       {t("admin.status." + r.status)}
                     </span>
                     {r.org_id && orgName.get(r.org_id) && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium">
+                      <span className="inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1 text-xs font-medium">
                         <Building2 className="size-3.5 text-muted-foreground" />
                         {orgName.get(r.org_id)}
                       </span>

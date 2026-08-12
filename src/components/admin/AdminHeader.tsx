@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEffect, useState } from "react";
 
 const ROUTE_LABELS: Record<string, string> = {
   admin: "admin.nav.dashboard",
@@ -44,7 +45,22 @@ const ROUTE_LABELS: Record<string, string> = {
   kb: "admin.tab.kb",
   marketing: "admin.tab.marketing",
   webhooks: "admin.tab.webhooks",
+  caisse: "admin.tab.caisse",
+  livraisons: "admin.tab.livraisons",
 };
+
+function LiveClock() {
+  const [time, setTime] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span className="hidden font-mono text-[11px] tabular-nums text-muted-foreground sm:inline">
+      {time.toLocaleTimeString("fr-BJ", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+    </span>
+  );
+}
 
 export function AdminHeader() {
   const { t } = useI18n();
@@ -63,9 +79,13 @@ export function AdminHeader() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/admin" data-tour="admin-header">
-                <RadioTower className="mr-1 size-3.5" />
-                Admin
+              <Link
+                to="/admin"
+                data-tour="admin-header"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <RadioTower className="size-3.5 shrink-0" />
+                <span className="font-mono text-xs uppercase tracking-wider">Admin</span>
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -73,14 +93,33 @@ export function AdminHeader() {
             <>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{t(labelKey)}</BreadcrumbPage>
+                <BreadcrumbPage className="font-medium text-foreground">
+                  {t(labelKey)}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </>
           )}
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="ml-auto flex items-center gap-1">
+      <div className="ml-auto flex items-center gap-3">
+        {/* Live indicator */}
+        <div className="hidden items-center gap-1.5 sm:flex">
+          <span className="relative flex size-2">
+            <span className="absolute inline-flex h-full w-full animate-ping bg-success opacity-60" />
+            <span className="relative inline-flex size-2 bg-success" />
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Live
+          </span>
+        </div>
+
+        <Separator orientation="vertical" className="h-4" />
+
+        <LiveClock />
+
+        <Separator orientation="vertical" className="h-4" />
+
         <Button
           variant="ghost"
           size="icon"

@@ -171,7 +171,7 @@ function CategoriesPanel({
         {categories.map((c) => (
           <span
             key={c.slug}
-            className="inline-flex items-center gap-2 rounded-sm border border-border bg-surface px-2 py-1 text-xs"
+            className="inline-flex items-center gap-2 border border-border bg-surface px-2 py-1 text-xs"
           >
             {c.label}
             {!c.active && <span className="text-muted-foreground">{t("admin.catalog.status.inactive")}</span>}
@@ -1094,13 +1094,13 @@ function DeviceDetailPanel({
                 alt={p.alt || device.name}
                 loading="lazy"
                 decoding="async"
-                className="h-16 w-16 rounded-sm border border-border object-cover"
+                className="h-16 w-16 border border-border object-cover"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute -right-2 -top-2 size-6 rounded-full border border-border bg-card text-destructive hover:bg-destructive/10"
+                className="absolute -right-2 -top-2 size-6 border border-border bg-card text-destructive hover:bg-destructive/10"
                 disabled={busy}
                 aria-label={t("admin.catalog.aria.deletePhoto")}
                 onClick={() => removePhoto(p.id)}
@@ -1135,7 +1135,7 @@ function DeviceDetailPanel({
           >
             {t("admin.catalog.photo.add_button")}
           </Button>
-          <label className="flex cursor-pointer items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-xs hover:bg-surface">
+          <label className="flex cursor-pointer items-center gap-2 border border-border px-3 py-1.5 text-xs hover:bg-surface">
             {busy ? (
               <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
             ) : (

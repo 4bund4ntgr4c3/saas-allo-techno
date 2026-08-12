@@ -173,8 +173,8 @@ function OrgTickets() {
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-primary">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-primary">
             <LifeBuoy className="size-5" />
           </div>
           <div>
@@ -182,8 +182,8 @@ function OrgTickets() {
             <p className="text-xs text-muted-foreground">{t("org.tickets.kpi.total")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center rounded-sm ${kpis.open > 0 ? "bg-amber-500/10 text-amber-600" : "bg-muted text-success"}`}>
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className={`flex size-10 items-center justify-center ${kpis.open > 0 ? "bg-amber-500/10 text-amber-600" : "bg-muted text-success"}`}>
             <Clock className="size-5" />
           </div>
           <div>
@@ -191,8 +191,8 @@ function OrgTickets() {
             <p className="text-xs text-muted-foreground">{t("org.tickets.kpi.open")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className={`flex size-10 items-center justify-center rounded-sm ${kpis.critical > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className={`flex size-10 items-center justify-center ${kpis.critical > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}>
             <AlertTriangle className="size-5" />
           </div>
           <div>
@@ -205,7 +205,7 @@ function OrgTickets() {
       {/* ─── Ticket Creation Form ─── */}
       {showForm ? (
         <form
-          className="at-in grid gap-4 rounded-sm border border-border bg-card p-5 sm:grid-cols-2"
+          className="at-in grid gap-4 border border-border bg-card p-5 sm:grid-cols-2"
           onSubmit={(e) => {
             e.preventDefault();
             createTicket.mutate();
@@ -362,7 +362,7 @@ function OrgTickets() {
             <p className="mt-4 text-sm font-medium">{t("org.tickets.empty")}</p>
           </div>
         ) : (
-          <div className="divide-y divide-border overflow-hidden rounded-sm border border-border bg-card">
+          <div className="divide-y divide-border overflow-hidden border border-border bg-card">
             {ticketList.map((ticket) => (
               <Link
                 key={ticket.id}

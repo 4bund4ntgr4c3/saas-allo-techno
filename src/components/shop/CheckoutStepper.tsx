@@ -14,7 +14,7 @@ export function CheckoutStepper({ current }: { current: CheckoutStep }) {
 
   const idx = STEPS.findIndex((s) => s.key === current);
   return (
-    <div className="flex flex-wrap gap-1 rounded-sm border border-border bg-surface p-1">
+    <div className="flex flex-wrap gap-1 border border-border bg-surface p-1">
       {STEPS.map((step, i) => {
         const Icon = step.icon;
         const done = i < idx;
@@ -22,7 +22,7 @@ export function CheckoutStepper({ current }: { current: CheckoutStep }) {
         return (
           <span
             key={step.key}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+            className={`flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors ${
               active
                 ? "bg-primary/10 text-primary shadow-sm"
                 : done

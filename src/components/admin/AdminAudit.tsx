@@ -75,7 +75,7 @@ export function AuditSection() {
       accessorKey: "action",
       header: t("admin.audit.col.action"),
       cell: ({ row }) => (
-        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span className="inline-block bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
           {AUDIT_ACTION_LABEL[row.original.action] ?? row.original.action}
         </span>
       ),

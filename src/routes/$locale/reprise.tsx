@@ -82,7 +82,7 @@ function Reprise() {
                   setBrand(e.target.value);
                   setDeviceSlug("");
                 }}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
+                className="h-11 w-full border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
               >
                 <option value="">{t("reprise.select")}</option>
                 {BRANDS.map((b) => (
@@ -101,7 +101,7 @@ function Reprise() {
                 value={deviceSlug}
                 disabled={!brand}
                 onChange={(e) => setDeviceSlug(e.target.value)}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
+                className="h-11 w-full border border-border bg-background px-3 text-sm disabled:opacity-50 focus:border-primary focus:outline-none"
               >
                 <option value="">{t("reprise.select")}</option>
                 {devices.map((d) => (
@@ -119,7 +119,7 @@ function Reprise() {
                 id="r-cond"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="h-11 w-full rounded-sm border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
+                className="h-11 w-full border border-border bg-background px-3 text-sm focus:border-primary focus:outline-none"
               >
                 {CONDITIONS.map((c) => (
                   <option key={c.key} value={c.key}>

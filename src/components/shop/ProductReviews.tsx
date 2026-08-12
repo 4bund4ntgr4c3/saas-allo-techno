@@ -122,7 +122,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
                 id="review-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                className="mt-1 w-full border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             <div className="mb-4">
@@ -132,7 +132,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 rows={3}
-                className="mt-1 w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                className="mt-1 w-full border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             <Button

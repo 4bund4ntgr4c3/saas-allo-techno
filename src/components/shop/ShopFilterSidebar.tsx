@@ -83,7 +83,7 @@ export function ShopFilterSidebar({
         <div className="space-y-1.5">
           <button
             onClick={() => onChange({ ...filters, category: "toutes" })}
-            className={`block w-full rounded-sm px-3 py-2 text-left text-xs font-medium transition-colors ${
+            className={`block w-full px-3 py-2 text-left text-xs font-medium transition-colors ${
               filters.category === "toutes"
                 ? "bg-primary text-primary-foreground"
                 : "hover:bg-muted"
@@ -95,7 +95,7 @@ export function ShopFilterSidebar({
             <button
               key={c}
               onClick={() => onChange({ ...filters, category: c })}
-              className={`block w-full rounded-sm px-3 py-2 text-left text-xs font-medium transition-colors ${
+              className={`block w-full px-3 py-2 text-left text-xs font-medium transition-colors ${
                 filters.category === c
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-muted"
@@ -115,7 +115,7 @@ export function ShopFilterSidebar({
             <button
               key={range.label}
               onClick={() => onChange({ ...filters, priceRange: range.value })}
-              className={`block w-full rounded-sm px-3 py-2 text-left text-xs font-medium transition-colors ${
+              className={`block w-full px-3 py-2 text-left text-xs font-medium transition-colors ${
                 filters.priceRange[0] === range.value[0] && filters.priceRange[1] === range.value[1]
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-muted"

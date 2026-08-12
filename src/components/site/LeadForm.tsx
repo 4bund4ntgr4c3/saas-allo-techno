@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { submitLead } from "@/lib/leads.functions";
 
 const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  "h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 const label = "at-eyebrow mb-1 block";
 
@@ -170,7 +170,7 @@ export function LeadForm({
         </label>
         <textarea
           id={`${source}-message`}
-          className="min-h-28 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="min-h-28 w-full border border-border bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={messagePlaceholder || t("lead.messagePlaceholder")}

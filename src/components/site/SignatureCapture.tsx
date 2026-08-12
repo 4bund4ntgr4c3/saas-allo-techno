@@ -90,7 +90,7 @@ export function SignatureCapture({
         </div>
       </div>
 
-      <div className="relative rounded-sm border-2 border-dashed border-border">
+      <div className="relative border-2 border-dashed border-border">
         <canvas
           ref={canvasRef}
           className="cursor-crosshair"

@@ -73,14 +73,14 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
         role="dialog"
         aria-modal="true"
         aria-label={t("qr.title")}
-        className="relative w-full max-w-sm rounded-sm bg-card p-4 shadow-lg"
+        className="relative w-full max-w-sm bg-card p-4 shadow-lg"
       >
         <div className="mb-3 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-sm font-bold">
             <Camera className="size-4" />
             {t("qr.title")}
           </h3>
-          <button onClick={handleClose} className="p-1 hover:bg-muted rounded-sm" aria-label={t("qr.close")}>
+          <button onClick={handleClose} className="p-1 hover:bg-muted" aria-label={t("qr.close")}>
             <X className="size-4" />
           </button>
         </div>
@@ -98,7 +98,7 @@ export function QrScanner({ onScan, onClose, qrOnly }: QrScannerProps) {
             <div
               id="qr-scanner-region"
               ref={containerRef}
-              className="overflow-hidden rounded-sm border"
+              className="overflow-hidden border"
             />
             <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <ScanLine className="size-3 animate-pulse" />

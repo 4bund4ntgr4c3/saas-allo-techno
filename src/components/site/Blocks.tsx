@@ -4,6 +4,7 @@ import { REVIEWS, STEPS } from "@/data/catalog/static";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
+import { NewsletterForm } from "@/components/site/NewsletterForm";
 
 export function SectionHeader({
   eyebrow,
@@ -108,29 +109,32 @@ export function CtaBand() {
   const { locale, t } = useI18n();
   return (
     <section className="border-t border-border bg-foreground py-16 text-background">
-      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 sm:px-6 md:flex-row md:items-center">
-        <div>
-          <h2 className="at-display text-3xl">{t("blocks.cta.title")}</h2>
-          <p className="mt-3 max-w-lg text-sm text-background/70">
+      <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 px-4 sm:px-6 lg:flex-row lg:items-center">
+        <div className="max-w-xl space-y-4">
+          <h2 className="at-display text-3xl md:text-4xl text-background">{t("blocks.cta.title")}</h2>
+          <p className="text-sm leading-relaxed text-background/80">
             {t("blocks.cta.text", [COMPANY.city, formatFcfa(50000)])}
           </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Button asChild variant="secondary" size="lg">
+              <Link to="/$locale/reservation" params={{ locale }}>
+                {t("blocks.cta.reserve")}
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="technicalOutline"
+              className="border-background/30 text-background hover:bg-background/10"
+            >
+              <Link to="/$locale/devis" params={{ locale }}>
+                {t("blocks.cta.devis")}
+              </Link>
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="secondary" size="lg">
-            <Link to="/$locale/reservation" params={{ locale }}>
-              {t("blocks.cta.reserve")}
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="technicalOutline"
-            className="border-background/30 text-background hover:bg-background/10"
-          >
-            <Link to="/$locale/devis" params={{ locale }}>
-              {t("blocks.cta.devis")}
-            </Link>
-          </Button>
+        <div className="w-full max-w-md lg:w-auto lg:min-w-[380px]">
+          <NewsletterForm />
         </div>
       </div>
     </section>

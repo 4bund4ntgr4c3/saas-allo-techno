@@ -194,7 +194,7 @@ function OrgDetail() {
 
         <div className="mt-5 flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex size-14 items-center justify-center rounded-sm bg-gradient-to-br from-foreground to-foreground/80 text-background shadow-sm">
+            <div className="flex size-14 items-center justify-center bg-gradient-to-br from-foreground to-foreground/80 text-background shadow-sm">
               <Building2 className="size-7" />
             </div>
             <div>
@@ -224,9 +224,9 @@ function OrgDetail() {
         {kpiCards.map((kpi) => (
           <div
             key={kpi.label}
-            className="flex items-center gap-3 rounded-sm border border-border bg-card p-4"
+            className="flex items-center gap-3 border border-border bg-card p-4"
           >
-            <div className={`flex size-10 items-center justify-center rounded-sm bg-muted ${kpi.color}`}>
+            <div className={`flex size-10 items-center justify-center bg-muted ${kpi.color}`}>
               <kpi.icon className="size-5" />
             </div>
             <div>
@@ -239,7 +239,7 @@ function OrgDetail() {
 
       {/* ─── Navigation Pills ─── */}
       <nav
-        className="at-in flex gap-1 overflow-x-auto rounded-sm border border-border bg-card p-1"
+        className="at-in flex gap-1 overflow-x-auto border border-border bg-card p-1"
         style={{ animationDelay: "120ms" }}
       >
         {NAV_ITEMS.map((item) => {
@@ -249,7 +249,7 @@ function OrgDetail() {
             <Link
               key={item.to}
               to={href}
-              className={`inline-flex items-center gap-2 whitespace-nowrap rounded-sm px-4 py-2.5 text-sm font-medium transition-all ${
+              className={`inline-flex items-center gap-2 whitespace-nowrap px-4 py-2.5 text-sm font-medium transition-all ${
                 isActive
                   ? "bg-foreground text-background shadow-sm"
                   : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
@@ -265,7 +265,7 @@ function OrgDetail() {
       {/* ─── Organization Info ─── */}
       <div className="at-in" style={{ animationDelay: "180ms" }}>
         <span className="at-eyebrow mb-3 block">{t("org.form.registrationNumber").split(" ")[0]}</span>
-        <div className="grid gap-px overflow-hidden rounded-sm border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {orgInfoItems.map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex items-start gap-3 bg-card p-4">
               <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
@@ -293,7 +293,7 @@ function OrgDetail() {
         </div>
 
         <form
-          className="mb-5 grid gap-3 rounded-sm border border-border bg-card p-4 sm:grid-cols-[1fr_auto_auto]"
+          className="mb-5 grid gap-3 border border-border bg-card p-4 sm:grid-cols-[1fr_auto_auto]"
           onSubmit={(e) => {
             e.preventDefault();
             invite.mutate();
@@ -350,13 +350,13 @@ function OrgDetail() {
             <p className="mt-3 text-sm font-medium">{t("org.detail.members.empty")}</p>
           </div>
         ) : (
-          <div className="divide-y divide-border overflow-hidden rounded-sm border border-border bg-card">
+          <div className="divide-y divide-border overflow-hidden border border-border bg-card">
             {members.data?.map((m) => (
               <div
                 key={m.user_id}
                 className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-muted/30"
               >
-                <div className="flex size-10 items-center justify-center rounded-sm bg-gradient-to-br from-foreground/90 to-foreground/60 text-xs font-black uppercase text-background">
+                <div className="flex size-10 items-center justify-center bg-gradient-to-br from-foreground/90 to-foreground/60 text-xs font-black uppercase text-background">
                   {(m.full_name ?? m.email ?? "?").slice(0, 2)}
                 </div>
                 <div className="min-w-0 flex-1">

@@ -143,14 +143,14 @@ function KpisSection() {
           <div className="mt-4 space-y-2">
             <div className="flex items-center gap-3 text-sm">
               <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesSent")}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+              <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: "100%" }} />
               </div>
               <span className="w-12 text-right font-mono text-xs tabular-nums">{quotesSent}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.quotesApproved")}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+              <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-primary/70" style={{ width: `${approvedShare}%` }} />
               </div>
               <span className="w-12 text-right font-mono text-xs tabular-nums">
@@ -159,7 +159,7 @@ function KpisSection() {
             </div>
             <div className="flex items-center gap-3 text-sm">
               <span className="w-40 shrink-0 truncate text-muted-foreground">{t("admin.kpis.paymentsReceived")}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+              <div className="h-2 flex-1 overflow-hidden bg-surface">
                 <div className="h-full bg-success/70" style={{ width: `${paidShare}%` }} />
               </div>
               <span className="w-12 text-right font-mono text-xs tabular-nums">{paid}</span>
@@ -214,7 +214,7 @@ function KpisSection() {
                 <span className="w-44 shrink-0 truncate text-muted-foreground">
                   {t("admin.status." + s.stage) || s.stage}
                 </span>
-                <div className="h-2 flex-1 overflow-hidden rounded-sm bg-surface">
+                <div className="h-2 flex-1 overflow-hidden bg-surface">
                   <div
                     className="h-full bg-primary/70"
                     style={{
@@ -242,7 +242,7 @@ function KpisSection() {
             {data.topFaults.map((f) => (
               <li key={f.fault} className="flex items-center gap-3 text-sm">
                 <span className="flex-1 truncate text-muted-foreground">{f.fault}</span>
-                <div className="h-2 w-32 shrink-0 overflow-hidden rounded-sm bg-surface">
+                <div className="h-2 w-32 shrink-0 overflow-hidden bg-surface">
                   <div
                     className="h-full bg-primary/70"
                     style={{

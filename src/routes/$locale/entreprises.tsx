@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Building2, FileText, Truck, Users } from "lucide-react";
 import { CtaBand, SectionHeader, TrustStats } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
+import { B2BRequestForm } from "@/components/site/B2BRequestForm";
+import type { SlaFormulaType } from "@/components/site/B2BRequestForm";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -89,6 +92,7 @@ const PLANS = [
 
 function Entreprises() {
   const { locale, t } = useI18n();
+  const [selectedFormula, setSelectedFormula] = useState<SlaFormulaType | undefined>(undefined);
   return (
     <>
       <section className="border-b border-border py-16">
@@ -99,17 +103,24 @@ function Entreprises() {
             {t("entreprises.intro", [COMPANY.city])}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild variant="technical" size="lg">
-              <Link to="/$locale/contact" params={{ locale }}>
-                {t("entreprises.cta.request")}
-              </Link>
+            <Button variant="technical" size="lg" onClick={() => {
+              document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
+            }}>
+              {t("entreprises.cta.request")} &rarr;
             </Button>
-            <Button asChild variant="technicalOutline" size="lg">
+            <Button asChild variant="outline" size="lg">
               <Link to="/$locale/tarifs" params={{ locale }}>
                 {t("entreprises.cta.pricing")}
               </Link>
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Embedded Interactive B2B Form Section */}
+      <section className="border-b border-border bg-muted/20 py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <B2BRequestForm key={selectedFormula || "default"} initialFormula={selectedFormula} />
         </div>
       </section>
 
@@ -143,23 +154,32 @@ function Entreprises() {
           />
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {PLANS.map((p) => (
-              <div key={p.name} className="bg-card p-8">
-                <span className="at-eyebrow">{t(p.name)}</span>
-                <div className="mt-4 font-mono text-3xl font-medium">
-                  {p.price ? formatFcfa(p.price) : t("entreprises.onQuote")}
-                  <span className="ml-1 text-sm text-muted-foreground">{t(p.unit)}</span>
+              <div key={p.name} className="bg-card p-8 flex flex-col justify-between">
+                <div>
+                  <span className="at-eyebrow">{t(p.name)}</span>
+                  <div className="mt-4 font-mono text-3xl font-medium">
+                    {p.price ? formatFcfa(p.price) : t("entreprises.onQuote")}
+                    <span className="ml-1 text-sm text-muted-foreground">{t(p.unit)}</span>
+                  </div>
+                  <ul className="mt-6 space-y-3 text-sm">
+                    {p.items.map((i) => (
+                      <li key={i} className="border-b border-border pb-3 text-muted-foreground">
+                        {t(i)}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mt-6 space-y-3 text-sm">
-                  {p.items.map((i) => (
-                    <li key={i} className="border-b border-border pb-3 text-muted-foreground">
-                      {t(i)}
-                    </li>
-                  ))}
-                </ul>
-                <Button asChild variant="technicalOutline" className="mt-8 w-full">
-                  <Link to="/$locale/contact" params={{ locale }}>
-                    {t("entreprises.contact")}
-                  </Link>
+                <Button
+                  variant="technical"
+                  className="mt-8 w-full"
+                  onClick={() => {
+                    const formulaKey: "essentiel" | "business" | "custom" =
+                      p.name.includes("essentiel") ? "essentiel" : p.name.includes("business") ? "business" : "custom";
+                    setSelectedFormula(formulaKey);
+                    document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Souscrire cette formule &rarr;
                 </Button>
               </div>
             ))}

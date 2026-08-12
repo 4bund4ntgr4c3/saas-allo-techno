@@ -19,7 +19,7 @@ export function CategoryPicker({ onSelect }: { onSelect: (category: string) => v
             onClick={() => onSelect(c)}
             className="group flex flex-col items-start gap-3 bg-card p-5 text-left transition-colors hover:bg-surface"
           >
-            <span className="flex size-14 items-center justify-center rounded-sm border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+            <span className="flex size-14 items-center justify-center border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
               {Icon && <Icon className="size-7" strokeWidth={1.5} />}
             </span>
             <span className="text-sm font-bold tracking-tight">{c}</span>

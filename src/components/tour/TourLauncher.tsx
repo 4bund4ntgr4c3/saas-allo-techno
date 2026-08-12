@@ -18,7 +18,7 @@ export function TourLauncher() {
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
       {open && (
-        <div className="flex flex-col gap-1 rounded-sm border border-border bg-card p-2 shadow-lg">
+        <div className="flex flex-col gap-1 border border-border bg-card p-2 shadow-lg">
           <button
             type="button"
             className="rounded-sm px-3 py-2 text-left text-sm hover:bg-accent"

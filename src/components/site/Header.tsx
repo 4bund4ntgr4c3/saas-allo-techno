@@ -55,7 +55,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? t("header.theme.light") : t("header.theme.dark")}
-      className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+      className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </button>
@@ -69,11 +69,11 @@ function CartButton() {
     <button
       onClick={openDrawer}
       aria-label={`${t("nav.panier")}, ${count} ${count > 1 ? t("header.cart.articles") : t("header.cart.article")}`}
-      className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+      className="relative grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:text-foreground"
     >
       <ShoppingBag className="size-4" />
       {count > 0 && (
-        <span className="absolute -right-1.5 -top-1.5 grid min-w-5 place-items-center rounded-full bg-primary px-1 font-mono text-[10px] font-bold text-primary-foreground">
+        <span className="absolute -right-1.5 -top-1.5 grid min-w-5 place-items-center bg-primary px-1 font-mono text-[10px] font-bold text-primary-foreground">
           {count}
         </span>
       )}
@@ -159,7 +159,7 @@ export function Header() {
           <button
             onClick={openSearch}
             aria-label={t("header.search")}
-            className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+            className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:text-foreground"
           >
             <Search className="size-4" />
           </button>
@@ -188,7 +188,7 @@ export function Header() {
             <SheetTrigger asChild>
               <button
                 aria-label={t("header.open-menu")}
-                className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
+                className="grid size-9 place-items-center border border-border lg:hidden"
               >
                 <Menu className="size-4" />
               </button>

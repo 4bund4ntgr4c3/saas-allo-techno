@@ -63,7 +63,7 @@ export function PwaUpdatePrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex items-center gap-3 rounded-sm border border-primary/30 bg-card p-3 shadow-lg animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-4 left-4 z-50 flex items-center gap-3 border border-primary/30 bg-card p-3 shadow-lg animate-in slide-in-from-bottom-4">
       <RefreshCw className="size-4 text-primary animate-spin" />
       <p className="text-xs font-medium">{t("pwa.update.available")}</p>
       <Button variant="technical" size="sm" onClick={handleUpdate}>
@@ -71,7 +71,7 @@ export function PwaUpdatePrompt() {
       </Button>
       <button
         onClick={() => setShow(false)}
-        className="p-1 hover:bg-muted rounded-sm"
+        className="p-1 hover:bg-muted"
         aria-label={t("pwa.close")}
       >
         <X className="size-3" />

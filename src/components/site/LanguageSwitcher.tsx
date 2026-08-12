@@ -32,7 +32,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-sm border border-border p-0.5 ${className ?? ""}`}
+      className={`inline-flex items-center gap-1 border border-border p-0.5 ${className ?? ""}`}
       role="group"
       aria-label={t("header.changeLanguage")}
     >

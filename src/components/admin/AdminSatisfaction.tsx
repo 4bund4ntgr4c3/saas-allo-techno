@@ -119,9 +119,9 @@ export function AdminSatisfaction() {
                 <div key={star} className="flex items-center gap-2 text-xs">
                   <span className="w-4 text-right">{star}</span>
                   <Star className="size-3 fill-amber-400 text-amber-400" />
-                  <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                  <div className="flex-1 h-2 bg-muted overflow-hidden">
                     <div
-                      className="h-full bg-amber-400 rounded-full"
+                      className="h-full bg-amber-400"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -141,7 +141,7 @@ export function AdminSatisfaction() {
               <Gift className="size-4 text-primary" />
               <h3 className="font-bold text-sm text-foreground">Relances Enquêtes de Satisfaction J+2</h3>
             </div>
-            <span className="text-xs text-muted-foreground bg-primary/10 text-primary font-medium px-2 py-0.5 rounded-full">
+            <span className="text-xs text-muted-foreground bg-primary/10 text-primary font-medium px-2 py-0.5">
               +50 pts fidélité offerts
             </span>
           </div>

@@ -62,7 +62,7 @@ export function ContentSection() {
           >
             {tab.label}
             {tab.id === "stock" && lowStockCount > 0 && (
-              <span className="ml-2 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">
+              <span className="ml-2 bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">
                 {lowStockCount}
               </span>
             )}
@@ -280,7 +280,7 @@ function BlogAdmin() {
       </div>
 
       {(editing || form.slug) && (
-        <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5">
+        <form onSubmit={save} className="space-y-4 border border-border bg-card p-5">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">
               {editing ? t("admin.content.blog.form.editing") : t("admin.content.blog.form.new")}
@@ -545,7 +545,7 @@ function ReviewsAdmin() {
         ))}
       </div>
 
-      <form onSubmit={save} className="space-y-4 rounded-sm border border-border bg-card p-5 h-fit">
+      <form onSubmit={save} className="space-y-4 border border-border bg-card p-5 h-fit">
         <h3 className="text-sm font-semibold">{form.id ? t("admin.content.review.form.editing") : t("admin.content.review.form.new")}</h3>
         <label className="block">
           <span className="at-eyebrow mb-2 block">{t("admin.content.review.form.name")}</span>

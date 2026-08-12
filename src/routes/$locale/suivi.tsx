@@ -245,7 +245,7 @@ function Suivi() {
                   value={reference}
                   onChange={(e) => setReference(e.target.value)}
                   placeholder="AT-2026-0001"
-                  className="h-11 flex-1 rounded-sm border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="h-11 flex-1 border border-border bg-background px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 />
                 <Button type="submit" variant="technical" disabled={loading}>
                   <Search className="size-4" />
@@ -262,7 +262,7 @@ function Suivi() {
                   onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
                   placeholder="ex. K7M2Q9XW3B"
                   autoComplete="off"
-                  className="h-11 flex-1 rounded-sm border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="h-11 flex-1 border border-border bg-background px-4 font-mono text-sm tracking-wider focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 />
               </div>
               <p className="mt-3 text-xs text-muted-foreground">{t("suivi.code.hint")}</p>
@@ -514,7 +514,7 @@ function StatusResult({
                     />
                   )}
                   <div
-                    className={`relative z-10 grid size-10 shrink-0 place-items-center rounded-full border ${
+                    className={`relative z-10 grid size-10 shrink-0 place-items-center border ${
                       done
                         ? "border-primary bg-primary text-primary-foreground"
                         : current
@@ -697,7 +697,7 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
         return (
           <li key={`${e.created_at}-${i}`} className="relative">
             <span
-              className={`absolute -left-[27px] top-1 grid size-3 place-items-center rounded-full ${
+              className={`absolute -left-[27px] top-1 grid size-3 place-items-center ${
                 i === 0 ? "bg-primary ring-4 ring-primary/20" : "bg-border"
               }`}
             />
@@ -739,16 +739,16 @@ function SuiviSkeleton() {
       className="mt-8 space-y-6 border border-border bg-card p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="h-6 w-48 animate-pulse rounded-sm bg-border" />
-        <div className="h-4 w-32 animate-pulse rounded-sm bg-border" />
+        <div className="h-6 w-48 animate-pulse bg-border" />
+        <div className="h-4 w-32 animate-pulse bg-border" />
       </div>
       <ol aria-hidden className="space-y-6">
         {[0, 1, 2, 3, 4].map((i) => (
           <li key={i} className="flex items-center gap-5">
-            <div className="size-10 animate-pulse rounded-full bg-border" />
+            <div className="size-10 animate-pulse bg-border" />
             <div className="flex-1">
-              <div className="h-3 w-1/3 animate-pulse rounded-sm bg-border" />
-              <div className="mt-2 h-3 w-2/3 animate-pulse rounded-sm bg-border" />
+              <div className="h-3 w-1/3 animate-pulse bg-border" />
+              <div className="mt-2 h-3 w-2/3 animate-pulse bg-border" />
             </div>
           </li>
         ))}
@@ -903,7 +903,7 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
           a.kind === "video" ? (
             <div
               key={`${a.url}-${a.created_at}`}
-              className="overflow-hidden rounded-sm border border-border bg-surface"
+              className="overflow-hidden border border-border bg-surface"
             >
               <video
                 src={a.url}
@@ -920,7 +920,7 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
               key={`${a.url}-${a.created_at}`}
               type="button"
               onClick={() => setZoom(a.url)}
-              className="group overflow-hidden rounded-sm border border-border bg-surface text-left"
+              className="group overflow-hidden border border-border bg-surface text-left"
             >
               <OptimizedImage
                 src={a.url}
@@ -949,7 +949,7 @@ function PhotosBlock({ reference, code }: { reference: string; code: string }) {
             alt=""
             loading="lazy"
             decoding="async"
-            className="max-h-[90vh] max-w-full rounded-sm object-contain"
+            className="max-h-[90vh] max-w-full object-contain"
           />
         </div>
       )}

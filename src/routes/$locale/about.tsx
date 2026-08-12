@@ -97,7 +97,7 @@ function About() {
                 <div key={item.year} className="relative pl-10">
                   <div className="absolute left-0 top-1 flex items-center">
                     <span className="relative flex size-6 items-center justify-center">
-                      <span className="relative inline-flex size-3 rounded-full bg-primary" />
+                      <span className="relative inline-flex size-3 bg-primary" />
                     </span>
                   </div>
                   <div className="flex items-baseline gap-3">

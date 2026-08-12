@@ -212,7 +212,7 @@ export function AdminChat() {
                 <Link
                   to="/admin/dossiers"
                   search={{ search: selectedRes.reference } as never}
-                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1 rounded-sm border border-border"
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1 border border-border"
                 >
                   <span>Dossier</span>
                   <ExternalLink className="size-3" />
@@ -241,7 +241,7 @@ export function AdminChat() {
                           className={`flex items-end gap-1.5 max-w-[75%] ${isStaff ? "flex-row-reverse" : ""}`}
                         >
                           <div
-                            className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] ${
+                            className={`flex size-6 shrink-0 items-center justify-center text-[10px] ${
                               isStaff ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-foreground"
                             }`}
                           >

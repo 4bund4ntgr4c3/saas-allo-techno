@@ -50,7 +50,7 @@ export function AdminDeviceLabel({ data, onClose }: AdminDeviceLabelProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-muted"
+            className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted"
           >
             <X className="size-4" />
           </button>

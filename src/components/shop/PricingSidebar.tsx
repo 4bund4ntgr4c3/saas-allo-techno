@@ -51,7 +51,7 @@ export function PricingSidebar({
   const total = subtotal + shippingFee - discount;
 
   return (
-    <div className="sticky top-24 rounded-sm border border-border bg-card p-5">
+    <div className="sticky top-24 border border-border bg-card p-5">
       <div className="mb-3">
         <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           {t("panier.summary")}
@@ -131,7 +131,7 @@ export function PricingSidebar({
         <div className="mb-4 flex gap-2">
           <Input
             placeholder={t("panier.promo.placeholder", ["Code promo"])}
-            className="flex-1 rounded-sm border-border bg-surface text-xs"
+            className="flex-1 border-border bg-surface text-xs"
           />
           <Button variant="outline" size="sm" className="rounded-sm border-primary text-primary">
             <Tag className="mr-1 size-3" />
@@ -142,7 +142,7 @@ export function PricingSidebar({
 
       <Button
         onClick={onContinue}
-        className="w-full rounded-sm bg-primary font-bold text-primary-foreground hover:bg-primary-hover"
+        className="w-full bg-primary font-bold text-primary-foreground hover:bg-primary-hover"
         size="lg"
         disabled={disabled || loading}
       >

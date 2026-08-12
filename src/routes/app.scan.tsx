@@ -51,7 +51,7 @@ function ScanPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-12 items-center justify-center rounded-sm bg-foreground text-background">
+          <div className="flex size-12 items-center justify-center bg-foreground text-background">
             <Laptop className="size-6" />
           </div>
           <div>
@@ -64,19 +64,23 @@ function ScanPage() {
         <Badge variant="outline">{t(`org.equipment.status.${eq.status}`)}</Badge>
       </div>
       <div className="flex flex-wrap gap-3">
-        <Link
-          to="/app/organizations/$orgId/equipment/$equipmentId"
-          params={{ orgId: eq.org_id, equipmentId: eq.id }}
-        >
-          <Button variant="primaryBlock">{t("org.equipment.view")}</Button>
-        </Link>
-        <Link
-          to="/app/organizations/$orgId/tickets"
-          params={{ orgId: eq.org_id }}
-          search={{ equipment: eq.id }}
-        >
-          <Button variant="outline">{t("org.tickets.report")}</Button>
-        </Link>
+        <Button asChild variant="primaryBlock">
+          <Link
+            to="/app/organizations/$orgId/equipment/$equipmentId"
+            params={{ orgId: eq.org_id, equipmentId: eq.id }}
+          >
+            {t("org.equipment.view")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link
+            to="/app/organizations/$orgId/tickets"
+            params={{ orgId: eq.org_id }}
+            search={{ equipment: eq.id }}
+          >
+            {t("org.tickets.report")}
+          </Link>
+        </Button>
       </div>
     </div>
   );

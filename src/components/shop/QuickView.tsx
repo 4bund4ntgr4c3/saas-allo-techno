@@ -63,19 +63,19 @@ export function QuickView({ product, stock, open, onClose }: QuickViewProps) {
             <div className="mt-3">
               {stock > 0 ? (
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
+                  className={`inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${
                     stock <= 5
                       ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
                       : "border-success/40 bg-success/10 text-success"
                   }`}
                 >
                   <span
-                    className={`size-1.5 rounded-full ${stock <= 5 ? "animate-pulse bg-amber-500" : "bg-success"}`}
+                    className={`size-1.5 ${stock <= 5 ? "animate-pulse bg-amber-500" : "bg-success"}`}
                   />
                   {stock} pcs
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   Sur commande
                 </span>
               )}

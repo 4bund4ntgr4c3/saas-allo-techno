@@ -1,8 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
-  Activity, Calendar, Clock, DollarSign, LayoutGrid, Loader2,
-  RadioTower, ShoppingCart, Wrench,
+  Activity,
+  Calendar,
+  Clock,
+  DollarSign,
+  LayoutGrid,
+  Loader2,
+  RadioTower,
+  ShoppingCart,
+  Wrench,
+  TrendingUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
@@ -62,7 +70,9 @@ export function AdminDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("reservation_status_history")
-        .select("id, reservation_id, new_status, note, created_at, reservations(reference, customer_name)")
+        .select(
+          "id, reservation_id, new_status, note, created_at, reservations(reference, customer_name)",
+        )
         .order("created_at", { ascending: false })
         .limit(8);
       return data ?? [];
@@ -92,65 +102,77 @@ export function AdminDashboard() {
     refetchInterval: 30_000,
   });
 
+  const kpis = [
+    {
+      label: t("admin.dash.activeRepairs"),
+      value: activeRepairs.data ?? 0,
+      icon: Wrench,
+      loading: activeRepairs.isLoading,
+      accentClass: "border-l-primary/50",
+    },
+    {
+      label: t("admin.dash.todayReservations"),
+      value: todayReservations.data ?? 0,
+      icon: Calendar,
+      loading: todayReservations.isLoading,
+      accentClass: "border-l-chart-2/50",
+    },
+    {
+      label: t("admin.dash.pendingQuotes"),
+      value: pendingQuotes.data ?? 0,
+      icon: Clock,
+      loading: pendingQuotes.isLoading,
+      accentClass: "border-l-chart-4/50",
+    },
+    {
+      label: t("admin.dash.monthRevenue"),
+      value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
+      icon: DollarSign,
+      loading: monthRevenue.isLoading,
+      accentClass: "border-l-success/50",
+    },
+    {
+      label: t("admin.dash.inPipeline"),
+      value: realtimeActive.data ?? 0,
+      icon: RadioTower,
+      loading: realtimeActive.isLoading,
+      accentClass: "border-l-accent/50",
+    },
+  ];
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="at-in space-y-8">
+      {/* Page header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="at-eyebrow">{t("admin.dash.eyebrow")}</p>
-          <h2 className="mt-1 text-xl font-semibold">{t("admin.dash.title")}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("admin.dash.intro")}</p>
+          <h2 className="at-display mt-1 text-2xl">{t("admin.dash.title")}</h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t("admin.dash.intro")}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="technicalOutline" size="sm" asChild>
-            <Link to="/admin/stats">
-              <Activity className="mr-1 size-3" />
-              {t("admin.stats.tab")}
-            </Link>
-          </Button>
-        </div>
+        <Button variant="technicalOutline" size="sm" asChild>
+          <Link to="/admin/stats">
+            <TrendingUp className="mr-1.5 size-3.5" />
+            {t("admin.stats.tab")}
+          </Link>
+        </Button>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {[
-          {
-            label: t("admin.dash.activeRepairs"),
-            value: activeRepairs.data ?? 0,
-            icon: Wrench,
-            loading: activeRepairs.isLoading,
-          },
-          {
-            label: t("admin.dash.todayReservations"),
-            value: todayReservations.data ?? 0,
-            icon: Calendar,
-            loading: todayReservations.isLoading,
-          },
-          {
-            label: t("admin.dash.pendingQuotes"),
-            value: pendingQuotes.data ?? 0,
-            icon: Clock,
-            loading: pendingQuotes.isLoading,
-          },
-          {
-            label: t("admin.dash.monthRevenue"),
-            value: `${(monthRevenue.data ?? 0).toLocaleString(t("locale") as string)} FCFA`,
-            icon: DollarSign,
-            loading: monthRevenue.isLoading,
-          },
-          {
-            label: t("admin.dash.inPipeline"),
-            value: realtimeActive.data ?? 0,
-            icon: RadioTower,
-            loading: realtimeActive.isLoading,
-          },
-        ].map((kpi) => (
-          <div key={kpi.label} className="border border-border bg-card p-4">
-            <div className="flex items-center justify-between">
+      <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+        {kpis.map((kpi, i) => (
+          <div
+            key={kpi.label}
+            className="flex flex-col justify-between border-l-2 bg-card p-4 transition-colors hover:bg-surface"
+            style={{
+              borderLeftColor: "var(--color-border)",
+              animationDelay: `${i * 80}ms`,
+            }}
+          >
+            <div className="flex items-start justify-between gap-2">
               <p className="at-eyebrow">{kpi.label}</p>
-              <kpi.icon className="size-4 text-muted-foreground" />
+              <kpi.icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             </div>
-            <div className="mt-2">
+            <div className="mt-3">
               {kpi.loading ? (
                 <Loader2 className="size-5 animate-spin text-muted-foreground" />
               ) : (
@@ -163,45 +185,53 @@ export function AdminDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-7">
         {/* Recent Activity */}
-        <section className="border border-border bg-card p-4 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
+        <section className="border border-border bg-card lg:col-span-4">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <h3 className="text-sm font-semibold">{t("admin.dash.recentActivity")}</h3>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="h-7 gap-1.5 text-xs">
               <Link to="/admin/dossiers">
-                <RadioTower className="mr-2 size-4" />
+                <RadioTower className="size-3.5" />
                 {t("admin.dash.viewDossiers")}
               </Link>
             </Button>
           </div>
+
           {recentActivity.isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            <div className="flex justify-center py-10">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
             </div>
           ) : (recentActivity.data ?? []).length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
+            <p className="py-10 text-center text-sm text-muted-foreground">
               {t("admin.dash.noActivity")}
             </p>
           ) : (
-            <div className="space-y-3">
-              {(recentActivity.data ?? []).map((entry) => {
+            <div className="divide-y divide-border">
+              {(recentActivity.data ?? []).map((entry, i) => {
                 const reservation = Array.isArray(entry.reservations)
                   ? entry.reservations[0]
                   : entry.reservations;
                 return (
-                  <div key={entry.id} className="flex items-center gap-3 rounded-sm border border-border p-3">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
-                      <Activity className="size-3.5 text-muted-foreground" />
+                  <div
+                    key={entry.id}
+                    className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface"
+                    style={{ animationDelay: `${i * 50}ms` }}
+                  >
+                    <div className="flex size-8 shrink-0 items-center justify-center bg-muted text-muted-foreground">
+                      <Activity className="size-3.5" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm">
+                      <p className="truncate text-sm font-medium">
                         {t("admin.dash.repairFor", [reservation?.customer_name ?? "—"])}
                       </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {reservation?.reference ?? "—"} · {t("admin.dash.statusChanged", [entry.new_status])}
+                      <p className="truncate font-mono text-xs text-muted-foreground">
+                        {reservation?.reference ?? "—"} · {entry.new_status}
                       </p>
                     </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {new Date(entry.created_at).toLocaleTimeString(t("locale") as string, { hour: "2-digit", minute: "2-digit" })}
+                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                      {new Date(entry.created_at).toLocaleTimeString(t("locale") as string, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 );
@@ -211,9 +241,11 @@ export function AdminDashboard() {
         </section>
 
         {/* Quick Actions */}
-        <section className="border border-border bg-card p-4 lg:col-span-3">
-          <h3 className="mb-4 text-sm font-semibold">{t("admin.dash.quickActions")}</h3>
-          <div className="space-y-2">
+        <section className="border border-border bg-card lg:col-span-3">
+          <div className="border-b border-border px-4 py-3">
+            <h3 className="text-sm font-semibold">{t("admin.dash.quickActions")}</h3>
+          </div>
+          <div className="p-4 space-y-2">
             <Button variant="technical" className="w-full justify-start" asChild>
               <Link to="/admin/dossiers">
                 <RadioTower className="mr-2 size-4" />

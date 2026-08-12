@@ -144,8 +144,8 @@ function SitesList() {
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-accent">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-accent">
             <MapPin className="size-5" />
           </div>
           <div>
@@ -153,8 +153,8 @@ function SitesList() {
             <p className="text-xs text-muted-foreground">{t("org.sites.title")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-primary">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-primary">
             <Building className="size-5" />
           </div>
           <div>
@@ -162,8 +162,8 @@ function SitesList() {
             <p className="text-xs text-muted-foreground">{t("org.sites.form.departments")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-sm border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center rounded-sm bg-muted text-success">
+        <div className="flex items-center gap-3 border border-border bg-card p-4">
+          <div className="flex size-10 items-center justify-center bg-muted text-success">
             <Laptop className="size-5" />
           </div>
           <div>
@@ -176,7 +176,7 @@ function SitesList() {
       {/* ─── Create Site Form ─── */}
       {showForm ? (
         <form
-          className="at-in grid gap-4 rounded-sm border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="at-in grid gap-4 border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3"
           onSubmit={(e) => {
             e.preventDefault();
             create.mutate();
@@ -267,11 +267,11 @@ function SitesList() {
             {sites.data?.map((s) => (
               <li
                 key={s.id}
-                className="group flex flex-col gap-3 rounded-sm border border-border bg-card p-4 transition-colors hover:border-primary/50"
+                className="group flex flex-col gap-3 border border-border bg-card p-4 transition-colors hover:border-primary/50"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-sm bg-accent/10 text-accent">
+                    <div className="flex size-10 items-center justify-center bg-accent/10 text-accent">
                       <MapPin className="size-5" />
                     </div>
                     <div className="min-w-0">

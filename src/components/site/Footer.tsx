@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
-import { COMPANY } from "@/data/catalog/company";
+import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { OPEN_SCHEDULE, isOpenNow } from "@/lib/reservation-schema";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { NewsletterForm } from "@/components/site/NewsletterForm";
+import { Button } from "@/components/ui/button";
 import { prefetchRoute } from "@/lib/prefetch";
 
 function OpenNow() {
@@ -28,15 +29,15 @@ function OpenNow() {
     : t("status.reopens-monday");
 
   return (
-    <div className="inline-flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-2.5 shadow-sm transition-all duration-200 hover:shadow-md">
+    <div className="inline-flex items-center gap-3 border border-border bg-card px-4 py-2.5 shadow-sm transition-all duration-200 hover:shadow-md">
       <span className="relative flex size-2">
         <span
-          className={`absolute inline-flex size-full animate-ping rounded-full opacity-75 ${
+          className={`absolute inline-flex size-full animate-ping opacity-75 ${
             open ? "bg-success" : "bg-destructive"
           }`}
         />
         <span
-          className={`relative inline-flex size-2 rounded-full ${
+          className={`relative inline-flex size-2 ${
             open ? "bg-success" : "bg-destructive"
           }`}
         />
@@ -91,7 +92,7 @@ export function Footer() {
                   key={s}
                   href={s === "WA" ? `https://wa.me/${COMPANY.whatsapp.replace(/\D/g, "")}` : "#"}
                   aria-label={s === "WA" ? "WhatsApp" : s === "FB" ? "Facebook" : "Instagram"}
-                  className="grid size-10 place-items-center rounded-lg border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                  className="grid size-10 place-items-center border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
                 >
                   {s}
                 </a>
@@ -232,9 +233,36 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Newsletter */}
-        <div className="mt-12 max-w-md">
-          <NewsletterForm />
+        {/* Footer CTA & Newsletter */}
+        <div className="mt-12 border-t border-border/60 pt-12">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+            {/* CTA Section */}
+            <div className="space-y-4 lg:col-span-6">
+              <h2 className="at-display text-2xl font-bold text-foreground md:text-3xl">
+                {t("blocks.cta.title")}
+              </h2>
+              <p className="max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                {t("blocks.cta.text", [COMPANY.city, formatFcfa(50000)])}
+              </p>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Button asChild size="sm">
+                  <Link to="/$locale/reservation" params={{ locale }}>
+                    {t("blocks.cta.reserve")}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/$locale/devis" params={{ locale }}>
+                    {t("blocks.cta.devis")}
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Newsletter Form */}
+            <div className="lg:col-span-6">
+              <NewsletterForm />
+            </div>
+          </div>
         </div>
       </div>
 

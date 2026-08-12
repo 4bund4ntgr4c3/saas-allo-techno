@@ -45,7 +45,7 @@ function AnalyticsSection() {
       accessorKey: "event",
       header: t("admin.analytics.events.column.event"),
       cell: ({ row }) => (
-        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span className="inline-block bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
           {EVENT_LABEL[row.original.event] ?? row.original.event}
         </span>
       ),

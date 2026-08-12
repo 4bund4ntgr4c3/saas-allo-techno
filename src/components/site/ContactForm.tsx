@@ -15,7 +15,7 @@ type Props = {
 };
 
 const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  "h-11 w-full border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 function RadioChips({
   name,
@@ -48,11 +48,11 @@ function RadioChips({
               <input type="radio" value={o.value} {...register(name)} className="sr-only" />
               <span
                 aria-hidden="true"
-                className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                className={`flex size-4 shrink-0 items-center justify-center border ${
                   on ? "border-primary" : "border-border"
                 }`}
               >
-                {on && <span className="size-2 rounded-full bg-primary" />}
+                {on && <span className="size-2 bg-primary" />}
               </span>
               <span>
                 <span className="block text-sm font-bold tracking-tight">{o.label}</span>
@@ -212,7 +212,7 @@ export function ContactForm({ defaultValues, submitLabel, onValid }: Props) {
           <textarea
             id="cf-message"
             rows={3}
-            className="w-full rounded-sm border border-border bg-card p-4 text-sm focus:border-primary focus:outline-none"
+            className="w-full border border-border bg-card p-4 text-sm focus:border-primary focus:outline-none"
             {...register("message")}
           />
         </div>

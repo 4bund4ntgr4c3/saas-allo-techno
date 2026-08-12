@@ -393,12 +393,12 @@ function ChangelogPage() {
                   <div className="absolute left-0 top-1 flex items-center">
                     <span className="relative flex size-6 items-center justify-center">
                       <span
-                        className={`absolute inline-flex size-full animate-ping rounded-full opacity-20 ${
+                        className={`absolute inline-flex size-full animate-ping opacity-20 ${
                           idx === 0 ? "bg-primary" : "bg-muted-foreground"
                         }`}
                       />
                       <span
-                        className={`relative inline-flex size-3 rounded-full ${
+                        className={`relative inline-flex size-3 ${
                           idx === 0 ? "bg-primary" : "bg-muted-foreground/50"
                         }`}
                       />
@@ -425,7 +425,7 @@ function ChangelogPage() {
                       <ul className="space-y-1">
                         {entry.added.map((item) => (
                           <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-success" />
+                            <span className="mt-1.5 size-1.5 shrink-0 bg-success" />
                             {item}
                           </li>
                         ))}
@@ -441,7 +441,7 @@ function ChangelogPage() {
                       <ul className="space-y-1">
                         {entry.changed.map((item) => (
                           <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                            <span className="mt-1.5 size-1.5 shrink-0 bg-primary" />
                             {item}
                           </li>
                         ))}
@@ -457,7 +457,7 @@ function ChangelogPage() {
                       <ul className="space-y-1">
                         {entry.fixed.map((item) => (
                           <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-amber-500" />
+                            <span className="mt-1.5 size-1.5 shrink-0 bg-amber-500" />
                             {item}
                           </li>
                         ))}
@@ -473,7 +473,7 @@ function ChangelogPage() {
                       <ul className="space-y-1">
                         {entry.removed.map((item) => (
                           <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-destructive" />
+                            <span className="mt-1.5 size-1.5 shrink-0 bg-destructive" />
                             {item}
                           </li>
                         ))}

@@ -199,7 +199,7 @@ function Boutique() {
                     window.history.replaceState(null, "", url);
                   }}
                   aria-label={t("boutique.search.placeholder")}
-                  className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="w-full border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 />
                 <select
                   value={filters.sort}
@@ -208,7 +208,7 @@ function Boutique() {
                     setFilters({ ...filters, sort: val as ShopFilters["sort"] });
                   }}
                   aria-label={t("boutique.sort")}
-                  className="w-44 shrink-0 rounded-sm border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
+                  className="w-44 shrink-0 border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
                 >
                   {SORTS.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -263,18 +263,18 @@ function Boutique() {
                         </div>
                         <div className="mt-2 flex items-center gap-2">
                           {available <= 0 ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                              <span className="size-1.5 rounded-full bg-muted-foreground" />
+                            <span className="inline-flex items-center gap-1.5 border border-border bg-surface px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                              <span className="size-1.5 bg-muted-foreground" />
                               {t("boutique.on-order")}
                             </span>
                           ) : available <= 5 ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                              <span className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+                            <span className="inline-flex items-center gap-1.5 border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                              <span className="size-1.5 animate-pulse bg-amber-500" />
                               {t("boutique.low-stock", [available])}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-success/40 bg-success/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-success">
-                              <span className="size-1.5 rounded-full bg-success" />
+                            <span className="inline-flex items-center gap-1.5 border border-success/40 bg-success/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-success">
+                              <span className="size-1.5 bg-success" />
                               {t("boutique.in-stock", [available])}
                             </span>
                           )}

@@ -11,6 +11,7 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   subtotal: number;
+  hydrated: boolean;
   add: (slug: string, qty?: number) => void;
   setQty: (slug: string, qty: number) => void;
   remove: (slug: string) => void;
@@ -66,6 +67,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (!found) return [...prev, { slug, qty: Math.min(qty, max) }];
       return prev.map((l) => (l.slug === slug ? { ...l, qty: Math.min(l.qty + qty, max) } : l));
     });
+    setDrawerOpen(true);
   }, []);
 
   const setQty = useCallback((slug: string, qty: number) => {
@@ -100,6 +102,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       items,
       count: items.reduce((n, i) => n + i.qty, 0),
       subtotal: items.reduce((n, i) => n + i.qty * i.accessory.price, 0),
+      hydrated,
       add,
       setQty,
       remove,
@@ -108,7 +111,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       openDrawer,
       closeDrawer,
     };
-  }, [lines, add, setQty, remove, clear, drawerOpen, openDrawer, closeDrawer]);
+  }, [lines, hydrated, add, setQty, remove, clear, drawerOpen, openDrawer, closeDrawer]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

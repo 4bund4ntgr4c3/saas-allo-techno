@@ -184,7 +184,7 @@ function RateLimitPanel() {
   ];
 
   return (
-    <div className="mt-6 rounded-sm border border-border bg-card p-5">
+    <div className="mt-6 border border-border bg-card p-5">
       <h3 className="text-sm font-semibold">{t("admin.security.rateLimit.title")}</h3>
       <p className="mt-1 text-xs text-muted-foreground">
         {t("admin.security.rateLimit.description")}
@@ -255,7 +255,7 @@ function MetricsPanel() {
         const key = info.getValue() as string;
         const i18nKey = METRIC_I18N[key];
         return (
-          <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          <span className="inline-block bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
             {i18nKey ? t(i18nKey) : key}
           </span>
         );
@@ -265,7 +265,7 @@ function MetricsPanel() {
   ];
 
   return (
-    <div className="mt-6 rounded-sm border border-border bg-card p-5">
+    <div className="mt-6 border border-border bg-card p-5">
       <h3 className="text-sm font-semibold">{t("admin.security.metrics.title")}</h3>
       <p className="mt-1 text-xs text-muted-foreground">
         {t("admin.security.metrics.description")}

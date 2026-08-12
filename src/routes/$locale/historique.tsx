@@ -80,7 +80,7 @@ function HistoriqueDevice() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="border border-border bg-card p-6">
             <div className="flex gap-2">
-              <div className="flex rounded-sm border border-border bg-surface p-0.5">
+              <div className="flex border border-border bg-surface p-0.5">
                 <button
                   type="button"
                   onClick={() => setSearchType("phone")}

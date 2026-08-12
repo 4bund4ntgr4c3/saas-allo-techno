@@ -2,11 +2,21 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CalendarClock, Copy, FileDown, Star, Users, Trophy } from "lucide-react";
+import {
+  CalendarClock,
+  Copy,
+  CreditCard,
+  FileDown,
+  LogOut,
+  Star,
+  Trophy,
+  User,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { downloadInvoicePdf } from "@/lib/invoice";
@@ -49,7 +59,7 @@ export const Route = createFileRoute("/_authenticated/mon-compte")({
 });
 
 const field =
-  "h-11 w-full rounded-sm border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  "h-11 w-full border border-border bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 const STATUS_TONE: Record<string, string> = {
   en_attente: "border-border text-muted-foreground",
@@ -101,6 +111,15 @@ function Dashboard() {
         .maybeSingle();
       if (error) throw error;
       return data;
+    },
+  });
+
+  const isStaff = useQuery({
+    queryKey: ["is-staff", user.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("is_staff", { _user_id: user.id });
+      if (error) return false;
+      return Boolean(data);
     },
   });
 
@@ -268,45 +287,108 @@ function Dashboard() {
   const reviews = (reviewsQuery.data ?? []) as CustomerReview[];
   const payments = (paymentsQuery.data ?? []) as CustomerPayment[];
 
+  const SIDEBAR_ITEMS = [
+    { key: "dossiers", labelKey: "mc.tab.dossiers", icon: CalendarClock },
+    { key: "devis", labelKey: "mc.tab.devis", icon: FileDown },
+    { key: "fidelite", labelKey: "mc.tab.fidelite", icon: Trophy },
+    { key: "parrainer", labelKey: "mc.tab.parrainer", icon: Users },
+    { key: "avis", labelKey: "mc.tab.avis", icon: Star },
+    { key: "paiements", labelKey: "mc.tab.paiements", icon: CreditCard },
+    { key: "profil", labelKey: "mc.tab.profil", icon: User },
+  ];
+
   return (
     <>
-      <section className="border-b border-border py-16">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6 px-4 sm:px-6">
+      {/* ─── Header ─── */}
+      <section className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-end justify-between gap-6 px-4 py-10 sm:px-6">
           <div>
-            <span className="at-eyebrow mb-4 block" data-tour="account-header">
+            <span className="at-eyebrow mb-3 block" data-tour="account-header">
               {t("mc.header.eyebrow")}
             </span>
-            <h1 className="at-display text-4xl md:text-6xl">{t("mc.header.title")}</h1>
-            <p className="mt-4 text-sm text-muted-foreground">{user.email}</p>
+            <h1 className="at-display text-3xl md:text-5xl">{t("mc.header.title")}</h1>
+            <p className="mt-3 text-sm text-muted-foreground">{user.email}</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Button asChild variant="technical" size="sm">
               <Link to="/$locale/reservation" params={{ locale }}>
                 {t("mc.header.new")}
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/admin">{t("mc.header.admin")}</Link>
-            </Button>
-            <Button variant="outline" size="sm" onClick={signOut} data-tour="account-logout">
-              {t("mc.header.logout")}
-            </Button>
+            {isStaff.data === true && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin">{t("mc.header.admin")}</Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      {/* ─── Sidebar + Content ─── */}
+      <div className="mx-auto flex max-w-[1400px] min-h-[70vh]">
+        {/* Sidebar */}
+        <aside className="hidden w-56 shrink-0 border-r border-border bg-card md:block">
+          <nav className="sticky top-0 flex h-[calc(100vh-10rem)] flex-col overflow-y-auto p-3" data-tour="account-tabs">
+            <p className="at-eyebrow mb-2 px-2.5">{t("mc.header.eyebrow")}</p>
+            {SIDEBAR_ITEMS.map((item) => {
+              const isActive = activeTab === item.key;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => setActiveTab(item.key)}
+                  className={`relative flex items-center gap-2.5 px-2.5 py-2 text-left text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-primary/8 text-foreground"
+                      : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
+                  )}
+                  <item.icon className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
+                  {t(item.labelKey)}
+                </button>
+              );
+            })}
+
+            <div className="mt-auto border-t border-border pt-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={signOut}
+                className="w-full justify-start"
+                data-tour="account-logout"
+              >
+                <LogOut className="size-4 shrink-0" />
+                {t("mc.header.logout")}
+              </Button>
+            </div>
+          </nav>
+        </aside>
+
+        {/* Mobile horizontal tabs */}
+        <div className="flex overflow-x-auto border-b border-border bg-card p-1 md:hidden">
+          {SIDEBAR_ITEMS.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => setActiveTab(item.key)}
+              className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-3 py-2 text-sm font-medium transition-all ${
+                activeTab === item.key
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground"
+              }`}
+            >
+              <item.icon className="size-3.5" />
+              {t(item.labelKey)}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <main className="min-w-0 flex-1 p-6 md:p-8">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-8" data-tour="account-tabs">
-              <TabsTrigger value="dossiers">{t("mc.tab.dossiers")}</TabsTrigger>
-              <TabsTrigger value="devis">{t("mc.tab.devis")}</TabsTrigger>
-              <TabsTrigger value="fidelite">{t("mc.tab.fidelite")}</TabsTrigger>
-              <TabsTrigger value="parrainer">{t("mc.tab.parrainer")}</TabsTrigger>
-              <TabsTrigger value="avis">{t("mc.tab.avis")}</TabsTrigger>
-              <TabsTrigger value="paiements">{t("mc.tab.paiements")}</TabsTrigger>
-              <TabsTrigger value="profil">{t("mc.tab.profil")}</TabsTrigger>
-            </TabsList>
 
             {/* ── ONGLET: Mes dossiers ────────────────────────────────── */}
             <TabsContent value="dossiers">
@@ -503,9 +585,9 @@ function Dashboard() {
                               <span>{loyalty.points}</span>
                               <span>{loyalty.tier.next.min}</span>
                             </div>
-                            <div className="h-2 overflow-hidden rounded-full bg-muted">
+                            <div className="h-2 overflow-hidden bg-muted">
                               <div
-                                className="h-full rounded-full bg-primary transition-all"
+                                className="h-full bg-primary transition-all"
                                 style={{
                                   width: `${Math.min(100, (loyalty.points / loyalty.tier.next.min) * 100)}%`,
                                 }}
@@ -901,8 +983,8 @@ function Dashboard() {
               </div>
             </TabsContent>
           </Tabs>
-        </div>
-      </section>
+        </main>
+      </div>
 
       <TourLauncher />
       <TourOverlay />
