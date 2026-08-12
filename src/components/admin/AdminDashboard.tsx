@@ -39,17 +39,21 @@ export function AdminDashboard() {
     queryFn: async () => {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { data } = await supabase
-        .from("reservations")
-        .select("payment")
+      const { data: paymentsData } = await supabase
+        .from("payments")
+        .select("amount")
         .gte("created_at", startOfMonth)
-        .in("status", ["terminee", "en_cours"]);
-      if (!data) return 0;
-      return data.reduce((sum, r) => {
-        const payment = r.payment as unknown as Record<string, unknown> | null;
-        const amount = payment?.["amount"];
-        return sum + (typeof amount === "number" ? amount : 0);
-      }, 0);
+        .eq("status", "paid");
+      if (paymentsData && paymentsData.length > 0) {
+        return paymentsData.reduce((sum, p) => sum + (p.amount ?? 0), 0);
+      }
+      const { data: resData } = await supabase
+        .from("reservations")
+        .select("quote_amount")
+        .gte("created_at", startOfMonth)
+        .eq("payment_status", "paid");
+      if (!resData) return 0;
+      return resData.reduce((sum, r) => sum + (r.quote_amount ?? 0), 0);
     },
   });
 

@@ -770,6 +770,9 @@ const fr = {
   // Admin — Tabs (missing)
   "admin.tab.marketing": "Marketing",
   "admin.tab.webhooks": "Webhooks",
+  "admin.tab.caisse": "Caisse / POS",
+  "admin.tab.featureFlags": "Feature Flags",
+  "admin.tab.livraisons": "Livraisons & Coursiers",
 
   // Admin — Dossiers
   "admin.dossier.technicianAssigned": "Technicien assigné",
@@ -1802,6 +1805,9 @@ const en = {
   // Admin — Tabs (missing)
   "admin.tab.marketing": "Marketing",
   "admin.tab.webhooks": "Webhooks",
+  "admin.tab.caisse": "Register / POS",
+  "admin.tab.featureFlags": "Feature Flags",
+  "admin.tab.livraisons": "Deliveries & Couriers",
 
   // Admin — Dossiers
   "admin.dossier.technicianAssigned": "Technician assigned",
