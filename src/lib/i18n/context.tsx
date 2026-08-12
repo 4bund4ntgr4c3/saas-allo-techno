@@ -32,14 +32,21 @@ export function I18nProvider({
   /** Locale imposée par l'URL (/fr, /en). Si fournie elle prime sur le stockage. */
   initialLocale?: Locale;
 }) {
-  // Locale provenant de l'URL si disponible, sinon préférence cafée, sinon navigateur.
+  // Locale provenant de l'URL si disponible, sinon défaut SSR 'fr' puis sync au montage.
   const [locale, setLocale] = useState<Locale>(() => {
     if (initialLocale && isLocale(initialLocale)) return initialLocale;
-    return (
-      readStoredLocale() ??
-      normalizeLocale(typeof window !== "undefined" ? window.navigator.language : undefined)
-    );
+    return "fr";
   });
+
+  // Hydratation sécurisée des préférences utilisateur au montage client
+  useEffect(() => {
+    if (!initialLocale) {
+      const stored = readStoredLocale() ?? normalizeLocale(window.navigator.language);
+      if (stored && stored !== locale) {
+        setLocale(stored);
+      }
+    }
+  }, [initialLocale]);
 
   // Réagit à un changement de locale porté par l'URL (navigation SPA).
   useEffect(() => {

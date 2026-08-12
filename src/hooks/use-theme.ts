@@ -10,11 +10,13 @@ function getStoredTheme(): Theme {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>(getStoredTheme);
+  const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+    const stored = getStoredTheme();
+    setThemeState(stored);
+    document.documentElement.classList.toggle("dark", stored === "dark");
+  }, []);
 
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
