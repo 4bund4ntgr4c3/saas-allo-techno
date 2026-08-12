@@ -44,22 +44,7 @@ export const Route = createFileRoute("/_authenticated/mon-compte")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  errorComponent: ({ error, reset }) => (
-    <div className="flex min-h-[50vh] items-center justify-center px-4">
-      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
-        <h2 className="at-display mb-2 text-2xl">Erreur</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {error?.message ?? "Impossible de charger votre espace client."}
-        </p>
-        <button
-          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
-          onClick={() => reset()}
-        >
-          Réessayer
-        </button>
-      </div>
-    </div>
-  ),
+  errorComponent: MonCompteError,
   component: Dashboard,
 });
 
@@ -922,5 +907,25 @@ function Dashboard() {
       <TourLauncher />
       <TourOverlay />
     </>
+  );
+}
+
+function MonCompteError({ error, reset }: { error: Error; reset: () => void }) {
+  const { t } = useI18n();
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+        <h2 className="at-display mb-2 text-2xl">{t("mc.error.title")}</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {error?.message ?? t("mc.error.description")}
+        </p>
+        <button
+          className="rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
+          onClick={() => reset()}
+        >
+          {t("error.retry")}
+        </button>
+      </div>
+    </div>
   );
 }

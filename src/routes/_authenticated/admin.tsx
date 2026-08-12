@@ -23,19 +23,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  errorComponent: ({ error, reset }) => (
-    <div className="flex min-h-[50vh] items-center justify-center px-4">
-      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
-        <h2 className="at-display mb-2 text-2xl">Erreur d'administration</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {error?.message ?? "Une erreur est survenue."}
-        </p>
-        <Button variant="technical" onClick={() => reset()}>
-          Réessayer
-        </Button>
-      </div>
-    </div>
-  ),
+  errorComponent: AdminError,
   component: AdminLayout,
 });
 
@@ -166,7 +154,7 @@ function AdminLayout() {
           {t("admin.otp.description")}
         </p>
         <label htmlFor="otp-code" className="sr-only">
-          Code OTP
+          {t("admin.otp.code")}
         </label>
         <input
           id="otp-code"
@@ -206,5 +194,22 @@ function AdminLayout() {
       <TourLauncher />
       <TourOverlay />
     </SidebarProvider>
+  );
+}
+
+function AdminError({ error, reset }: { error: Error; reset: () => void }) {
+  const { t } = useI18n();
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+        <h2 className="at-display mb-2 text-2xl">{t("admin.error.title")}</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {error?.message ?? t("admin.error.description")}
+        </p>
+        <Button variant="technical" onClick={() => reset()}>
+          {t("error.retry")}
+        </Button>
+      </div>
+    </div>
   );
 }

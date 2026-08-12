@@ -222,16 +222,16 @@ function RateLimitPanel() {
   );
 }
 
-const METRIC_LABEL: Record<string, string> = {
-  reservation_created: "Réservation créée",
-  reservation_completed: "Réservation terminée",
-  payment_processed: "Paiement traité",
-  payment_failed: "Paiement échoué",
-  review_submitted: "Avis soumis",
-  lead_created: "Lead créé",
-  quote_sent: "Devis envoyé",
-  quote_approved: "Devis approuvé",
-  quote_declined: "Devis refusé",
+const METRIC_I18N: Record<string, string> = {
+  reservation_created: "admin.metrics.reservationCreated",
+  reservation_completed: "admin.metrics.reservationCompleted",
+  payment_processed: "admin.metrics.paymentProcessed",
+  payment_failed: "admin.metrics.paymentFailed",
+  review_submitted: "admin.metrics.reviewSubmitted",
+  lead_created: "admin.metrics.leadCreated",
+  quote_sent: "admin.metrics.quoteSent",
+  quote_approved: "admin.metrics.quoteApproved",
+  quote_declined: "admin.metrics.quoteDeclined",
 };
 
 function MetricsPanel() {
@@ -247,11 +247,15 @@ function MetricsPanel() {
     {
       accessorKey: "name",
       header: t("admin.security.metrics.event"),
-      cell: (info) => (
-        <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-          {METRIC_LABEL[info.getValue() as string] ?? info.getValue() as string}
-        </span>
-      ),
+      cell: (info) => {
+        const key = info.getValue() as string;
+        const i18nKey = METRIC_I18N[key];
+        return (
+          <span className="inline-block rounded-sm bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            {i18nKey ? t(i18nKey) : key}
+          </span>
+        );
+      },
     },
     { accessorKey: "count", header: t("admin.security.metrics.count") },
   ];

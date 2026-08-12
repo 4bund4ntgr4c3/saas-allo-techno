@@ -984,6 +984,26 @@ const fr = {
   // Reviews admin
   "reviews.invite.sent": "Invitation envoyée le",
   "reviews.invite.send": "Envoyer l'invitation",
+
+  // Error boundaries
+  "admin.error.title": "Erreur d'administration",
+  "admin.error.description": "Une erreur est survenue.",
+  "admin.otp.code": "Code OTP",
+
+  // Metrics
+  "admin.metrics.reservationCreated": "Réservation créée",
+  "admin.metrics.reservationCompleted": "Réservation terminée",
+  "admin.metrics.paymentProcessed": "Paiement traité",
+  "admin.metrics.paymentFailed": "Paiement échoué",
+  "admin.metrics.reviewSubmitted": "Avis soumis",
+  "admin.metrics.leadCreated": "Lead créé",
+  "admin.metrics.quoteSent": "Devis envoyé",
+  "admin.metrics.quoteApproved": "Devis approuvé",
+  "admin.metrics.quoteDeclined": "Devis refusé",
+
+  // Mon compte error
+  "mc.error.title": "Erreur",
+  "mc.error.description": "Impossible de charger votre espace client.",
 };
 
 const en = {
@@ -1968,6 +1988,26 @@ const en = {
   // Reviews admin
   "reviews.invite.sent": "Invitation sent on",
   "reviews.invite.send": "Send invitation",
+
+  // Error boundaries
+  "admin.error.title": "Admin error",
+  "admin.error.description": "An error occurred.",
+  "admin.otp.code": "OTP code",
+
+  // Metrics
+  "admin.metrics.reservationCreated": "Reservation created",
+  "admin.metrics.reservationCompleted": "Reservation completed",
+  "admin.metrics.paymentProcessed": "Payment processed",
+  "admin.metrics.paymentFailed": "Payment failed",
+  "admin.metrics.reviewSubmitted": "Review submitted",
+  "admin.metrics.leadCreated": "Lead created",
+  "admin.metrics.quoteSent": "Quote sent",
+  "admin.metrics.quoteApproved": "Quote approved",
+  "admin.metrics.quoteDeclined": "Quote declined",
+
+  // Mon compte error
+  "mc.error.title": "Error",
+  "mc.error.description": "Could not load your account page.",
 };
 
 registerSegments({ fr, en });
