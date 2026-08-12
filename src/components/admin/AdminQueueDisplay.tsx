@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Clock, Ticket, Users, CheckCircle2, BellRing } from "lucide-react";
+import { useState } from "react";
+import { Ticket, Users, CheckCircle2, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export type QueueTicket = {
@@ -20,7 +20,9 @@ export function AdminQueueDisplay() {
     { id: "4", ticketNumber: "C-104", clientName: "Mireille B.", serviceType: "Conseil / Vente", status: "waiting", createdAt: "09:35" },
   ]);
 
-  const [lastCalled, setLastCalled] = useState<QueueTicket | null>(tickets[1]);
+  const [lastCalled, setLastCalled] = useState<QueueTicket | null>(
+    ({ id: "2", ticketNumber: "B-102", clientName: "Amina Soglo", serviceType: "Retrait Appareil", status: "called", counterNumber: 2, createdAt: "09:22" })
+  );
 
   const callNextTicket = (ticketId: string, counter: number) => {
     setTickets((prev) =>
