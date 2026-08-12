@@ -11,17 +11,20 @@ import { prefetchRoute } from "@/lib/prefetch";
 
 function OpenNow() {
   const { t, locale } = useI18n();
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(id);
   }, []);
-  const open = isOpenNow(now);
-  const schedule = OPEN_SCHEDULE[now.getDay()];
-  const timeLabel = now.toLocaleTimeString(locale === "en" ? "en-GB" : "fr-FR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const open = now ? isOpenNow(now) : false;
+  const schedule = now ? OPEN_SCHEDULE[now.getDay()] : undefined;
+  const timeLabel = now
+    ? now.toLocaleTimeString(locale === "en" ? "en-GB" : "fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "\u00A0";
   const next = schedule
     ? open
       ? t("status.close-at", [schedule[1]])
@@ -29,25 +32,27 @@ function OpenNow() {
     : t("status.reopens-monday");
 
   return (
-    <div className="inline-flex items-center gap-3 border border-border bg-card px-4 py-2.5 shadow-sm transition-all duration-200 hover:shadow-md">
-      <span className="relative flex size-2">
+    <div className="inline-flex flex-wrap items-center justify-center gap-2 max-w-full border border-border bg-card px-3 py-2 shadow-sm transition-all duration-200 hover:shadow-md text-center">
+      <div className="inline-flex items-center gap-2">
+        <span className="relative flex size-2">
+          <span
+            className={`absolute inline-flex size-full animate-ping opacity-75 ${
+              open ? "bg-success" : "bg-destructive"
+            }`}
+          />
+          <span className={`relative inline-flex size-2 ${open ? "bg-success" : "bg-destructive"}`} />
+        </span>
         <span
-          className={`absolute inline-flex size-full animate-ping opacity-75 ${
-            open ? "bg-success" : "bg-destructive"
+          className={`text-[11px] font-bold uppercase tracking-wider ${
+            open ? "text-success" : "text-destructive"
           }`}
-        />
-        <span className={`relative inline-flex size-2 ${open ? "bg-success" : "bg-destructive"}`} />
-      </span>
-      <span
-        className={`text-[11px] font-bold uppercase tracking-wider ${
-          open ? "text-success" : "text-destructive"
-        }`}
-      >
-        {open ? t("status.open") : t("status.closed")}
-      </span>
-      <span className="h-3 w-px bg-border" />
+        >
+          {open ? t("status.open") : t("status.closed")}
+        </span>
+      </div>
+      <span className="hidden sm:inline-block h-3 w-px bg-border" />
       <span className="text-[11px] text-muted-foreground">{next}</span>
-      <span className="h-3 w-px bg-border" />
+      <span className="hidden sm:inline-block h-3 w-px bg-border" />
       <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
         <Clock className="size-3" />
         {timeLabel}
@@ -269,7 +274,7 @@ export function Footer() {
             © {new Date().getFullYear()} {t("footer.rights")}
           </span>
           <OpenNow />
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-center sm:gap-4">
             <Link
               to="/$locale/garantie"
               params={{ locale }}

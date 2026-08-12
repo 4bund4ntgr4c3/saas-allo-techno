@@ -635,7 +635,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
         {/* Left Column: B2B Form Space (7 cols) */}
         <div className="lg:col-span-7 border border-border bg-card p-6 md:p-8 space-y-6">
           {/* Segmented 4-Step Navigation Bar Inside Form Space */}
-          <div className="border border-border bg-surface p-1 grid grid-cols-4 w-full gap-1 text-center font-mono text-[11px] font-extrabold uppercase tracking-wider">
+          <div className="border border-border bg-surface p-1 grid grid-cols-2 sm:grid-cols-4 w-full gap-1 text-center font-mono text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider">
             <button
               type="button"
               onClick={() => setStep(1)}
@@ -795,7 +795,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               {/* SLA Formulas Selection - ONLY for SLA contract in Step 2 */}
               {needType === "contract" && (
                 <div className="border-t border-border pt-4 space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
                     <label className="at-eyebrow text-primary block">
                       2. Choisissez votre Formule Contrat SLA :
                     </label>
@@ -837,7 +837,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               {/* Maintenance Préventive Periodicity Selector - ONLY for Maintenance Préventive in Step 2 */}
               {needType === "preventive" && (
                 <div className="border-t border-border pt-4 space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
                     <label className="at-eyebrow text-primary block">
                       2. Choisissez la Périodicité d'Entretien :
                     </label>
@@ -845,7 +845,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                       Tarification par équipement / passe
                     </span>
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {PREVENTIVE_PERIODS.map((period) => {
                       let count = 5;
                       let discount = 0;

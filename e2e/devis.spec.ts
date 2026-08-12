@@ -41,7 +41,7 @@ test.describe("Devis page", () => {
     await expect(faultSelect).toBeEnabled();
     await faultSelect.selectOption({ index: 1 });
 
-    await expect(page.getByText("Estimation")).toBeVisible();
+    await expect(page.getByText("Estimation", { exact: true })).toBeVisible();
     await expect(page.getByText("Prix tout compris")).toBeVisible();
     await expect(page.getByText("Délai atelier")).toBeVisible();
   });

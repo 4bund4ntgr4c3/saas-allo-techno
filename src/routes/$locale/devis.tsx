@@ -274,7 +274,11 @@ function Devis() {
                     </Button>
                   </div>
                 </div>
-              ) : null}
+              ) : (
+                <p className="mt-8 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+                  {t("devis.emptyHint")}
+                </p>
+              )}
 
               {compareItems.length >= 2 && (
                 <div className="mt-8">

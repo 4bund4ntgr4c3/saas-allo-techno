@@ -13,6 +13,7 @@ import {
   User,
   Users,
 } from "lucide-react";
+import QRCode from "qrcode";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -199,6 +200,15 @@ function Dashboard() {
   const applyCodeFn = useServerFn(applyReferralCode);
 
   const [referralInput, setReferralInput] = useState("");
+  const [loyaltyQrUrl, setLoyaltyQrUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      QRCode.toDataURL(`ALLO-LOYALTY:${user.id}`, { width: 140, margin: 1 })
+        .then((url) => setLoyaltyQrUrl(url))
+        .catch((err) => console.error("Erreur QR fidélité:", err));
+    }
+  }, [user?.id]);
 
   const generateCode = useMutation({
     mutationFn: () => ensureCodeFn(),
@@ -328,7 +338,10 @@ function Dashboard() {
       <div className="mx-auto flex max-w-[1400px] min-h-[70vh]">
         {/* Sidebar */}
         <aside className="hidden w-56 shrink-0 border-r border-border bg-card md:block">
-          <nav className="sticky top-0 flex h-[calc(100vh-10rem)] flex-col overflow-y-auto p-3" data-tour="account-tabs">
+          <nav
+            className="sticky top-0 flex h-[calc(100vh-10rem)] flex-col overflow-y-auto p-3"
+            data-tour="account-tabs"
+          >
             <p className="at-eyebrow mb-2 px-2.5">{t("mc.header.eyebrow")}</p>
             {SIDEBAR_ITEMS.map((item) => {
               const isActive = activeTab === item.key;
@@ -343,9 +356,7 @@ function Dashboard() {
                       : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
                   }`}
                 >
-                  {isActive && (
-                    <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
-                  )}
+                  {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
                   <item.icon className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
                   {t(item.labelKey)}
                 </button>
@@ -375,9 +386,7 @@ function Dashboard() {
               type="button"
               onClick={() => setActiveTab(item.key)}
               className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-3 py-2 text-sm font-medium transition-all ${
-                activeTab === item.key
-                  ? "bg-foreground text-background"
-                  : "text-muted-foreground"
+                activeTab === item.key ? "bg-foreground text-background" : "text-muted-foreground"
               }`}
             >
               <item.icon className="size-3.5" />
@@ -389,7 +398,6 @@ function Dashboard() {
         {/* Content */}
         <main className="min-w-0 flex-1 p-6 md:p-8">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-
             {/* ── ONGLET: Mes dossiers ────────────────────────────────── */}
             <TabsContent value="dossiers">
               <h2 className="at-display mb-2 text-2xl" data-tour="account-reservations">
@@ -599,6 +607,24 @@ function Dashboard() {
                                 t(`mc.loyalty.tier.${loyalty.tier.next.tier}`),
                               ])}
                             </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Carte de Fidélité Virtuelle */}
+                      <div className="border border-border bg-card p-4 flex flex-col sm:flex-row items-center gap-4 justify-between">
+                        <div className="space-y-1 text-center sm:text-left">
+                          <p className="at-eyebrow text-xs text-primary">Pass Fidélité Virtuel</p>
+                          <p className="font-mono text-sm font-bold">
+                            MEMBRE #{user.id.slice(0, 8).toUpperCase()}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Présentez ce QR Code en boutique pour accumuler ou utiliser vos points.
+                          </p>
+                        </div>
+                        {loyaltyQrUrl && (
+                          <div className="border border-border bg-background p-1.5 shrink-0">
+                            <img src={loyaltyQrUrl} alt="QR Code Fidélité" className="size-24" />
                           </div>
                         )}
                       </div>

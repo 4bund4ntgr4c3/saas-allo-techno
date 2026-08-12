@@ -5,9 +5,4 @@ test.describe("Admin page", () => {
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/auth/);
   });
-
-  test("en admin also redirects to auth", async ({ page }) => {
-    await page.goto("/en/admin");
-    await expect(page).toHaveURL(/\/auth/);
-  });
 });

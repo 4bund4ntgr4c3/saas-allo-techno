@@ -4,7 +4,7 @@ test("shop page renders heading, search box and a product listing", async ({ pag
   await page.goto("/fr/boutique");
 
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Accessoires");
-  await expect(page.getByLabel("Recherche", { exact: true })).toBeVisible();
+  await expect(page.getByRole("searchbox")).toBeVisible();
 
   const firstProduct = page.locator("article").first();
   await expect(firstProduct).toBeVisible();
