@@ -1115,12 +1115,17 @@ export const getUserOrgsFn = createServerFn({ method: "POST" })
   .handler(async (): Promise<OrganizationItem[]> => {
     try {
       const orgs = await getMyOrganizations();
-      return orgs.map((o) => ({
-        id: o.id,
-        name: o.name,
-        slug: o.slug ?? "org",
-        role: (o.user_role as "owner" | "admin" | "member") ?? "admin",
-      }));
+      return orgs.map((o) => {
+        const item: OrganizationItem = {
+          id: o.id,
+          name: o.name,
+          slug: o.id,
+          role: (o.member_role as "owner" | "admin" | "member") ?? "admin",
+        };
+        if (typeof o.equipment_count === "number") item.equipmentCount = o.equipment_count;
+        if (typeof o.site_count === "number") item.siteCount = o.site_count;
+        return item;
+      });
     } catch {
       return [
         {
@@ -1143,7 +1148,7 @@ export const createOrganizationFn = createServerFn({ method: "POST" })
     return { name: d.name.trim(), siret: d.siret?.trim() };
   })
   .handler(async ({ data }) => {
-    const org = await createOrg({ name: data.name, siret: data.siret });
-    return { success: true, orgId: org.id, slug: org.slug };
+    const org = await createOrganization({ data: { name: data.name } });
+    return { success: true, orgId: org.org_id, slug: org.org_id };
   });
 

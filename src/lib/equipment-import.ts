@@ -52,6 +52,9 @@ export function parseEquipmentFile(fileBuffer: ArrayBuffer): ImportSummary {
   }
 
   const worksheet = workbook.Sheets[firstSheetName];
+  if (!worksheet) {
+    return { totalRows: 0, validRows: [], invalidRows: [], duplicatesCount: 0 };
+  }
   const jsonRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
 
   const seenSerials = new Set<string>();

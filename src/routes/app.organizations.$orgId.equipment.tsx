@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Plus, QrCode, Search, Upload, X } from "lucide-react";
+import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Plus, QrCode, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -15,7 +15,7 @@ export function OrgSwitcher({
   onCreateOrg,
 }: {
   organizations: OrgOption[];
-  currentOrgId?: string;
+  currentOrgId?: string | undefined;
   onSelectOrg: (orgId: string) => void;
   onCreateOrg?: () => void;
 }) {

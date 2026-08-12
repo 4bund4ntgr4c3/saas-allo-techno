@@ -50,11 +50,12 @@ function AppLayout() {
   // Detect if we're inside an org
   const orgMatch = location.pathname.match(/\/app\/organizations\/([^/]+)/);
   const activeOrgId = orgMatch?.[1];
+  const activeOrg = activeOrgId ? orgs.data?.find((o) => o.id === activeOrgId) : null;
 
   const orgOptions = (orgs.data ?? []).map((o) => ({
     id: o.id,
     name: o.name,
-    role: (o.user_role as "owner" | "admin" | "member") ?? "admin",
+    role: (o.member_role as "owner" | "admin" | "member") ?? "admin",
   }));
 
   return (
