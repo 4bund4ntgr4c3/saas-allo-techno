@@ -423,7 +423,9 @@ function EquipmentDetail() {
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
                 <Send className="size-4 text-primary" />
-                <h2 className="text-base font-bold">Transférer l'Équipement d'un Site à un Autre</h2>
+                <h2 className="text-base font-bold">
+                  Transférer l'Équipement d'un Site à un Autre
+                </h2>
               </div>
               <button type="button" onClick={() => setShowTransferModal(false)}>
                 <X className="size-4 text-muted-foreground hover:text-foreground" />
@@ -432,8 +434,15 @@ function EquipmentDetail() {
 
             <div className="space-y-3 text-xs">
               <div className="bg-muted/30 p-3 border border-border">
-                <p className="text-muted-foreground">Équipement : <strong className="text-foreground">{eq.name}</strong></p>
-                <p className="text-muted-foreground">Emplacement actuel : <strong className="text-foreground">{eq.site_name ?? eq.location ?? "Siège Cotonou — Marina"}</strong></p>
+                <p className="text-muted-foreground">
+                  Équipement : <strong className="text-foreground">{eq.name}</strong>
+                </p>
+                <p className="text-muted-foreground">
+                  Emplacement actuel :{" "}
+                  <strong className="text-foreground">
+                    {eq.site_name ?? eq.location ?? "Siège Cotonou — Marina"}
+                  </strong>
+                </p>
               </div>
 
               <div>
@@ -443,12 +452,14 @@ function EquipmentDetail() {
                     <SelectValue placeholder="Choisir un nouveau site d'affectation..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {(sitesQuery.data ?? [
-                      { id: "site-001", name: "Siège Cotonou — Marina" },
-                      { id: "site-002", name: "Agence Porto-Novo — Ouando" },
-                      { id: "site-003", name: "Agence Parakou — Hub Nord" },
-                      { id: "site-004", name: "Agence Natitingou" },
-                    ]).map((site) => (
+                    {(
+                      sitesQuery.data ?? [
+                        { id: "site-001", name: "Siège Cotonou — Marina" },
+                        { id: "site-002", name: "Agence Porto-Novo — Ouando" },
+                        { id: "site-003", name: "Agence Parakou — Hub Nord" },
+                        { id: "site-004", name: "Agence Natitingou" },
+                      ]
+                    ).map((site) => (
                       <SelectItem key={site.id} value={site.id}>
                         {site.name}
                       </SelectItem>
@@ -468,7 +479,11 @@ function EquipmentDetail() {
                 disabled={!targetSiteId || transferMut.isPending}
                 onClick={() => transferMut.mutate()}
               >
-                {transferMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4 mr-1" />}
+                {transferMut.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Send className="size-4 mr-1" />
+                )}
                 Confirmer le Transfert
               </Button>
             </div>

@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database, Enums } from "@/integrations/supabase/types";
@@ -278,6 +278,7 @@ export interface EquipmentItem {
   model: string | null;
   serial_number: string | null;
   status: EquipmentStatus;
+  site_id: string | null;
   site_name: string | null;
   location: string | null;
   assigned_to: string | null;
@@ -311,6 +312,7 @@ export interface EquipmentDetail {
     model: string | null;
     serial_number: string | null;
     status: EquipmentStatus;
+    site_name: string | null;
     purchase_date: string | null;
     warranty_expires_at: string | null;
     assigned_to: string | null;
@@ -365,6 +367,7 @@ export const MOCK_EQUIPMENT: EquipmentItem[] = [
     model: 'MacBook Pro 16"',
     serial_number: "C02G1234Q6L",
     status: "actif",
+    site_id: "site-001",
     site_name: "Siège Cotonou",
     location: "Bureau DAF - Étage 3",
     assigned_to: "Jean Dupont (DAF)",
@@ -380,6 +383,7 @@ export const MOCK_EQUIPMENT: EquipmentItem[] = [
     model: "XPS 15 9520",
     serial_number: "7X8Y9Z3",
     status: "maintenance",
+    site_id: "site-001",
     site_name: "Siège Cotonou",
     location: "Open Space IT",
     assigned_to: "Marc Kpanou (CTO)",
@@ -395,6 +399,7 @@ export const MOCK_EQUIPMENT: EquipmentItem[] = [
     model: "LaserJet M608dn",
     serial_number: "CNB8M99201",
     status: "actif",
+    site_id: "site-002",
     site_name: "Agence Porto-Novo",
     location: "Secrétariat Général",
     assigned_to: "Secrétariat",
@@ -410,6 +415,7 @@ export const MOCK_EQUIPMENT: EquipmentItem[] = [
     model: "Catalyst 9300",
     serial_number: "FOC2411L09X",
     status: "actif",
+    site_id: "site-001",
     site_name: "Siège Cotonou",
     location: "Salle Serveurs Datacenter",
     assigned_to: "Équipe Infra System",
@@ -425,6 +431,7 @@ export const MOCK_EQUIPMENT: EquipmentItem[] = [
     model: 'iMac 24" M3',
     serial_number: "C02M4889K0P",
     status: "en_panne",
+    site_id: "site-003",
     site_name: "Agence Parakou",
     location: "Studio Graphique",
     assigned_to: "Amina Soglo",
@@ -475,7 +482,8 @@ export const getEquipment = createServerFn({ method: "POST" })
       });
       if (error || !detail) throw new Error(error?.message ?? "Détail non trouvé");
       return detail as unknown as EquipmentDetail;
-    } catch {
+    } catch (err) {
+      if (!import.meta.env.DEV) throw err;
       const eq = MOCK_EQUIPMENT.find((e) => e.id === data.equipment_id) ?? MOCK_EQUIPMENT[0]!;
       return {
         equipment: {
@@ -974,14 +982,16 @@ export const getOrgTicket = createServerFn({ method: "POST" })
       });
       if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvé");
       return detail as unknown as OrgTicketDetail;
-    } catch {
+    } catch (err) {
+      if (!import.meta.env.DEV) throw err;
       return {
         ticket: {
           id: data.ticket_id,
           reference: "TCK-2026-0042",
           org_id: "demo-oragroup",
           title: "Surchauffe et lenteur anormale sur le serveur de fichiers principal",
-          description: "Le serveur du bureau de Cotonou s'éteint inopinément lors des sauvegardes nocturnes. Nécessite une intervention urgente sur les ventilateurs et la mémoire RAM.",
+          description:
+            "Le serveur du bureau de Cotonou s'éteint inopinément lors des sauvegardes nocturnes. Nécessite une intervention urgente sur les ventilateurs et la mémoire RAM.",
           status: "in_progress",
           priority: "urgent",
           ticket_type: "curative",
@@ -1018,7 +1028,8 @@ export const getOrgTicket = createServerFn({ method: "POST" })
             actor_name: "Atelier Allô Techno",
             actor_role: "Technicien Référent",
             action: "Remplacement Pièce & Test Stress",
-            description: "Pâte thermique remplacée et ventilateurs nettoyés. Tests de charge validés.",
+            description:
+              "Pâte thermique remplacée et ventilateurs nettoyés. Tests de charge validés.",
             created_at: new Date(Date.now() - 864e5 * 0.5).toISOString(),
           },
         ],
@@ -1247,6 +1258,7 @@ export interface EquipmentMaintenanceSchedule {
     brand: string | null;
     model: string | null;
     asset_tag: string | null;
+    serial_number: string | null;
   };
 }
 
@@ -1259,7 +1271,7 @@ export const getOrgMaintenanceSchedules = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<EquipmentMaintenanceSchedule[]> => {
     const { data: schedules, error } = await orgClient()
       .from("equipment_maintenance_schedules" as never)
-      .select("*, equipment:equipment_id(name, brand, model, asset_tag)")
+      .select("*, equipment:equipment_id(name, brand, model, asset_tag, serial_number)")
       .eq("org_id", data.org_id)
       .order("next_due_at", { ascending: true });
     if (error) throw new Error(error.message);

@@ -128,7 +128,8 @@ function OrgMaintenancePage() {
     },
   });
 
-  const [selectedScheduleModal, setSelectedScheduleModal] = useState<EquipmentMaintenanceSchedule | null>(null);
+  const [selectedScheduleModal, setSelectedScheduleModal] =
+    useState<EquipmentMaintenanceSchedule | null>(null);
   const [checklistState, setChecklistState] = useState<Record<number, boolean>>({
     0: true,
     1: true,
@@ -140,7 +141,12 @@ function OrgMaintenancePage() {
   const scheduleList = schedulesQuery.data ?? [];
 
   // ─── Live Countdown Timer Hook ───
-  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number }>({
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({
     days: 4,
     hours: 18,
     minutes: 32,
@@ -148,7 +154,9 @@ function OrgMaintenancePage() {
   });
 
   useEffect(() => {
-    const targetDate = new Date(Date.now() + (4 * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000)).getTime();
+    const targetDate = new Date(
+      Date.now() + (4 * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000),
+    ).getTime();
     const interval = setInterval(() => {
       const now = Date.now();
       const diff = Math.max(0, targetDate - now);
@@ -227,18 +235,26 @@ function OrgMaintenancePage() {
             </div>
             <span className="text-xl font-bold text-muted-foreground">:</span>
             <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">{String(timeLeft.hours).padStart(2, "0")}</span>
+              <span className="text-xl font-black text-primary">
+                {String(timeLeft.hours).padStart(2, "0")}
+              </span>
               <span className="text-[10px] text-muted-foreground uppercase font-sans">Heures</span>
             </div>
             <span className="text-xl font-bold text-muted-foreground">:</span>
             <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">{String(timeLeft.minutes).padStart(2, "0")}</span>
+              <span className="text-xl font-black text-primary">
+                {String(timeLeft.minutes).padStart(2, "0")}
+              </span>
               <span className="text-[10px] text-muted-foreground uppercase font-sans">Minutes</span>
             </div>
             <span className="text-xl font-bold text-muted-foreground">:</span>
             <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">{String(timeLeft.seconds).padStart(2, "0")}</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-sans">Secondes</span>
+              <span className="text-xl font-black text-primary">
+                {String(timeLeft.seconds).padStart(2, "0")}
+              </span>
+              <span className="text-[10px] text-muted-foreground uppercase font-sans">
+                Secondes
+              </span>
             </div>
           </div>
         </div>
@@ -415,13 +431,22 @@ function OrgMaintenancePage() {
               <div className="flex items-center gap-2.5">
                 <Wrench className="size-5 text-primary" />
                 <div>
-                  <h2 className="text-lg font-bold">Détails du Cycle : {selectedScheduleModal.task_title}</h2>
+                  <h2 className="text-lg font-bold">
+                    Détails du Cycle : {selectedScheduleModal.task_title}
+                  </h2>
                   <p className="text-xs text-muted-foreground">
-                    Échéance prévue : {new Date(selectedScheduleModal.next_due_at).toLocaleDateString("fr-FR")} · Statut : En Cours
+                    Échéance prévue :{" "}
+                    {new Date(selectedScheduleModal.next_due_at).toLocaleDateString("fr-FR")} ·
+                    Statut : En Cours
                   </p>
                 </div>
               </div>
-              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedScheduleModal(null)}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedScheduleModal(null)}
+              >
                 <X className="size-4" />
               </Button>
             </div>
@@ -429,12 +454,20 @@ function OrgMaintenancePage() {
             {/* Equipment & Site Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-muted/20 border border-border p-4 text-xs">
               <div>
-                <span className="at-eyebrow text-[10px] text-muted-foreground block">Matériel Concerné</span>
-                <span className="font-bold text-sm text-foreground">{selectedScheduleModal.equipment?.name ?? "Équipement Principal"}</span>
-                <p className="text-muted-foreground">{selectedScheduleModal.equipment?.brand} {selectedScheduleModal.equipment?.model}</p>
+                <span className="at-eyebrow text-[10px] text-muted-foreground block">
+                  Matériel Concerné
+                </span>
+                <span className="font-bold text-sm text-foreground">
+                  {selectedScheduleModal.equipment?.name ?? "Équipement Principal"}
+                </span>
+                <p className="text-muted-foreground">
+                  {selectedScheduleModal.equipment?.brand} {selectedScheduleModal.equipment?.model}
+                </p>
               </div>
               <div>
-                <span className="at-eyebrow text-[10px] text-muted-foreground block">Implantation / Site</span>
+                <span className="at-eyebrow text-[10px] text-muted-foreground block">
+                  Implantation / Site
+                </span>
                 <span className="font-bold text-sm text-foreground">Siège Cotonou — Marina</span>
                 <p className="text-muted-foreground">Technicien Référent : Sosthène Dossou</p>
               </div>
@@ -445,10 +478,12 @@ function OrgMaintenancePage() {
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-sm flex items-center gap-2">
                   <CheckCircle2 className="size-4 text-primary" />
-                  Checklist d'Intervention Préventive ({Object.values(checklistState).filter(Boolean).length} / 5 réalisées)
+                  Checklist d'Intervention Préventive (
+                  {Object.values(checklistState).filter(Boolean).length} / 5 réalisées)
                 </h3>
                 <span className="font-mono text-xs text-primary font-bold">
-                  {Math.round((Object.values(checklistState).filter(Boolean).length / 5) * 100)}% Achevé
+                  {Math.round((Object.values(checklistState).filter(Boolean).length / 5) * 100)}%
+                  Achevé
                 </span>
               </div>
 
@@ -456,7 +491,9 @@ function OrgMaintenancePage() {
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${(Object.values(checklistState).filter(Boolean).length / 5) * 100}%` }}
+                  style={{
+                    width: `${(Object.values(checklistState).filter(Boolean).length / 5) * 100}%`,
+                  }}
                 />
               </div>
 
@@ -471,10 +508,18 @@ function OrgMaintenancePage() {
                       <input
                         type="checkbox"
                         checked={isChecked}
-                        onChange={() => setChecklistState((prev) => ({ ...prev, [idx]: !prev[idx] }))}
+                        onChange={() =>
+                          setChecklistState((prev) => ({ ...prev, [idx]: !prev[idx] }))
+                        }
                         className="size-4 rounded border-border text-primary focus:ring-primary"
                       />
-                      <span className={isChecked ? "line-through text-muted-foreground" : "font-medium text-foreground"}>
+                      <span
+                        className={
+                          isChecked
+                            ? "line-through text-muted-foreground"
+                            : "font-medium text-foreground"
+                        }
+                      >
                         {task}
                       </span>
                     </label>
@@ -508,7 +553,12 @@ function OrgMaintenancePage() {
               </Button>
 
               <div className="flex items-center gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setSelectedScheduleModal(null)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedScheduleModal(null)}
+                >
                   Fermer
                 </Button>
                 <Button
@@ -568,7 +618,9 @@ function OrgMaintenancePage() {
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold group-hover:text-primary transition-colors">{s.task_title}</span>
+                          <span className="text-sm font-bold group-hover:text-primary transition-colors">
+                            {s.task_title}
+                          </span>
                           <Badge
                             variant="outline"
                             className={`text-[10px] font-semibold ${

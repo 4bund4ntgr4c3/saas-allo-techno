@@ -2,7 +2,19 @@ import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tansta
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Pencil, Plus, QrCode, Search, Send, Sparkles, X } from "lucide-react";
+import {
+  ArrowLeft,
+  FileSpreadsheet,
+  Laptop,
+  Loader2,
+  Pencil,
+  Plus,
+  QrCode,
+  Search,
+  Send,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +29,6 @@ import {
 import { useI18n } from "@/lib/i18n/context";
 import { parseEquipmentFile } from "@/lib/equipment-import";
 import { generateQrLabelSheetPdf } from "@/lib/qr-label-pdf";
-import { predictEquipmentFailureAi } from "@/lib/diagnostic-ai";
 import {
   addEquipmentHistory,
   createEquipment,
@@ -27,8 +38,8 @@ import {
   updateEquipment,
   EQUIPMENT_STATUSES,
   type EquipmentInput,
+  type EquipmentItem,
   type EquipmentStatus,
-  type OrgEquipmentItem,
 } from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/equipment")({
@@ -54,7 +65,6 @@ function EquipmentList() {
   const location = useLocation();
 
   const isChildRoute = Boolean(location.pathname.match(/\/equipment\/[^/]+$/));
-  if (isChildRoute) return <Outlet />;
 
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
   const org = orgs.data?.find((o) => o.id === orgId);
@@ -74,7 +84,7 @@ function EquipmentList() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<EquipmentStatus | "all">("all");
   const [showForm, setShowForm] = useState(false);
-  const [selectedEqModal, setSelectedEqModal] = useState<OrgEquipmentItem | null>(null);
+  const [selectedEqModal, setSelectedEqModal] = useState<EquipmentItem | null>(null);
   const [transferSiteId, setTransferSiteId] = useState<string>("");
   const [editName, setEditName] = useState<string>("");
   const [editSerial, setEditSerial] = useState<string>("");
@@ -105,7 +115,8 @@ function EquipmentList() {
       setSelectedEqModal(null);
       await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur de transfert"),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Erreur de transfert"),
   });
 
   const updateMut = useMutation({
@@ -125,7 +136,8 @@ function EquipmentList() {
       setSelectedEqModal(null);
       await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur de modification"),
+    onError: (err: unknown) =>
+      toast.error(err instanceof Error ? err.message : "Erreur de modification"),
   });
 
   const [form, setForm] = useState<EquipmentInput & { type: string }>({
@@ -260,12 +272,11 @@ function EquipmentList() {
             <p className="text-sm text-muted-foreground">{t("org.equipment.subtitle")}</p>
           </div>
           <div className="flex items-center gap-2">
-
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                const list = filtered.length > 0 ? filtered : equipment.data ?? [];
+                const list = filtered.length > 0 ? filtered : (equipment.data ?? []);
                 if (list.length === 0) {
                   toast.error("Aucun équipement disponible à imprimer.");
                   return;
@@ -473,11 +484,18 @@ function EquipmentList() {
                 <div>
                   <h2 className="text-lg font-bold">{selectedEqModal.name}</h2>
                   <p className="text-xs text-muted-foreground">
-                    {[selectedEqModal.brand, selectedEqModal.model, selectedEqModal.serial_number].filter(Boolean).join(" · ") || selectedEqModal.type}
+                    {[selectedEqModal.brand, selectedEqModal.model, selectedEqModal.serial_number]
+                      .filter(Boolean)
+                      .join(" · ") || selectedEqModal.type}
                   </p>
                 </div>
               </div>
-              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedEqModal(null)}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedEqModal(null)}
+              >
                 <X className="size-4" />
               </Button>
             </div>
@@ -488,7 +506,10 @@ function EquipmentList() {
                 <span className="font-bold flex items-center gap-1.5 text-primary">
                   <Sparkles className="size-4" /> Diagnostic IA &amp; Score de Santé Matériel
                 </span>
-                <Badge variant="outline" className="text-[10px] uppercase font-mono border-primary/40 text-primary">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] uppercase font-mono border-primary/40 text-primary"
+                >
                   IA Allô Techno v2
                 </Badge>
               </div>
@@ -538,15 +559,21 @@ function EquipmentList() {
                 <Label className="text-xs">Transférer vers un autre Site / Implantation</Label>
                 <Select value={transferSiteId} onValueChange={setTransferSiteId}>
                   <SelectTrigger className="mt-1">
-                    <SelectValue placeholder={selectedEqModal.site_name ?? selectedEqModal.location ?? "Choisir site..."} />
+                    <SelectValue
+                      placeholder={
+                        selectedEqModal.site_name ?? selectedEqModal.location ?? "Choisir site..."
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {(sites.data ?? [
-                      { id: "site-001", name: "Siège Cotonou — Marina" },
-                      { id: "site-002", name: "Agence Porto-Novo — Ouando" },
-                      { id: "site-003", name: "Agence Parakou — Hub Nord" },
-                      { id: "site-004", name: "Agence Natitingou" },
-                    ]).map((s) => (
+                    {(
+                      sites.data ?? [
+                        { id: "site-001", name: "Siège Cotonou — Marina" },
+                        { id: "site-002", name: "Agence Porto-Novo — Ouando" },
+                        { id: "site-003", name: "Agence Parakou — Hub Nord" },
+                        { id: "site-004", name: "Agence Natitingou" },
+                      ]
+                    ).map((s) => (
                       <SelectItem key={s.id} value={s.id}>
                         {s.name}
                       </SelectItem>
@@ -582,7 +609,11 @@ function EquipmentList() {
                     onClick={() => transferMut.mutate()}
                     className="border-primary/40 text-primary hover:bg-primary/10"
                   >
-                    {transferMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-3.5 mr-1" />}
+                    {transferMut.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Send className="size-3.5 mr-1" />
+                    )}
                     Confirmer le Transfert de Site
                   </Button>
                 )}
@@ -593,7 +624,11 @@ function EquipmentList() {
                   disabled={updateMut.isPending}
                   onClick={() => updateMut.mutate()}
                 >
-                  {updateMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Pencil className="size-3.5 mr-1" />}
+                  {updateMut.isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Pencil className="size-3.5 mr-1" />
+                  )}
                   Enregistrer les Modifications
                 </Button>
               </div>
@@ -628,7 +663,9 @@ function EquipmentList() {
                       <Laptop className="size-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate font-bold group-hover:text-primary transition-colors">{e.name}</p>
+                      <p className="truncate font-bold group-hover:text-primary transition-colors">
+                        {e.name}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">
                         {[e.brand, e.model].filter(Boolean).join(" ") || e.type}
                       </p>
@@ -670,6 +707,8 @@ function EquipmentList() {
           ))}
         </ul>
       )}
+
+      {isChildRoute && <Outlet />}
     </div>
   );
 }

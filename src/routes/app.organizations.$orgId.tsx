@@ -5,12 +5,9 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   Building2,
-  CreditCard,
   Laptop,
-  LifeBuoy,
   Loader2,
   MapPin,
-  ShieldCheck,
   Trash2,
   UserPlus,
   Users,
@@ -54,8 +51,6 @@ const ROLES: OrgRole[] = [
   "lecture_seule",
   "membre",
 ];
-
-
 
 const ROLE_COLORS: Record<string, string> = {
   admin_org: "bg-primary/10 text-primary border-primary/20",
@@ -236,8 +231,6 @@ function OrgDetail() {
         </div>
       </div>
 
-
-
       {/* ─── Render Child Subroute Content OR Overview Dashboard ─── */}
       {isChildRoute ? (
         <Outlet />
@@ -246,7 +239,10 @@ function OrgDetail() {
           {/* ─── KPI Cards ─── */}
           <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
             {kpiCards.map((kpi) => (
-              <div key={kpi.label} className="flex items-center gap-3 border border-border bg-card p-4">
+              <div
+                key={kpi.label}
+                className="flex items-center gap-3 border border-border bg-card p-4"
+              >
                 <div className={`flex size-10 items-center justify-center bg-muted ${kpi.color}`}>
                   <kpi.icon className="size-5" />
                 </div>
@@ -259,125 +255,60 @@ function OrgDetail() {
           </div>
 
           {/* ─── Organization Info ─── */}
-      <div className="at-in" style={{ animationDelay: "180ms" }}>
-        <span className="at-eyebrow mb-3 block">
-          {t("org.form.registrationNumber").split(" ")[0]}
-        </span>
-        <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {orgInfoItems.map(({ icon: Icon, label, value }) => (
-            <div key={label} className="flex items-start gap-3 bg-card p-4">
-              <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-              <div className="min-w-0">
-                <dt className="text-xs text-muted-foreground">{label}</dt>
-                <dd className="mt-0.5 truncate text-sm font-medium">{value ?? "—"}</dd>
-              </div>
+          <div className="at-in" style={{ animationDelay: "180ms" }}>
+            <span className="at-eyebrow mb-3 block">
+              {t("org.form.registrationNumber").split(" ")[0]}
+            </span>
+            <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+              {orgInfoItems.map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-start gap-3 bg-card p-4">
+                  <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <dt className="text-xs text-muted-foreground">{label}</dt>
+                    <dd className="mt-0.5 truncate text-sm font-medium">{value ?? "—"}</dd>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* ─── Team Members ─── */}
-      <div className="at-in" style={{ animationDelay: "240ms" }}>
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <span className="at-eyebrow mb-1 block">{t("org.detail.members")}</span>
-            <h2 className="text-lg font-bold">{t("org.detail.members")}</h2>
-          </div>
-          <Badge variant="outline" className="font-mono">
-            {members.data?.length ?? 0}
-          </Badge>
-        </div>
+          {/* ─── Team Members ─── */}
+          <div className="at-in" style={{ animationDelay: "240ms" }}>
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <span className="at-eyebrow mb-1 block">{t("org.detail.members")}</span>
+                <h2 className="text-lg font-bold">{t("org.detail.members")}</h2>
+              </div>
+              <Badge variant="outline" className="font-mono">
+                {members.data?.length ?? 0}
+              </Badge>
+            </div>
 
-        <form
-          className="mb-5 grid gap-3 border border-border bg-card p-4 sm:grid-cols-[1fr_auto_auto]"
-          onSubmit={(e) => {
-            e.preventDefault();
-            invite.mutate();
-          }}
-        >
-          <div>
-            <Label htmlFor="invite-email" className="text-xs">
-              {t("org.detail.invite.email")}
-            </Label>
-            <Input
-              id="invite-email"
-              type="email"
-              required
-              className="mt-1"
-              placeholder="collaborateur@entreprise.com"
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <Label className="text-xs">{t("org.detail.role")}</Label>
-            <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as OrgRole)}>
-              <SelectTrigger className="mt-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ROLES.map((r) => (
-                  <SelectItem key={r} value={r}>
-                    {t(`org.role.${r}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-end">
-            <Button
-              type="submit"
-              variant="primaryBlock"
-              disabled={invite.isPending}
-              className="w-full"
+            <form
+              className="mb-5 grid gap-3 border border-border bg-card p-4 sm:grid-cols-[1fr_auto_auto]"
+              onSubmit={(e) => {
+                e.preventDefault();
+                invite.mutate();
+              }}
             >
-              {invite.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <UserPlus className="size-4" />
-              )}
-              {t("org.detail.invite.submit")}
-            </Button>
-          </div>
-        </form>
-
-        {members.isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="size-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : members.data?.length === 0 ? (
-          <div className="rounded-sm border border-dashed border-border p-8 text-center">
-            <Users className="mx-auto size-8 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">{t("org.detail.members.empty")}</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-border overflow-hidden border border-border bg-card">
-            {members.data?.map((m) => (
-              <div
-                key={m.user_id}
-                className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-muted/30"
-              >
-                <div className="flex size-10 items-center justify-center bg-gradient-to-br from-foreground/90 to-foreground/60 text-xs font-black uppercase text-background">
-                  {(m.full_name ?? m.email ?? "?").slice(0, 2)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{m.full_name ?? m.email}</p>
-                  <p className="truncate text-xs text-muted-foreground">{m.email}</p>
-                </div>
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] font-semibold ${ROLE_COLORS[m.role] ?? ""}`}
-                >
-                  {t(`org.role.${m.role}`)}
-                </Badge>
-                <Select
-                  value={m.role}
-                  onValueChange={(v) => {
-                    setChangingRole(m.user_id);
-                    changeRole.mutate(v as OrgRole);
-                  }}
-                >
-                  <SelectTrigger className="h-8 w-44 text-xs">
+              <div>
+                <Label htmlFor="invite-email" className="text-xs">
+                  {t("org.detail.invite.email")}
+                </Label>
+                <Input
+                  id="invite-email"
+                  type="email"
+                  required
+                  className="mt-1"
+                  placeholder="collaborateur@entreprise.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">{t("org.detail.role")}</Label>
+                <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as OrgRole)}>
+                  <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -388,22 +319,87 @@ function OrgDetail() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="flex items-end">
                 <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 text-muted-foreground hover:text-destructive"
-                  onClick={() => {
-                    if (confirm(t("org.detail.remove.confirm"))) remove.mutate(m.user_id);
-                  }}
+                  type="submit"
+                  variant="primaryBlock"
+                  disabled={invite.isPending}
+                  className="w-full"
                 >
-                  <Trash2 className="size-3.5" />
+                  {invite.isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <UserPlus className="size-4" />
+                  )}
+                  {t("org.detail.invite.submit")}
                 </Button>
               </div>
-            ))}
+            </form>
+
+            {members.isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="size-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : members.data?.length === 0 ? (
+              <div className="rounded-sm border border-dashed border-border p-8 text-center">
+                <Users className="mx-auto size-8 text-muted-foreground" />
+                <p className="mt-3 text-sm font-medium">{t("org.detail.members.empty")}</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border overflow-hidden border border-border bg-card">
+                {members.data?.map((m) => (
+                  <div
+                    key={m.user_id}
+                    className="flex flex-wrap items-center gap-3 p-4 transition-colors hover:bg-muted/30"
+                  >
+                    <div className="flex size-10 items-center justify-center bg-gradient-to-br from-foreground/90 to-foreground/60 text-xs font-black uppercase text-background">
+                      {(m.full_name ?? m.email ?? "?").slice(0, 2)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{m.full_name ?? m.email}</p>
+                      <p className="truncate text-xs text-muted-foreground">{m.email}</p>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] font-semibold ${ROLE_COLORS[m.role] ?? ""}`}
+                    >
+                      {t(`org.role.${m.role}`)}
+                    </Badge>
+                    <Select
+                      value={m.role}
+                      onValueChange={(v) => {
+                        setChangingRole(m.user_id);
+                        changeRole.mutate(v as OrgRole);
+                      }}
+                    >
+                      <SelectTrigger className="h-8 w-44 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ROLES.map((r) => (
+                          <SelectItem key={r} value={r}>
+                            {t(`org.role.${r}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => {
+                        if (confirm(t("org.detail.remove.confirm"))) remove.mutate(m.user_id);
+                      }}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
         </>
       )}
     </div>

@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export type AuditLogEntry = {
   id: string;
@@ -16,9 +18,10 @@ export const getB2bAuditLogsFn = createServerFn({ method: "POST" })
   .validator(
     z.object({
       orgId: z.string(),
-    })
+    }),
   )
   .handler(async (): Promise<AuditLogEntry[]> => {
+    await requireStaff(supabaseAdmin);
     return [
       {
         id: "audit-001",

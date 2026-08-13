@@ -1,10 +1,4 @@
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -25,7 +19,7 @@ import { SEARCH_OPEN_EVENT } from "@/lib/search-events";
 import { Button } from "@/components/ui/button";
 import { TourLauncher } from "@/components/tour/TourLauncher";
 import { TourOverlay } from "@/components/tour/TourOverlay";
-import { OrgSwitcher } from "@/components/site/OrgSwitcher";
+import { OrgSwitcher, type OrgOption } from "@/components/site/OrgSwitcher";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -40,16 +34,8 @@ export const Route = createFileRoute("/app")({
   component: AppLayout,
 });
 
-const ORG_NAV = [
-  { labelKey: "org.equipment.title", segment: "equipment", icon: Laptop },
-  { labelKey: "org.sites.title", segment: "sites", icon: MapPin },
-  { labelKey: "org.tickets.title", segment: "tickets", icon: LifeBuoy },
-  { labelKey: "org.nav.maintenance", segment: "maintenance", icon: ShieldCheck },
-  { labelKey: "org.nav.billing", segment: "billing", icon: CreditCard },
-] as const;
-
 function AppLayout() {
-  const { t } = useI18n();
+  const { locale } = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
@@ -62,12 +48,14 @@ function AppLayout() {
   // Detect if we're inside an org
   const orgMatch = location.pathname.match(/\/app\/organizations\/([^/]+)/);
   const activeOrgId = orgMatch?.[1] ?? "demo-oragroup";
-  const activeOrg =
-    orgs.data?.find((o) => o.id === activeOrgId) ?? {
-      id: activeOrgId,
-      name: activeOrgId === "demo-bts" ? "Bénin Télécoms Services (BTS SA)" : "Oragroup Bénin (Siège Cotonou)",
-      member_role: "admin_org" as const,
-    };
+  const activeOrg = orgs.data?.find((o) => o.id === activeOrgId) ?? {
+    id: activeOrgId,
+    name:
+      activeOrgId === "demo-bts"
+        ? "Bénin Télécoms Services (BTS SA)"
+        : "Oragroup Bénin (Siège Cotonou)",
+    member_role: "admin_org" as const,
+  };
 
   const orgOptions: OrgOption[] = (
     orgs.data && orgs.data.length > 0
@@ -126,7 +114,9 @@ function AppLayout() {
         <div className="flex-1 overflow-y-auto p-3 space-y-4 text-xs">
           {/* Section 1: Holding & Vue Groupe */}
           <div className="space-y-1">
-            <p className="at-eyebrow px-2 text-[10px] text-muted-foreground mb-1">Gouvernance Groupe</p>
+            <p className="at-eyebrow px-2 text-[10px] text-muted-foreground mb-1">
+              Gouvernance Groupe
+            </p>
             <Link
               to="/app/group-dashboard"
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
@@ -249,7 +239,9 @@ function AppLayout() {
           <div className="flex items-center gap-2 text-xs">
             <span className="font-bold text-foreground">{activeOrg.name}</span>
             <span className="text-muted-foreground">/</span>
-            <span className="text-muted-foreground font-mono">Console d'Observabilité &amp; Parc</span>
+            <span className="text-muted-foreground font-mono">
+              Console d'Observabilité &amp; Parc
+            </span>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
@@ -262,7 +254,11 @@ function AppLayout() {
               <span>Ask AI</span>
             </button>
 
-            <Link to="/contact" className="text-muted-foreground hover:text-foreground">
+            <Link
+              to="/$locale/contact"
+              params={{ locale }}
+              className="text-muted-foreground hover:text-foreground"
+            >
               Support B2B
             </Link>
 

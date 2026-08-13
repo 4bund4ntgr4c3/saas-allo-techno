@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export type B2bPaymentProvider = "fedapay" | "kkiapay" | "bank_transfer";
 export type MobileMoneyOperator = "mtn" | "moov" | "celtiis" | "card";
@@ -22,9 +24,10 @@ export const initiateSlaPaymentFn = createServerFn({ method: "POST" })
       provider: z.enum(["fedapay", "kkiapay", "bank_transfer"]),
       operator: z.enum(["mtn", "moov", "celtiis", "card"]).optional(),
       phoneNumber: z.string().optional(),
-    })
+    }),
   )
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const paymentRef = `SLA-${data.contractNumber}-${Date.now().toString().slice(-6)}`;
 
     if (data.provider === "bank_transfer") {

@@ -19,7 +19,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n/context";
-import { createOrgSite, deleteOrgSite, getMyOrganizations, getOrgSites, updateOrgSite } from "@/lib/org.functions";
+import {
+  createOrgSite,
+  deleteOrgSite,
+  getMyOrganizations,
+  getOrgSites,
+  updateOrgSite,
+} from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/sites")({
   component: SitesList,
@@ -238,9 +244,16 @@ function SitesList() {
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2.5">
                 <Building className="size-5 text-primary" />
-                <h2 className="text-lg font-bold">Édition & Gestion du Site : {editingSite.name}</h2>
+                <h2 className="text-lg font-bold">
+                  Édition & Gestion du Site : {editingSite.name}
+                </h2>
               </div>
-              <Button type="button" variant="ghost" size="icon" onClick={() => setEditingSite(null)}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setEditingSite(null)}
+              >
                 <X className="size-4" />
               </Button>
             </div>
@@ -301,7 +314,9 @@ function SitesList() {
               {/* Department Badges */}
               <div className="flex flex-wrap gap-2">
                 {editingSite.departments.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Aucun département configuré pour ce site.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Aucun département configuré pour ce site.
+                  </p>
                 ) : (
                   editingSite.departments.map((d) => (
                     <Badge
@@ -486,7 +501,9 @@ function SitesList() {
                       <MapPin className="size-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate font-medium group-hover:text-primary transition-colors">{s.name}</p>
+                      <p className="truncate font-medium group-hover:text-primary transition-colors">
+                        {s.name}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">
                         {[s.address, s.city].filter(Boolean).join(", ")}
                       </p>

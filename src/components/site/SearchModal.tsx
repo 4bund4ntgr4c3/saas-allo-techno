@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
   Building2,
@@ -533,7 +535,9 @@ export function SearchModal() {
       }
       setOpen(false);
       setQuery("");
-      const toUrl = item.target.to.startsWith("/app") ? item.target.to : `/${locale}${item.target.to}`;
+      const toUrl = item.target.to.startsWith("/app")
+        ? item.target.to
+        : `/${locale}${item.target.to}`;
       navigate({
         to: toUrl as never,
         search: (item.target.search ?? {}) as never,
@@ -566,7 +570,11 @@ export function SearchModal() {
         </div>
         <CommandInput
           aria-label={t("search.aria.label")}
-          placeholder={isB2B ? "Rechercher une fonctionnalité B2B (ex: Parc, Transfert, Tickets, SLA)..." : t("search.placeholder")}
+          placeholder={
+            isB2B
+              ? "Rechercher une fonctionnalité B2B (ex: Parc, Transfert, Tickets, SLA)..."
+              : t("search.placeholder")
+          }
           value={query}
           onValueChange={setQuery}
         />

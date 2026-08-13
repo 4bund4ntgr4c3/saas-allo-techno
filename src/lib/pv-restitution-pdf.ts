@@ -101,12 +101,12 @@ export function generatePvRestitutionPdf(input: PvRestitutionInput): void {
   doc.text(
     `Cet équipement bénéficie d'une garantie pièces et main d'œuvre de ${input.warrantyPeriodMonths} mois à compter de ce jour.`,
     18,
-    guaranteeY + 15
+    guaranteeY + 15,
   );
   doc.text(
     "Toute réintervention sous garantie sera prise en charge sous 2h conformément aux engagements SLA.",
     18,
-    guaranteeY + 21
+    guaranteeY + 21,
   );
 
   // Signatures Area
@@ -136,7 +136,7 @@ export function generatePvRestitutionPdf(input: PvRestitutionInput): void {
   doc.text(
     "Allô Techno Africa — Services Informatiques B2B — Abomey-Calavi & Cotonou, Bénin — www.allotechno.africa",
     14,
-    285
+    285,
   );
 
   doc.save(`PV-Restitution-${input.pvNumber}.pdf`);

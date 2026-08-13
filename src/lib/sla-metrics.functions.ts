@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export type SlaPerformanceMetrics = {
   responseSlaCompliancePercent: number;
@@ -19,9 +21,10 @@ export const getSlaPerformanceMetricsFn = createServerFn({ method: "POST" })
   .validator(
     z.object({
       orgId: z.string(),
-    })
+    }),
   )
   .handler(async (): Promise<SlaPerformanceMetrics> => {
+    await requireStaff(supabaseAdmin);
     return {
       responseSlaCompliancePercent: 98.4,
       resolutionSlaCompliancePercent: 95.2,
