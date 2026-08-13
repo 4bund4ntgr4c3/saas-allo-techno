@@ -51,7 +51,6 @@ function OrgTickets() {
   const location = useLocation();
 
   const isChildRoute = Boolean(location.pathname.match(/\/tickets\/[^/]+$/));
-  if (isChildRoute) return <Outlet />;
   const equipmentSearch = Route.useSearch({ select: (s: TicketsSearch) => s.equipment });
   const { t } = useI18n();
   const queryClient = useQueryClient();
@@ -417,6 +416,8 @@ function OrgTickets() {
           </div>
         )}
       </div>
+
+      {isChildRoute && <Outlet />}
     </div>
   );
 }
