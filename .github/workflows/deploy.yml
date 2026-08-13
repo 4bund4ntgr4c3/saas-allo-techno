@@ -19,6 +19,8 @@ jobs:
       - name: Verify bun.lock is in sync with package.json
         run: npx bun install --dry-run 2>&1 | grep -q "lockfile" && echo "⚠️ bun.lock may be out of date — run 'npx bun install' locally and commit bun.lock" || echo "✅ bun.lock is in sync"
       - run: npm run build
+      - name: Remove nitro-generated .wrangler config (conflicts with deploy config)
+        run: rm -rf .wrangler
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
