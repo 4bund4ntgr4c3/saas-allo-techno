@@ -55,14 +55,7 @@ const ROLES: OrgRole[] = [
   "membre",
 ];
 
-const NAV_ITEMS = [
-  { label: "Aperçu Général", to: "", icon: Building2 },
-  { label: "Parc Matériel", to: "equipment", icon: Laptop },
-  { label: "Sites / Agences", to: "sites", icon: MapPin },
-  { label: "Tickets IT", to: "tickets", icon: LifeBuoy },
-  { label: "Maintenance", to: "maintenance", icon: ShieldCheck },
-  { label: "Facturation & SLA", to: "billing", icon: CreditCard },
-] as const;
+
 
 const ROLE_COLORS: Record<string, string> = {
   admin_org: "bg-primary/10 text-primary border-primary/20",
@@ -243,32 +236,7 @@ function OrgDetail() {
         </div>
       </div>
 
-      {/* ─── Navigation Pills Bar (Always Visible) ─── */}
-      <nav
-        className="at-in flex gap-1 overflow-x-auto border border-border bg-card p-1"
-        style={{ animationDelay: "120ms" }}
-      >
-        {NAV_ITEMS.map((item) => {
-          const href = item.to ? `/app/organizations/${orgId}/${item.to}` : `/app/organizations/${orgId}`;
-          const isActive = item.to
-            ? location.pathname.includes(`/${item.to}`)
-            : location.pathname === `/app/organizations/${orgId}` || location.pathname === `/app/organizations/${orgId}/`;
-          return (
-            <Link
-              key={item.to}
-              to={href}
-              className={`inline-flex items-center gap-2 whitespace-nowrap px-4 py-2.5 text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-foreground text-background shadow-sm"
-                  : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-              }`}
-            >
-              <item.icon className="size-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+
 
       {/* ─── Render Child Subroute Content OR Overview Dashboard ─── */}
       {isChildRoute ? (
