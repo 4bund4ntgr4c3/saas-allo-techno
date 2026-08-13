@@ -635,7 +635,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
       {/* 2-Column Grid: Form Steps Space (Left) + Live Recap Card (Right) */}
       <div className="grid gap-6 lg:grid-cols-12 items-start">
         {/* Left Column: B2B Form Space (7 cols) */}
-        <div className="lg:col-span-7 border border-border bg-card p-6 md:p-8 space-y-6">
+        <div className="lg:col-span-7 border border-border bg-card p-4 sm:p-6 md:p-8 space-y-6">
           {/* Segmented 4-Step Navigation Bar Inside Form Space */}
           <div className="border border-border bg-surface p-1 grid grid-cols-2 sm:grid-cols-4 w-full gap-1 text-center font-mono text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider">
             <button
@@ -1250,7 +1250,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
         {/* Right Column: Pure Live Summary Card (5 cols) */}
         <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
-          <div className="border border-border bg-card p-6 space-y-5">
+          <div className="border border-border bg-card p-4 sm:p-6 space-y-5">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
                 <span className="size-2 bg-primary animate-pulse inline-block" />
@@ -1266,7 +1266,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               <span className="text-xs text-muted-foreground uppercase font-mono">
                 Prestation :
               </span>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-bold text-sm text-foreground">
                   {NEED_TYPES.find((n) => n.id === needType)?.title}
                 </span>
@@ -1275,7 +1275,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 </span>
               </div>
               {needType === "contract" && (
-                <div className="mt-1 pt-1 border-t border-border flex justify-between items-center">
+                <div className="mt-1 pt-1 border-t border-border flex flex-wrap justify-between items-center gap-2">
                   <span className="text-xs text-muted-foreground font-mono">Formule SLA :</span>
                   <span className="text-xs font-mono font-extrabold text-primary uppercase">
                     {SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}
@@ -1296,17 +1296,17 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
             {/* Fleet & Equipment */}
             <div className="border-t border-border pt-3 space-y-2">
-              <div className="flex justify-between text-xs">
+              <div className="flex justify-between text-xs gap-2">
                 <span className="text-muted-foreground">Taille du parc :</span>
                 <span className="font-mono font-bold">{fleetSize}</span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Équipements :</span>
-                <span className="font-medium text-right max-w-[180px] truncate">
+              <div className="flex justify-between text-xs gap-2">
+                <span className="text-muted-foreground shrink-0">Équipements :</span>
+                <span className="font-medium text-right break-words text-foreground font-semibold">
                   {selectedEqTypes.length > 0 ? selectedEqTypes.join(", ") : "Aucun sélectionné"}
                 </span>
               </div>
-              <div className="flex justify-between text-xs">
+              <div className="flex justify-between text-xs gap-2">
                 <span className="text-muted-foreground">Délai souhaité :</span>
                 <span className="font-mono text-primary font-bold">
                   {URGENCY_LEVELS.find((u) => u.id === urgency)?.label}

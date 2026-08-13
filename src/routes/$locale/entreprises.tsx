@@ -95,24 +95,25 @@ function Entreprises() {
   const [selectedFormula, setSelectedFormula] = useState<SlaFormulaType | undefined>(undefined);
   return (
     <>
-      <section className="border-b border-border py-16">
+      <section className="border-b border-border py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-4 block">{t("entreprises.eyebrow")}</span>
-          <h1 className="at-display text-4xl md:text-6xl">{t("entreprises.title")}</h1>
-          <p className="mt-6 max-w-xl text-muted-foreground">
+          <span className="at-eyebrow mb-3 block">{t("entreprises.eyebrow")}</span>
+          <h1 className="at-display text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight">{t("entreprises.title")}</h1>
+          <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base text-muted-foreground">
             {t("entreprises.intro", [COMPANY.city])}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
             <Button
               variant="technical"
               size="lg"
+              className="w-full sm:w-auto"
               onClick={() => {
                 document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               {t("entreprises.cta.request")} &rarr;
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
               <Link to="/$locale/tarifs" params={{ locale }}>
                 {t("entreprises.cta.pricing")}
               </Link>
@@ -122,26 +123,26 @@ function Entreprises() {
       </section>
 
       {/* Embedded Interactive B2B Form Section */}
-      <section className="border-b border-border bg-muted/20 py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <section className="border-b border-border bg-muted/20 py-8 sm:py-12">
+        <div className="mx-auto max-w-7xl px-3 sm:px-6">
           <B2BRequestForm key={selectedFormula || "default"} initialFormula={selectedFormula} />
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
             eyebrow={t("entreprises.services.eyebrow")}
             title={t("entreprises.services.title")}
           />
-          <div className="grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.t} className="bg-card p-8">
+                <div key={s.t} className="bg-card p-5 sm:p-6 md:p-8">
                   <Icon className="size-6 text-primary" />
-                  <h3 className="mt-6 text-lg font-bold tracking-tight">{t(s.t)}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{t(s.x)}</p>
+                  <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight">{t(s.t)}</h3>
+                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground">{t(s.x)}</p>
                 </div>
               );
             })}
@@ -149,25 +150,25 @@ function Entreprises() {
         </div>
       </section>
 
-      <section className="border-t border-border py-16">
+      <section className="border-t border-border py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
             eyebrow={t("entreprises.plans.eyebrow")}
             title={t("entreprises.plans.title")}
             text={t("entreprises.plans.text")}
           />
-          <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+          <div className="grid gap-px border border-border bg-border grid-cols-1 md:grid-cols-3">
             {PLANS.map((p) => (
-              <div key={p.name} className="bg-card p-8 flex flex-col justify-between">
+              <div key={p.name} className="bg-card p-5 sm:p-6 md:p-8 flex flex-col justify-between">
                 <div>
                   <span className="at-eyebrow">{t(p.name)}</span>
-                  <div className="mt-4 font-mono text-3xl font-medium">
+                  <div className="mt-3 sm:mt-4 font-mono text-2xl sm:text-3xl font-bold">
                     {p.price ? formatFcfa(p.price) : t("entreprises.onQuote")}
-                    <span className="ml-1 text-sm text-muted-foreground">{t(p.unit)}</span>
+                    <span className="ml-1 text-xs sm:text-sm text-muted-foreground font-normal">{t(p.unit)}</span>
                   </div>
-                  <ul className="mt-6 space-y-3 text-sm">
+                  <ul className="mt-4 sm:mt-6 space-y-2.5 sm:space-y-3 text-xs sm:text-sm">
                     {p.items.map((i) => (
-                      <li key={i} className="border-b border-border pb-3 text-muted-foreground">
+                      <li key={i} className="border-b border-border pb-2.5 sm:pb-3 text-muted-foreground">
                         {t(i)}
                       </li>
                     ))}
@@ -175,7 +176,7 @@ function Entreprises() {
                 </div>
                 <Button
                   variant="technical"
-                  className="mt-8 w-full"
+                  className="mt-6 sm:mt-8 w-full"
                   onClick={() => {
                     const formulaKey: "essentiel" | "business" | "custom" = p.name.includes(
                       "essentiel",
@@ -196,7 +197,7 @@ function Entreprises() {
         </div>
       </section>
 
-      <section className="border-t border-border py-16">
+      <section className="border-t border-border py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <TrustStats />
         </div>
