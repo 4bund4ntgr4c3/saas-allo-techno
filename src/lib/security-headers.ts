@@ -30,14 +30,14 @@ export function buildContentSecurityPolicy(nonce: string): string {
   return [
     "default-src 'self'",
     `connect-src 'self' ${SUPABASE_ORIGIN} https://api.supabase.co https://plausible.io`,
-    `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com`,
+    `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com https://placehold.co`,
     "font-src 'self' data: https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     // 'unsafe-eval' nécessaire uniquement en dev (Vite HMR). En production,
     // le nonce + strict-dynamic suffisent et renforcent la sécurité CSP.
     `script-src 'self' 'strict-dynamic' 'nonce-${nonce}'${IS_PROD ? "" : " 'unsafe-eval'"}`,
-    // Carte OpenStreetMap embarquée sur /contact
-    "frame-src 'self' https://www.openstreetmap.org",
+    // Cartes embarquées : OpenStreetMap (/contact) et Google Maps (/magasins)
+    "frame-src 'self' https://www.openstreetmap.org https://maps.google.com",
     // Empêche d'embarquer le site dans une <iframe> externe
     "frame-ancestors 'none'",
     "object-src 'none'",

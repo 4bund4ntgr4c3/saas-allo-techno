@@ -10,11 +10,8 @@ declare global {
   }
 }
 
-export function trackPageView(url: string) {
-  if (typeof window !== "undefined" && window.plausible) {
-    window.plausible("pageview", { u: url });
-  }
-}
+// Plausible suit automatiquement les navigations SPA (pushState) : aucun
+// appel manuel de pageview nécessaire — un appel manuel doublerait les comptes.
 
 export function trackPlausibleEvent(name: string, props?: Record<string, string>) {
   if (typeof window !== "undefined" && window.plausible) {

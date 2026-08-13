@@ -1329,6 +1329,7 @@ const en = {
   "admin.calendar.month.december": "December",
 
   // Admin — Catalogue
+  "admin.catalog.title": "Catalogue",
   "admin.catalog.loading": "Loading catalogue…",
   "admin.catalog.subtitle":
     "Brands, devices and faults displayed on the site — changes are immediate.",

@@ -11,6 +11,7 @@ import {
 } from "@/components/site/Blocks";
 import { BRANDS, REVIEWS } from "@/data/catalog/static";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
+import { listPublishedReviews, type PublishedReview } from "@/lib/reviews.functions";
 import { BrandLogo } from "@/components/site/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -19,14 +20,24 @@ import { normalizeLocale, type Locale } from "@/lib/i18n/locales";
 import { localeSeo, localBusinessSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/")({
-  head: ({ params }) => {
+  loader: async (): Promise<PublishedReview[]> => {
+    try {
+      const rows = await listPublishedReviews({ data: {} });
+      return Array.isArray(rows) ? rows : [];
+    } catch {
+      return [];
+    }
+  },
+  head: ({ params, loaderData }) => {
     const locale = headLocale(params);
     const suffix = "/";
     const seo = localeSeo(locale, suffix);
-    const avgRating = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length;
+    const live = (loaderData ?? []) as PublishedReview[];
+    const source = live.length > 0 ? live : REVIEWS;
+    const avgRating = source.reduce((s, r) => s + r.rating, 0) / source.length;
     const localBusiness = localBusinessSchema({
       ratingValue: Math.round(avgRating * 10) / 10,
-      reviewCount: REVIEWS.length,
+      reviewCount: source.length,
     });
     return {
       meta: [
@@ -54,6 +65,18 @@ export const Route = createFileRoute("/$locale/")({
 
 function headLocale(params: { locale?: unknown; [key: string]: unknown }): Locale {
   return normalizeLocale(params.locale);
+}
+
+type GridReview = (typeof REVIEWS)[number];
+
+function toGridReviews(rows: PublishedReview[]): GridReview[] {
+  return rows.map((r) => ({
+    name: r.customer_name,
+    city: "Abomey-Calavi",
+    rating: r.rating,
+    text: r.comment,
+    device: r.device ?? "",
+  }));
 }
 
 // Réparations populaires — équivalent statique de
@@ -165,7 +188,9 @@ const POPULAR: {
 function Home() {
   const navigate = useNavigate();
   const { locale, t } = useI18n();
-  const avgRating = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length;
+  const live = Route.useLoaderData();
+  const reviews: GridReview[] = live.length > 0 ? toGridReviews(live) : REVIEWS;
+  const avgRating = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
 
   return (
     <>
@@ -220,7 +245,7 @@ function Home() {
                         {avgRating.toFixed(1).replace(".", ",")} / 5
                       </div>
                       <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                        {REVIEWS.length} {t("home.hero.rating")}
+                        {reviews.length} {t("home.hero.rating")}
                       </div>
                     </div>
                   </div>
@@ -493,7 +518,7 @@ function Home() {
               </Button>
             }
           />
-          <ReviewsGrid limit={6} />
+          <ReviewsGrid limit={6} reviews={reviews} />
         </div>
       </section>
 
