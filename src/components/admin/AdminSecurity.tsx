@@ -4,10 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { KeyRound, ShieldCheck } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { QrCode } from "@/components/site/QrCode";
-import { confirmOtp, disableOtp, enrollOtp } from "@/lib/otp.functions";
+import { confirmOtp, disableOtp, enrollOtp, getOtpStatus } from "@/lib/otp.functions";
 import { getSecurityStats } from "@/lib/security.functions";
 import { getMetrics } from "@/lib/monitoring.functions";
 import { field } from "@/components/admin/primitives/AdminField";
@@ -23,17 +22,11 @@ function SecuritySection() {
   const [pendingSecret, setPendingSecret] = useState<string | null>(null);
   const [pendingUri, setPendingUri] = useState<string | null>(null);
 
+  const getOtpStatusFn = useServerFn(getOtpStatus);
+
   const otp = useQuery({
     queryKey: ["otp", user.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("admin_otp")
-        .select("secret, enabled")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
+    queryFn: async () => getOtpStatusFn(),
   });
 
   const enrollFn = useServerFn(enrollOtp);

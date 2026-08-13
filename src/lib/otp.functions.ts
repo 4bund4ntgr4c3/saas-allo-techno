@@ -107,6 +107,21 @@ export const disableOtp = createServerFn({ method: "POST" })
     return true;
   });
 
+/** Retourne uniquement l'état d'activation de la 2FA — jamais le secret. */
+export const getOtpStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const userId = await currentUserId(supabaseAdmin);
+
+  const { data, error } = await supabaseAdmin
+    .from("admin_otp")
+    .select("enabled")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw new Error("Erreur de lecture de la configuration 2FA.");
+
+  return { enabled: data?.enabled ?? false };
+});
+
 /** Vérifie le code saisi pour déverrouiller l'interface d'administration. */
 export const verifyOtpLogin = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => codeSchema.parse(data))

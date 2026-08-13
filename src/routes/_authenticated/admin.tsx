@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { verifyOtpLogin } from "@/lib/otp.functions";
+import { verifyOtpLogin, getOtpStatus } from "@/lib/otp.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -42,18 +42,11 @@ function AdminLayout() {
     },
   });
 
+  const getOtpStatusFn = useServerFn(getOtpStatus);
   const otpEnabled = useQuery({
     queryKey: ["otp-enabled", user.id],
     enabled: access.data === true,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("admin_otp")
-        .select("enabled")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (error) throw error;
-      return data?.enabled ?? false;
-    },
+    queryFn: async () => (await getOtpStatusFn()).enabled,
   });
 
   const verifyOtpFn = useServerFn(verifyOtpLogin);

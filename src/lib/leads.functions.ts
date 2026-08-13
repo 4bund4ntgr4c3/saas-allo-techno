@@ -84,8 +84,17 @@ export interface SubmitB2BLeadResult {
   leadRef: string;
   accountCreated: boolean;
   email: string;
-  tempPassword: string | null;
   existingAccount: boolean;
+}
+
+/** Mot de passe provisoire aléatoire — jamais transmis au client, jamais déterministe. */
+function randomPassword(length = 16): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#%";
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  let out = "";
+  for (let i = 0; i < length; i++) out += chars[(bytes[i] ?? 0) % chars.length];
+  return out;
 }
 
 /** Enregistre une demande B2B et crée automatiquement un compte client s'il n'existe pas. */
@@ -133,16 +142,20 @@ export const submitB2BLead = createServerFn({ method: "POST" })
       message,
     });
 
-    // 3. Création automatique du compte client B2B dans Supabase Auth
+    // 3. Création automatique du compte client B2B dans Supabase Auth.
+    // Le compte reste inactif tant que l'e-mail n'est pas confirmé
+    // (email_confirm: false) : la propriété de l'adresse est exigée avant tout
+    // accès. Le mot de passe provisoire est aléatoire et jamais retourné —
+    // le client passe par « mot de passe oublié » une fois l'e-mail confirmé.
     let accountCreated = false;
     let existingAccount = false;
-    const tempPassword = `B2B-${reference}-Pass!`;
+    const tempPassword = randomPassword();
 
     try {
       const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: clientEmail,
         password: tempPassword,
-        email_confirm: true,
+        email_confirm: false,
         user_metadata: {
           full_name: fullName,
           company_name: data.companyName,
@@ -170,7 +183,6 @@ export const submitB2BLead = createServerFn({ method: "POST" })
       leadRef: reference,
       accountCreated,
       email: clientEmail,
-      tempPassword: accountCreated ? tempPassword : null,
       existingAccount,
     };
   });

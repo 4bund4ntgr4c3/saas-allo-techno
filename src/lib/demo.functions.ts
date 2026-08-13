@@ -16,6 +16,12 @@ import type { Database, Enums, TablesInsert } from "@/integrations/supabase/type
 
 export const DEMO_PASSWORD = "Demo@2026";
 
+// L'environnement de démonstration (comptes admin/staff à mot de passe connu)
+// est réservé au développement local et aux déploiements qui l'activent
+// explicitement (ENABLE_DEMO=true). En production, le seed est désactivé :
+// il créerait des comptes admin à mot de passe public sur la base réelle.
+const DEMO_ENABLED = import.meta.env.DEV || process.env["ENABLE_DEMO"] === "true";
+
 export type DemoRole = "admin" | "staff" | "technicien" | "client" | "b2b";
 
 export interface DemoAccountInfo {
@@ -104,6 +110,10 @@ async function findFreeSlot(
 }
 
 export const ensureDemoEnvironment = createServerFn({ method: "GET" }).handler(async () => {
+  if (!DEMO_ENABLED) {
+    throw new Error("L'environnement de démonstration est désactivé sur ce déploiement.");
+  }
+
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
   if (!(await rateLimit("demo-seed", 5))) {

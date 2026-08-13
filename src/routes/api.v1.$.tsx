@@ -2,6 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { rateLimit } from "@/lib/security";
 
+/** Empreinte SHA-256 (hex) d'une clé API — la base ne stocke jamais la clé brute. */
+async function sha256Hex(input: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/** Parse et borne un paramètre d'entier de pagination. */
+function parsePageParam(raw: string | null, fallback: number, min: number, max: number): number {
+  const value = Number.parseInt(raw ?? "", 10);
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(Math.max(value, min), max);
+}
+
 export const Route = createFileRoute("/api/v1/$")({
   server: {
     handlers: {
@@ -16,16 +31,17 @@ export const Route = createFileRoute("/api/v1/$")({
           return Response.json({ error: "API key required" }, { status: 401 });
         }
 
-        const { data: keyData } = (await supabaseAdmin
+        const { data: keyData, error: keyError } = (await supabaseAdmin
           .from("api_keys" as never)
           .select("user_id, active, rate_limit")
-          .eq("key", apiKey)
+          .eq("key_hash", await sha256Hex(apiKey))
           .eq("active", true)
           .maybeSingle()) as unknown as {
           data: { user_id: string; active: boolean; rate_limit: number | null } | null;
+          error: unknown;
         };
 
-        if (!keyData) {
+        if (keyError || !keyData) {
           return Response.json({ error: "Invalid API key" }, { status: 401 });
         }
 
@@ -53,8 +69,8 @@ export const Route = createFileRoute("/api/v1/$")({
               if (error) return Response.json({ error: "Not found" }, { status: 404 });
               return Response.json({ data });
             }
-            const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "20"), 100);
-            const offset = parseInt(url.searchParams.get("offset") ?? "0");
+            const limit = parsePageParam(url.searchParams.get("limit"), 20, 1, 100);
+            const offset = parsePageParam(url.searchParams.get("offset"), 0, 0, 100_000);
             const { data, error, count } = await supabaseAdmin
               .from("reservations")
               .select("reference, customer_name, device, status, slot_date, created_at", {
@@ -74,8 +90,9 @@ export const Route = createFileRoute("/api/v1/$")({
             let devices = DEVICES;
             if (brand) devices = devices.filter((d) => d.brand === brand);
             if (category) devices = devices.filter((d) => d.category === category);
-            const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "20"), 100);
-            const results = devices.slice(0, limit).map((d) => ({
+            const limit = parsePageParam(url.searchParams.get("limit"), 20, 1, 100);
+            const offset = parsePageParam(url.searchParams.get("offset"), 0, 0, 100_000);
+            const results = devices.slice(offset, offset + limit).map((d) => ({
               slug: d.slug,
               name: d.name,
               brand: d.brand,

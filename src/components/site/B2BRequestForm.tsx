@@ -227,7 +227,6 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
   const [accountDetails, setAccountDetails] = useState<{
     accountCreated: boolean;
     email: string;
-    tempPassword: string | null;
     existingAccount: boolean;
   } | null>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
@@ -287,10 +286,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
       setAccountDetails({
         accountCreated: res.accountCreated,
         email: res.email,
-        tempPassword: res.tempPassword,
         existingAccount: res.existingAccount,
       });
-      toast.success("Demande B2B enregistrée & Compte Client activé !");
+      toast.success("Demande B2B enregistrée — un e-mail de confirmation a été envoyé.");
     } catch {
       setSuccessCode(code);
       toast.success("Proposition B2B générée !");
@@ -360,10 +358,10 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
       ["Précisions & Notes Spécifiques", notes || "Aucune précision complémentaire"],
     ];
 
-    if (accountDetails?.tempPassword) {
+    if (accountDetails?.accountCreated) {
       bodyRows.push([
-        "Identifiants Compte Client B2B",
-        `E-mail: ${accountDetails.email} | Mot de passe prov: ${accountDetails.tempPassword}`,
+        "Compte Client B2B",
+        `E-mail: ${accountDetails.email} — confirmez-le pour activer l'accès au portail.`,
       ]);
     }
 
@@ -451,7 +449,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
           <div className="flex items-center gap-2 text-foreground font-bold text-sm border-b border-border pb-2">
             <UserCheck className="size-5 text-primary" />
             {accountDetails?.accountCreated
-              ? "Compte Client B2B Créé Automatiquement pour votre Entreprise"
+              ? "Compte Client B2B Créé — Confirmez votre e-mail"
               : accountDetails?.existingAccount
                 ? "Compte Client B2B Reconnu & Rattaché"
                 : "Compte Client B2B Activé"}
@@ -467,37 +465,16 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </span>
             </div>
 
-            {accountDetails?.tempPassword ? (
-              <div className="p-3 border border-border bg-card flex justify-between items-center">
-                <div>
-                  <span className="text-muted-foreground block text-[10px] uppercase font-mono mb-1">
-                    Mot de passe provisoire :
-                  </span>
-                  <span className="font-mono font-bold text-primary text-sm">
-                    {accountDetails.tempPassword}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(accountDetails.tempPassword || "");
-                    toast.success("Mot de passe copié !");
-                  }}
-                  className="px-2.5 py-1 text-[10px] font-mono uppercase font-bold border border-border bg-surface hover:bg-muted"
-                >
-                  Copier
-                </button>
-              </div>
-            ) : (
-              <div className="p-3 border border-border bg-card">
-                <span className="text-muted-foreground block text-[10px] uppercase font-mono mb-1">
-                  Accès Espace Client :
-                </span>
-                <span className="font-medium text-foreground">
-                  Connectez-vous avec vos identifiants habituels
-                </span>
-              </div>
-            )}
+            <div className="p-3 border border-border bg-card">
+              <span className="text-muted-foreground block text-[10px] uppercase font-mono mb-1">
+                Accès Espace Client :
+              </span>
+              <span className="font-medium text-foreground">
+                {accountDetails?.accountCreated
+                  ? "Un e-mail de confirmation a été envoyé. Confirmez-le, puis choisissez votre mot de passe via « Mot de passe oublié »."
+                  : "Connectez-vous avec vos identifiants habituels"}
+              </span>
+            </div>
           </div>
 
           <div className="flex justify-end pt-1">

@@ -117,13 +117,17 @@ export function computeSlaForecast(
   };
 }
 
-/** Masque les données personnelles d'une réservation (vue publique sans code). */
+/** Masque les données personnelles et sensibles d'une réservation (vue publique sans code valide). */
 function publicReservation(row: ReservationStatus): ReservationStatus {
   return {
     ...row,
     customer_name: "Client",
     phone: "",
     email: null,
+    quote_token: null,
+    delivery_address: null,
+    quote_amount: null,
+    payment_status: null,
   };
 }
 
@@ -324,6 +328,10 @@ export const getReservationComments = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => lookupSchema.parse(data))
   .handler(async ({ data }): Promise<Comment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("suivi-comments", 30))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
 
     const { data: rows, error } = await supabaseAdmin.rpc("get_reservation_comments", {
       _reference: data.reference,

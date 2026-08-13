@@ -8,12 +8,13 @@ import { getRequestIP } from "@tanstack/react-start/server";
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // sans 0/O/1/I/L
 // Poivre pour l'empreinte du code de suivi. En développement / test, un repli
 // stable est autorisé. En production, TRACKING_CODE_PEPPER DOIT être défini
-// via `wrangler secret put` pour garantir l'unicité des empreintes.
+// via `wrangler secret put` — sinon les empreintes sont calculables et les
+// codes de suivi compromis : on refuse de démarrer (côté serveur uniquement ;
+// le bundle client n'évalue pas ce module).
 const PEPPER = process.env["TRACKING_CODE_PEPPER"];
-if (!PEPPER && import.meta.env.PROD) {
-  console.error(
-    "[security] TRACKING_CODE_PEPPER manquant en production — les codes de suivi seront compromis. " +
-      "Définir la variable via `wrangler secret put TRACKING_CODE_PEPPER`.",
+if (!PEPPER && import.meta.env.PROD && import.meta.env.SSR) {
+  throw new Error(
+    "[security] TRACKING_CODE_PEPPER manquant en production — définir via `wrangler secret put TRACKING_CODE_PEPPER`.",
   );
 }
 const EFFECTIVE_PEPPER = PEPPER ?? "at-tracking-code-pepper-dev-fallback";
@@ -144,7 +145,24 @@ export function isSafeOutboundUrl(raw: string): boolean {
     if (a >= 224) return false; // multicast / réservé
   }
 
-  if (hostname === "::1" || hostname === "[::1]") return false;
+  if (hostname.includes(":")) {
+    // IPv6 : on bloque loopback (::1), ULA (fc00::/7), link-local (fe80::/10),
+    // multicast (ff00::/8) et IPv4-mappées (::ffff:x.x.x.x).
+    const v6 = hostname.replace(/^\[|\]$/g, "").toLowerCase();
+    if (
+      v6 === "::1" ||
+      v6.startsWith("::ffff:") ||
+      v6.startsWith("fc") ||
+      v6.startsWith("fd") ||
+      v6.startsWith("fe8") ||
+      v6.startsWith("fe9") ||
+      v6.startsWith("fea") ||
+      v6.startsWith("feb") ||
+      v6.startsWith("ff")
+    ) {
+      return false;
+    }
+  }
   return true;
 }
 
