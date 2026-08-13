@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -51,6 +51,10 @@ function EquipmentList() {
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isChildRoute = Boolean(location.pathname.match(/\/equipment\/[^/]+$/));
+  if (isChildRoute) return <Outlet />;
 
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
   const org = orgs.data?.find((o) => o.id === orgId);

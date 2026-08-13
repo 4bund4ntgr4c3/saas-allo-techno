@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -48,6 +48,10 @@ const PRIORITY_BADGE: Record<B2BTicketPriority, string> = {
 
 function OrgTickets() {
   const { orgId } = Route.useParams();
+  const location = useLocation();
+
+  const isChildRoute = Boolean(location.pathname.match(/\/tickets\/[^/]+$/));
+  if (isChildRoute) return <Outlet />;
   const equipmentSearch = Route.useSearch({ select: (s: TicketsSearch) => s.equipment });
   const { t } = useI18n();
   const queryClient = useQueryClient();
