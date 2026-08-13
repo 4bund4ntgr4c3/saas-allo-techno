@@ -29,7 +29,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
 export function buildContentSecurityPolicy(nonce: string): string {
   return [
     "default-src 'self'",
-    `connect-src 'self' ${SUPABASE_ORIGIN} https://api.supabase.co`,
+    `connect-src 'self' ${SUPABASE_ORIGIN} https://api.supabase.co https://plausible.io`,
     `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com`,
     "font-src 'self' data: https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

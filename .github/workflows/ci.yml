@@ -41,4 +41,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build with client env
+        env:
+          VITE_SUPABASE_URL: https://fcxmecphvflmbqayyioj.supabase.co
+          VITE_SUPABASE_KEY: sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO
+          VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
+        run: npm run build

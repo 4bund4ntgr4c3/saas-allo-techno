@@ -9,6 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, Suspense, lazy, type ReactNode } from "react";
+import { getGlobalStartContext } from "@tanstack/react-start";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import { initSentry } from "@/lib/sentry";
@@ -181,14 +182,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon fran�ais.
+  // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon français.
   const lang = useRouterState({ select: (s) => s.location.pathname.split("/")[1] ?? "fr" });
   const locale = normalizeLocale(lang);
+  const nonce = getGlobalStartContext()?.nonce as string | undefined;
   return (
     <html lang={lang === "en" ? "en" : "fr"}>
       <head>
         <HeadContent />
-        <script defer data-domain="allotechno.africa" src="https://plausible.io/js/script.js" />
+        <script
+          defer
+          data-domain="allotechno.africa"
+          src="https://plausible.io/js/script.js"
+          nonce={nonce}
+        />
       </head>
       <body>
         <I18nProvider initialLocale={locale}>{children}</I18nProvider>

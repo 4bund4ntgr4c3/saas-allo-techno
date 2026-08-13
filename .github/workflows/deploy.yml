@@ -16,7 +16,14 @@ jobs:
       - run: npm ci
       - name: Verify bun.lock is in sync with package.json
         run: npx bun install --dry-run 2>&1 | grep -q "lockfile" && echo "⚠️ bun.lock may be out of date — run 'npx bun install' locally and commit bun.lock" || echo "✅ bun.lock is in sync"
-      - run: npm run build
+      - name: Build with client env
+        env:
+          # Publiques par design (expédiées dans le bundle client) — sans elles
+          # le client Supabase throw au montage et aucune page ne s'affiche.
+          VITE_SUPABASE_URL: https://fcxmecphvflmbqayyioj.supabase.co
+          VITE_SUPABASE_KEY: sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO
+          VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
+        run: npm run build
       - name: Remove nitro-generated .wrangler config (conflicts with deploy config)
         run: rm -rf .wrangler
       - uses: cloudflare/wrangler-action@v3
