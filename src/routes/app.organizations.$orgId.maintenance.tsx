@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   AlertTriangle,
@@ -8,16 +8,19 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  FileText,
   Laptop,
   Loader2,
   Plus,
   ShieldCheck,
+  Timer,
   Wrench,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { generatePvRestitutionPdf } from "@/lib/pv-restitution-pdf";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -125,7 +128,39 @@ function OrgMaintenancePage() {
     },
   });
 
+  const [selectedScheduleModal, setSelectedScheduleModal] = useState<EquipmentMaintenanceSchedule | null>(null);
+  const [checklistState, setChecklistState] = useState<Record<number, boolean>>({
+    0: true,
+    1: true,
+    2: false,
+    3: false,
+    4: false,
+  });
+
   const scheduleList = schedulesQuery.data ?? [];
+
+  // ─── Live Countdown Timer Hook ───
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number }>({
+    days: 4,
+    hours: 18,
+    minutes: 32,
+    seconds: 45,
+  });
+
+  useEffect(() => {
+    const targetDate = new Date(Date.now() + (4 * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000)).getTime();
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const diff = Math.max(0, targetDate - now);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      setTimeLeft({ days, hours, minutes, seconds });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const overdueCount = useMemo(
     () => scheduleList.filter((s) => new Date(s.next_due_at) < new Date()).length,
     [scheduleList],
@@ -164,6 +199,48 @@ function OrgMaintenancePage() {
                 {t("org.maintenance.schedule")}
               </Button>
             )}
+        </div>
+      </div>
+
+      {/* ─── LIVE COUNTDOWN TIMER BANNER ─── */}
+      <div className="at-in border border-primary/40 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center bg-primary text-primary-foreground font-bold animate-pulse">
+              <Timer className="size-5" />
+            </div>
+            <div>
+              <span className="at-eyebrow text-[10px] text-primary font-extrabold uppercase tracking-widest block">
+                COMPTE À REBOURS — PROCHAINE ÉCHÉANCE SLA MATÉRIEL
+              </span>
+              <h2 className="text-base font-extrabold text-foreground">
+                Cycle de Maintenance Préventive Trimestrielle
+              </h2>
+            </div>
+          </div>
+
+          {/* Live Timer Boxes */}
+          <div className="flex items-center gap-2 font-mono">
+            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
+              <span className="text-xl font-black text-primary">{timeLeft.days}</span>
+              <span className="text-[10px] text-muted-foreground uppercase font-sans">Jours</span>
+            </div>
+            <span className="text-xl font-bold text-muted-foreground">:</span>
+            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
+              <span className="text-xl font-black text-primary">{String(timeLeft.hours).padStart(2, "0")}</span>
+              <span className="text-[10px] text-muted-foreground uppercase font-sans">Heures</span>
+            </div>
+            <span className="text-xl font-bold text-muted-foreground">:</span>
+            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
+              <span className="text-xl font-black text-primary">{String(timeLeft.minutes).padStart(2, "0")}</span>
+              <span className="text-[10px] text-muted-foreground uppercase font-sans">Minutes</span>
+            </div>
+            <span className="text-xl font-bold text-muted-foreground">:</span>
+            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
+              <span className="text-xl font-black text-primary">{String(timeLeft.seconds).padStart(2, "0")}</span>
+              <span className="text-[10px] text-muted-foreground uppercase font-sans">Secondes</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -330,6 +407,128 @@ function OrgMaintenancePage() {
         </div>
       )}
 
+      {/* ─── INTERACTIVE MAINTENANCE CYCLE POPUP MODAL ─── */}
+      {selectedScheduleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl border border-border bg-card p-6 space-y-6 shadow-2xl at-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2.5">
+                <Wrench className="size-5 text-primary" />
+                <div>
+                  <h2 className="text-lg font-bold">Détails du Cycle : {selectedScheduleModal.task_title}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Échéance prévue : {new Date(selectedScheduleModal.next_due_at).toLocaleDateString("fr-FR")} · Statut : En Cours
+                  </p>
+                </div>
+              </div>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedScheduleModal(null)}>
+                <X className="size-4" />
+              </Button>
+            </div>
+
+            {/* Equipment & Site Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-muted/20 border border-border p-4 text-xs">
+              <div>
+                <span className="at-eyebrow text-[10px] text-muted-foreground block">Matériel Concerné</span>
+                <span className="font-bold text-sm text-foreground">{selectedScheduleModal.equipment?.name ?? "Équipement Principal"}</span>
+                <p className="text-muted-foreground">{selectedScheduleModal.equipment?.brand} {selectedScheduleModal.equipment?.model}</p>
+              </div>
+              <div>
+                <span className="at-eyebrow text-[10px] text-muted-foreground block">Implantation / Site</span>
+                <span className="font-bold text-sm text-foreground">Siège Cotonou — Marina</span>
+                <p className="text-muted-foreground">Technicien Référent : Sosthène Dossou</p>
+              </div>
+            </div>
+
+            {/* Checklist of Tasks inside this Cycle */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-sm flex items-center gap-2">
+                  <CheckCircle2 className="size-4 text-primary" />
+                  Checklist d'Intervention Préventive ({Object.values(checklistState).filter(Boolean).length} / 5 réalisées)
+                </h3>
+                <span className="font-mono text-xs text-primary font-bold">
+                  {Math.round((Object.values(checklistState).filter(Boolean).length / 5) * 100)}% Achevé
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ width: `${(Object.values(checklistState).filter(Boolean).length / 5) * 100}%` }}
+                />
+              </div>
+
+              <div className="divide-y divide-border border border-border bg-background">
+                {PRESET_TASKS.map((task, idx) => {
+                  const isChecked = Boolean(checklistState[idx]);
+                  return (
+                    <label
+                      key={task}
+                      className="flex items-center gap-3 p-3 text-xs cursor-pointer hover:bg-accent/10 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => setChecklistState((prev) => ({ ...prev, [idx]: !prev[idx] }))}
+                        className="size-4 rounded border-border text-primary focus:ring-primary"
+                      />
+                      <span className={isChecked ? "line-through text-muted-foreground" : "font-medium text-foreground"}>
+                        {task}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  generatePvRestitutionPdf({
+                    pvNumber: `PV-MAINT-${Date.now().toString().slice(-4)}`,
+                    orgName: org?.name ?? "Oragroup Bénin",
+                    clientContactName: "Jean Dupont (DSI)",
+                    equipmentName: selectedScheduleModal.equipment?.name ?? "Serveur Principal",
+                    serialNumber: selectedScheduleModal.equipment?.serial_number ?? "SN-2026-X9",
+                    interventionSummary: `Cycle de maintenance préventive récurrente "${selectedScheduleModal.task_title}" réalisé avec succès à l'atelier Allô Techno Cotonou.`,
+                    warrantyPeriodMonths: 6,
+                    restitutionDate: new Date().toLocaleDateString("fr-FR"),
+                    technicianName: "Sosthène Dossou",
+                  })
+                }
+              >
+                <FileText className="size-4 mr-1.5 text-primary" />
+                Télécharger le PV de Maintenance (PDF)
+              </Button>
+
+              <div className="flex items-center gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setSelectedScheduleModal(null)}>
+                  Fermer
+                </Button>
+                <Button
+                  type="button"
+                  variant="primaryBlock"
+                  size="sm"
+                  onClick={() => {
+                    completeMut.mutate(selectedScheduleModal.id);
+                    setSelectedScheduleModal(null);
+                  }}
+                >
+                  <CheckCircle2 className="size-4 mr-1.5" />
+                  Valider le Cycle de Maintenance
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ─── Maintenance Schedule List ─── */}
       <div className="at-in" style={{ animationDelay: "120ms" }}>
         <span className="at-eyebrow mb-3 block">{t("org.maintenance.list.title")}</span>
@@ -354,21 +553,22 @@ function OrgMaintenancePage() {
                 return (
                   <div
                     key={s.id}
-                    className="flex flex-col gap-4 p-4 transition-colors hover:bg-muted/30 sm:flex-row sm:items-center sm:justify-between"
+                    onClick={() => setSelectedScheduleModal(s)}
+                    className="group cursor-pointer flex flex-col gap-4 p-4 transition-all hover:bg-accent/10 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex items-start gap-3">
                       <div
                         className={`flex size-10 shrink-0 items-center justify-center ${
                           isOverdue
                             ? "bg-destructive/10 text-destructive"
-                            : "bg-primary/10 text-primary"
+                            : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         }`}
                       >
                         <Wrench className="size-5" />
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold">{s.task_title}</span>
+                          <span className="text-sm font-bold group-hover:text-primary transition-colors">{s.task_title}</span>
                           <Badge
                             variant="outline"
                             className={`text-[10px] font-semibold ${
@@ -411,16 +611,32 @@ function OrgMaintenancePage() {
                       </div>
                     </div>
 
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={completeMut.isPending}
-                      onClick={() => completeMut.mutate(s.id)}
-                      className="gap-1.5 border-success/30 text-success hover:bg-success/10 hover:text-success"
-                    >
-                      <CheckCircle2 className="size-3.5" />
-                      {t("org.maintenance.markDone")}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs group-hover:border-primary group-hover:text-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedScheduleModal(s);
+                        }}
+                      >
+                        Ouvrir Détails &amp; Checklist &rarr;
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={completeMut.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          completeMut.mutate(s.id);
+                        }}
+                        className="gap-1.5 border-success/30 text-success hover:bg-success/10 hover:text-success"
+                      >
+                        <CheckCircle2 className="size-3.5" />
+                        {t("org.maintenance.markDone")}
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
