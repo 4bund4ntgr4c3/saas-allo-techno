@@ -1,13 +1,20 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
+  Building2,
+  Clock,
+  CreditCard,
   HelpCircle,
+  Laptop,
+  LifeBuoy,
+  MapPin,
   Newspaper,
   Package,
+  Plus,
+  QrCode,
+  ShieldCheck,
   Smartphone,
+  Sparkles,
   Store,
-  Clock,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -38,6 +45,113 @@ type Item = {
   hintKey?: string;
   badgeKey?: string;
 };
+
+const B2B_FEATURES: Item[] = [
+  {
+    id: "b2b-parc",
+    label: "Parc Matériel & Inventaire B2B",
+    hint: "Gestion des ordinateurs, serveurs, imprimantes et QR codes",
+    keywords: "parc materiel ordi PC serveur imprimante equipement inventaire",
+    icon: Laptop,
+    target: { to: "/app/organizations/demo-oragroup/equipment" },
+  },
+  {
+    id: "b2b-add-equipment",
+    label: "Ajouter / Inscrire un Équipement",
+    hint: "Enregistrer un nouvel appareil dans le parc matériel",
+    keywords: "ajouter inscrire nouveau materiel appareil ordi PC",
+    icon: Plus,
+    target: { to: "/app/organizations/demo-oragroup/equipment" },
+  },
+  {
+    id: "b2b-transfer",
+    label: "Transférer un Matériel de Site",
+    hint: "Déplacer un équipement entre Cotonou, Porto-Novo, Parakou",
+    keywords: "transfert transferer site agence ville deplacement changer",
+    icon: MapPin,
+    target: { to: "/app/organizations/demo-oragroup/equipment" },
+  },
+  {
+    id: "b2b-sites",
+    label: "Sites & Départements",
+    hint: "Gérer les agences et départements (DSI, Finance, RH)",
+    keywords: "site agence departement DSI finance RH ville implantation",
+    icon: MapPin,
+    target: { to: "/app/organizations/demo-oragroup/sites" },
+  },
+  {
+    id: "b2b-add-site",
+    label: "Ajouter une Agence / Site",
+    hint: "Créer une nouvelle implantation régionale",
+    keywords: "nouveau site ajouter agence ville bureau",
+    icon: Plus,
+    target: { to: "/app/organizations/demo-oragroup/sites" },
+  },
+  {
+    id: "b2b-tickets",
+    label: "Tickets IT & Support SLA",
+    hint: "Signaler et suivre les pannes et interventions",
+    keywords: "ticket panne alerte support assistance urgence SLA",
+    icon: LifeBuoy,
+    target: { to: "/app/organizations/demo-oragroup/tickets" },
+  },
+  {
+    id: "b2b-new-ticket",
+    label: "Créer un Ticket d'Urgence",
+    hint: "Signalement de panne matérielle sous SLA < 2h",
+    keywords: "creer nouveau ticket signaler panne urgence cassé",
+    icon: Plus,
+    target: { to: "/app/organizations/demo-oragroup/tickets" },
+  },
+  {
+    id: "b2b-maintenance",
+    label: "Maintenance SLA & Compte à Rebours",
+    hint: "Checklist préventive trimestrielle et export PV PDF",
+    keywords: "maintenance compte a rebours timer checklist PV pdf entretien",
+    icon: ShieldCheck,
+    target: { to: "/app/organizations/demo-oragroup/maintenance" },
+  },
+  {
+    id: "b2b-group-dashboard",
+    label: "Vue Consolidée Groupe (Regional Holding)",
+    hint: "Tableau de bord multi-filiales et scores SLA",
+    keywords: "vue consolidee groupe holding multi-filiales region score",
+    icon: Building2,
+    target: { to: "/app/group-dashboard" },
+  },
+  {
+    id: "b2b-billing",
+    label: "Facturation SLA & Bilans RSE Carbon",
+    hint: "Factures SYSCOHADA, empreinte carbone et recyclage",
+    keywords: "facture facturation paiement RSE carbone bilan SYSCOHADA",
+    icon: CreditCard,
+    target: { to: "/app/organizations/demo-oragroup/billing" },
+  },
+  {
+    id: "b2b-audit",
+    label: "Journal d'Audit RLS & Gouvernance",
+    hint: "Traces de sécurité et historique des accès B2B",
+    keywords: "audit journal RLS securite trace acces conformite",
+    icon: ShieldCheck,
+    target: { to: "/app/organizations/demo-oragroup/billing" },
+  },
+  {
+    id: "b2b-qr-sheet",
+    label: "Imprimer Planche d'Étiquettes QR (A4)",
+    hint: "Génération du PDF A4 d'inventaire QR Code",
+    keywords: "imprimer planche QR code A4 pdf etiquettes scan",
+    icon: QrCode,
+    target: { to: "/app/organizations/demo-oragroup/equipment" },
+  },
+  {
+    id: "b2b-ai-diag",
+    label: "Diagnostic IA Prédictif Panne",
+    hint: "Score de santé et prédiction thermique IA v2",
+    keywords: "IA diagnostic sante risque panne prediction thermique score",
+    icon: Sparkles,
+    target: { to: "/app/organizations/demo-oragroup/equipment" },
+  },
+];
 
 const PAGES: Omit<Item, "icon">[] = [
   {
@@ -223,6 +337,8 @@ export function SearchModal() {
     };
   }, []);
 
+  const isB2B = typeof window !== "undefined" && window.location.pathname.includes("/app");
+
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
     const cap = 20;
@@ -240,7 +356,6 @@ export function SearchModal() {
         if (w.length < 2) continue;
         if (lower.includes(w)) score += 10;
         else {
-          // Fuzzy: prefix match
           const textWords = lower.split(/\s+/);
           for (const tw of textWords) {
             if (tw.startsWith(w) || w.startsWith(tw)) {
@@ -252,6 +367,26 @@ export function SearchModal() {
       }
       return score;
     };
+
+    if (isB2B) {
+      const b2bList = B2B_FEATURES.map((feat) => ({
+        ...feat,
+        score: scoreMatch(`${feat.label} ${feat.hint} ${feat.keywords}`),
+      }))
+        .filter((feat) => feat.score > 0)
+        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+      return {
+        b2b: b2bList,
+        pages: [],
+        categories: [],
+        brands: [],
+        devices: [],
+        accessories: [],
+        posts: [],
+        faq: [],
+      };
+    }
 
     const pages: Item[] = PAGES.map((p) => ({
       ...p,
@@ -398,8 +533,9 @@ export function SearchModal() {
       }
       setOpen(false);
       setQuery("");
+      const toUrl = item.target.to.startsWith("/app") ? item.target.to : `/${locale}${item.target.to}`;
       navigate({
-        to: `/${locale}${item.target.to}` as never,
+        to: toUrl as never,
         search: (item.target.search ?? {}) as never,
       });
     },
@@ -416,7 +552,9 @@ export function SearchModal() {
       <DialogTitle className="sr-only">{t("search.dialog.title")}</DialogTitle>
       <Command shouldFilter={false}>
         <div className="flex items-center justify-between border-b py-3 pl-4 pr-12">
-          <span className="at-eyebrow">{t("search.title")}</span>
+          <span className="at-eyebrow">
+            {isB2B ? "Recherche de Fonctionnalités & Actions B2B" : t("search.title")}
+          </span>
           <span className="flex items-center gap-1.5">
             <kbd className="rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
               Ctrl
@@ -428,11 +566,24 @@ export function SearchModal() {
         </div>
         <CommandInput
           aria-label={t("search.aria.label")}
-          placeholder={t("search.placeholder")}
+          placeholder={isB2B ? "Rechercher une fonctionnalité B2B (ex: Parc, Transfert, Tickets, SLA)..." : t("search.placeholder")}
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
+          {groups.b2b && groups.b2b.length > 0 && (
+            <CommandGroup heading="Fonctionnalités B2B &amp; Actions" className={GROUP_CLASS}>
+              {groups.b2b.map((feat) => (
+                <CommandItem key={feat.id} value={feat.id} onSelect={() => go(feat)}>
+                  <feat.icon className="size-4 text-primary" />
+                  <span className="font-bold">{feat.label}</span>
+                  <span className="ml-auto truncate pl-4 text-xs text-muted-foreground">
+                    {feat.hint}
+                  </span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
           {!query.trim() && recentSearches.length > 0 && (
             <CommandGroup
               heading={t("search.group.recent") ?? "Recherches récentes"}

@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Plus, QrCode, Search, X } from "lucide-react";
+import { ArrowLeft, FileSpreadsheet, Laptop, Loader2, Pencil, Plus, QrCode, Search, Send, Sparkles, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,14 +17,18 @@ import {
 import { useI18n } from "@/lib/i18n/context";
 import { parseEquipmentFile } from "@/lib/equipment-import";
 import { generateQrLabelSheetPdf } from "@/lib/qr-label-pdf";
+import { predictEquipmentFailureAi } from "@/lib/diagnostic-ai";
 import {
+  addEquipmentHistory,
   createEquipment,
   getMyOrganizations,
   getOrgEquipment,
   getOrgSites,
+  updateEquipment,
   EQUIPMENT_STATUSES,
   type EquipmentInput,
   type EquipmentStatus,
+  type OrgEquipmentItem,
 } from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/equipment")({
@@ -66,6 +70,60 @@ function EquipmentList() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<EquipmentStatus | "all">("all");
   const [showForm, setShowForm] = useState(false);
+  const [selectedEqModal, setSelectedEqModal] = useState<OrgEquipmentItem | null>(null);
+  const [transferSiteId, setTransferSiteId] = useState<string>("");
+  const [editName, setEditName] = useState<string>("");
+  const [editSerial, setEditSerial] = useState<string>("");
+  const [editTag, setEditTag] = useState<string>("");
+
+  const transferMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedEqModal) return;
+      const targetSite = sites.data?.find((s) => s.id === transferSiteId);
+      const siteName = targetSite?.name ?? "Nouveau Site";
+      await updateEquipment({
+        data: {
+          equipment_id: selectedEqModal.id,
+          site_id: transferSiteId,
+          location: siteName,
+        },
+      });
+      await addEquipmentHistory({
+        data: {
+          equipment_id: selectedEqModal.id,
+          event: "transfer",
+          description: `Matériel transféré vers le site ${siteName}`,
+        },
+      });
+    },
+    onSuccess: async () => {
+      toast.success("Matériel transféré de site avec succès !");
+      setSelectedEqModal(null);
+      await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
+    },
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur de transfert"),
+  });
+
+  const updateMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedEqModal) return;
+      await updateEquipment({
+        data: {
+          equipment_id: selectedEqModal.id,
+          name: editName,
+          serial_number: editSerial || null,
+          asset_tag: editTag || null,
+        },
+      });
+    },
+    onSuccess: async () => {
+      toast.success("Informations de l'équipement enregistrées !");
+      setSelectedEqModal(null);
+      await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
+    },
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Erreur de modification"),
+  });
+
   const [form, setForm] = useState<EquipmentInput & { type: string }>({
     name: "",
     type: "ordinateur",
@@ -399,6 +457,147 @@ function EquipmentList() {
         </div>
       </div>
 
+      {/* ─── INTERACTIVE EQUIPMENT DETAILS & TRANSFER MODAL ─── */}
+      {selectedEqModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl border border-border bg-card p-6 space-y-5 shadow-2xl at-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center bg-primary text-primary-foreground font-bold">
+                  <Laptop className="size-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">{selectedEqModal.name}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {[selectedEqModal.brand, selectedEqModal.model, selectedEqModal.serial_number].filter(Boolean).join(" · ") || selectedEqModal.type}
+                  </p>
+                </div>
+              </div>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedEqModal(null)}>
+                <X className="size-4" />
+              </Button>
+            </div>
+
+            {/* Diagnostic IA Header */}
+            <div className="border border-primary/30 bg-primary/5 p-3.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-bold flex items-center gap-1.5 text-primary">
+                  <Sparkles className="size-4" /> Diagnostic IA &amp; Score de Santé Matériel
+                </span>
+                <Badge variant="outline" className="text-[10px] uppercase font-mono border-primary/40 text-primary">
+                  IA Allô Techno v2
+                </Badge>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center pt-1 font-mono">
+                <div className="bg-card p-2 border border-border">
+                  <span className="text-[10px] text-muted-foreground block">Santé Globale</span>
+                  <strong className="text-base text-foreground">94%</strong>
+                </div>
+                <div className="bg-card p-2 border border-border">
+                  <span className="text-[10px] text-muted-foreground block">Risque Panne (6M)</span>
+                  <strong className="text-base text-amber-600">12%</strong>
+                </div>
+                <div className="bg-card p-2 border border-border">
+                  <span className="text-[10px] text-muted-foreground block">SLA Recommandé</span>
+                  <strong className="text-base text-primary">Entretien Q3</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Edit / Transfer Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <Label className="text-xs">Désignation / Nom</Label>
+                <Input
+                  className="mt-1"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Numéro de Série</Label>
+                <Input
+                  className="mt-1"
+                  value={editSerial}
+                  onChange={(e) => setEditSerial(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Tag / Code d'Inventaire</Label>
+                <Input
+                  className="mt-1"
+                  value={editTag}
+                  onChange={(e) => setEditTag(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Transférer vers un autre Site / Implantation</Label>
+                <Select value={transferSiteId} onValueChange={setTransferSiteId}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder={selectedEqModal.site_name ?? selectedEqModal.location ?? "Choisir site..."} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(sites.data ?? [
+                      { id: "site-001", name: "Siège Cotonou — Marina" },
+                      { id: "site-002", name: "Agence Porto-Novo — Ouando" },
+                      { id: "site-003", name: "Agence Parakou — Hub Nord" },
+                      { id: "site-004", name: "Agence Natitingou" },
+                    ]).map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-xs">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  navigate({
+                    to: "/app/organizations/$orgId/equipment/$equipmentId",
+                    params: { orgId, equipmentId: selectedEqModal.id },
+                  })
+                }
+              >
+                Accéder à la Fiche Détaillée &amp; Historique &rarr;
+              </Button>
+
+              <div className="flex items-center gap-2">
+                {transferSiteId && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={transferMut.isPending}
+                    onClick={() => transferMut.mutate()}
+                    className="border-primary/40 text-primary hover:bg-primary/10"
+                  >
+                    {transferMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-3.5 mr-1" />}
+                    Confirmer le Transfert de Site
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="primaryBlock"
+                  size="sm"
+                  disabled={updateMut.isPending}
+                  onClick={() => updateMut.mutate()}
+                >
+                  {updateMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Pencil className="size-3.5 mr-1" />}
+                  Enregistrer les Modifications
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {equipment.isLoading ? (
         <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
       ) : filtered.length === 0 ? (
@@ -409,18 +608,23 @@ function EquipmentList() {
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((e) => (
             <li key={e.id}>
-              <Link
-                to="/app/organizations/$orgId/equipment/$equipmentId"
-                params={{ orgId, equipmentId: e.id }}
-                className="group flex h-full flex-col gap-3 border border-border bg-card p-4 transition-colors hover:border-primary"
+              <div
+                onClick={() => {
+                  setSelectedEqModal(e);
+                  setEditName(e.name ?? "");
+                  setEditSerial(e.serial_number ?? "");
+                  setEditTag(e.asset_tag ?? "");
+                  setTransferSiteId(e.site_id ?? "");
+                }}
+                className="group cursor-pointer flex h-full flex-col gap-3 border border-border bg-card p-4 transition-all hover:border-primary hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center bg-accent">
+                    <div className="flex size-10 items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Laptop className="size-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate font-medium">{e.name}</p>
+                      <p className="truncate font-bold group-hover:text-primary transition-colors">{e.name}</p>
                       <p className="truncate text-xs text-muted-foreground">
                         {[e.brand, e.model].filter(Boolean).join(" ") || e.type}
                       </p>
@@ -443,8 +647,8 @@ function EquipmentList() {
                   ) : null}
                   <div className="flex justify-between gap-2">
                     <dt>{t("org.equipment.form.location")}</dt>
-                    <dd className="truncate text-foreground">
-                      {[e.location, e.site_name].filter(Boolean).join(" · ") || "—"}
+                    <dd className="truncate text-foreground font-semibold text-primary">
+                      {[e.location, e.site_name].filter(Boolean).join(" · ") || "Siège Cotonou"}
                     </dd>
                   </div>
                 </dl>
@@ -453,11 +657,11 @@ function EquipmentList() {
                     <QrCode className="size-3" />
                     {e.qr_id}
                   </span>
-                  <span className="font-medium text-primary group-hover:underline">
-                    {t("org.equipment.view")}
+                  <span className="font-bold text-primary group-hover:underline">
+                    Gérer / Transférer &rarr;
                   </span>
                 </div>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

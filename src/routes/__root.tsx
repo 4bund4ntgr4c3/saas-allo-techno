@@ -1,4 +1,4 @@
-﻿import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -202,7 +202,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isAdmin = /^\/(en\/)?admin/.test(pathname);
+  const isAppOrAdmin = /^\/(en\/)?(admin|app)/.test(pathname);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
@@ -236,19 +236,17 @@ function RootComponent() {
           >
             Aller au contenu principal
           </a>
-          {!isAdmin && <Header />}
+          {!isAppOrAdmin && <Header />}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
             <Outlet />
           </main>
-          {!isAdmin && <Footer />}
-          {!isAdmin && (
-            <Suspense fallback={null}>
-              <SearchModal />
-            </Suspense>
-          )}
+          {!isAppOrAdmin && <Footer />}
+          <Suspense fallback={null}>
+            <SearchModal />
+          </Suspense>
           <Toaster />
-          {!isAdmin && (
+          {!isAppOrAdmin && (
             <>
               <AddToCartWidget />
               <CartDrawer />
