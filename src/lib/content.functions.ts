@@ -92,9 +92,7 @@ function sanitizeBlogParagraph(par: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  return escaped
-    .replace(SAFE_HTML_TAGS, "<$1>")
-    .replace(SAFE_ANCHOR, '<a href="$1">');
+  return escaped.replace(SAFE_HTML_TAGS, "<$1>").replace(SAFE_ANCHOR, '<a href="$1">');
 }
 
 function rowToPost(row: {
@@ -110,9 +108,7 @@ function rowToPost(row: {
   try {
     const parsed: unknown = JSON.parse(row.body);
     if (Array.isArray(parsed)) {
-      body = parsed
-        .filter((p): p is string => typeof p === "string")
-        .map(sanitizeBlogParagraph);
+      body = parsed.filter((p): p is string => typeof p === "string").map(sanitizeBlogParagraph);
     }
   } catch {
     body = [];

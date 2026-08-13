@@ -53,9 +53,7 @@ export const listWebhooks = createServerFn({ method: "GET" }).handler(
     if (!(await rateLimit("list-webhooks", 20))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
-      .select(
-        "id, name, url, events, active, last_triggered_at, last_status, created_at",
-      )
+      .select("id, name, url, events, active, last_triggered_at, last_status, created_at")
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return ((data ?? []) as unknown as OutboundWebhook[]).map((w) => ({
