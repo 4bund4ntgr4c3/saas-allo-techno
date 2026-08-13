@@ -47,7 +47,7 @@ const SearchModal = lazy(() =>
   import("@/components/site/SearchModal").then((m) => ({ default: m.SearchModal })),
 );
 
-function NotFoundComponent() {
+export function NotFoundComponent() {
   const { t } = useI18n();
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">

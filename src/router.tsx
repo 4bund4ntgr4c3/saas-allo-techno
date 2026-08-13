@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { getGlobalStartContext } from "@tanstack/react-start";
 
+import { NotFoundComponent } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
@@ -17,6 +18,7 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
+    defaultNotFoundComponent: NotFoundComponent,
     ssr: {
       ...(nonce ? { nonce } : {}),
     },
