@@ -84,6 +84,21 @@ function CartButton() {
 export function Header() {
   const { user } = useSession();
   const { t, locale } = useI18n();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const getLabel = (lbl: string) => {
+    if (lbl.startsWith("nav.")) {
+      const translated = t(lbl);
+      return translated !== lbl ? translated : lbl.replace("nav.", "").toUpperCase();
+    }
+    return lbl;
+  };
+
+  const getHref = (path: string) => {
+    if (path.startsWith("/$locale")) return path;
+    return `/$locale${path.startsWith("/") ? path : `/${path}`}`;
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
       {/* Top utility bar */}
@@ -190,51 +205,138 @@ export function Header() {
               {t("nav.reservation")}
             </Link>
           </Button>
-          <Sheet>
+
+          {/* Mobile Navigation Drawer */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <button
                 aria-label={t("header.open-menu")}
-                className="grid size-9 place-items-center border border-border lg:hidden"
+                className="grid size-9 place-items-center border border-border lg:hidden text-foreground hover:bg-muted"
               >
-                <Menu className="size-4" />
+                <Menu className="size-5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
-              <SheetTitle className="at-display text-lg">{t("header.menu")}</SheetTitle>
-              <nav className="mt-6 flex flex-col gap-1" aria-label={t("header.mobile-nav")}>
-                {[
-                  ...NAV,
-                  ...TOP_LEFT,
-                  ...TOP_RIGHT.filter(
-                    (r) => !(TOP_LEFT as readonly { to: string }[]).some((l) => l.to === r.to),
-                  ),
-                  { to: "/panier", label: t("nav.panier") },
-                  { to: "/reservation", label: t("nav.reservation") },
-                  {
-                    to: user ? "/mon-compte" : "/auth",
-                    label: user ? t("nav.mon-compte") : t("nav.connexion"),
-                  },
-                  { to: "/devis", label: t("nav.devis") },
-                  { to: "/tarifs", label: t("nav.tarifs") },
-                  { to: "/suivi", label: t("nav.suivi") },
-                  { to: "/garantie", label: t("nav.garantie") },
-                  { to: "/reprise", label: t("nav.reprise") },
-                  { to: "/avis", label: t("nav.avis") },
-                  { to: "/guides", label: t("nav.guides") },
-                  { to: "/reconditionnes", label: t("nav.reconditionnes") },
-                  { to: "/reclamation", label: t("nav.reclamation") },
-                  { to: "/engagements", label: t("nav.engagements") },
-                  { to: "/faq", label: t("nav.faq") },
-                ].map((i) => (
-                  <Link
-                    key={i.to}
-                    to={i.to}
-                    className="border-b border-border py-3 text-sm font-semibold uppercase tracking-wide"
-                  >
-                    {i.label}
-                  </Link>
-                ))}
-              </nav>
+            <SheetContent side="right" className="w-80 p-0 flex flex-col justify-between overflow-y-auto bg-card">
+              <div className="p-6 space-y-6">
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                  <SheetTitle className="at-display text-xl font-bold">Allô Techno</SheetTitle>
+                </div>
+
+                {/* Primary Action Buttons for Mobile */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Button asChild variant="technical" size="sm" className="w-full text-xs font-bold">
+                    <Link
+                      to="/$locale/reservation"
+                      params={{ locale }}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {t("nav.reservation")}
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="w-full text-xs font-bold">
+                    <Link
+                      to={user ? "/mon-compte" : "/auth"}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {user ? t("nav.mon-compte") : t("nav.connexion")}
+                    </Link>
+                  </Button>
+                </div>
+
+                {/* Navigation Links Grouped & Cleanly Translated */}
+                <nav className="flex flex-col space-y-4" aria-label={t("header.mobile-nav")}>
+                  {/* Services & Boutique */}
+                  <div>
+                    <span className="at-eyebrow text-[10px] text-muted-foreground uppercase tracking-widest block mb-2 font-mono">
+                      Services &amp; Offres
+                    </span>
+                    <div className="flex flex-col border border-border divide-y divide-border bg-surface">
+                      {[
+                        { to: "/$locale/reparations", label: "nav.reparations" },
+                        { to: "/$locale/catalogue", label: "nav.catalogue" },
+                        { to: "/$locale/services", label: "nav.services" },
+                        { to: "/$locale/boutique", label: "nav.boutique" },
+                        { to: "/$locale/promotions", label: "nav.promotions" },
+                        { to: "/$locale/reconditionnes", label: "nav.reconditionnes" },
+                        { to: "/$locale/entreprises", label: "nav.entreprises" },
+                      ].map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          params={{ locale }}
+                          onClick={() => setMobileOpen(false)}
+                          className="px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-muted hover:text-primary transition-colors flex items-center justify-between"
+                        >
+                          <span>{getLabel(item.label)}</span>
+                          <span className="text-muted-foreground text-xs">&rarr;</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Espace Pro & Suivi */}
+                  <div>
+                    <span className="at-eyebrow text-[10px] text-muted-foreground uppercase tracking-widest block mb-2 font-mono">
+                      Espace Client &amp; Suivi
+                    </span>
+                    <div className="flex flex-col border border-border divide-y divide-border bg-surface">
+                      {[
+                        { to: "/suivi", label: "nav.suivi" },
+                        { to: "/devis", label: "nav.devis" },
+                        { to: "/tarifs", label: "nav.tarifs" },
+                        { to: "/app", label: "Portail Entreprises B2B" },
+                        { to: "/demo", label: "nav.demo" },
+                      ].map((item) => (
+                        <Link
+                          key={item.to}
+                          to={getHref(item.to)}
+                          params={{ locale }}
+                          onClick={() => setMobileOpen(false)}
+                          className="px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors flex items-center justify-between"
+                        >
+                          <span>{getLabel(item.label)}</span>
+                          <span className="text-muted-foreground text-xs">&rarr;</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* A propos & Informations */}
+                  <div>
+                    <span className="at-eyebrow text-[10px] text-muted-foreground uppercase tracking-widest block mb-2 font-mono">
+                      À propos &amp; Support
+                    </span>
+                    <div className="flex flex-col border border-border divide-y divide-border bg-surface">
+                      {[
+                        { to: "/$locale/about", label: "nav.about" },
+                        { to: "/$locale/contact", label: "nav.contact" },
+                        { to: "/$locale/magasins", label: "nav.magasins" },
+                        { to: "/$locale/blog", label: "nav.blog" },
+                        { to: "/$locale/faq", label: "nav.faq" },
+                        { to: "/$locale/guides", label: "nav.guides" },
+                      ].map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          params={{ locale }}
+                          onClick={() => setMobileOpen(false)}
+                          className="px-4 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        >
+                          {getLabel(item.label)}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </nav>
+              </div>
+
+              {/* Footer Phone Info */}
+              <div className="p-4 border-t border-border bg-surface text-center text-xs text-muted-foreground space-y-1">
+                <span className="at-eyebrow text-[10px] block">{COMPANY.city}</span>
+                <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`} className="font-mono text-sm font-bold text-primary block">
+                  {COMPANY.phone}
+                </a>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
