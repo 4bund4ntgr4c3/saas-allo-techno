@@ -66,7 +66,9 @@ export async function generateGuaranteePDF(data: RepairGuaranteeData): Promise<B
   doc.setFontSize(8.5);
   doc.setTextColor(22, 101, 52);
   doc.setFont("helvetica", "bold");
-  doc.text(`GARANTIE ${data.guaranteeMonths} MOIS`, pageWidth - margin - 21, y - 0.5, { align: "center" });
+  doc.text(`GARANTIE ${data.guaranteeMonths} MOIS`, pageWidth - margin - 21, y - 0.5, {
+    align: "center",
+  });
 
   y += 7;
 
@@ -195,10 +197,11 @@ export async function generateGuaranteePDF(data: RepairGuaranteeData): Promise<B
   doc.line(margin, footerY - 8, margin + contentWidth, footerY - 8);
 
   // QR Code Image
-  const qrUrl = await QRCode.toDataURL(
-    `https://allotechno.africa/suivi?ref=${data.reference}`,
-    { width: 120, margin: 1, color: { dark: "#0f172a" } }
-  );
+  const qrUrl = await QRCode.toDataURL(`https://allotechno.africa/suivi?ref=${data.reference}`, {
+    width: 120,
+    margin: 1,
+    color: { dark: "#0f172a" },
+  });
   doc.addImage(qrUrl, "PNG", margin, footerY - 6, 22, 22);
 
   doc.setFontSize(7.5);
@@ -207,8 +210,16 @@ export async function generateGuaranteePDF(data: RepairGuaranteeData): Promise<B
   doc.text("AUTHENTIFICATION NUMÉRIQUE", margin + 25, footerY - 2);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text("Scannez ce QR Code pour vérifier l'authenticité du certificat de garantie.", margin + 25, footerY + 3);
-  doc.text("Support technique direct : contact@allotechno.africa | +229 01 97 00 00 00", margin + 25, footerY + 8);
+  doc.text(
+    "Scannez ce QR Code pour vérifier l'authenticité du certificat de garantie.",
+    margin + 25,
+    footerY + 3,
+  );
+  doc.text(
+    "Support technique direct : contact@allotechno.africa | +229 01 97 00 00 00",
+    margin + 25,
+    footerY + 8,
+  );
 
   // Signature Box
   doc.setDrawColor(203, 213, 225);
@@ -220,4 +231,3 @@ export async function generateGuaranteePDF(data: RepairGuaranteeData): Promise<B
 
   return doc.output("blob");
 }
-

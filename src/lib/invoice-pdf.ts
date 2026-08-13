@@ -71,7 +71,9 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
   doc.setFontSize(8.5);
   doc.setTextColor(isPaid ? 22 : 180, isPaid ? 101 : 83, isPaid ? 52 : 9);
   doc.setFont("helvetica", "bold");
-  doc.text(isPaid ? "PAYÉ EN TOTALITÉ" : "PAIEMENT PARTIEL", pageWidth - margin - 20, y - 0.5, { align: "center" });
+  doc.text(isPaid ? "PAYÉ EN TOTALITÉ" : "PAIEMENT PARTIEL", pageWidth - margin - 20, y - 0.5, {
+    align: "center",
+  });
 
   y += 7;
 
@@ -95,7 +97,11 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
   doc.setFont("helvetica", "bold");
   doc.text(`MODE PAIEMENT :`, margin + 100, y + 6);
   doc.setFont("helvetica", "normal");
-  doc.text(invoice.paymentMethod ? invoice.paymentMethod.toUpperCase() : "ESPECES / MOMO", margin + 132, y + 6);
+  doc.text(
+    invoice.paymentMethod ? invoice.paymentMethod.toUpperCase() : "ESPECES / MOMO",
+    margin + 132,
+    y + 6,
+  );
 
   doc.setFont("helvetica", "bold");
   doc.text(`GARANTIE INCLUSE :`, margin + 100, y + 13);
@@ -154,12 +160,20 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
   doc.setFont("helvetica", "bold");
   doc.text(`Panne(s) Réparée(s) :`, margin + colWidth + 10, y + 19);
   doc.setFont("helvetica", "normal");
-  doc.text((invoice.faults || []).join(", ") || "Intervention technique", margin + colWidth + 45, y + 19);
+  doc.text(
+    (invoice.faults || []).join(", ") || "Intervention technique",
+    margin + colWidth + 45,
+    y + 19,
+  );
 
   doc.setFont("helvetica", "bold");
   doc.text(`Description :`, margin + colWidth + 10, y + 25);
   doc.setFont("helvetica", "normal");
-  doc.text(invoice.repairDescription || "Remplacement composant & contrôle qualité", margin + colWidth + 32, y + 25);
+  doc.text(
+    invoice.repairDescription || "Remplacement composant & contrôle qualité",
+    margin + colWidth + 32,
+    y + 25,
+  );
 
   y += 38;
 
@@ -224,10 +238,14 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "normal");
   doc.text("Total HT :", breakX + 4, y + 5);
-  doc.text(formatFcfa(Math.round(finalTotal / 1.18)), breakX + breakW - 4, y + 5, { align: "right" });
+  doc.text(formatFcfa(Math.round(finalTotal / 1.18)), breakX + breakW - 4, y + 5, {
+    align: "right",
+  });
 
   doc.text("TVA (18%) :", breakX + 4, y + 10);
-  doc.text(formatFcfa(Math.round(finalTotal - finalTotal / 1.18)), breakX + breakW - 4, y + 10, { align: "right" });
+  doc.text(formatFcfa(Math.round(finalTotal - finalTotal / 1.18)), breakX + breakW - 4, y + 10, {
+    align: "right",
+  });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10.5);
@@ -254,8 +272,16 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Blob> {
   doc.text("AUTHENTICITÉ DU DOCUMENT", margin + 25, footerY - 2);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text("Scannez ce QR Code pour vérifier l'authenticité de cette facture.", margin + 25, footerY + 3);
-  doc.text("Paiements acceptés : Mobile Money (MTN/Moov), Carte Bancaire, Espèces.", margin + 25, footerY + 8);
+  doc.text(
+    "Scannez ce QR Code pour vérifier l'authenticité de cette facture.",
+    margin + 25,
+    footerY + 3,
+  );
+  doc.text(
+    "Paiements acceptés : Mobile Money (MTN/Moov), Carte Bancaire, Espèces.",
+    margin + 25,
+    footerY + 8,
+  );
 
   // Stamp Box
   doc.setDrawColor(203, 213, 225);

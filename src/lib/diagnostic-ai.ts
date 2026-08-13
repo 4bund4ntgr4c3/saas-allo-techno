@@ -31,8 +31,12 @@ export type PredictiveHealthResult = {
 
 export function runAiPreDiagnostic(input: SymptomInput): DiagnosticResult {
   const { deviceCategory, symptoms } = input;
-  const hasDisplayIssue = symptoms.some((s) => s.includes("écran") || s.includes("tactile") || s.includes("noir"));
-  const hasBatteryIssue = symptoms.some((s) => s.includes("batterie") || s.includes("charge") || s.includes("éteint"));
+  const hasDisplayIssue = symptoms.some(
+    (s) => s.includes("écran") || s.includes("tactile") || s.includes("noir"),
+  );
+  const hasBatteryIssue = symptoms.some(
+    (s) => s.includes("batterie") || s.includes("charge") || s.includes("éteint"),
+  );
 
   let minCost = 15000;
   let maxCost = 35000;
@@ -64,7 +68,8 @@ export function runAiPreDiagnostic(input: SymptomInput): DiagnosticResult {
     recommendedParts,
     repairTimeEstimateHours: hasDisplayIssue ? 2 : 1,
     repairabilityScore: deviceCategory === "smartphone" ? 8 : 7,
-    adviceText: "Diagnostic préliminaire généré avec succès. Présentez votre appareil en boutique Allô Techno pour confirmation sans engagement.",
+    adviceText:
+      "Diagnostic préliminaire généré avec succès. Présentez votre appareil en boutique Allô Techno pour confirmation sans engagement.",
   };
 }
 
@@ -108,7 +113,7 @@ export function predictEquipmentFailureAi(input: HealthIndexInput): PredictiveHe
     recommendedAction = "upgrade_part";
   }
 
-  const tcoEstimate = Math.round((input.ageMonths * 4500) + (input.previousRepairsCount * 25000));
+  const tcoEstimate = Math.round(input.ageMonths * 4500 + input.previousRepairsCount * 25000);
 
   return {
     healthScore: finalHealthScore,

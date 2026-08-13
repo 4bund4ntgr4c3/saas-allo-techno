@@ -573,9 +573,7 @@ function PhotoPanel({ reservationId }: { reservationId: string }) {
             key={stage}
             className="flex cursor-pointer items-center gap-2 border border-border px-3 py-1.5 text-xs hover:bg-surface"
           >
-            <span className="text-muted-foreground">
-              {t(`admin.kanban.photoStage.${stage}` as any)}
-            </span>
+            <span className="text-muted-foreground">{t(`admin.kanban.photoStage.${stage}`)}</span>
             {busyStage === stage ? (
               <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
             ) : (

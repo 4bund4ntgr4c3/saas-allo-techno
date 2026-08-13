@@ -134,7 +134,7 @@ export function LeadsSection() {
               <p className="font-medium">
                 {l.name ?? t("admin.refunds.anonymous")}{" "}
                 <span className="ml-2 text-xs font-normal text-muted-foreground">
-                  {t(`admin.leads.source.${l.source}` as any) || l.source}
+                  {t(`admin.leads.source.${l.source}`) || l.source}
                   {l.reference ? ` · ${t("admin.leads.caseLabel")} ${l.reference}` : ""}
                 </span>
               </p>
@@ -147,7 +147,7 @@ export function LeadsSection() {
                 {(["nouveau", "contacte", "clos"] as const).map((value) => (
                   <option key={value} value={value}>
                     {t(
-                      `admin.leads.status.${value === "contacte" ? "contacted" : value === "clos" ? "closed" : "new"}` as any,
+                      `admin.leads.status.${value === "contacte" ? "contacted" : value === "clos" ? "closed" : "new"}`,
                     )}
                   </option>
                 ))}
@@ -289,7 +289,7 @@ export function ClaimCard({
           {CLAIM_STATUS_ORDER.map((value) => (
             <option key={value} value={value}>
               {t(
-                `admin.claims.status.${value === "acceptee" ? "accepted" : value === "refuse" ? "refused" : value === "cloturee" ? "closed" : value === "en_cours" ? "inProgress" : "new"}` as any,
+                `admin.claims.status.${value === "acceptee" ? "accepted" : value === "refuse" ? "refused" : value === "cloturee" ? "closed" : value === "en_cours" ? "inProgress" : "new"}`,
               )}
             </option>
           ))}

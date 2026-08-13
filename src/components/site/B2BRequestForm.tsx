@@ -382,7 +382,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
       theme: "grid",
     });
 
-    const finalY = (doc as any).lastAutoTable?.previous?.finalY || 180;
+    const finalY =
+      (doc as unknown as { lastAutoTable?: { previous?: { finalY?: number } } }).lastAutoTable
+        ?.previous?.finalY || 180;
 
     // Guarantees Section
     doc.setFillColor(245, 245, 245);

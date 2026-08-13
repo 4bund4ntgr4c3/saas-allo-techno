@@ -14,7 +14,11 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
-import { setReservationStatus } from "@/lib/admin.functions";
+import {
+  setReservationStatus,
+  type AtelierCard as AtelierCardType,
+  type AtelierChecklist,
+} from "@/lib/admin.functions";
 import { setDeliveryStatus } from "@/lib/delivery.functions";
 import {
   downloadInvoicePdf,
@@ -64,7 +68,7 @@ export function DossiersSection() {
     reference: string;
     device: string;
     type: "intake" | "qa";
-    initial?: any;
+    initial?: AtelierChecklist["items"] | null;
   } | null>(null);
 
   const role = useQuery({
@@ -471,11 +475,10 @@ export function DossiersSection() {
                                 ? "qa"
                                 : "intake",
                             initial:
-                              (r.status === "pret" ||
-                              r.status === "livre" ||
-                              r.status === "terminee"
-                                ? (r as any).qa_checklist?.items
-                                : (r as any).intake_checklist?.items) ?? null,
+                              r.status === "pret" || r.status === "livre" || r.status === "terminee"
+                                ? ((r as unknown as AtelierCardType).qa_checklist?.items ?? null)
+                                : ((r as unknown as AtelierCardType).intake_checklist?.items ??
+                                  null),
                           })
                         }
                         className="text-xs gap-1"
@@ -579,7 +582,7 @@ export function DossiersSection() {
           reference={checklistTarget.reference}
           device={checklistTarget.device}
           type={checklistTarget.type}
-          initialData={checklistTarget.initial}
+          initialData={checklistTarget.initial ?? null}
           onClose={() => setChecklistTarget(null)}
         />
       )}

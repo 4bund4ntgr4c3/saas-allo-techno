@@ -181,13 +181,21 @@ function OrgMaintenancePage() {
                     <ShieldCheck className="size-5 text-primary shrink-0" />
                     <h3 className="font-bold text-sm leading-tight">{plan.title}</h3>
                   </div>
-                  <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10 shrink-0">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10 shrink-0"
+                  >
                     Tous les {plan.frequencyMonths} mois
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/60">
-                  <span>Sites : <strong className="text-foreground">{plan.targetSites.join(", ")}</strong></span>
-                  <span className="font-mono font-bold text-foreground">Prochaine échéance : {plan.nextDueDate}</span>
+                  <span>
+                    Sites :{" "}
+                    <strong className="text-foreground">{plan.targetSites.join(", ")}</strong>
+                  </span>
+                  <span className="font-mono font-bold text-foreground">
+                    Prochaine échéance : {plan.nextDueDate}
+                  </span>
                 </div>
               </div>
             ))}

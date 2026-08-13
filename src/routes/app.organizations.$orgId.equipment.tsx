@@ -145,7 +145,7 @@ function EquipmentList() {
       }
 
       toast.success(
-        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`
+        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`,
       );
 
       // Create each valid item batch

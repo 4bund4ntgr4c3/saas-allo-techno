@@ -3,11 +3,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-  Activity,
   AlertTriangle,
   ArrowLeft,
   CalendarDays,
-  Cpu,
   FileText,
   Loader2,
   Plus,
@@ -15,7 +13,6 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
-  TrendingDown,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -152,7 +149,9 @@ function EquipmentDetail() {
   const historyList = detail.data.history ?? [];
 
   const healthPredict = predictEquipmentFailureAi({
-    ageMonths: eq.created_at ? Math.max(1, Math.round((Date.now() - new Date(eq.created_at).getTime()) / (30 * 864e5))) : 12,
+    ageMonths: eq.created_at
+      ? Math.max(1, Math.round((Date.now() - new Date(eq.created_at).getTime()) / (30 * 864e5)))
+      : 12,
     previousRepairsCount: historyList.filter((h) => h.event === "status_change").length,
     averageDailyUsageHours: 8,
     environment: "office",
@@ -212,36 +211,51 @@ function EquipmentDetail() {
         <div className="flex items-center justify-between gap-3 border-b border-border/60 pb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="size-5 text-primary" />
-            <h3 className="font-bold text-sm uppercase tracking-wider">Diagnostic IA Prédictif & Score de Santé Matériel</h3>
+            <h3 className="font-bold text-sm uppercase tracking-wider">
+              Diagnostic IA Prédictif & Score de Santé Matériel
+            </h3>
           </div>
-          <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10"
+          >
             Algorithme Allô Techno IA v2
           </Badge>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="border border-border/80 p-3 bg-muted/20">
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Indice de Santé Globale</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+              Indice de Santé Globale
+            </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-extrabold text-foreground">{healthPredict.healthScore}%</span>
+              <span className="font-mono text-2xl font-extrabold text-foreground">
+                {healthPredict.healthScore}%
+              </span>
               <span className="text-xs text-success font-medium">Bon état opérationnel</span>
             </div>
           </div>
           <div className="border border-border/80 p-3 bg-muted/20">
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Risque de Panne (6 Mois)</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+              Risque de Panne (6 Mois)
+            </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-extrabold text-amber-600">{healthPredict.failureProbabilityNext6Months}%</span>
+              <span className="font-mono text-2xl font-extrabold text-amber-600">
+                {healthPredict.failureProbabilityNext6Months}%
+              </span>
               <span className="text-xs text-muted-foreground">Probabilité mesurée</span>
             </div>
           </div>
           <div className="border border-border/80 p-3 bg-muted/20">
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Action Recommandée</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+              Action Recommandée
+            </span>
             <span className="font-mono text-sm font-bold uppercase text-primary block mt-1">
               {healthPredict.recommendedAction === "maintain"
                 ? "Entretien Récurrent"
                 : healthPredict.recommendedAction === "upgrade_part"
-                ? "Changer Composant"
-                : "Renouvellement Machine"}
+                  ? "Changer Composant"
+                  : "Renouvellement Machine"}
             </span>
           </div>
         </div>

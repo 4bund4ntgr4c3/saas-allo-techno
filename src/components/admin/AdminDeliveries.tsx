@@ -47,7 +47,15 @@ export function AdminDeliveries() {
   });
 
   const updateDeliveryMut = useMutation({
-    mutationFn: async ({ id, status, address }: { id: string; status: any; address?: string }) => {
+    mutationFn: async ({
+      id,
+      status,
+      address,
+    }: {
+      id: string;
+      status: "non_applicable" | "a_planifier" | "en_route" | "livre";
+      address?: string;
+    }) => {
       await setDeliveryStatus({
         data: {
           reservationId: id,

@@ -1,4 +1,11 @@
-import { createFileRoute, Link, Outlet, redirect, useLocation, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,

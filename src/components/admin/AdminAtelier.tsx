@@ -30,6 +30,7 @@ import {
   transferReservation,
   getWorkshopLoad,
   type AtelierCard as AtelierCardType,
+  type AtelierChecklist,
   type AtelierTechnician,
   type WorkshopLoad,
 } from "@/lib/admin.functions";
@@ -72,7 +73,7 @@ export function AtelierBoard() {
     reference: string;
     device: string;
     type: "intake" | "qa";
-    initial?: any;
+    initial?: AtelierChecklist["items"] | null;
   } | null>(null);
 
   const move = useMutation({
@@ -272,11 +273,9 @@ export function AtelierBoard() {
                                 ? "qa"
                                 : "intake",
                             initial:
-                              (c.status === "pret" ||
-                              c.status === "livre" ||
-                              c.status === "terminee"
-                                ? (c as any).qa_checklist?.items
-                                : (c as any).intake_checklist?.items) ?? null,
+                              c.status === "pret" || c.status === "livre" || c.status === "terminee"
+                                ? (c.qa_checklist?.items ?? null)
+                                : (c.intake_checklist?.items ?? null),
                           })
                         }
                       />
@@ -301,7 +300,7 @@ export function AtelierBoard() {
           reference={checklistTarget.reference}
           device={checklistTarget.device}
           type={checklistTarget.type}
-          initialData={checklistTarget.initial}
+          initialData={checklistTarget.initial ?? null}
           onClose={() => setChecklistTarget(null)}
         />
       )}

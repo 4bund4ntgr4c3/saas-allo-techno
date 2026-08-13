@@ -256,8 +256,16 @@ export async function generateDevisPdf(devis: DevisData): Promise<Blob> {
   doc.text("VÉRIFICATION EN LIGNE", margin + 25, footerY - 2);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text("Scannez ce QR Code pour consulter ou accepter votre devis en ligne.", margin + 25, footerY + 3);
-  doc.text("Ce devis est une estimation sous réserve de démontage d'atelier.", margin + 25, footerY + 8);
+  doc.text(
+    "Scannez ce QR Code pour consulter ou accepter votre devis en ligne.",
+    margin + 25,
+    footerY + 3,
+  );
+  doc.text(
+    "Ce devis est une estimation sous réserve de démontage d'atelier.",
+    margin + 25,
+    footerY + 8,
+  );
 
   // Signature Box
   doc.setDrawColor(203, 213, 225);

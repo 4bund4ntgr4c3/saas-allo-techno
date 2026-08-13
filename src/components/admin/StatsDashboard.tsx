@@ -481,13 +481,6 @@ export function StatsDashboard() {
     };
   }, [reservationsQuery.data, leadsQuery.data, paymentsQuery.data, nowIso]);
 
-  if (reservationsQuery.isLoading || leadsQuery.isLoading || paymentsQuery.isLoading) {
-    return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
-  }
-
-  const unmatched = Math.max(0, stats.repairsThisMonth - repairRevenue.matched);
-
-  // Configurable KPI visibility (stored in localStorage)
   const [kpiConfig, setKpiConfig] = useState({
     repairs: true,
     boutiqueOrders: true,
@@ -531,6 +524,12 @@ export function StatsDashboard() {
       /* silent */
     }
   }, []);
+
+  if (reservationsQuery.isLoading || leadsQuery.isLoading || paymentsQuery.isLoading) {
+    return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
+  }
+
+  const unmatched = Math.max(0, stats.repairsThisMonth - repairRevenue.matched);
 
   const columns: ColumnDef<ReservationRow>[] = [
     {

@@ -7,6 +7,15 @@ import { Search, CheckCircle2, Printer, Receipt, Plus, Trash2, ShoppingBag } fro
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
 
+interface PosReservation {
+  id: string;
+  reference: string | null;
+  customer_name: string | null;
+  phone: string | null;
+  device: string | null;
+  quote_amount: number | null;
+}
+
 interface PosItem {
   id: string;
   name: string;
@@ -26,7 +35,7 @@ const QUICK_ACCESSORIES = [
 export function AdminPOS() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReservation, setSelectedReservation] = useState<any | null>(null);
+  const [selectedReservation, setSelectedReservation] = useState<PosReservation | null>(null);
   const [cartItems, setCartItems] = useState<PosItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<"especes" | "mtn" | "moov" | "celtiis">(
     "especes",
@@ -34,7 +43,18 @@ export function AdminPOS() {
   const [amountReceived, setAmountReceived] = useState<string>("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [lastReceipt, setLastReceipt] = useState<any | null>(null);
+  const [lastReceipt, setLastReceipt] = useState<{
+    receiptId: string;
+    date: string;
+    customerName: string;
+    customerPhone: string;
+    items: PosItem[];
+    totalAmount: number;
+    paymentMethod: "especes" | "mtn" | "moov" | "celtiis";
+    amountReceived: number;
+    changeDue: number;
+    reservationRef: string | null;
+  } | null>(null);
 
   // Search reservations
   const reservationsQuery = useQuery({
@@ -55,16 +75,16 @@ export function AdminPOS() {
     },
   });
 
-  const handleSelectReservation = (res: any) => {
+  const handleSelectReservation = (res: PosReservation) => {
     setSelectedReservation(res);
-    setCustomerName(res.customer_name);
-    setCustomerPhone(res.phone);
+    setCustomerName(res.customer_name ?? "");
+    setCustomerPhone(res.phone ?? "");
     // Add quote as item if exists
     if (res.quote_amount) {
       setCartItems([
         {
           id: `quote-${res.id}`,
-          name: `Réparation ${res.device} (${res.reference})`,
+          name: `Réparation ${res.device ?? ""} (${res.reference ?? ""})`,
           price: res.quote_amount,
           quantity: 1,
         },
@@ -101,12 +121,12 @@ export function AdminPOS() {
       const paymentRef = `POS-${Date.now().toString().slice(-6)}`;
 
       // 1. Insert into payments table
-      const { error: payError } = await (supabase.from("payments") as any).insert({
+      const { error: payError } = await supabase.from("payments").insert({
         reference: selectedReservation?.reference ?? paymentRef,
         amount: totalAmount,
         method: paymentMethod,
         status: "paid",
-      });
+      } as never);
       if (payError) console.warn("Payment insert:", payError);
 
       // 2. If attached to a reservation, update reservation status
@@ -130,7 +150,7 @@ export function AdminPOS() {
         paymentMethod,
         amountReceived: receivedNum || totalAmount,
         changeDue: paymentMethod === "especes" ? changeDue : 0,
-        reservationRef: selectedReservation?.reference,
+        reservationRef: selectedReservation?.reference ?? null,
       };
     },
     onSuccess: (receipt) => {
@@ -331,15 +351,17 @@ export function AdminPOS() {
                 Mode de règlement :
               </label>
               <div className="grid grid-cols-2 gap-2">
-                {[
-                  { id: "especes", label: "💵 Espèces", sub: "Rendu monnaie" },
-                  { id: "mtn", label: "🟡 MTN MoMo", sub: "Mobile Money" },
-                  { id: "moov", label: "🔵 Moov Money", sub: "Flooz" },
-                  { id: "celtiis", label: "🟣 Celtiis Cash", sub: "SBIN" },
-                ].map((m) => (
+                {(
+                  [
+                    { id: "especes", label: "💵 Espèces", sub: "Rendu monnaie" },
+                    { id: "mtn", label: "🟡 MTN MoMo", sub: "Mobile Money" },
+                    { id: "moov", label: "🔵 Moov Money", sub: "Flooz" },
+                    { id: "celtiis", label: "🟣 Celtiis Cash", sub: "SBIN" },
+                  ] as const
+                ).map((m) => (
                   <button
                     key={m.id}
-                    onClick={() => setPaymentMethod(m.id as any)}
+                    onClick={() => setPaymentMethod(m.id)}
                     className={`p-2 rounded-lg border text-left transition-all ${
                       paymentMethod === m.id
                         ? "border-primary bg-primary/10 font-bold"
@@ -437,7 +459,7 @@ export function AdminPOS() {
               </div>
 
               <div className="space-y-1 border-b border-black pb-2">
-                {lastReceipt.items.map((it: any, i: number) => (
+                {lastReceipt.items.map((it, i: number) => (
                   <div key={i} className="flex justify-between text-[10px]">
                     <span className="truncate max-w-[160px]">
                       {it.quantity}x {it.name}

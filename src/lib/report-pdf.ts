@@ -49,7 +49,9 @@ export async function generateMonthlyReportPdf(data: MonthlyReportData): Promise
   // Company Contact (Right aligned)
   doc.text(`Tél: ${COMPANY.phone}`, pageWidth - margin, 16, { align: "right" });
   doc.text(`Email: ${COMPANY.email}`, pageWidth - margin, 22, { align: "right" });
-  doc.text(`Periode: ${data.month.toUpperCase()} ${data.year}`, pageWidth - margin, 28, { align: "right" });
+  doc.text(`Periode: ${data.month.toUpperCase()} ${data.year}`, pageWidth - margin, 28, {
+    align: "right",
+  });
 
   y = 46;
 
@@ -142,8 +144,16 @@ export async function generateMonthlyReportPdf(data: MonthlyReportData): Promise
   doc.text("CONTRÔLE ANALYTICS INTERNE", margin + 25, footerY - 2);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text(`Rapport mensuel généré automatiquement le ${new Date().toLocaleDateString("fr-FR")}.`, margin + 25, footerY + 3);
-  doc.text("Données certifiées conformes aux journaux de caisse POS et réservations en ligne.", margin + 25, footerY + 8);
+  doc.text(
+    `Rapport mensuel généré automatiquement le ${new Date().toLocaleDateString("fr-FR")}.`,
+    margin + 25,
+    footerY + 3,
+  );
+  doc.text(
+    "Données certifiées conformes aux journaux de caisse POS et réservations en ligne.",
+    margin + 25,
+    footerY + 8,
+  );
 
   // Stamp Box
   doc.setDrawColor(203, 213, 225);

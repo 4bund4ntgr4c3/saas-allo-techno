@@ -18,7 +18,9 @@ export const getMaintenancePlansFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<MaintenancePlanItem[]> => {
     const { orgId } = data;
     const today = new Date();
-    const nextMonth = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const nextMonth = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
 
     return [
       {

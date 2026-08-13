@@ -15,22 +15,63 @@ export type QueueTicket = {
 export function AdminQueueDisplay() {
   const [activeCounter, setActiveCounter] = useState<number>(1);
   const [tickets, setTickets] = useState<QueueTicket[]>([
-    { id: "1", ticketNumber: "A-101", clientName: "Kofi Mensah", serviceType: "Dépôt Réparation", status: "in_service", counterNumber: 1, createdAt: "09:15" },
-    { id: "2", ticketNumber: "B-102", clientName: "Amina Soglo", serviceType: "Retrait Appareil", status: "called", counterNumber: 2, createdAt: "09:22" },
-    { id: "3", ticketNumber: "A-103", clientName: "Jean-Pierre D.", serviceType: "Dépôt Réparation", status: "waiting", createdAt: "09:30" },
-    { id: "4", ticketNumber: "C-104", clientName: "Mireille B.", serviceType: "Conseil / Vente", status: "waiting", createdAt: "09:35" },
-    { id: "5", ticketNumber: "A-105", clientName: "Gérard Akpakpa", serviceType: "Dépôt Réparation", status: "waiting", createdAt: "09:42" },
+    {
+      id: "1",
+      ticketNumber: "A-101",
+      clientName: "Kofi Mensah",
+      serviceType: "Dépôt Réparation",
+      status: "in_service",
+      counterNumber: 1,
+      createdAt: "09:15",
+    },
+    {
+      id: "2",
+      ticketNumber: "B-102",
+      clientName: "Amina Soglo",
+      serviceType: "Retrait Appareil",
+      status: "called",
+      counterNumber: 2,
+      createdAt: "09:22",
+    },
+    {
+      id: "3",
+      ticketNumber: "A-103",
+      clientName: "Jean-Pierre D.",
+      serviceType: "Dépôt Réparation",
+      status: "waiting",
+      createdAt: "09:30",
+    },
+    {
+      id: "4",
+      ticketNumber: "C-104",
+      clientName: "Mireille B.",
+      serviceType: "Conseil / Vente",
+      status: "waiting",
+      createdAt: "09:35",
+    },
+    {
+      id: "5",
+      ticketNumber: "A-105",
+      clientName: "Gérard Akpakpa",
+      serviceType: "Dépôt Réparation",
+      status: "waiting",
+      createdAt: "09:42",
+    },
   ]);
 
-  const [lastCalled, setLastCalled] = useState<QueueTicket | null>(
-    { id: "2", ticketNumber: "B-102", clientName: "Amina Soglo", serviceType: "Retrait Appareil", status: "called", counterNumber: 2, createdAt: "09:22" }
-  );
+  const [lastCalled, setLastCalled] = useState<QueueTicket | null>({
+    id: "2",
+    ticketNumber: "B-102",
+    clientName: "Amina Soglo",
+    serviceType: "Retrait Appareil",
+    status: "called",
+    counterNumber: 2,
+    createdAt: "09:22",
+  });
 
   const callNextTicket = (ticketId: string, counter: number) => {
     setTickets((prev) =>
-      prev.map((t) =>
-        t.id === ticketId ? { ...t, status: "called", counterNumber: counter } : t
-      )
+      prev.map((t) => (t.id === ticketId ? { ...t, status: "called", counterNumber: counter } : t)),
     );
     const target = tickets.find((t) => t.id === ticketId);
     if (target) {
@@ -57,7 +98,9 @@ export function AdminQueueDisplay() {
         {/* Counter / Guichet Selector */}
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <div className="flex items-center gap-2 border border-border bg-card p-1.5 rounded-sm">
-            <span className="text-xs font-bold uppercase tracking-wider px-2 text-muted-foreground">Mon Guichet :</span>
+            <span className="text-xs font-bold uppercase tracking-wider px-2 text-muted-foreground">
+              Mon Guichet :
+            </span>
             {[1, 2, 3, 4].map((num) => (
               <button
                 key={num}
@@ -93,14 +136,25 @@ export function AdminQueueDisplay() {
               <BellRing className="size-8 animate-bounce" />
             </div>
             <div>
-              <span className="at-eyebrow text-primary uppercase block font-bold">Ticket Appelé :</span>
-              <h2 className="font-mono text-4xl md:text-6xl font-extrabold tracking-tight">{lastCalled.ticketNumber}</h2>
-              <p className="text-base font-medium text-foreground">{lastCalled.clientName} — <span className="text-muted-foreground">{lastCalled.serviceType}</span></p>
+              <span className="at-eyebrow text-primary uppercase block font-bold">
+                Ticket Appelé :
+              </span>
+              <h2 className="font-mono text-4xl md:text-6xl font-extrabold tracking-tight">
+                {lastCalled.ticketNumber}
+              </h2>
+              <p className="text-base font-medium text-foreground">
+                {lastCalled.clientName} —{" "}
+                <span className="text-muted-foreground">{lastCalled.serviceType}</span>
+              </p>
             </div>
           </div>
           <div className="text-center md:text-right border-t md:border-t-0 md:border-l border-primary/30 pt-4 md:pt-0 md:pl-8">
-            <span className="at-eyebrow text-muted-foreground uppercase block font-bold">Se Présenter au</span>
-            <span className="at-display text-4xl md:text-6xl text-primary">GUICHET {lastCalled.counterNumber ?? activeCounter}</span>
+            <span className="at-eyebrow text-muted-foreground uppercase block font-bold">
+              Se Présenter au
+            </span>
+            <span className="at-display text-4xl md:text-6xl text-primary">
+              GUICHET {lastCalled.counterNumber ?? activeCounter}
+            </span>
           </div>
         </div>
       )}
@@ -116,30 +170,39 @@ export function AdminQueueDisplay() {
             </span>
           </div>
           <div className="space-y-3">
-            {tickets.filter((t) => t.status === "waiting").map((t) => (
-              <div key={t.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border bg-surface gap-3 hover:border-primary/50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Ticket className="size-5 text-primary shrink-0" />
-                  <div>
-                    <span className="font-mono text-lg font-extrabold block">{t.ticketNumber}</span>
-                    <span className="text-xs text-muted-foreground">{t.clientName} ({t.serviceType})</span>
+            {tickets
+              .filter((t) => t.status === "waiting")
+              .map((t) => (
+                <div
+                  key={t.id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border bg-surface gap-3 hover:border-primary/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Ticket className="size-5 text-primary shrink-0" />
+                    <div>
+                      <span className="font-mono text-lg font-extrabold block">
+                        {t.ticketNumber}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {t.clientName} ({t.serviceType})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {[1, 2, 3, 4].map((cNum) => (
+                      <Button
+                        key={cNum}
+                        size="sm"
+                        variant={cNum === activeCounter ? "technical" : "outline"}
+                        className="text-[11px] px-2 py-1 h-7 font-mono"
+                        onClick={() => callNextTicket(t.id, cNum)}
+                      >
+                        G{cNum}
+                      </Button>
+                    ))}
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  {[1, 2, 3, 4].map((cNum) => (
-                    <Button
-                      key={cNum}
-                      size="sm"
-                      variant={cNum === activeCounter ? "technical" : "outline"}
-                      className="text-[11px] px-2 py-1 h-7 font-mono"
-                      onClick={() => callNextTicket(t.id, cNum)}
-                    >
-                      G{cNum}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 
@@ -148,24 +211,35 @@ export function AdminQueueDisplay() {
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h3 className="at-eyebrow text-foreground text-sm block">En Cours de Traitement</h3>
             <span className="font-mono text-xs text-success font-bold">
-              {tickets.filter((t) => t.status === "called" || t.status === "in_service").length} actif(s)
+              {tickets.filter((t) => t.status === "called" || t.status === "in_service").length}{" "}
+              actif(s)
             </span>
           </div>
           <div className="space-y-3">
-            {tickets.filter((t) => t.status === "called" || t.status === "in_service").map((t) => (
-              <div key={t.id} className="flex items-center justify-between p-4 border border-primary/40 bg-primary/5">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="size-5 text-success shrink-0" />
-                  <div>
-                    <span className="font-mono text-lg font-extrabold block">{t.ticketNumber}</span>
-                    <span className="text-xs text-muted-foreground">{t.clientName} · <strong className="text-primary">Guichet {t.counterNumber}</strong></span>
+            {tickets
+              .filter((t) => t.status === "called" || t.status === "in_service")
+              .map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center justify-between p-4 border border-primary/40 bg-primary/5"
+                >
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="size-5 text-success shrink-0" />
+                    <div>
+                      <span className="font-mono text-lg font-extrabold block">
+                        {t.ticketNumber}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {t.clientName} ·{" "}
+                        <strong className="text-primary">Guichet {t.counterNumber}</strong>
+                      </span>
+                    </div>
                   </div>
+                  <span className="font-mono text-[10px] font-bold uppercase px-2.5 py-1 border border-success bg-success/10 text-success">
+                    En guichet {t.counterNumber}
+                  </span>
                 </div>
-                <span className="font-mono text-[10px] font-bold uppercase px-2.5 py-1 border border-success bg-success/10 text-success">
-                  En guichet {t.counterNumber}
-                </span>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>

@@ -35,8 +35,10 @@ export type ImportSummary = {
 function normalizeType(input?: string): ValidatedEquipmentItem["type"] {
   if (!input) return "other";
   const val = input.toLowerCase().trim();
-  if (val.includes("phone") || val.includes("mobile") || val.includes("smartphone")) return "smartphone";
-  if (val.includes("portable") || val.includes("laptop") || val.includes("pc portable")) return "laptop";
+  if (val.includes("phone") || val.includes("mobile") || val.includes("smartphone"))
+    return "smartphone";
+  if (val.includes("portable") || val.includes("laptop") || val.includes("pc portable"))
+    return "laptop";
   if (val.includes("tablette") || val.includes("ipad") || val.includes("tablet")) return "tablet";
   if (val.includes("imprimante") || val.includes("printer")) return "printer";
   if (val.includes("bureau") || val.includes("desktop") || val.includes("tour")) return "desktop";
@@ -68,10 +70,14 @@ export function parseEquipmentFile(fileBuffer: ArrayBuffer): ImportSummary {
     const rawType = String(row["Type"] || row["type"] || row["Catégorie"] || "");
     const rawBrand = String(row["Marque"] || row["brand"] || row["Constructeur"] || "");
     const rawModel = String(row["Modèle"] || row["model"] || row["Designation"] || "");
-    const rawSerial = String(row["Série"] || row["serial_number"] || row["N° Série"] || row["Serial"] || "");
+    const rawSerial = String(
+      row["Série"] || row["serial_number"] || row["N° Série"] || row["Serial"] || "",
+    );
     const rawImei = row["IMEI"] || row["imei"] ? String(row["IMEI"] || row["imei"]) : undefined;
-    const rawSite = row["Site"] || row["site_name"] ? String(row["Site"] || row["site_name"]) : undefined;
-    const rawNotes = row["Notes"] || row["notes"] ? String(row["Notes"] || row["notes"]) : undefined;
+    const rawSite =
+      row["Site"] || row["site_name"] ? String(row["Site"] || row["site_name"]) : undefined;
+    const rawNotes =
+      row["Notes"] || row["notes"] ? String(row["Notes"] || row["notes"]) : undefined;
 
     const errors: string[] = [];
 

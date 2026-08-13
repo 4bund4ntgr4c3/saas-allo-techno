@@ -1151,4 +1151,3 @@ export const createOrganizationFn = createServerFn({ method: "POST" })
     const org = await createOrganization({ data: { name: data.name } });
     return { success: true, orgId: org.org_id, slug: org.org_id };
   });
-

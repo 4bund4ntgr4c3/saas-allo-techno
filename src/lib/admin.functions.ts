@@ -222,6 +222,13 @@ export const ATELIER_STATUSES = [
 export type AtelierStatus = (typeof ATELIER_STATUSES)[number];
 
 /** Carte du kanban atelier : dossier + SLA calculé côté serveur. */
+export type AtelierChecklistItem = { status: "ok" | "ko" | "na"; notes?: string };
+
+export type AtelierChecklist = {
+  checked_at: string;
+  items: Record<string, AtelierChecklistItem>;
+};
+
 export type AtelierCard = {
   id: string;
   reference: string;
@@ -237,6 +244,9 @@ export type AtelierCard = {
   payment_status: string;
   estimated_delivery: string | null;
   assigned_technician_id: string | null;
+  workshop_id?: string | null;
+  intake_checklist?: AtelierChecklist | null;
+  qa_checklist?: AtelierChecklist | null;
   created_at: string;
   sla: SlaForecast | null;
 };

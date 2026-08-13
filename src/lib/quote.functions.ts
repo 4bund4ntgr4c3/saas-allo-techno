@@ -200,7 +200,7 @@ export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ reference: z.string().min(3) }).parse(data))
   .handler(async ({ data }): Promise<MultiOptionQuote | null> => {
     const { reference } = data;
-    
+
     return {
       reference,
       clientName: "Client Allô Techno",
@@ -211,14 +211,16 @@ export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
         {
           id: "eco",
           title: "Option Économique — Écran Compatible HQ",
-          description: "Vitre & Dalle LCD de remplacement certifiée qualité AAA. Rapport qualité/prix idéal.",
+          description:
+            "Vitre & Dalle LCD de remplacement certifiée qualité AAA. Rapport qualité/prix idéal.",
           price: 35000,
           warrantyMonths: 3,
         },
         {
           id: "standard",
           title: "Option Standard — Écran OLED Premium",
-          description: "Afficheur OLED haute fidélité avec couleurs vibrantes et réactivité originale. Notre recommandation.",
+          description:
+            "Afficheur OLED haute fidélité avec couleurs vibrantes et réactivité originale. Notre recommandation.",
           price: 55000,
           warrantyMonths: 6,
           isRecommended: true,
@@ -226,7 +228,8 @@ export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
         {
           id: "oem",
           title: "Option Prestige — Écran d'Origine Constructeur (OEM)",
-          description: "Pièce d'origine constructeur certifiée d'usine. Garantie maximale et restauration intégrale.",
+          description:
+            "Pièce d'origine constructeur certifiée d'usine. Garantie maximale et restauration intégrale.",
           price: 85000,
           warrantyMonths: 12,
         },
@@ -238,11 +241,12 @@ export const acceptMultiOptionQuoteFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => quoteChoiceSchema.parse(data))
   .handler(async ({ data }) => {
     const { reference, optionId } = data;
-    
+
     return {
       success: true,
       reference,
       selectedOptionId: optionId,
-      message: "Votre choix de devis a été enregistré avec succès. L'atelier démarre l'intervention !",
+      message:
+        "Votre choix de devis a été enregistré avec succès. L'atelier démarre l'intervention !",
     };
   });

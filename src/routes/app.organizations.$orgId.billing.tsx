@@ -124,7 +124,12 @@ function OrgBillingPage() {
             <p className="mt-1 text-sm text-muted-foreground">{t("org.billing.subtitle")}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleExportSyscohada} className="gap-1.5 font-mono text-xs">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportSyscohada}
+              className="gap-1.5 font-mono text-xs"
+            >
               <Download className="size-3.5" />
               <span>Export SYSCOHADA (TVA 18%)</span>
             </Button>
@@ -147,24 +152,44 @@ function OrgBillingPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-mono text-base font-extrabold uppercase">Contrat SLA Actif — {contract.data.contractNumber}</h3>
-                <Badge variant="outline" className="border-success text-success bg-success/10 uppercase font-mono text-[10px]">
+                <h3 className="font-mono text-base font-extrabold uppercase">
+                  Contrat SLA Actif — {contract.data.contractNumber}
+                </h3>
+                <Badge
+                  variant="outline"
+                  className="border-success text-success bg-success/10 uppercase font-mono text-[10px]"
+                >
                   {contract.data.formula} SLA
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Engagements : <strong className="text-foreground">Garantie Prise en Charge {contract.data.responseSlaHours}h</strong> · <strong className="text-foreground">Résolution {contract.data.resolutionSlaHours}h</strong>
+                Engagements :{" "}
+                <strong className="text-foreground">
+                  Garantie Prise en Charge {contract.data.responseSlaHours}h
+                </strong>{" "}
+                ·{" "}
+                <strong className="text-foreground">
+                  Résolution {contract.data.resolutionSlaHours}h
+                </strong>
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-primary/20 pt-3 md:pt-0 md:pl-6">
             <div>
-              <span className="at-eyebrow text-[10px] text-muted-foreground block">Forfait Mensuel</span>
-              <span className="font-mono text-lg font-bold text-primary">{formatFcfa(contract.data.monthlyPrice)} /mois</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block">
+                Forfait Mensuel
+              </span>
+              <span className="font-mono text-lg font-bold text-primary">
+                {formatFcfa(contract.data.monthlyPrice)} /mois
+              </span>
             </div>
             <div>
-              <span className="at-eyebrow text-[10px] text-muted-foreground block">Flotte Couverte</span>
-              <span className="font-mono text-sm font-bold">{contract.data.coveredEquipmentCount} / {contract.data.equipmentLimit} appareils</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block">
+                Flotte Couverte
+              </span>
+              <span className="font-mono text-sm font-bold">
+                {contract.data.coveredEquipmentCount} / {contract.data.equipmentLimit} appareils
+              </span>
             </div>
           </div>
         </div>

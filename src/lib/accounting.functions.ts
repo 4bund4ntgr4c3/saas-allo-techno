@@ -17,7 +17,7 @@ export const exportSyscohadaJournalFn = createServerFn({ method: "POST" })
     z.object({
       periodStart: z.string().optional(),
       periodEnd: z.string().optional(),
-    })
+    }),
   )
   .handler(async ({ data }): Promise<{ entries: SyscohadaEntry[]; csvContent: string }> => {
     const today = (data.periodEnd || new Date().toISOString()).slice(0, 10);
@@ -91,7 +91,7 @@ export const exportSyscohadaJournalFn = createServerFn({ method: "POST" })
       "Date;Journal;Compte;Intitule;Piece;Libelle;Debit_FCFA;Credit_FCFA",
       ...entries.map(
         (e) =>
-          `${e.date};${e.journal};${e.accountCode};"${e.accountLabel}";${e.pieceRef};"${e.label}";${e.debit};${e.credit}`
+          `${e.date};${e.journal};${e.accountCode};"${e.accountLabel}";${e.pieceRef};"${e.label}";${e.debit};${e.credit}`,
       ),
     ];
 
