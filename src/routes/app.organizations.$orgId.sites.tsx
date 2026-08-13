@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n/context";
-import { createOrgSite, deleteOrgSite, getMyOrganizations, getOrgSites } from "@/lib/org.functions";
+import { createOrgSite, deleteOrgSite, getMyOrganizations, getOrgSites, updateOrgSite } from "@/lib/org.functions";
 
 export const Route = createFileRoute("/app/organizations/$orgId/sites")({
   component: SitesList,
@@ -106,12 +106,28 @@ function SitesList() {
     onError: (err) => toast.error(err.message),
   });
 
-  const saveEditedSite = () => {
-    if (!editingSite) return;
-    toast.success(`Modifications enregistrées pour le site ${editingSite.name}`);
-    setEditingSite(null);
-    invalidate();
-  };
+  const updateSiteMut = useMutation({
+    mutationFn: async () => {
+      if (!editingSite) return;
+      await updateOrgSite({
+        data: {
+          site_id: editingSite.id,
+          name: editingSite.name,
+          address: editingSite.address || null,
+          city: editingSite.city || "Cotonou",
+          phone: editingSite.phone || null,
+          manager: editingSite.manager || null,
+          departments: editingSite.departments,
+        },
+      });
+    },
+    onSuccess: async () => {
+      toast.success(`Modifications enregistrées pour le site ${editingSite?.name}`);
+      setEditingSite(null);
+      await invalidate();
+    },
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Erreur de mise à jour"),
+  });
 
   const addDepartmentToSite = () => {
     if (!editingSite || !newDeptInput.trim()) return;
@@ -342,8 +358,14 @@ function SitesList() {
                 <Button type="button" variant="outline" onClick={() => setEditingSite(null)}>
                   Annuler
                 </Button>
-                <Button type="button" variant="primaryBlock" onClick={saveEditedSite}>
-                  Enregistrer
+                <Button
+                  type="button"
+                  variant="primaryBlock"
+                  disabled={updateSiteMut.isPending}
+                  onClick={() => updateSiteMut.mutate()}
+                >
+                  {updateSiteMut.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+                  Enregistrer les Modifications
                 </Button>
               </div>
             </div>
