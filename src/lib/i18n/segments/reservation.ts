@@ -436,8 +436,7 @@ const en = {
   "reservation.pay.full": "Pay full amount",
   "reservation.pay.deposit.note": "The deposit starts the repair. Balance due at pickup.",
   "reservation.pay.deposit.amount": "Deposit: {0} FCFA",
-  "reservation.pay.deposit.paid":
-    "Deposit paid: {0} FCFA — {1} FCFA still due at pickup.",
+  "reservation.pay.deposit.paid": "Deposit paid: {0} FCFA — {1} FCFA still due at pickup.",
 
   // Warranty
   "reservation.warranty.standard": "Standard warranty (6 months)",
