@@ -196,6 +196,7 @@ function RootShell({ children }: { children: ReactNode }) {
           data-domain="allotechno.africa"
           src="https://plausible.io/js/script.js"
           nonce={nonce}
+          suppressHydrationWarning
         />
       </head>
       <body>

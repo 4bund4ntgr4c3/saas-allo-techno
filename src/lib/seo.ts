@@ -32,9 +32,9 @@ export function localeSeo(locale: Locale, suffix: string) {
     ],
     links: [
       { rel: "canonical", href: url },
-      { rel: "alternate", hreflang: "fr", href: frUrl },
-      { rel: "alternate", hreflang: "en", href: enUrl },
-      { rel: "alternate", hreflang: "x-default", href: alternateUrl("fr") },
+      { rel: "alternate", hrefLang: "fr", href: frUrl },
+      { rel: "alternate", hrefLang: "en", href: enUrl },
+      { rel: "alternate", hrefLang: "x-default", href: alternateUrl("fr") },
     ],
   };
 }
