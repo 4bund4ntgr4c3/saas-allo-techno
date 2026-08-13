@@ -61,188 +61,220 @@ function AppLayout() {
 
   // Detect if we're inside an org
   const orgMatch = location.pathname.match(/\/app\/organizations\/([^/]+)/);
-  const activeOrgId = orgMatch?.[1];
-  const activeOrg = activeOrgId
-    ? (orgs.data?.find((o) => o.id === activeOrgId) ?? {
-        id: activeOrgId,
-        name: activeOrgId === "demo-bts" ? "Bénin Télécoms Services (BTS SA)" : "Oragroup Bénin (Siège Cotonou)",
-      })
-    : null;
+  const activeOrgId = orgMatch?.[1] ?? "demo-oragroup";
+  const activeOrg =
+    orgs.data?.find((o) => o.id === activeOrgId) ?? {
+      id: activeOrgId,
+      name: activeOrgId === "demo-bts" ? "Bénin Télécoms Services (BTS SA)" : "Oragroup Bénin (Siège Cotonou)",
+      member_role: "admin_org" as const,
+    };
 
-  const orgOptions = (orgs.data ?? []).map((o) => ({
+  const orgOptions: OrgOption[] = (
+    orgs.data && orgs.data.length > 0
+      ? orgs.data
+      : [
+          { id: "demo-oragroup", name: "Oragroup Bénin (Siège Cotonou)", role: "admin" },
+          { id: "demo-bts", name: "Bénin Télécoms Services (BTS SA)", role: "admin" },
+        ]
+  ).map((o) => ({
     id: o.id,
     name: o.name,
-    role: (o.member_role as "owner" | "admin" | "member") ?? "admin",
+    role: "admin",
   }));
 
+  const navToOrg = (id: string) => {
+    navigate({ to: "/app/organizations/$orgId", params: { orgId: id } });
+  };
+
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header
-        className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur"
-        data-tour="app-header"
-      >
-        <div className="mx-auto flex h-14 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center border border-primary/20 bg-primary text-primary-foreground">
-                <span className="at-display text-xs">AT</span>
-              </div>
-              <span className="hidden font-mono text-sm font-black uppercase tracking-widest sm:inline">
-                Allô&nbsp;Techno
-              </span>
-            </Link>
-            <span className="text-xs text-muted-foreground">/ {t("org.nav.app")}</span>
+    <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+      {/* ─── LEFT SIDEBAR (CLOUDFLARE CONSOLE STYLE) ─── */}
+      <aside className="w-64 shrink-0 border-r border-border bg-card flex flex-col h-full z-20">
+        {/* Top Sidebar Header: Org Dropdown Selector */}
+        <div className="p-3 border-b border-border space-y-2.5">
+          <div className="flex items-center justify-between">
+            <span className="at-eyebrow text-[10px] text-muted-foreground uppercase font-mono tracking-widest">
+              Organisation Active
+            </span>
+            <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <OrgSwitcher
+            organizations={orgOptions}
+            currentOrgId={activeOrgId}
+            onSelectOrg={navToOrg}
+            onCreateOrg={() => navigate({ to: "/app" })}
+          />
+
+          {/* Quick Search Ctrl+K Button */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent(SEARCH_OPEN_EVENT))}
+            className="w-full flex items-center justify-between gap-2 rounded border border-border bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+          >
+            <span className="flex items-center gap-2">
+              <Search className="size-3.5" />
+              <span>Quick search...</span>
+            </span>
+            <kbd className="rounded bg-background px-1.5 py-0.5 font-mono text-[9px] font-semibold border border-border">
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
+
+        {/* Sidebar Nav Items */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-4 text-xs">
+          {/* Section 1: Holding & Vue Groupe */}
+          <div className="space-y-1">
+            <p className="at-eyebrow px-2 text-[10px] text-muted-foreground mb-1">Gouvernance Groupe</p>
+            <Link
+              to="/app/group-dashboard"
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname === "/app/group-dashboard"
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <Building2 className="size-4 shrink-0" />
+              <span>Vue Consolidée Groupe</span>
+            </Link>
+          </div>
+
+          {/* Section 2: Enterprise Management */}
+          <div className="space-y-1">
+            <p className="at-eyebrow px-2 text-[10px] text-muted-foreground mb-1">
+              {activeOrg.name}
+            </p>
+
+            <Link
+              to="/app/organizations/$orgId"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname === `/app/organizations/${activeOrgId}` ||
+                location.pathname === `/app/organizations/${activeOrgId}/`
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <Home className="size-4 shrink-0" />
+              <span>Aperçu Général</span>
+            </Link>
+
+            <Link
+              to="/app/organizations/$orgId/equipment"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname.includes("/equipment")
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <Laptop className="size-4 shrink-0" />
+              <span>Parc Matériel</span>
+            </Link>
+
+            <Link
+              to="/app/organizations/$orgId/sites"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname.includes("/sites")
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <MapPin className="size-4 shrink-0" />
+              <span>Sites &amp; Départements</span>
+            </Link>
+
+            <Link
+              to="/app/organizations/$orgId/tickets"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname.includes("/tickets")
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <LifeBuoy className="size-4 shrink-0" />
+              <span>Tickets IT &amp; Support</span>
+            </Link>
+
+            <Link
+              to="/app/organizations/$orgId/maintenance"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname.includes("/maintenance")
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <ShieldCheck className="size-4 shrink-0" />
+              <span>Maintenance SLA</span>
+            </Link>
+
+            <Link
+              to="/app/organizations/$orgId/billing"
+              params={{ orgId: activeOrgId }}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded font-medium transition-all ${
+                location.pathname.includes("/billing")
+                  ? "bg-primary/10 text-primary font-bold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <CreditCard className="size-4 shrink-0" />
+              <span>Facturation &amp; RSE</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Sidebar Footer */}
+        <div className="p-3 border-t border-border bg-muted/20">
+          <Link
+            to="/"
+            className="flex items-center justify-between text-xs text-muted-foreground hover:text-foreground"
+          >
+            <span className="flex items-center gap-1.5">
+              <ArrowLeft className="size-3.5" />
+              Quitter le Portail B2B
+            </span>
+            <span className="font-mono text-[9px] uppercase border px-1">Site Public</span>
+          </Link>
+        </div>
+      </aside>
+
+      {/* ─── MAIN WORKSPACE AREA (CLOUDFLARE CONSOLE TOPBAR & CONTENT) ─── */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Cloudflare Console Topbar */}
+        <header className="h-12 border-b border-border bg-card px-6 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2 text-xs">
+            <span className="font-bold text-foreground">{activeOrg.name}</span>
+            <span className="text-muted-foreground">/</span>
+            <span className="text-muted-foreground font-mono">Console d'Observabilité &amp; Parc</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs">
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent(SEARCH_OPEN_EVENT))}
-              className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <Search className="size-3.5" />
-              <span className="hidden sm:inline">Recherche rapide...</span>
-              <kbd className="rounded bg-background px-1.5 py-0.5 font-mono text-[10px] font-semibold border border-border">
-                Ctrl K
-              </kbd>
+              <span>Ask AI</span>
             </button>
 
-            {orgOptions.length > 0 && (
-              <OrgSwitcher
-                organizations={orgOptions}
-                currentOrgId={activeOrgId}
-                onSelectOrg={(orgId) => {
-                  navigate({
-                    to: "/app/organizations/$orgId",
-                    params: { orgId },
-                  });
-                }}
-              />
-            )}
-            <Button asChild variant="outline" size="sm">
-              <Link to="/">
-                <ArrowLeft className="mr-1 inline size-3.5" />
-                {t("org.nav.backToSite")}
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm" onClick={onLogout}>
-              <LogOut className="size-4" />
-              <span className="hidden sm:inline">{t("org.logout")}</span>
+            <Link to="/contact" className="text-muted-foreground hover:text-foreground">
+              Support B2B
+            </Link>
+
+            <Button variant="ghost" size="sm" onClick={onLogout} className="h-7 text-xs gap-1.5">
+              <LogOut className="size-3.5" />
+              Déconnexion
             </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="mx-auto flex max-w-[1400px] gap-0 md:flex-row">
-        {/* ─── Sidebar ─── */}
-        <aside className="hidden w-60 shrink-0 border-r border-border bg-card md:block">
-          <nav
-            className="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col overflow-y-auto"
-            data-tour="app-nav"
-          >
-            {/* Org list section */}
-            <div className="p-3">
-              <p className="at-eyebrow mb-2 px-2">{t("org.nav.organizations")}</p>
-
-              <Link
-                to="/app"
-                className={`relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all ${
-                  location.pathname === "/app"
-                    ? "bg-primary/8 text-foreground"
-                    : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-                }`}
-              >
-                {location.pathname === "/app" && (
-                  <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
-                )}
-                <Home
-                  className={`size-4 shrink-0 ${location.pathname === "/app" ? "text-primary" : ""}`}
-                />
-                {t("org.title")}
-              </Link>
-
-              <Link
-                to="/app/group-dashboard"
-                className={`relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all ${
-                  location.pathname === "/app/group-dashboard"
-                    ? "bg-primary/8 text-foreground"
-                    : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-                }`}
-              >
-                {location.pathname === "/app/group-dashboard" && (
-                  <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
-                )}
-                <Building2
-                  className={`size-4 shrink-0 ${location.pathname === "/app/group-dashboard" ? "text-primary" : ""}`}
-                />
-                <span>Vue Consolidée Groupe</span>
-              </Link>
-
-              {orgs.data?.map((org) => {
-                const isActive = activeOrgId === org.id;
-                return (
-                  <Link
-                    key={org.id}
-                    to="/app/organizations/$orgId"
-                    params={{ orgId: org.id }}
-                    className={`relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all ${
-                      isActive
-                        ? "bg-primary/8 text-foreground"
-                        : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-                    }`}
-                  >
-                    {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
-                    <Building2 className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
-                    <span className="truncate">{org.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Active org sub-navigation */}
-            {activeOrg && (
-              <div className="border-t border-border p-3">
-                <p className="at-eyebrow mb-2 px-2">{activeOrg.name}</p>
-                {ORG_NAV.map((item) => {
-                  const href = `/app/organizations/${activeOrgId}/${item.segment}`;
-                  const isActive = location.pathname.includes(`/${item.segment}`);
-                  return (
-                    <Link
-                      key={item.segment}
-                      to={href}
-                      className={`relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all ${
-                        isActive
-                          ? "bg-primary/8 text-foreground"
-                          : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-                      }`}
-                    >
-                      {isActive && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
-                      <item.icon className={`size-4 shrink-0 ${isActive ? "text-primary" : ""}`} />
-                      <span className="truncate">{t(item.labelKey)}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Footer */}
-            <div className="border-t border-border p-3">
-              <Link
-                to="/"
-                className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <ArrowLeft className="size-4 shrink-0" />
-                {t("org.nav.backToSite")}
-              </Link>
-            </div>
-          </nav>
-        </aside>
-
-        {/* ─── Main Content ─── */}
-        <main className="min-w-0 flex-1 p-6 md:p-8" data-tour="app-main">
+        {/* Main Route Content */}
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

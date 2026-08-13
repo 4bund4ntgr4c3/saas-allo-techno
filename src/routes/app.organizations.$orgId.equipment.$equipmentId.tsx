@@ -8,11 +8,14 @@ import {
   CalendarDays,
   FileText,
   Loader2,
+  Pencil,
   Plus,
   ScrollText,
+  Send,
   ShieldCheck,
   Sparkles,
   Trash2,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,7 +37,9 @@ import {
   deleteWarranty,
   getEquipment,
   getMyOrganizations,
+  getOrgSites,
   setEquipmentStatus,
+  updateEquipment,
   upsertWarranty,
   EQUIPMENT_STATUSES,
   type EquipmentStatus,
@@ -59,9 +64,29 @@ function EquipmentDetail() {
     enabled: Boolean(org),
   });
 
+  const sitesQuery = useQuery({
+    queryKey: ["app", "org", orgId, "sites"],
+    queryFn: () => getOrgSites({ data: { org_id: orgId } }),
+    enabled: Boolean(org),
+  });
+
   const [status, setStatus] = useState<EquipmentStatus | "">("");
   const [statusReason, setStatusReason] = useState("");
   const [note, setNote] = useState("");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [targetSiteId, setTargetSiteId] = useState<string>("");
+
+  const [editForm, setEditForm] = useState({
+    name: "",
+    brand: "",
+    model: "",
+    serial_number: "",
+    asset_tag: "",
+    assigned_to: "",
+    location: "",
+    notes: "",
+  });
 
   const invalidate = async () => {
     await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
@@ -69,6 +94,56 @@ function EquipmentDetail() {
       queryKey: ["app", "org", orgId, "equipment", equipmentId],
     });
   };
+
+  const updateMut = useMutation({
+    mutationFn: () =>
+      updateEquipment({
+        data: {
+          equipment_id: equipmentId,
+          name: editForm.name,
+          brand: editForm.brand || null,
+          model: editForm.model || null,
+          serial_number: editForm.serial_number || null,
+          asset_tag: editForm.asset_tag || null,
+          assigned_to: editForm.assigned_to || null,
+          location: editForm.location || null,
+          notes: editForm.notes || null,
+        },
+      }),
+    onSuccess: async () => {
+      toast.success("Fiche équipement mise à jour avec succès !");
+      setShowEditModal(false);
+      await invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const transferMut = useMutation({
+    mutationFn: async () => {
+      const selectedSite = sitesQuery.data?.find((s) => s.id === targetSiteId);
+      const siteName = selectedSite?.name ?? "Nouveau Site";
+      await updateEquipment({
+        data: {
+          equipment_id: equipmentId,
+          site_id: targetSiteId,
+          location: siteName,
+        },
+      });
+      await addEquipmentHistory({
+        data: {
+          equipment_id: equipmentId,
+          event: "transfer",
+          description: `Matériel transféré vers le site ${siteName}`,
+        },
+      });
+    },
+    onSuccess: async () => {
+      toast.success("Transfert de site effectué avec succès !");
+      setShowTransferModal(false);
+      await invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   const changeStatus = useMutation({
     mutationFn: () =>
@@ -175,11 +250,47 @@ function EquipmentDetail() {
               {[eq.brand, eq.model, eq.serial_number].filter(Boolean).join(" · ") || eq.type}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline">{t(`org.equipment.status.${eq.status}`)}</Badge>
+
             <Button
               type="button"
               variant="outline"
+              size="sm"
+              onClick={() => {
+                setEditForm({
+                  name: eq.name ?? "",
+                  brand: eq.brand ?? "",
+                  model: eq.model ?? "",
+                  serial_number: eq.serial_number ?? "",
+                  asset_tag: eq.asset_tag ?? "",
+                  assigned_to: eq.assigned_to ?? "",
+                  location: eq.location ?? "",
+                  notes: eq.notes ?? "",
+                });
+                setShowEditModal(true);
+              }}
+              className="gap-1.5"
+            >
+              <Pencil className="size-3.5 text-primary" />
+              Modifier l'Équipement
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTransferModal(true)}
+              className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+            >
+              <Send className="size-3.5" />
+              Transférer de Site
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
               onClick={() =>
                 navigate({
                   to: "/app/organizations/$orgId/tickets",
@@ -188,7 +299,7 @@ function EquipmentDetail() {
                 })
               }
             >
-              <AlertTriangle className="size-4" />
+              <AlertTriangle className="size-3.5" />
               {t("org.tickets.report")}
             </Button>
             <Button
@@ -205,6 +316,165 @@ function EquipmentDetail() {
           </div>
         </div>
       </div>
+
+      {/* ─── MODAL EDIT EQUIPMENT ─── */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl border border-border bg-card p-6 space-y-4 shadow-2xl at-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <Pencil className="size-4 text-primary" />
+                <h2 className="text-base font-bold">Modifier les Informations de l'Équipement</h2>
+              </div>
+              <button type="button" onClick={() => setShowEditModal(false)}>
+                <X className="size-4 text-muted-foreground hover:text-foreground" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <Label className="text-xs">Nom / Désignation</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Marque</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.brand}
+                  onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Modèle</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.model}
+                  onChange={(e) => setEditForm({ ...editForm, model: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Numéro de Série</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.serial_number}
+                  onChange={(e) => setEditForm({ ...editForm, serial_number: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Tag / Code d'Inventaire</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.asset_tag}
+                  onChange={(e) => setEditForm({ ...editForm, asset_tag: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Attribué à (Utilisateur / Agent)</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.assigned_to}
+                  onChange={(e) => setEditForm({ ...editForm, assigned_to: e.target.value })}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label className="text-xs">Emplacement / Pièce</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.location}
+                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label className="text-xs">Notes &amp; Remarques</Label>
+                <Input
+                  className="mt-1"
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 border-t border-border pt-3">
+              <Button variant="outline" size="sm" onClick={() => setShowEditModal(false)}>
+                Annuler
+              </Button>
+              <Button
+                variant="primaryBlock"
+                size="sm"
+                disabled={updateMut.isPending}
+                onClick={() => updateMut.mutate()}
+              >
+                {updateMut.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+                Enregistrer les Modifications
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── MODAL TRANSFER SITE ─── */}
+      {showTransferModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md border border-border bg-card p-6 space-y-4 shadow-2xl at-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <Send className="size-4 text-primary" />
+                <h2 className="text-base font-bold">Transférer l'Équipement d'un Site à un Autre</h2>
+              </div>
+              <button type="button" onClick={() => setShowTransferModal(false)}>
+                <X className="size-4 text-muted-foreground hover:text-foreground" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="bg-muted/30 p-3 border border-border">
+                <p className="text-muted-foreground">Équipement : <strong className="text-foreground">{eq.name}</strong></p>
+                <p className="text-muted-foreground">Emplacement actuel : <strong className="text-foreground">{eq.site_name ?? eq.location ?? "Siège Cotonou — Marina"}</strong></p>
+              </div>
+
+              <div>
+                <Label className="text-xs">Sélectionner le Site de Destination</Label>
+                <Select value={targetSiteId} onValueChange={setTargetSiteId}>
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue placeholder="Choisir un nouveau site d'affectation..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(sitesQuery.data ?? [
+                      { id: "site-001", name: "Siège Cotonou — Marina" },
+                      { id: "site-002", name: "Agence Porto-Novo — Ouando" },
+                      { id: "site-003", name: "Agence Parakou — Hub Nord" },
+                      { id: "site-004", name: "Agence Natitingou" },
+                    ]).map((site) => (
+                      <SelectItem key={site.id} value={site.id}>
+                        {site.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 border-t border-border pt-3">
+              <Button variant="outline" size="sm" onClick={() => setShowTransferModal(false)}>
+                Annuler
+              </Button>
+              <Button
+                variant="primaryBlock"
+                size="sm"
+                disabled={!targetSiteId || transferMut.isPending}
+                onClick={() => transferMut.mutate()}
+              >
+                {transferMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4 mr-1" />}
+                Confirmer le Transfert
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── AI Health & Predictive Risk Card ─── */}
       <div className="border border-primary/30 bg-card p-5 space-y-4 at-in">
