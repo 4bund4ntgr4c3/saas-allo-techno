@@ -4,7 +4,7 @@ import type { EquipmentItem } from "./org.functions";
 
 export async function generateQrLabelSheetPdf(
   items: EquipmentItem[],
-  orgName: string = "Allô Techno B2B"
+  orgName: string = "Allô Techno B2B",
 ): Promise<void> {
   const doc = new jsPDF({
     orientation: "portrait",
@@ -83,7 +83,7 @@ export async function generateQrLabelSheetPdf(
     try {
       const qrDataUrl = await QRCode.toDataURL(
         `https://allotechno.africa/app/scan?qr=${encodeURIComponent(item.qr_id || item.id)}`,
-        { margin: 0, width: 200 }
+        { margin: 0, width: 200 },
       );
       doc.addImage(qrDataUrl, "PNG", x + labelWidth - 21, y + 7.5, 18, 18);
     } catch {

@@ -1,12 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  Building2,
-  Globe2,
-  Laptop,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, Building2, Globe2, Laptop, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getMyOrganizations } from "@/lib/org.functions";
@@ -42,7 +36,10 @@ function GroupDashboardPage() {
               Supervision régionale consolidée de toutes les filiales et entités B2B Allô Techno.
             </p>
           </div>
-          <Badge variant="outline" className="border-primary/40 text-primary bg-primary/10 font-mono text-xs uppercase">
+          <Badge
+            variant="outline"
+            className="border-primary/40 text-primary bg-primary/10 font-mono text-xs uppercase"
+          >
             Groupe Régional UEMOA
           </Badge>
         </div>
@@ -92,7 +89,10 @@ function GroupDashboardPage() {
         <h2 className="text-lg font-bold">Détail Consolidé par Filiale</h2>
         <div className="divide-y divide-border border border-border bg-card">
           {list.map((org) => (
-            <div key={org.id} className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div
+              key={org.id}
+              className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+            >
               <div className="flex items-center gap-4">
                 <div className="size-12 bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold font-mono">
                   {org.name.slice(0, 2).toUpperCase()}
@@ -100,14 +100,17 @@ function GroupDashboardPage() {
                 <div>
                   <h3 className="font-bold text-base">{org.name}</h3>
                   <p className="text-xs text-muted-foreground">
-                    {org.sector ?? "Secteur Tertiaire"} · {org.country} · {org.registration_number ?? "RB/COT/2026"}
+                    {org.sector ?? "Secteur Tertiaire"} · {org.country} ·{" "}
+                    {org.registration_number ?? "RB/COT/2026"}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-6 text-sm">
                 <div>
-                  <span className="at-eyebrow text-[10px] text-muted-foreground block">Équipements</span>
+                  <span className="at-eyebrow text-[10px] text-muted-foreground block">
+                    Équipements
+                  </span>
                   <span className="font-mono font-bold">{org.equipment_count ?? 0} machines</span>
                 </div>
                 <div>

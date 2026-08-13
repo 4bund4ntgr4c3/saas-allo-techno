@@ -14,7 +14,7 @@ export const getOrgEsgMetricsFn = createServerFn({ method: "POST" })
   .validator(
     z.object({
       orgId: z.string(),
-    })
+    }),
   )
   .handler(async (): Promise<EsgMetrics> => {
     // Standard ESG / Carbon Footprint Metrics for Electronics Repair

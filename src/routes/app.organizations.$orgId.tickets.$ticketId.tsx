@@ -2,7 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, History, Loader2, MapPin, MessageSquare, Paperclip, ShieldCheck, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  History,
+  Loader2,
+  MapPin,
+  MessageSquare,
+  Paperclip,
+  ShieldCheck,
+  Upload,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -130,7 +139,9 @@ function OrgTicketDetail() {
                     phoneNumber: "+22990000000",
                     recipientName: tk.customer_name ?? "Responsable IT",
                     ticketNumber: tk.reference,
-                    equipmentName: tk.equipment?.id ? "Équipement sous contrat" : "Matériel sous ticket",
+                    equipmentName: tk.equipment?.id
+                      ? "Équipement sous contrat"
+                      : "Matériel sous ticket",
                     status: tk.status === "resolu" ? "repaired" : "received",
                   },
                 });

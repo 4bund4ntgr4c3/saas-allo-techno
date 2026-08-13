@@ -244,31 +244,58 @@ function OrgBillingPage() {
                 Bilan Carbone & Impact RSE Entreprise
               </h3>
             </div>
-            <Badge variant="outline" className="border-emerald-600/40 text-emerald-600 bg-emerald-500/10 font-mono text-[10px]">
+            <Badge
+              variant="outline"
+              className="border-emerald-600/40 text-emerald-600 bg-emerald-500/10 font-mono text-[10px]"
+            >
               {esgQuery.data.reportPeriod}
             </Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div className="border border-emerald-500/20 bg-background/60 p-3">
-              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Émissions CO₂ Évitées</span>
-              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.co2EmissionsAvoidedKg} kg</span>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">Équivalent fabrication neuve</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+                Émissions CO₂ Évitées
+              </span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">
+                {esgQuery.data.co2EmissionsAvoidedKg} kg
+              </span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">
+                Équivalent fabrication neuve
+              </span>
             </div>
             <div className="border border-emerald-500/20 bg-background/60 p-3">
-              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Déchets Électroniques Évités</span>
-              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.electronicWasteSavedKg} kg</span>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">Recyclage & Reconditionnement</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+                Déchets Électroniques Évités
+              </span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">
+                {esgQuery.data.electronicWasteSavedKg} kg
+              </span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">
+                Recyclage & Reconditionnement
+              </span>
             </div>
             <div className="border border-emerald-500/20 bg-background/60 p-3">
-              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Taux d'Économie Circulaire</span>
-              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.circularEconomyScorePercent}%</span>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">Défense du cycle de vie</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+                Taux d'Économie Circulaire
+              </span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">
+                {esgQuery.data.circularEconomyScorePercent}%
+              </span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">
+                Défense du cycle de vie
+              </span>
             </div>
             <div className="border border-emerald-500/20 bg-background/60 p-3">
-              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Économies Financières CAPEX</span>
-              <span className="font-mono text-xl font-extrabold text-primary">{formatFcfa(esgQuery.data.financialSavingsFcfa)}</span>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">vs réapprovisionnement neuf</span>
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">
+                Économies Financières CAPEX
+              </span>
+              <span className="font-mono text-xl font-extrabold text-primary">
+                {formatFcfa(esgQuery.data.financialSavingsFcfa)}
+              </span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">
+                vs réapprovisionnement neuf
+              </span>
             </div>
           </div>
         </div>

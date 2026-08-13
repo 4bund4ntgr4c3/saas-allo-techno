@@ -2,7 +2,6 @@ import {
   createFileRoute,
   Link,
   Outlet,
-  redirect,
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
@@ -16,11 +15,13 @@ import {
   LifeBuoy,
   LogOut,
   MapPin,
+  Search,
   ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
 import { getMyOrganizations } from "@/lib/org.functions";
+import { SEARCH_OPEN_EVENT } from "@/lib/search-events";
 import { Button } from "@/components/ui/button";
 import { TourLauncher } from "@/components/tour/TourLauncher";
 import { TourOverlay } from "@/components/tour/TourOverlay";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/app")({
   ssr: false,
   beforeLoad: async () => {
     try {
-      const { data } = await supabase.auth.getUser();
+      await supabase.auth.getUser();
       // Allow demo exploration
     } catch {
       // Ignore auth error for demo mode
@@ -92,7 +93,20 @@ function AppLayout() {
             </Link>
             <span className="text-xs text-muted-foreground">/ {t("org.nav.app")}</span>
           </div>
+
           <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent(SEARCH_OPEN_EVENT))}
+              className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+            >
+              <Search className="size-3.5" />
+              <span className="hidden sm:inline">Recherche rapide...</span>
+              <kbd className="rounded bg-background px-1.5 py-0.5 font-mono text-[10px] font-semibold border border-border">
+                Ctrl K
+              </kbd>
+            </button>
+
             {orgOptions.length > 0 && (
               <OrgSwitcher
                 organizations={orgOptions}
