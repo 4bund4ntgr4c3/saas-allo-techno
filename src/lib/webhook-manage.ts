@@ -1,28 +1,34 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
+import { isSafeOutboundUrl } from "@/lib/security";
 
 export interface WebhookConfig {
   id: string;
   url: string;
   events: string[];
-  secret: string;
   active: boolean;
   created_at: string;
   last_triggered_at: string | null;
 }
 
+const WEBHOOK_COLUMNS = "id, url, events, active, created_at, last_triggered_at";
+
 export const getWebhooks = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("webhook_configs" as never)
-    .select("*")
+    .select(WEBHOOK_COLUMNS)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as WebhookConfig[];
 });
 
 const webhookSchema = z.object({
-  url: z.string().url(),
+  url: z.string().url().refine(isSafeOutboundUrl, {
+    message: "URL invalide : HTTPS requis et pas d'adresse privée ou locale",
+  }),
   events: z.array(z.string()).min(1),
   secret: z.string().min(8),
 });
@@ -30,6 +36,7 @@ const webhookSchema = z.object({
 export const createWebhook = createServerFn({ method: "POST" })
   .validator((data: unknown) => webhookSchema.parse(data))
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("webhook_configs" as never).insert({
       url: data.url,
       events: data.events,
@@ -46,6 +53,7 @@ export const toggleWebhook = createServerFn({ method: "POST" })
     return { id, active };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("webhook_configs" as never)
       .update({ active: data.active } as never)
@@ -60,6 +68,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("webhook_configs" as never)
       .delete()
@@ -74,14 +83,16 @@ export const testWebhook = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: webhook } = await supabaseAdmin
       .from("webhook_configs" as never)
-      .select("*")
+      .select(WEBHOOK_COLUMNS)
       .eq("id", data.id)
       .single();
     if (!webhook) throw new Error("Webhook introuvable");
 
     const wh = webhook as unknown as WebhookConfig;
+    if (!isSafeOutboundUrl(wh.url)) throw new Error("URL du webhook non autorisée");
     try {
       const res = await fetch(wh.url, {
         method: "POST",

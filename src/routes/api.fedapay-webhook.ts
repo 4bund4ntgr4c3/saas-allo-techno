@@ -96,8 +96,12 @@ export const Route = createFileRoute("/api/fedapay-webhook")({
                   payment.amount !== data.amount
                 ) {
                   console.warn(
-                    `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${data.amount}`,
+                    `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${data.amount} — paiement rejeté`,
                   );
+                  return new Response(JSON.stringify({ status: "amount_mismatch" }), {
+                    status: 200,
+                    headers: { "content-type": "application/json" },
+                  });
                 }
 
                 const { error } = await supabaseAdmin.rpc("update_reservation_payment", {

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { rateLimit } from "@/lib/security";
+import { requireStaff } from "@/lib/rbac";
+import { isSafeOutboundUrl, rateLimit } from "@/lib/security";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,17 +45,23 @@ export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 // RPCs
 // ---------------------------------------------------------------------------
 
-/** Liste tous les webhooks. */
+/** Liste tous les webhooks (le secret de signature n'est jamais exposé). */
 export const listWebhooks = createServerFn({ method: "GET" }).handler(
   async (): Promise<OutboundWebhook[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaff(supabaseAdmin);
     if (!(await rateLimit("list-webhooks", 20))) throw new Error("Trop de demandes.");
     const { data, error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
-      .select("*")
+      .select(
+        "id, name, url, events, active, last_triggered_at, last_status, created_at",
+      )
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return (data ?? []) as unknown as OutboundWebhook[];
+    return ((data ?? []) as unknown as OutboundWebhook[]).map((w) => ({
+      ...w,
+      secret: null,
+    }));
   },
 );
 
@@ -66,6 +73,7 @@ export const listWebhookLogs = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }): Promise<WebhookLog[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaff(supabaseAdmin);
     if (!(await rateLimit("list-webhook-logs", 20))) throw new Error("Trop de demandes.");
     const { data: rows, error } = await supabaseAdmin
       .from("webhook_logs" as never)
@@ -82,10 +90,13 @@ export const createWebhook = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const w = data as { name: string; url: string; events: string[]; secret?: string };
     if (!w.name || !w.url) throw new Error("Nom et URL requis.");
+    if (!isSafeOutboundUrl(w.url))
+      throw new Error("URL invalide : HTTPS requis et pas d'adresse privée ou locale");
     return w;
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaff(supabaseAdmin);
     if (!(await rateLimit("create-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin.from("outbound_webhooks" as never).insert({
       name: data.name,
@@ -107,7 +118,11 @@ export const updateWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaff(supabaseAdmin);
     if (!(await rateLimit("update-webhook", 10))) throw new Error("Trop de demandes.");
+    if (typeof data.updates.url === "string" && !isSafeOutboundUrl(data.updates.url)) {
+      throw new Error("URL invalide : HTTPS requis et pas d'adresse privée ou locale");
+    }
     const { error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
       .update(data.updates as never)
@@ -124,6 +139,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaff(supabaseAdmin);
     if (!(await rateLimit("delete-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("outbound_webhooks" as never)

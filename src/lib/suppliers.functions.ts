@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface Supplier {
   id: string;
@@ -26,6 +27,7 @@ export interface SupplierOrder {
 }
 
 export const getSuppliers = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("suppliers" as never)
     .select("*")
@@ -41,12 +43,14 @@ export const createSupplier = createServerFn({ method: "POST" })
     return s;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("suppliers" as never).insert(data as never);
     if (error) throw new Error(error.message);
     return { created: true };
   });
 
 export const getSupplierOrders = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("supplier_orders" as never)
     .select("*")
@@ -62,6 +66,7 @@ export const createSupplierOrder = createServerFn({ method: "POST" })
     return o;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("supplier_orders" as never).insert(data as never);
     if (error) throw new Error(error.message);
     return { created: true };
@@ -73,6 +78,7 @@ export const updateSupplierOrderStatus = createServerFn({ method: "POST" })
     return { id, status };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const updates: Record<string, unknown> = { status: data.status };
     if (data.status === "received") {
       updates["received_at"] = new Date().toISOString();

@@ -52,3 +52,21 @@ export async function requireRole(supabaseAdmin: SupabaseClient<Database>, ...ro
   }
   throw new Error("Action non autorisée — rôle requis : " + roles.join(" ou "));
 }
+
+/** Exige un membre du personnel (admin/staff) et retourne son userId. */
+export async function requireStaff(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const userId = await currentUserId(supabaseAdmin);
+  if (!userId) throw new Error("Non authentifié");
+  const { data } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+  if (!data) throw new Error("Action non autorisée — réservé au personnel");
+  return userId;
+}
+
+/** Exige un administrateur et retourne son userId. */
+export async function requireAdmin(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
+  const userId = await currentUserId(supabaseAdmin);
+  if (!userId) throw new Error("Non authentifié");
+  const { data } = await supabaseAdmin.rpc("has_role", { _user_id: userId, _role: "admin" });
+  if (!data) throw new Error("Action non autorisée — réservé aux administrateurs");
+  return userId;
+}

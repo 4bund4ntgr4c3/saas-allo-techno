@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface Part {
   id: string;
@@ -29,6 +30,7 @@ export interface StockMovement {
 }
 
 export const getInventory = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("inventory_parts" as never)
     .select("*")
@@ -38,6 +40,7 @@ export const getInventory = createServerFn({ method: "GET" }).handler(async () =
 });
 
 export const getLowStockParts = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("inventory_parts" as never)
     .select("*")
@@ -54,6 +57,7 @@ export const createPart = createServerFn({ method: "POST" })
     return p;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("inventory_parts" as never).insert(data as never);
     if (error) throw new Error(error.message);
     return { created: true };
@@ -66,6 +70,7 @@ export const updatePart = createServerFn({ method: "POST" })
     return { id, updates };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("inventory_parts" as never)
       .update(data.updates as never)
@@ -81,6 +86,7 @@ export const recordMovement = createServerFn({ method: "POST" })
     return m;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error: movErr } = await supabaseAdmin
       .from("stock_movements" as never)
       .insert(data as never);
@@ -116,6 +122,7 @@ export const getStockMovements = createServerFn({ method: "POST" })
     return { part_id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: movements, error } = await supabaseAdmin
       .from("stock_movements" as never)
       .select("*")
@@ -132,6 +139,7 @@ export const deletePart = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("inventory_parts" as never)
       .delete()
@@ -159,6 +167,7 @@ export interface SupplierOrderDraft {
 
 export const createSupplierOrderFromLowStock = createServerFn({ method: "POST" }).handler(
   async (): Promise<SupplierOrderDraft> => {
+    await requireStaff(supabaseAdmin);
     const { data: parts, error } = await supabaseAdmin
       .from("inventory_parts" as never)
       .select("*")
@@ -196,6 +205,7 @@ export const createSupplierOrderFromLowStock = createServerFn({ method: "POST" }
 );
 
 export const getInventoryValuation = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data: parts, error } = await supabaseAdmin
     .from("inventory_parts" as never)
     .select("quantity, unit_price, min_quantity");

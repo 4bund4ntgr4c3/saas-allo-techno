@@ -1,10 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { currentUserId, isStaff } from "@/lib/rbac";
+
+/** Échappe les champs texte ICS (CRLF, point-virgule, virgule). */
+function icalEscape(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/\r/g, "")
+    .replace(/\n/g, "\\n")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,");
+}
 
 export const Route = createFileRoute("/api/ical")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
+        const authHeader = request.headers.get("authorization");
+        if (!authHeader?.startsWith("Bearer ")) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+        const token = authHeader.slice(7);
+        const { data: claims } = await supabaseAdmin.auth.getClaims(token);
+        if (!claims?.claims?.sub) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+        if (!(await isStaff(supabaseAdmin))) {
+          return new Response("Forbidden", { status: 403 });
+        }
+
         const { data: reservations, error } = await supabaseAdmin
           .from("reservations")
           .select(
@@ -46,8 +70,8 @@ export const Route = createFileRoute("/api/ical")({
             `DTSTAMP:${dtstamp}`,
             `DTSTART;TZID=Africa/Porto-Novo:${start}`,
             `DTEND;TZID=Africa/Porto-Novo:${end}`,
-            `SUMMARY:${r.reference} — ${r.device}`,
-            `DESCRIPTION:${r.customer_name}\\n${r.issue ?? ""}\\nStatut: ${r.status}`,
+            `SUMMARY:${icalEscape(r.reference)} — ${icalEscape(r.device)}`,
+            `DESCRIPTION:${icalEscape(r.customer_name)}\\n${icalEscape(r.issue ?? "")}\\nStatut: ${icalEscape(r.status)}`,
             "STATUS:CONFIRMED",
             "END:VEVENT",
           );
@@ -61,7 +85,7 @@ export const Route = createFileRoute("/api/ical")({
           headers: {
             "Content-Type": "text/calendar; charset=utf-8",
             "Content-Disposition": 'attachment; filename="allo-techno-reservations.ics"',
-            "Cache-Control": "public, max-age=3600",
+            "Cache-Control": "private, max-age=300",
           },
         });
       },

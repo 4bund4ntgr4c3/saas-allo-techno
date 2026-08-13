@@ -82,8 +82,12 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
                 payment.amount !== payload.amount
               ) {
                 console.warn(
-                  `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${payload.amount}`,
+                  `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${payload.amount} — paiement rejeté`,
                 );
+                return new Response(JSON.stringify({ status: "amount_mismatch" }), {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                });
               }
 
               const { error } = await supabaseAdmin.rpc("update_reservation_payment", {

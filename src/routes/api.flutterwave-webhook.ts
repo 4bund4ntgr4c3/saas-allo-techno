@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { safeEqual } from "@/lib/security";
 
 /**
  * Webhook Flutterwave — notifications de transaction (charge.completed…).
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/api/flutterwave-webhook")({
         }
 
         const hash = request.headers.get("verif-hash");
-        if (!hash || hash !== secret) {
+        if (!hash || !safeEqual(hash, secret)) {
           console.warn("[webhook] verif-hash invalide");
           return new Response("Unauthorized", { status: 401 });
         }
@@ -62,8 +63,12 @@ export const Route = createFileRoute("/api/flutterwave-webhook")({
             if (payment && payment.status !== "paid") {
               if (data.status === "successful" && payment.amount !== data.amount) {
                 console.warn(
-                  `[webhook] montant incohérent pour ${reference}: attendu ${payment.amount}, reçu ${data.amount}`,
+                  `[webhook] montant incohérent pour ${reference}: attendu ${payment.amount}, reçu ${data.amount} — paiement rejeté`,
                 );
+                return new Response(JSON.stringify({ status: "amount_mismatch" }), {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                });
               }
 
               if (payment.source === "reservation") {

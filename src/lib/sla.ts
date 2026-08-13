@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface SLAConfig {
   id: string;
@@ -66,6 +67,7 @@ export const getSLAConfig = createServerFn({ method: "GET" }).handler(async () =
 });
 
 export const getSLABreaches = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data: configs } = await supabaseAdmin
     .from("sla_configs" as never)
     .select("*")
@@ -115,6 +117,7 @@ export const getSLABreaches = createServerFn({ method: "GET" }).handler(async ()
 });
 
 export const getSLAStats = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data: history } = await supabaseAdmin
     .from("reservation_status_history" as never)
     .select("reservation_id, status, created_at")

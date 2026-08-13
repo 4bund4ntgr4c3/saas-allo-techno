@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useI18n } from "@/lib/i18n/context";
 import { parseEquipmentFile } from "@/lib/equipment-import";
+import { generateQrLabelSheetPdf } from "@/lib/qr-label-pdf";
 import {
   createEquipment,
   getMyOrganizations,
@@ -197,6 +198,24 @@ function EquipmentList() {
             <p className="text-sm text-muted-foreground">{t("org.equipment.subtitle")}</p>
           </div>
           <div className="flex items-center gap-2">
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const list = filtered.length > 0 ? filtered : equipment.data ?? [];
+                if (list.length === 0) {
+                  toast.error("Aucun équipement disponible à imprimer.");
+                  return;
+                }
+                generateQrLabelSheetPdf(list, org.name);
+                toast.success("Génération de la planche A4 d'étiquettes QR Code en cours...");
+              }}
+              className="gap-1.5 font-mono text-xs"
+            >
+              <QrCode className="size-3.5 text-primary" />
+              <span>Imprimer Planche QR (A4)</span>
+            </Button>
             <label className="inline-flex cursor-pointer items-center gap-1.5 px-3 py-2 border border-border bg-card hover:bg-muted text-foreground text-xs font-bold transition-all rounded-xs shadow-xs">
               <FileSpreadsheet className="size-4 text-primary" />
               <span>Import Excel/CSV</span>

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface InternalNotification {
   id: string;
@@ -13,6 +14,7 @@ export interface InternalNotification {
 }
 
 export const getInternalNotifications = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("internal_notifications" as never)
     .select("*")
@@ -28,6 +30,7 @@ export const markNotificationRead = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("internal_notifications" as never)
       .update({ read: true } as never)
@@ -37,6 +40,7 @@ export const markNotificationRead = createServerFn({ method: "POST" })
   });
 
 export const markAllRead = createServerFn({ method: "POST" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { error } = await supabaseAdmin
     .from("internal_notifications" as never)
     .update({ read: true } as never)
@@ -51,6 +55,7 @@ export const createNotification = createServerFn({ method: "POST" })
     return n;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("internal_notifications" as never)
       .insert({ ...data, read: false } as never);
@@ -59,6 +64,7 @@ export const createNotification = createServerFn({ method: "POST" })
   });
 
 export const getUnreadCount = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { count } = await supabaseAdmin
     .from("internal_notifications" as never)
     .select("*", { count: "exact", head: true })

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface ChatMessage {
   id: string;
@@ -17,6 +18,7 @@ export const getChatMessages = createServerFn({ method: "POST" })
     return { reservation_id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: messages, error } = await supabaseAdmin
       .from("chat_messages" as never)
       .select("*")
@@ -28,20 +30,19 @@ export const getChatMessages = createServerFn({ method: "POST" })
 
 export const sendChatMessage = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
-    const { reservation_id, sender_id, sender_type, content } = data as {
+    const { reservation_id, content } = data as {
       reservation_id: string;
-      sender_id: string;
-      sender_type: "customer" | "staff";
       content: string;
     };
     if (!content.trim()) throw new Error("Message vide");
-    return { reservation_id, sender_id, sender_type, content: content.trim() };
+    return { reservation_id, content: content.trim() };
   })
   .handler(async ({ data }) => {
+    const staffUserId = await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("chat_messages" as never).insert({
       reservation_id: data.reservation_id,
-      sender_id: data.sender_id,
-      sender_type: data.sender_type,
+      sender_id: staffUserId,
+      sender_type: "staff",
       content: data.content,
     } as never);
     if (error) throw new Error(error.message);
@@ -57,6 +58,7 @@ export const markMessagesRead = createServerFn({ method: "POST" })
     return { reservation_id, reader_type };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("chat_messages" as never)
       .update({ read_at: new Date().toISOString() } as never)

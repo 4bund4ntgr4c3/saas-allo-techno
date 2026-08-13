@@ -65,6 +65,38 @@ const inventorySchema = z.object({
   quantity: z.number().int().min(0),
 });
 
+/**
+ * Nettoie un paragraphe de blog : supprime les balises/attributs dangereux,
+ * échappe tout le reste, puis restaure uniquement une liste blanche de balises
+ * sûres. S'exécute côté serveur pour neutraliser d'éventuels contenus
+ * historiques non filtrés.
+ */
+const SAFE_HTML_TAGS =
+  /&lt;(\/?(?:p|br|strong|em|b|i|u|ul|ol|li|h2|h3|h4|blockquote|code|pre|hr|a))&gt;/gi;
+const SAFE_ANCHOR = /&lt;a href="(https?:\/\/[^"]+)"&gt;/gi;
+
+function sanitizeBlogParagraph(par: string): string {
+  const scrubbed = par
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/<object[\s\S]*?<\/object>/gi, "")
+    .replace(/<embed[\s\S]*?<\/embed>/gi, "")
+    .replace(/<link[\s\S]*?>/gi, "")
+    .replace(/<meta[\s\S]*?>/gi, "")
+    .replace(/on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/style\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\bjavascript\s*:/gi, "");
+
+  const escaped = scrubbed
+    .replace(/&(?!amp;|lt;|gt;|quot;|#\d+;|#x[0-9a-fA-F]+;)/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  return escaped
+    .replace(SAFE_HTML_TAGS, "<$1>")
+    .replace(SAFE_ANCHOR, '<a href="$1">');
+}
+
 function rowToPost(row: {
   body: string;
   slug: string;
@@ -77,7 +109,11 @@ function rowToPost(row: {
   let body: string[] = [];
   try {
     const parsed: unknown = JSON.parse(row.body);
-    if (Array.isArray(parsed)) body = parsed.filter((p): p is string => typeof p === "string");
+    if (Array.isArray(parsed)) {
+      body = parsed
+        .filter((p): p is string => typeof p === "string")
+        .map(sanitizeBlogParagraph);
+    }
   } catch {
     body = [];
   }

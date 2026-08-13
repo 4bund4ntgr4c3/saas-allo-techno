@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface FeatureFlag {
   key: string;
@@ -35,6 +36,7 @@ export function clearFlagCache(key?: string) {
 }
 
 export const getFeatureFlags = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("feature_flags" as never)
     .select("*")
@@ -50,6 +52,7 @@ export const toggleFeatureFlag = createServerFn({ method: "POST" })
     return { key, enabled };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("feature_flags" as never)
       .upsert(
@@ -70,6 +73,7 @@ export const createFeatureFlag = createServerFn({ method: "POST" })
     return { key, description: description ?? null };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("feature_flags" as never)
       .insert({ key: data.key, enabled: false, description: data.description } as never);
@@ -84,6 +88,7 @@ export const deleteFeatureFlag = createServerFn({ method: "POST" })
     return { key };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("feature_flags" as never)
       .delete()

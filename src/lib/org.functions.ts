@@ -128,13 +128,14 @@ export const MOCK_ORGS: Organization[] = [
 ];
 
 export const getMyOrganizations = createServerFn({ method: "GET" }).handler(async () => {
+  const serveMock = () => (import.meta.env.DEV ? MOCK_ORGS : []);
   try {
     const { data, error } = await orgClient().rpc("get_user_orgs");
-    if (error || !data) return MOCK_ORGS;
+    if (error || !data) return serveMock();
     const orgs = (data ?? []) as unknown as Organization[];
-    return orgs.length > 0 ? orgs : MOCK_ORGS;
+    return orgs.length > 0 ? orgs : serveMock();
   } catch {
-    return MOCK_ORGS;
+    return serveMock();
   }
 });
 
@@ -444,6 +445,7 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     try {
+      const serveMock = () => (import.meta.env.DEV ? MOCK_EQUIPMENT : []);
       const { data: rows, error } = await orgClient().rpc(
         "get_org_equipment",
         rpcArgs("get_org_equipment", {
@@ -452,11 +454,11 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
           _status: data.status,
         }),
       );
-      if (error || !rows) return MOCK_EQUIPMENT;
+      if (error || !rows) return serveMock();
       const res = (rows ?? []) as unknown as EquipmentItem[];
-      return res.length > 0 ? res : MOCK_EQUIPMENT;
+      return res.length > 0 ? res : serveMock();
     } catch {
-      return MOCK_EQUIPMENT;
+      return import.meta.env.DEV ? MOCK_EQUIPMENT : [];
     }
   });
 

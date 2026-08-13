@@ -102,6 +102,52 @@ export function clientIp(): string {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Validation d'URL sortantes (anti-SSRF)
+// ---------------------------------------------------------------------------
+
+/**
+ * Vrai si l'URL est sûre pour un appel sortant : HTTPS obligatoire, hostname
+ * public (pas de loopback, d'adresse privée, de link-local ou de métadonnées).
+ * Bloque aussi les hôtes à risque communs (localhost, .internal, .local…).
+ */
+export function isSafeOutboundUrl(raw: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "https:") return false;
+
+  const hostname = url.hostname.toLowerCase();
+  if (
+    hostname === "localhost" ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".internal") ||
+    hostname === "metadata.google.internal" ||
+    hostname === "169.254.169.254"
+  ) {
+    return false;
+  }
+
+  const ipv4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(hostname);
+  if (ipv4) {
+    const parts = ipv4.slice(1).map(Number);
+    if (parts.some((p) => p > 255)) return false;
+    const [a, b] = parts as [number, number, number, number];
+    if (a === 0 || a === 10) return false; // réseau courant / privé 10.x
+    if (a === 127) return false; // loopback
+    if (a === 169 && b === 254) return false; // link-local / métadonnées
+    if (a === 172 && b >= 16 && b <= 31) return false; // privé 172.16-31
+    if (a === 192 && b === 168) return false; // privé 192.168
+    if (a >= 224) return false; // multicast / réservé
+  }
+
+  if (hostname === "::1" || hostname === "[::1]") return false;
+  return true;
+}
+
 /**
  * Vrai si la requête est autorisée (compteur < max sur la fenêtre).
  * `key` doit être stable par action, ex. "suivi-lookup".

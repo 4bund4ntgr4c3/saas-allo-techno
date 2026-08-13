@@ -113,8 +113,6 @@ export function AdminChat() {
       return await sendMessageFn({
         data: {
           reservation_id: selectedResId,
-          sender_id: "staff",
-          sender_type: "staff",
           content: content.trim(),
         },
       });

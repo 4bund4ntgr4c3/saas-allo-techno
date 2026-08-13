@@ -22,6 +22,9 @@ import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import { getOrgContractFn } from "@/lib/contracts.functions";
 import { exportSyscohadaJournalFn } from "@/lib/accounting.functions";
+import { getOrgEsgMetricsFn } from "@/lib/esg.functions";
+import { initiateSlaPaymentFn } from "@/lib/b2b-payments.functions";
+import { Leaf, PhoneCall, Sparkles } from "lucide-react";
 import {
   createOrgInvoice,
   getMyOrganizations,
@@ -53,9 +56,36 @@ function OrgBillingPage() {
     enabled: Boolean(org),
   });
 
+  const esgQuery = useQuery({
+    queryKey: ["app", "org", orgId, "esg"],
+    queryFn: () => getOrgEsgMetricsFn({ data: { orgId } }),
+    enabled: Boolean(org),
+  });
+
   const [showGenerate, setShowGenerate] = useState(false);
   const [periodMonth, setPeriodMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [notes, setNotes] = useState("");
+
+  const handlePayMobileMoney = async () => {
+    if (!contract.data) return;
+    try {
+      const res = await initiateSlaPaymentFn({
+        data: {
+          orgId,
+          contractNumber: contract.data.contractNumber,
+          amountFcfa: contract.data.monthlyPrice,
+          provider: "fedapay",
+          operator: "mtn",
+        },
+      });
+      toast.success(res.instructions);
+      if (res.checkoutUrl) {
+        window.open(res.checkoutUrl, "_blank");
+      }
+    } catch {
+      toast.error("Erreur lors de l'initialisation du paiement Mobile Money.");
+    }
+  };
 
   const createInvoiceMut = useMutation({
     mutationFn: () =>
@@ -190,6 +220,55 @@ function OrgBillingPage() {
               <span className="font-mono text-sm font-bold">
                 {contract.data.coveredEquipmentCount} / {contract.data.equipmentLimit} appareils
               </span>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handlePayMobileMoney}
+              className="gap-1.5 font-mono text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              <PhoneCall className="size-3.5" />
+              <span>Payer SLA (Mobile Money)</span>
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ─── RSE & Bilan Carbone Card ─── */}
+      {esgQuery.data && (
+        <div className="border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-3 at-in">
+          <div className="flex items-center justify-between gap-3 border-b border-emerald-500/20 pb-3">
+            <div className="flex items-center gap-2">
+              <Leaf className="size-5 text-emerald-600" />
+              <h3 className="font-bold text-sm uppercase tracking-wider text-emerald-950 dark:text-emerald-200">
+                Bilan Carbone & Impact RSE Entreprise
+              </h3>
+            </div>
+            <Badge variant="outline" className="border-emerald-600/40 text-emerald-600 bg-emerald-500/10 font-mono text-[10px]">
+              {esgQuery.data.reportPeriod}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div className="border border-emerald-500/20 bg-background/60 p-3">
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Émissions CO₂ Évitées</span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.co2EmissionsAvoidedKg} kg</span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">Équivalent fabrication neuve</span>
+            </div>
+            <div className="border border-emerald-500/20 bg-background/60 p-3">
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Déchets Électroniques Évités</span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.electronicWasteSavedKg} kg</span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">Recyclage & Reconditionnement</span>
+            </div>
+            <div className="border border-emerald-500/20 bg-background/60 p-3">
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Taux d'Économie Circulaire</span>
+              <span className="font-mono text-2xl font-extrabold text-emerald-600">{esgQuery.data.circularEconomyScorePercent}%</span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">Défense du cycle de vie</span>
+            </div>
+            <div className="border border-emerald-500/20 bg-background/60 p-3">
+              <span className="at-eyebrow text-[10px] text-muted-foreground block mb-1">Économies Financières CAPEX</span>
+              <span className="font-mono text-xl font-extrabold text-primary">{formatFcfa(esgQuery.data.financialSavingsFcfa)}</span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5">vs réapprovisionnement neuf</span>
             </div>
           </div>
         </div>

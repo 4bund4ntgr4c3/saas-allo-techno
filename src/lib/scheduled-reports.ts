@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface ScheduledReport {
   id: string;
@@ -14,6 +15,7 @@ export interface ScheduledReport {
 }
 
 export const getScheduledReports = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("scheduled_reports" as never)
     .select("*")
@@ -29,6 +31,7 @@ export const createScheduledReport = createServerFn({ method: "POST" })
     return r;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const next = new Date();
     if (data.frequency === "weekly") next.setDate(next.getDate() + 7);
     else if (data.frequency === "monthly") next.setMonth(next.getMonth() + 1);
@@ -47,6 +50,7 @@ export const deleteScheduledReport = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("scheduled_reports" as never)
       .delete()
@@ -61,6 +65,7 @@ export const toggleScheduledReport = createServerFn({ method: "POST" })
     return { id, active };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("scheduled_reports" as never)
       .update({ active: data.active } as never)

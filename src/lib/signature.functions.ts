@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireStaff } from "@/lib/rbac";
 import { rateLimit } from "@/lib/security";
 
 export type HandoffSignature = {
@@ -10,7 +11,10 @@ export type HandoffSignature = {
   ip_address: string | null;
 };
 
-/** Enregistre une signature de remise pour un dossier. */
+const SIGNATURE_URL_PATTERN = /^data:image\/(png|jpe?g|webp);base64,[a-zA-Z0-9+/=]+$/;
+const SIGNATURE_MAX_CHARS = 2_000_000;
+
+/** Enregistre une signature de remise pour un dossier (réservé au personnel). */
 export const saveHandoffSignature = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const d = data as {
@@ -21,6 +25,12 @@ export const saveHandoffSignature = createServerFn({ method: "POST" })
     if (!d.reservation_id || !d.signature_data_url) {
       throw new Error("reservation_id et signature requis.");
     }
+    if (d.signature_data_url.length > SIGNATURE_MAX_CHARS) {
+      throw new Error("Signature trop volumineuse.");
+    }
+    if (!SIGNATURE_URL_PATTERN.test(d.signature_data_url)) {
+      throw new Error("Signature invalide : image base64 attendue.");
+    }
     return d;
   })
   .handler(
@@ -30,6 +40,7 @@ export const saveHandoffSignature = createServerFn({ method: "POST" })
       data: { reservation_id: string; customer_name: string; signature_data_url: string };
     }) => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await requireStaff(supabaseAdmin);
       if (!(await rateLimit("save-signature", 10))) throw new Error("Trop de demandes.");
 
       const { error } = await supabaseAdmin.from("handoff_signatures" as never).insert({
@@ -42,7 +53,7 @@ export const saveHandoffSignature = createServerFn({ method: "POST" })
     },
   );
 
-/** Récupère la signature d'un dossier. */
+/** Récupère la signature d'un dossier (réservé au personnel). */
 export const getHandoffSignature = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { reservation_id } = data as { reservation_id: string };
@@ -51,6 +62,7 @@ export const getHandoffSignature = createServerFn({ method: "POST" })
   .handler(
     async ({ data }: { data: { reservation_id: string } }): Promise<HandoffSignature | null> => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await requireStaff(supabaseAdmin);
       if (!(await rateLimit("get-signature", 20))) throw new Error("Trop de demandes.");
 
       const { data: row, error } = await supabaseAdmin

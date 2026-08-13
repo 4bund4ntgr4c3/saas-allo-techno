@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, History, Loader2, MapPin, Paperclip, ShieldCheck, Upload } from "lucide-react";
+import { ArrowLeft, History, Loader2, MapPin, MessageSquare, Paperclip, ShieldCheck, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
+import { sendWhatsAppTicketNotificationFn } from "@/lib/whatsapp.functions";
 import {
   attachB2BTicketFile,
   getB2BTicketAttachmentUrls,
@@ -107,15 +108,43 @@ function OrgTicketDetail() {
           <ArrowLeft className="size-4" />
           {t("org.tickets.detail.back")}
         </Link>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <h1 className="at-display text-2xl font-bold">{tk.reference}</h1>
-          <Badge variant="outline">{t(`org.tickets.status.${tk.status}`)}</Badge>
-          {tk.ticket_type ? (
-            <Badge variant="outline">{t(`org.tickets.type.${tk.ticket_type}`)}</Badge>
-          ) : null}
-          {tk.priority ? (
-            <Badge variant="outline">{t(`org.tickets.priority.${tk.priority}`)}</Badge>
-          ) : null}
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h1 className="at-display text-2xl font-bold">{tk.reference}</h1>
+            <Badge variant="outline">{t(`org.tickets.status.${tk.status}`)}</Badge>
+            {tk.ticket_type ? (
+              <Badge variant="outline">{t(`org.tickets.type.${tk.ticket_type}`)}</Badge>
+            ) : null}
+            {tk.priority ? (
+              <Badge variant="outline">{t(`org.tickets.priority.${tk.priority}`)}</Badge>
+            ) : null}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              try {
+                const res = await sendWhatsAppTicketNotificationFn({
+                  data: {
+                    phoneNumber: "+22990000000",
+                    recipientName: tk.contact_name ?? "Responsable IT",
+                    ticketNumber: tk.reference,
+                    equipmentName: tk.equipment_id ? "Équipement sous contrat" : "Matériel sous ticket",
+                    status: tk.status === "resolu" ? "repaired" : "received",
+                  },
+                });
+                toast.success("Message WhatsApp prêt !");
+                window.open(res.whatsappUrl, "_blank");
+              } catch {
+                toast.error("Erreur lors de la préparation de la notification WhatsApp.");
+              }
+            }}
+            className="gap-1.5 font-mono text-xs border-emerald-600/40 text-emerald-600 hover:bg-emerald-500/10"
+          >
+            <MessageSquare className="size-3.5" />
+            <span>Notifier via WhatsApp</span>
+          </Button>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           {t("org.tickets.detail.createdAt")}{" "}
