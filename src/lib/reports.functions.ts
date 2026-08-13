@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface ReportConfig {
   id: string;
@@ -32,6 +33,7 @@ export const generateReport = createServerFn({ method: "POST" })
     return { date_from, date_to, metrics, group_by };
   })
   .handler(async ({ data }): Promise<ReportResult> => {
+    await requireStaff(supabaseAdmin);
     const [reservations, payments] = await Promise.all([
       supabaseAdmin
         .from("reservations")
@@ -112,6 +114,7 @@ export const generateReport = createServerFn({ method: "POST" })
   });
 
 export const getSavedReports = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("saved_reports" as never)
     .select("*")

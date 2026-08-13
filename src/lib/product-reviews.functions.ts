@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type ProductReview = {
   id: string;
@@ -38,6 +39,9 @@ export const addProductReview = createServerFn({ method: "POST" })
   .validator((data: unknown) => reviewSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("product-review-add", 5))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { error } = await supabaseAdmin.from("product_reviews" as never).insert({
       product_slug: data.product_slug,
       name: data.name,

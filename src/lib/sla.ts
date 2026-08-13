@@ -59,6 +59,7 @@ const DEFAULT_SLA: SLAConfig[] = [
 ];
 
 export const getSLAConfig = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("sla_configs" as never)
     .select("*")

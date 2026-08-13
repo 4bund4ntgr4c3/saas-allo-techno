@@ -265,17 +265,19 @@ const MAX_DISCOUNT_RATIO = 0.3; // max 30 % du montant du devis
  * Retourne les points utilisables, le montant de la réduction et le nouveau solde.
  */
 export const calculateLoyaltyDiscount = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
+  .inputValidator((data: unknown) => data as { quoteAmount: number })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("loyalty-discount-calc", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
+    const userId = await currentUserId(supabaseAdmin);
+
     const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("loyalty_points")
-      .eq("id", data.userId)
+      .eq("id", userId)
       .maybeSingle();
 
     const currentPoints = profile?.loyalty_points ?? 0;
@@ -301,15 +303,17 @@ export const calculateLoyaltyDiscount = createServerFn({ method: "POST" })
  * et retourne le montant de la réduction.
  */
 export const applyLoyaltyDiscount = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => data as { userId: string; quoteAmount: number })
+  .inputValidator((data: unknown) => data as { quoteAmount: number })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("loyalty-discount-apply", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
+    const userId = await currentUserId(supabaseAdmin);
+
     const calc = await calculateLoyaltyDiscount({
-      data: { userId: data.userId, quoteAmount: data.quoteAmount },
+      data: { quoteAmount: data.quoteAmount },
     });
     if (calc.pointsUsed <= 0) {
       return { discountAmount: 0, pointsUsed: 0, newBalance: calc.newBalance };
@@ -317,7 +321,7 @@ export const applyLoyaltyDiscount = createServerFn({ method: "POST" })
 
     // Déduit les points via le RPC existant (delta négatif)
     const { error } = await supabaseAdmin.rpc("add_loyalty_points", {
-      _user_id: data.userId,
+      _user_id: userId,
       _delta: -calc.pointsUsed,
       _reason: "discount",
       _reference: "",

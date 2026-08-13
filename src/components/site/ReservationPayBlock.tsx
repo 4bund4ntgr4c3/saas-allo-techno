@@ -72,7 +72,7 @@ export function ReservationPayBlock({
     enabled: Boolean(user?.id) && amount > 0,
     queryFn: async () => {
       if (!user?.id) return { discountAmount: 0, pointsUsed: 0, newBalance: 0 };
-      return calcDiscountFn({ data: { userId: user.id, quoteAmount: amount } });
+      return calcDiscountFn({ data: { quoteAmount: amount } });
     },
   });
   const loyaltyDiscount = useLoyalty ? (loyaltyQuery.data?.discountAmount ?? 0) : 0;

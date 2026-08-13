@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface KBArticle {
   id: string;
@@ -15,6 +16,7 @@ export interface KBArticle {
 }
 
 export const getKBArticles = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("kb_articles" as never)
     .select("*")
@@ -29,6 +31,7 @@ export const getKBArticle = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: article, error } = await supabaseAdmin
       .from("kb_articles" as never)
       .select("*")
@@ -51,6 +54,7 @@ export const createKBArticle = createServerFn({ method: "POST" })
     return a;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const now = new Date().toISOString();
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
@@ -66,6 +70,7 @@ export const updateKBArticle = createServerFn({ method: "POST" })
     return { id, updates: { ...updates, updated_at: new Date().toISOString() } };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
       .update(data.updates as never)
@@ -80,6 +85,7 @@ export const deleteKBArticle = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
       .delete()
@@ -94,6 +100,7 @@ export const markHelpful = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
       .update({ helpful: 1 } as never)
@@ -108,6 +115,7 @@ export const searchKB = createServerFn({ method: "POST" })
     return { query: query.toLowerCase() };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: articles } = await supabaseAdmin.from("kb_articles" as never).select("*");
     const all = (articles ?? []) as unknown as KBArticle[];
     return all.filter(

@@ -587,6 +587,11 @@ export const getWorkshopLoad = createServerFn({ method: "GET" }).handler(
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
+    const userId = await currentUserId(supabaseAdmin);
+    if (!userId) throw new Error("Non authentifié");
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) throw new Error("Action non autorisée");
+
     const { data, error } = await supabaseAdmin.rpc("get_workshop_load" as never);
     if (error) throw new Error(error.message);
     return (data as WorkshopLoad[]) ?? [];

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface ReferralStats {
   total_referrals: number;
@@ -32,6 +33,7 @@ export const getReferralStats = createServerFn({ method: "POST" })
     return { user_id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: referrals } = await supabaseAdmin
       .from("referrals" as never)
       .select("*")
@@ -73,6 +75,7 @@ export const getReferralEntries = createServerFn({ method: "POST" })
     return { user_id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { data: entries } = await supabaseAdmin
       .from("referrals" as never)
       .select("*")

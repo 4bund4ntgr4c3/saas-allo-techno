@@ -15,6 +15,8 @@ export type SourceStat = {
 export const getConversionFunnel = createServerFn({ method: "GET" }).handler(
   async (): Promise<FunnelStep[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireStaff } = await import("@/lib/rbac");
+    await requireStaff(supabaseAdmin);
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
 
@@ -51,6 +53,8 @@ export const getConversionFunnel = createServerFn({ method: "GET" }).handler(
 export const getSourceStats = createServerFn({ method: "GET" }).handler(
   async (): Promise<SourceStat[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireStaff } = await import("@/lib/rbac");
+    await requireStaff(supabaseAdmin);
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
 
@@ -84,6 +88,8 @@ export const getSourceStats = createServerFn({ method: "GET" }).handler(
 export const getRecentErrors = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ message: string; count: number; last: string }[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireStaff } = await import("@/lib/rbac");
+    await requireStaff(supabaseAdmin);
 
     const oneDayAgo = new Date(Date.now() - 86400000).toISOString();
 

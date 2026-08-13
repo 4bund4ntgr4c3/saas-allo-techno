@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface Workshop {
   id: string;
@@ -16,6 +17,7 @@ export interface Workshop {
 }
 
 export const getWorkshops = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("workshops" as never)
     .select("*")
@@ -31,6 +33,7 @@ export const createWorkshop = createServerFn({ method: "POST" })
     return w;
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("workshops" as never).insert(data as never);
     if (error) throw new Error(error.message);
     return { created: true };
@@ -43,6 +46,7 @@ export const updateWorkshop = createServerFn({ method: "POST" })
     return { id, updates };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("workshops" as never)
       .update(data.updates as never)
@@ -57,6 +61,7 @@ export const deleteWorkshop = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("workshops" as never)
       .delete()

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface EscalationRule {
   id: string;
@@ -50,11 +51,13 @@ const DEFAULT_RULES: EscalationRule[] = [
 ];
 
 export const getEscalationRules = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin.from("escalation_rules" as never).select("*");
   return (data?.length ? data : DEFAULT_RULES) as unknown as EscalationRule[];
 });
 
 export const checkEscalations = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data: rules } = await supabaseAdmin
     .from("escalation_rules" as never)
     .select("*")
@@ -103,6 +106,7 @@ export const checkEscalations = createServerFn({ method: "GET" }).handler(async 
 });
 
 export const getEscalationHistory = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("escalation_events" as never)
     .select("*")

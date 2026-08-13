@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface ExtendedWarranty {
   id: string;
@@ -36,6 +37,7 @@ export const createExtendedWarranty = createServerFn({ method: "POST" })
     return { reservation_id, customer_name, phone, device, warranty_months, price };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const start = new Date();
     const end = new Date(start);
     end.setMonth(end.getMonth() + data.warranty_months);
@@ -56,6 +58,7 @@ export const createExtendedWarranty = createServerFn({ method: "POST" })
   });
 
 export const getExtendedWarranties = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("extended_warranties" as never)
     .select("*")
@@ -65,6 +68,7 @@ export const getExtendedWarranties = createServerFn({ method: "GET" }).handler(a
 });
 
 export const getActiveWarranties = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("extended_warranties" as never)
     .select("*")
@@ -79,6 +83,7 @@ export const claimWarranty = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("extended_warranties" as never)
       .update({ status: "claimed" } as never)

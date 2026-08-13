@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireStaff } from "@/lib/rbac";
 
 export interface SatisfactionEntry {
   id: string;
@@ -42,6 +43,7 @@ export const submitSatisfaction = createServerFn({ method: "POST" })
   });
 
 export const getSatisfactionStats = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("satisfaction_surveys" as never)
     .select("*")
@@ -88,6 +90,7 @@ export const getSatisfactionStats = createServerFn({ method: "GET" }).handler(as
 });
 
 export const getSatisfactionEntries = createServerFn({ method: "GET" }).handler(async () => {
+  await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("satisfaction_surveys" as never)
     .select("*")

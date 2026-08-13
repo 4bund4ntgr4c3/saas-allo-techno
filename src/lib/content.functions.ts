@@ -193,11 +193,12 @@ export const listReviews = createServerFn({ method: "GET" })
     const { data: rows, error } = await supabaseAdmin
       .from("reviews")
       .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
+      .eq("status", "published")
       .order("created_at", { ascending: false });
     if (error || !rows || rows.length === 0) return data.fallback ?? [];
     return (rows as ReviewRow[]).map((r) => ({
       name: r.customer_name,
-      city: r.email ?? "",
+      city: "",
       rating: r.rating,
       text: r.comment,
       device: "",
@@ -309,6 +310,7 @@ export const getInventory = createServerFn({ method: "GET" })
   .inputValidator((data: unknown) => z.object({ slug: z.string().trim().min(1) }).parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
     const { data: row } = await supabaseAdmin
       .from("inventory")
       .select("quantity")
