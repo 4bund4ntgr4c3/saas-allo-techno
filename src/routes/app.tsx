@@ -138,6 +138,23 @@ function AppLayout() {
                 {t("org.title")}
               </Link>
 
+              <Link
+                to="/app/group-dashboard"
+                className={`relative flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-all ${
+                  location.pathname === "/app/group-dashboard"
+                    ? "bg-primary/8 text-foreground"
+                    : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                }`}
+              >
+                {location.pathname === "/app/group-dashboard" && (
+                  <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />
+                )}
+                <Building2
+                  className={`size-4 shrink-0 ${location.pathname === "/app/group-dashboard" ? "text-primary" : ""}`}
+                />
+                <span>Vue Consolidée Groupe</span>
+              </Link>
+
               {orgs.data?.map((org) => {
                 const isActive = activeOrgId === org.id;
                 return (

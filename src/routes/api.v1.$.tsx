@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { rateLimit } from "@/lib/security";
 
 export const Route = createFileRoute("/api/v1/$")({
   server: {
@@ -9,23 +10,29 @@ export const Route = createFileRoute("/api/v1/$")({
         const path = params._splat ?? "";
 
         const authHeader = request.headers.get("authorization");
-        const apiKey = authHeader?.startsWith("Bearer ")
-          ? authHeader.slice(7)
-          : url.searchParams.get("api_key");
+        const apiKey = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
         if (!apiKey) {
           return Response.json({ error: "API key required" }, { status: 401 });
         }
 
-        const { data: keyData } = await supabaseAdmin
+        const { data: keyData } = (await supabaseAdmin
           .from("api_keys" as never)
           .select("user_id, active, rate_limit")
           .eq("key", apiKey)
           .eq("active", true)
-          .maybeSingle();
+          .maybeSingle()) as unknown as {
+          data: { user_id: string; active: boolean; rate_limit: number | null } | null;
+        };
 
         if (!keyData) {
           return Response.json({ error: "Invalid API key" }, { status: 401 });
+        }
+
+        const rateLimitMax = keyData.rate_limit ?? 10;
+        const allowed = await rateLimit(`api-v1:${keyData.user_id}`, rateLimitMax);
+        if (!allowed) {
+          return Response.json({ error: "Rate limit exceeded" }, { status: 429 });
         }
 
         const parts = path.split("/").filter(Boolean);
@@ -41,21 +48,23 @@ export const Route = createFileRoute("/api/v1/$")({
                   "reference, customer_name, device, issue, status, slot_date, slot_period, created_at",
                 )
                 .eq("reference", id)
+                .eq("user_id", keyData.user_id)
                 .single();
               if (error) return Response.json({ error: "Not found" }, { status: 404 });
               return Response.json({ data });
             }
             const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "20"), 100);
             const offset = parseInt(url.searchParams.get("offset") ?? "0");
-            const { data, error } = await supabaseAdmin
+            const { data, error, count } = await supabaseAdmin
               .from("reservations")
               .select("reference, customer_name, device, status, slot_date, created_at", {
                 count: "exact",
               })
+              .eq("user_id", keyData.user_id)
               .range(offset, offset + limit - 1)
               .order("created_at", { ascending: false });
             if (error) return Response.json({ error: error.message }, { status: 500 });
-            return Response.json({ data, total: data?.length ?? 0, limit, offset });
+            return Response.json({ data, total: count ?? data?.length ?? 0, limit, offset });
           }
 
           case "devices": {

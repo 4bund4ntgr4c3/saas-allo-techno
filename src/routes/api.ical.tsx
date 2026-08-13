@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { currentUserId, isStaff } from "@/lib/rbac";
+import { isStaff } from "@/lib/rbac";
 
 /** Échappe les champs texte ICS (CRLF, point-virgule, virgule). */
 function icalEscape(value: string): string {
