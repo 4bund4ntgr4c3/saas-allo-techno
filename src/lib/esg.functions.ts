@@ -16,7 +16,7 @@ export const getOrgEsgMetricsFn = createServerFn({ method: "POST" })
       orgId: z.string(),
     })
   )
-  .handler(async ({ data }): Promise<EsgMetrics> => {
+  .handler(async (): Promise<EsgMetrics> => {
     // Standard ESG / Carbon Footprint Metrics for Electronics Repair
     // Avg laptop manufacture = 250kg CO2, 2.5kg electronic waste
     // Avg smartphone manufacture = 70kg CO2, 0.2kg electronic waste

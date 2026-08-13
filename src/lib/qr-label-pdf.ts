@@ -25,8 +25,6 @@ export async function generateQrLabelSheetPdf(
   const marginX = (pageWidth - cols * labelWidth) / (cols + 1); // ~ 7.5 mm
   const marginY = (pageHeight - rows * labelHeight) / (rows + 1); // ~ 6.5 mm
 
-  let currentItemIdx = 0;
-
   for (let i = 0; i < items.length; i++) {
     if (i > 0 && i % labelsPerPage === 0) {
       doc.addPage();

@@ -24,7 +24,7 @@ import { getOrgContractFn } from "@/lib/contracts.functions";
 import { exportSyscohadaJournalFn } from "@/lib/accounting.functions";
 import { getOrgEsgMetricsFn } from "@/lib/esg.functions";
 import { initiateSlaPaymentFn } from "@/lib/b2b-payments.functions";
-import { Leaf, PhoneCall, Sparkles } from "lucide-react";
+import { Leaf, PhoneCall } from "lucide-react";
 import {
   createOrgInvoice,
   getMyOrganizations,

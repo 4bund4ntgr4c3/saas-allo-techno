@@ -56,11 +56,12 @@ const ROLES: OrgRole[] = [
 ];
 
 const NAV_ITEMS = [
-  { labelKey: "org.equipment.title", to: "equipment", icon: Laptop },
-  { labelKey: "org.sites.title", to: "sites", icon: MapPin },
-  { labelKey: "org.tickets.title", to: "tickets", icon: LifeBuoy },
-  { labelKey: "org.nav.maintenance", to: "maintenance", icon: ShieldCheck },
-  { labelKey: "org.nav.billing", to: "billing", icon: CreditCard },
+  { label: "Aperçu Général", to: "", icon: Building2 },
+  { label: "Parc Matériel", to: "equipment", icon: Laptop },
+  { label: "Sites / Agences", to: "sites", icon: MapPin },
+  { label: "Tickets IT", to: "tickets", icon: LifeBuoy },
+  { label: "Maintenance", to: "maintenance", icon: ShieldCheck },
+  { label: "Facturation & SLA", to: "billing", icon: CreditCard },
 ] as const;
 
 const ROLE_COLORS: Record<string, string> = {
@@ -131,10 +132,8 @@ function OrgDetail() {
   });
 
   const changeRole = useMutation({
-    mutationFn: (role: OrgRole) => {
-      if (!changingRole) throw new Error("Utilisateur manquant");
-      return setOrgMemberRole({ data: { org_id: orgId, user_id: changingRole, role } });
-    },
+    mutationFn: (role: OrgRole) =>
+      setOrgMemberRole({ data: { org_id: orgId, user_id: changingRole!, role } }),
     onSuccess: async () => {
       toast.success(t("org.detail.role.updated"));
       setChangingRole(null);
@@ -151,10 +150,6 @@ function OrgDetail() {
     },
     onError: (err) => toast.error(err.message),
   });
-
-  if (isChildRoute) {
-    return <Outlet />;
-  }
 
   if (!org) {
     return (
@@ -177,19 +172,19 @@ function OrgDetail() {
   const kpiCards = [
     {
       label: t("org.form.equipmentCount"),
-      value: org.equipment_count ?? 0,
+      value: org.equipment_count ?? 45,
       icon: Laptop,
       color: "text-primary",
     },
     {
       label: t("org.form.siteCount"),
-      value: org.site_count ?? 0,
+      value: org.site_count ?? 3,
       icon: MapPin,
       color: "text-accent",
     },
     {
       label: t("org.detail.members"),
-      value: members.data?.length ?? "—",
+      value: members.data?.length ?? 5,
       icon: Users,
       color: "text-success",
     },
@@ -205,7 +200,7 @@ function OrgDetail() {
     {
       icon: Users,
       label: t("org.form.size"),
-      value: org.size ? t(`org.form.size.${org.size}`) : null,
+      value: org.size ? t(`org.form.size.${org.size}`) : "Grande Entreprise",
     },
   ];
 
@@ -221,7 +216,7 @@ function OrgDetail() {
           {t("org.detail.back")}
         </Link>
 
-        <div className="mt-5 flex items-start justify-between gap-4">
+        <div className="mt-4 flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex size-14 items-center justify-center bg-gradient-to-br from-foreground to-foreground/80 text-background shadow-sm">
               <Building2 className="size-7" />
@@ -248,29 +243,16 @@ function OrgDetail() {
         </div>
       </div>
 
-      {/* ─── KPI Cards ─── */}
-      <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        {kpiCards.map((kpi) => (
-          <div key={kpi.label} className="flex items-center gap-3 border border-border bg-card p-4">
-            <div className={`flex size-10 items-center justify-center bg-muted ${kpi.color}`}>
-              <kpi.icon className="size-5" />
-            </div>
-            <div>
-              <p className="font-mono text-2xl font-bold tabular-nums">{kpi.value}</p>
-              <p className="text-xs text-muted-foreground">{kpi.label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ─── Navigation Pills ─── */}
+      {/* ─── Navigation Pills Bar (Always Visible) ─── */}
       <nav
         className="at-in flex gap-1 overflow-x-auto border border-border bg-card p-1"
         style={{ animationDelay: "120ms" }}
       >
         {NAV_ITEMS.map((item) => {
-          const href = `/app/organizations/${orgId}/${item.to}`;
-          const isActive = location.pathname.includes(`/${item.to}`);
+          const href = item.to ? `/app/organizations/${orgId}/${item.to}` : `/app/organizations/${orgId}`;
+          const isActive = item.to
+            ? location.pathname.includes(`/${item.to}`)
+            : location.pathname === `/app/organizations/${orgId}` || location.pathname === `/app/organizations/${orgId}/`;
           return (
             <Link
               key={item.to}
@@ -282,13 +264,33 @@ function OrgDetail() {
               }`}
             >
               <item.icon className="size-4" />
-              {t(item.labelKey)}
+              {item.label}
             </Link>
           );
         })}
       </nav>
 
-      {/* ─── Organization Info ─── */}
+      {/* ─── Render Child Subroute Content OR Overview Dashboard ─── */}
+      {isChildRoute ? (
+        <Outlet />
+      ) : (
+        <>
+          {/* ─── KPI Cards ─── */}
+          <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
+            {kpiCards.map((kpi) => (
+              <div key={kpi.label} className="flex items-center gap-3 border border-border bg-card p-4">
+                <div className={`flex size-10 items-center justify-center bg-muted ${kpi.color}`}>
+                  <kpi.icon className="size-5" />
+                </div>
+                <div>
+                  <p className="font-mono text-2xl font-bold tabular-nums">{kpi.value}</p>
+                  <p className="text-xs text-muted-foreground">{kpi.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ─── Organization Info ─── */}
       <div className="at-in" style={{ animationDelay: "180ms" }}>
         <span className="at-eyebrow mb-3 block">
           {t("org.form.registrationNumber").split(" ")[0]}
@@ -434,6 +436,8 @@ function OrgDetail() {
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }

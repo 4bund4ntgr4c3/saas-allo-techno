@@ -5,13 +5,11 @@ import {
   Building2,
   Globe2,
   Laptop,
-  LifeBuoy,
   ShieldCheck,
-  TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { getMyOrganizations } from "@/lib/org.functions";
-import { formatFcfa } from "@/data/catalog/company";
 
 export const Route = createFileRoute("/app/group-dashboard")({
   component: GroupDashboardPage,

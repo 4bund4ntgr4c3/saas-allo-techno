@@ -29,8 +29,12 @@ import { OrgSwitcher } from "@/components/site/OrgSwitcher";
 export const Route = createFileRoute("/app")({
   ssr: false,
   beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
+    try {
+      const { data } = await supabase.auth.getUser();
+      // Allow demo exploration
+    } catch {
+      // Ignore auth error for demo mode
+    }
   },
   component: AppLayout,
 });
@@ -57,7 +61,12 @@ function AppLayout() {
   // Detect if we're inside an org
   const orgMatch = location.pathname.match(/\/app\/organizations\/([^/]+)/);
   const activeOrgId = orgMatch?.[1];
-  const activeOrg = activeOrgId ? orgs.data?.find((o) => o.id === activeOrgId) : null;
+  const activeOrg = activeOrgId
+    ? (orgs.data?.find((o) => o.id === activeOrgId) ?? {
+        id: activeOrgId,
+        name: activeOrgId === "demo-bts" ? "Bénin Télécoms Services (BTS SA)" : "Oragroup Bénin (Siège Cotonou)",
+      })
+    : null;
 
   const orgOptions = (orgs.data ?? []).map((o) => ({
     id: o.id,

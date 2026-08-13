@@ -128,9 +128,9 @@ function OrgTicketDetail() {
                 const res = await sendWhatsAppTicketNotificationFn({
                   data: {
                     phoneNumber: "+22990000000",
-                    recipientName: tk.contact_name ?? "Responsable IT",
+                    recipientName: tk.customer_name ?? "Responsable IT",
                     ticketNumber: tk.reference,
-                    equipmentName: tk.equipment_id ? "Équipement sous contrat" : "Matériel sous ticket",
+                    equipmentName: tk.equipment?.id ? "Équipement sous contrat" : "Matériel sous ticket",
                     status: tk.status === "resolu" ? "repaired" : "received",
                   },
                 });
