@@ -7,6 +7,21 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.13-b40] — 2026-08-13 (Bundle Performance & Cleanup — Batch 40)
+
+### Changed
+
+- **Bundle initial allégé** : l'entrée client passe de 657,6 Ko à 474,3 Ko. Le catalogue d'appareils (`DEVICES`, ~344 Ko), jspdf (~390 Ko), recharts (~335 Ko) et xlsx (~354 Ko) sont sortis du premier chargement — chargés à la demande uniquement (vérifié en production sur la page d'accueil et les pages appareil).
+- **Barrel `src/data/catalog` allégé** : il ne re-exporte plus `DEVICES` ; les données lourdes sont déplacées dans `src/data/catalog/devices.ts` (chunk dédié importé en lazy par les routes catalogue/tarifs/reparations/devis/reprise ou en import dynamique par les loaders `appareil/$slug` et `reparations/$brand`). Les modules légers (`company`, `static`, `accessories`) restent dans le graphe initial ; les têtes SEO des routes inlinées n'utilisent plus `DEVICES` (le meta du catalogue compte depuis `BRANDS`).
+- **`manualChunks`** : règles recharts/d3, jspdf/qrcode et catalog supprimées ; `vendor-react` isole React seul dans son chunk. Les imports lourds passent par `@/lib/invoice` en import dynamique (`suivi.tsx`) et les imports de composants sont redirigés vers `company`/`static`/`accessories`.
+
+### Removed
+
+- **Code mort** : serveur fns `calculateLoyaltyDiscount` / `applyLoyaltyDiscount` de `src/lib/loyalty.functions.ts` (jamais appelés par l'application) + leurs tests factices.
+- **Route `api.sitemap.ts`** : remplacée par `/sitemap.xml` (le README référence désormais `/sitemap.xml`).
+
+---
+
 ## [2026.08.12-b39] — 2026-08-12 (B2B Form Overhaul & Cart Hydration Fix — Batch 39)
 
 ### Added

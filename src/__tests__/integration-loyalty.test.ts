@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("computeTier", () => {
   it("returns bronze for 0 points", async () => {
@@ -84,47 +84,5 @@ describe("Referral code generation", () => {
   it("uses only unambiguous characters", () => {
     const code = "ALLO-X7K2";
     expect(code).toMatch(/^ALLO-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}$/);
-  });
-});
-
-describe("calculateLoyaltyDiscount", () => {
-  const mockSupabase = {
-    from: vi.fn(),
-    rpc: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("returns zero discount for users with fewer than 100 points", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          maybeSingle: vi.fn().mockResolvedValue({
-            data: { loyalty_points: 50 },
-          }),
-        }),
-      }),
-    });
-
-    const currentPoints = 50;
-    const hasMinimum = currentPoints >= 100;
-    expect(hasMinimum).toBe(false);
-  });
-
-  it("calculates correct discount for 500 points on 10000 FCFA quote", () => {
-    const POINT_VALUE = 5;
-    const MAX_DISCOUNT_RATIO = 0.3;
-    const currentPoints = 500;
-    const quoteAmount = 10000;
-
-    const maxDiscount = Math.floor(quoteAmount * MAX_DISCOUNT_RATIO);
-    const rawDiscount = currentPoints * POINT_VALUE;
-    const discountAmount = Math.min(rawDiscount, maxDiscount, quoteAmount);
-    const pointsUsed = Math.ceil(discountAmount / POINT_VALUE);
-
-    expect(discountAmount).toBe(2500);
-    expect(pointsUsed).toBe(500);
   });
 });

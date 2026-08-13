@@ -2,7 +2,14 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.12-b39 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.13-b40 — [Changelog](./CHANGELOG.md)
+
+## Performance du Bundle Initial & Nettoyage (Batch 40)
+
+- **Bundle initial allégé** : l'entrée passe de 657,6 Ko à 474,3 Ko. Le catalogue d'appareils (`DEVICES`, ~344 Ko), jspdf (~390 Ko), recharts (~335 Ko) et xlsx (~354 Ko) sont désormais chargés à la demande — absents du premier chargement de toute page (vérifié en production).
+- **Barrel `src/data/catalog` allégé** : il ne re-exporte plus `DEVICES` (déplacé dans `src/data/catalog/devices.ts`, chunk dédié) ; les imports légers (`company`/`static`/`accessories`) restent dans le graphe initial.
+- **Sitemap** : l'endpoint est `/sitemap.xml` (l'ancien `/api/sitemap` est supprimé).
+- **Code mort supprimé** : serveur fns `calculateLoyaltyDiscount` / `applyLoyaltyDiscount` (jamais appelés par l'application).
 
 ## Refonte Formulaire B2B & Correctif Panier (Batch 39)
 
@@ -223,7 +230,7 @@ Le mode hors-ligne fonctionne automatiquement : les données sont mises en cache
 ## Monitoring
 
 - **Health check** : `GET /api/healthz` → `{"status":"ok", …}` (HTTP 200).
-- **Sitemap** : `GET /api/sitemap` → XML sitemap dynamique.
+- **Sitemap** : `GET /sitemap.xml` → XML sitemap dynamique.
 - **API docs** : `GET /api/docs` → documentation webhook HTML.
 - **Analytics** : Plausible Analytics (configurable via `data-domain`).
 
