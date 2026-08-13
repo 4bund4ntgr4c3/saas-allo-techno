@@ -1,6 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { ACCESSORIES } from "@/data/catalog/accessories";
 import { rateLimit } from "@/lib/security";
+
+const MAX_QTY_PER_LINE = 99;
+const MAX_LINES = 100;
+
+// Frais de livraison (miroir côté serveur de getDeliveryOptions en client).
+// Le client ne transmet que l'identifiant : le tarif est toujours serveur.
+const DELIVERY_FEES: Record<string, number> = {
+  retrait: 0,
+  calavi: 1000,
+  cotonou: 2000,
+  interieur: 2000,
+};
+
+const FREE_DELIVERY_FROM = 50_000;
 
 const shopOrderSchema = z.object({
   name: z.string().trim().min(3, "Indiquez votre nom complet.").max(120),
@@ -8,19 +23,18 @@ const shopOrderSchema = z.object({
   email: z.string().trim().email("E-mail invalide").max(180).optional().or(z.literal("")),
   address: z.string().trim().max(300).optional().or(z.literal("")),
   delivery: z.string().trim().min(1).max(120),
+  deliveryId: z.string().trim().min(1).max(40),
   payment: z.string().trim().min(1).max(60),
-  total: z.number().positive(),
   promoCode: z.string().trim().max(20).optional().or(z.literal("")),
   lines: z
     .array(
       z.object({
         slug: z.string().trim().min(1),
-        label: z.string().trim().min(1).max(200),
-        qty: z.number().int().positive(),
-        price: z.number().nonnegative(),
+        qty: z.number().int().min(1).max(MAX_QTY_PER_LINE),
       }),
     )
-    .min(1, "Panier vide"),
+    .min(1, "Panier vide")
+    .max(MAX_LINES, "Panier trop volumineux"),
 });
 
 const PROMO_REASONS = {
@@ -69,48 +83,69 @@ export const submitShopOrder = createServerFn({ method: "POST" })
     }
     const reference = refData as string;
 
+    // Résolution des lignes contre le catalogue : slug inconnu ou quantité
+    // excessive = commande rejetée. Le libellé et le prix affichés sont ceux
+    // du catalogue, jamais ceux fournis par le client.
+    const catalog = new Map(ACCESSORIES.map((a) => [a.slug, a]));
+    const lines = data.lines.map((l) => {
+      const acc = catalog.get(l.slug);
+      if (!acc) throw new Error(`Article inconnu : ${l.slug}`);
+      return { slug: l.slug, name: acc.name, qty: l.qty, unitPrice: acc.price };
+    });
+
+    // Total recalculé intégralement côté serveur :
+    //   sous-total = Σ(prix catalogue × qty)
+    //   livraison  = tarif serveur (gratuite au-delà de 50 000 FCFA)
+    //   remise     = promo validée serveur
+    const subtotal = lines.reduce((n, l) => n + l.qty * l.unitPrice, 0);
+    const fee = DELIVERY_FEES[data.deliveryId];
+    if (fee === undefined) throw new Error("Mode de livraison inconnu.");
+    const shipping = subtotal >= FREE_DELIVERY_FROM ? 0 : fee;
+    const total = subtotal + shipping;
+
     // Réserver le stock avant de créer la commande. En cas d'échec (table
     // non migrée, stock insuffisant), on annule la commande côté client.
     const { reserveInventory } = await import("@/lib/content.functions");
-    for (const line of data.lines) {
+    for (const line of lines) {
       const ok = await reserveInventory(supabaseAdmin, line.slug, line.qty);
       if (!ok) {
         console.warn(`[shop] stock refused for ${line.slug} ×${line.qty}`);
         throw new Error(
-          `Stock insuffisant ou indisponible pour « ${line.label} ». Réessayez plus tard ou contactez-nous.`,
+          `Stock insuffisant ou indisponible pour « ${line.name} ». Réessayez plus tard ou contactez-nous.`,
         );
       }
     }
 
-    const detail = data.lines
-      .map((l) => `• ${l.qty} × ${l.label} — ${l.price.toLocaleString("fr-FR")} FCFA`)
+    const detail = lines
+      .map((l) => `• ${l.qty} × ${l.name} — ${(l.qty * l.unitPrice).toLocaleString("fr-FR")} FCFA`)
       .join("\n");
 
     // Réduction promo (validée côté serveur, jamais client).
     let promoApplied = false;
     let discountAmount = 0;
-    let finalTotal = data.total;
+    let finalTotal = total;
     const code = (data.promoCode ?? "").trim().toUpperCase();
     if (code) {
       const promo = await validatePromoResult(code);
       if (!promo) throw new Error(PROMO_REASONS.CODE_INVALID);
       if ("reason" in promo) throw new Error(PROMO_REASONS[promo.reason]);
-      discountAmount = Math.floor((data.total * promo.percent) / 100);
+      discountAmount = Math.floor((total * promo.percent) / 100);
       promoApplied = true;
-      finalTotal = Math.max(0, data.total - discountAmount);
+      finalTotal = Math.max(0, total - discountAmount);
     }
 
     const message = [
       `Commande ${reference}`,
       detail,
-      `Total : ${data.total.toLocaleString("fr-FR")} FCFA`,
+      `Sous-total : ${subtotal.toLocaleString("fr-FR")} FCFA`,
+      `Livraison : ${shipping === 0 ? "Offerte" : shipping.toLocaleString("fr-FR") + " FCFA"} (${data.delivery})`,
+      `Total : ${total.toLocaleString("fr-FR")} FCFA`,
       promoApplied
         ? `Réduction (promo ${code}) : -${discountAmount.toLocaleString("fr-FR")} FCFA`
         : null,
       promoApplied
-        ? `Total : ${finalTotal.toLocaleString("fr-FR")} FCFA (au lieu de ${data.total.toLocaleString("fr-FR")})`
+        ? `Total : ${finalTotal.toLocaleString("fr-FR")} FCFA (au lieu de ${total.toLocaleString("fr-FR")})`
         : null,
-      `Livraison : ${data.delivery}`,
       `Paiement : ${data.payment}`,
       data.address ? `Adresse : ${data.address}` : null,
     ]

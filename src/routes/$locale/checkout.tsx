@@ -206,14 +206,12 @@ function Checkout() {
           email: form.email,
           address: form.address.trim(),
           delivery: option.label,
+          deliveryId: option.id,
           payment,
-          total,
           promoCode: promoApplied?.code ?? "",
           lines: cart.items.map((i) => ({
             slug: i.accessory.slug,
-            label: i.accessory.name,
             qty: i.qty,
-            price: i.accessory.price,
           })),
         },
       });
