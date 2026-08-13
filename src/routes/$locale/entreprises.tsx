@@ -98,7 +98,9 @@ function Entreprises() {
       <section className="border-b border-border py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <span className="at-eyebrow mb-3 block">{t("entreprises.eyebrow")}</span>
-          <h1 className="at-display text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight">{t("entreprises.title")}</h1>
+          <h1 className="at-display text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight">
+            {t("entreprises.title")}
+          </h1>
           <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base text-muted-foreground">
             {t("entreprises.intro", [COMPANY.city])}
           </p>
@@ -141,7 +143,9 @@ function Entreprises() {
               return (
                 <div key={s.t} className="bg-card p-5 sm:p-6 md:p-8">
                   <Icon className="size-6 text-primary" />
-                  <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight">{t(s.t)}</h3>
+                  <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight">
+                    {t(s.t)}
+                  </h3>
                   <p className="mt-2 text-xs sm:text-sm text-muted-foreground">{t(s.x)}</p>
                 </div>
               );
@@ -164,11 +168,16 @@ function Entreprises() {
                   <span className="at-eyebrow">{t(p.name)}</span>
                   <div className="mt-3 sm:mt-4 font-mono text-2xl sm:text-3xl font-bold">
                     {p.price ? formatFcfa(p.price) : t("entreprises.onQuote")}
-                    <span className="ml-1 text-xs sm:text-sm text-muted-foreground font-normal">{t(p.unit)}</span>
+                    <span className="ml-1 text-xs sm:text-sm text-muted-foreground font-normal">
+                      {t(p.unit)}
+                    </span>
                   </div>
                   <ul className="mt-4 sm:mt-6 space-y-2.5 sm:space-y-3 text-xs sm:text-sm">
                     {p.items.map((i) => (
-                      <li key={i} className="border-b border-border pb-2.5 sm:pb-3 text-muted-foreground">
+                      <li
+                        key={i}
+                        className="border-b border-border pb-2.5 sm:pb-3 text-muted-foreground"
+                      >
                         {t(i)}
                       </li>
                     ))}

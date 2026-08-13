@@ -216,7 +216,10 @@ export function Header() {
                 <Menu className="size-5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-0 flex flex-col justify-between overflow-y-auto bg-card">
+            <SheetContent
+              side="right"
+              className="w-80 p-0 flex flex-col justify-between overflow-y-auto bg-card"
+            >
               <div className="p-6 space-y-6">
                 <div className="flex items-center justify-between border-b border-border pb-4">
                   <SheetTitle className="at-display text-xl font-bold">Allô Techno</SheetTitle>
@@ -224,7 +227,12 @@ export function Header() {
 
                 {/* Primary Action Buttons for Mobile */}
                 <div className="grid grid-cols-2 gap-2">
-                  <Button asChild variant="technical" size="sm" className="w-full text-xs font-bold">
+                  <Button
+                    asChild
+                    variant="technical"
+                    size="sm"
+                    className="w-full text-xs font-bold"
+                  >
                     <Link
                       to="/$locale/reservation"
                       params={{ locale }}
@@ -234,10 +242,7 @@ export function Header() {
                     </Link>
                   </Button>
                   <Button asChild variant="outline" size="sm" className="w-full text-xs font-bold">
-                    <Link
-                      to={user ? "/mon-compte" : "/auth"}
-                      onClick={() => setMobileOpen(false)}
-                    >
+                    <Link to={user ? "/mon-compte" : "/auth"} onClick={() => setMobileOpen(false)}>
                       {user ? t("nav.mon-compte") : t("nav.connexion")}
                     </Link>
                   </Button>
@@ -333,7 +338,10 @@ export function Header() {
               {/* Footer Phone Info */}
               <div className="p-4 border-t border-border bg-surface text-center text-xs text-muted-foreground space-y-1">
                 <span className="at-eyebrow text-[10px] block">{COMPANY.city}</span>
-                <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`} className="font-mono text-sm font-bold text-primary block">
+                <a
+                  href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}
+                  className="font-mono text-sm font-bold text-primary block"
+                >
                   {COMPANY.phone}
                 </a>
               </div>
