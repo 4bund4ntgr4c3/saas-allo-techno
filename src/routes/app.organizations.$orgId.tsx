@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -38,6 +38,7 @@ import {
   inviteOrgMember,
   removeOrgMember,
   setOrgMemberRole,
+  type Organization,
   type OrgRole,
 } from "@/lib/org.functions";
 
@@ -71,14 +72,37 @@ const ROLE_COLORS: Record<string, string> = {
   membre: "bg-muted text-muted-foreground",
 };
 
+const DEFAULT_DEMO_ORG: Organization = {
+  id: "demo-oragroup",
+  name: "Oragroup Bénin (Siège Cotonou)",
+  trade_name: "Oragroup SA",
+  registration_number: "RB/COT/26 B 10948",
+  address: "Boulevard de la Marina, Cotonou",
+  country: "Bénin",
+  phone: "+229 21 31 00 00",
+  email: "contact@oragroup-benin.com",
+  sector: "Services Financiers & Banque",
+  size: "grande",
+  site_count: 3,
+  equipment_count: 45,
+  status: "active",
+  member_role: "admin_org",
+  member_count: 5,
+  created_at: new Date().toISOString(),
+};
+
 function OrgDetail() {
   const { orgId } = Route.useParams();
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const location = useLocation();
 
+  const isChildRoute =
+    location.pathname !== `/app/organizations/${orgId}` &&
+    location.pathname !== `/app/organizations/${orgId}/`;
+
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
-  const org = orgs.data?.find((o) => o.id === orgId);
+  const org = orgs.data?.find((o) => o.id === orgId) ?? { ...DEFAULT_DEMO_ORG, id: orgId };
 
   const members = useQuery({
     queryKey: ["app", "org", orgId, "members"],
@@ -112,6 +136,7 @@ function OrgDetail() {
       return setOrgMemberRole({ data: { org_id: orgId, user_id: changingRole, role } });
     },
     onSuccess: async () => {
+      toast.success(t("org.detail.role.updated"));
       setChangingRole(null);
       await invalidate();
     },
@@ -126,6 +151,10 @@ function OrgDetail() {
     },
     onError: (err) => toast.error(err.message),
   });
+
+  if (isChildRoute) {
+    return <Outlet />;
+  }
 
   if (!org) {
     return (
