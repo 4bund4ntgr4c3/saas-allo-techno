@@ -100,7 +100,7 @@ export const Route = createFileRoute("/api/flutterwave-webhook")({
                       email: reservation.email,
                       phone: reservation.phone,
                       device: reservation.device,
-                      quote_amount: reservation.quote_amount ?? 0,
+                      quote_amount: payment.amount ?? reservation.quote_amount ?? 0,
                     });
                   }
                 }

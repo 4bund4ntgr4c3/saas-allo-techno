@@ -35,7 +35,27 @@ const referenceSchema = z.object({
 const reservationPaySchema = z.object({
   reference: z.string().trim().min(1).max(30),
   method: z.enum(["MTN MoMo", "Moov Money", "Celtiis"]),
+  amount: z.number().int().positive(),
 });
+
+const reservationAmountSchema = z.object({
+  reference: z.string().trim().min(1).max(30),
+  amount: z.number().int().positive(),
+});
+
+/**
+ * Montants acceptés pour le règlement en ligne d'un devis : l'intégralité du
+ * devis, l'acompte de 50 % (arrondi au supérieur), ou le solde restant après
+ * un acompte déjà versé. Tout autre montant est rejeté — le client ne choisit
+ * jamais le montant facturé.
+ */
+function validatedPaymentAmount(quoteAmount: number, amount: number): number | null {
+  if (quoteAmount <= 0) return null;
+  const deposit = Math.ceil(quoteAmount * 0.5);
+  const balance = quoteAmount - deposit;
+  if (amount === quoteAmount || amount === deposit || amount === balance) return amount;
+  return null;
+}
 
 async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
   const authHeader = getRequestHeader("authorization");
@@ -233,9 +253,10 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
 /**
  * Initialise un paiement en ligne Flutterwave (Mobile Money : MTN MoMo,
  * Moov Money, Celtiis) pour le devis approuvé d'une réservation. Le montant
- * est toujours celui du devis (quote_amount), jamais un montant client.
+ * est validé côté serveur : intégralité du devis, ou acompte de 50 %.
  *
- * INPUT  : { reference: string, method: "MTN MoMo" | "Moov Money" | "Celtiis" }
+ * INPUT  : { reference: string, method: "MTN MoMo" | "Moov Money" | "Celtiis",
+ *            amount: number }
  * OUTPUT : { ok: true, url: string | null, paymentRef: string | null,
  *            alreadyPaid: boolean }            — url = lien de checkout à ouvrir
  *            (null si déjà payé) ; paymentRef = id de la ligne payments.
@@ -269,23 +290,27 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
     if (reservation.status !== "confirmee" && !quoteApproved) {
       return { ok: false as const, error: "Ce dossier ne peut pas encore être payé en ligne." };
     }
-    const amount = reservation.quote_amount ?? 0;
-    if (amount <= 0) {
-      return { ok: false as const, error: "Aucun montant de devis à régler." };
+    const amount = validatedPaymentAmount(reservation.quote_amount ?? 0, data.amount);
+    if (amount === null) {
+      return {
+        ok: false as const,
+        error: "Le montant demandé ne correspond pas au devis (total ou acompte de 50 %).",
+      };
     }
 
-    // Idempotence : si un paiement est déjà initié pour cette réservation, on
-    // renvoie son état sans créer de nouvelle transaction.
+    // Idempotence : si le montant demandé a déjà été réglé (dernier paiement
+    // confirmé du même montant), on renvoie l'état sans nouvelle transaction.
+    // Un acompte déjà versé ne bloque pas le règlement du solde restant.
     const { data: existing } = await supabaseAdmin
       .from("payments")
-      .select("id, tx_ref, status")
+      .select("id, tx_ref, status, amount")
       .eq("reference", data.reference)
       .eq("source", "reservation")
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if (existing?.tx_ref && existing.status === "paid") {
+    if (existing?.tx_ref && existing.status === "paid" && existing.amount === amount) {
       trackMetric("payment_processed", { reference: data.reference, source: "reservation" });
       return {
         ok: true as const,
@@ -295,7 +320,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       };
     }
 
-    const tx_ref = `AT-${data.reference}`;
+    const tx_ref = `AT-${data.reference}-${Date.now().toString().slice(-6)}`;
     const redirectUrl = `${getRequestUrl({ xForwardedHost: true }).origin}/mon-compte?ref=${encodeURIComponent(data.reference)}&status=redirect`;
 
     const link = await createFlutterwaveLink({
@@ -350,11 +375,13 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
   });
 
 /**
- * Retourne le statut du dernier paiement d'une réservation (source='reservation').
+ * Retourne le statut du dernier paiement d'une réservation (source='reservation'),
+ * ainsi que le total déjà réglé et le solde restant (acompte possible).
  *
  * INPUT  : { reference: string }
  * OUTPUT : { status: "pending" | "paid" | "failed" | "refunded" | null,
- *            txId: string | null, amount: number | null, method: string | null }
+ *            txId: string | null, amount: number | null, method: string | null,
+ *            paidAmount: number, remaining: number }
  *          — champs null si aucun paiement n'a encore été initié.
  */
 export const getReservationPaymentStatus = createServerFn({ method: "POST" })
@@ -366,34 +393,53 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
-    const { data: payment, error } = await supabaseAdmin
-      .from("payments")
-      .select("status, tx_id, amount, method")
-      .eq("reference", data.reference)
-      .eq("source", "reservation")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const [{ data: payment, error }, quoteRes, paidRes] = await Promise.all([
+      supabaseAdmin
+        .from("payments")
+        .select("status, tx_id, amount, method")
+        .eq("reference", data.reference)
+        .eq("source", "reservation")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("reservations")
+        .select("quote_amount")
+        .eq("reference", data.reference)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("payments")
+        .select("amount")
+        .eq("reference", data.reference)
+        .eq("source", "reservation")
+        .eq("status", "paid"),
+    ]);
 
     if (error) {
       logger.error("reservation status lookup failed", error as Error);
       throw new Error("Impossible de vérifier le paiement. Réessayez.");
     }
 
+    const quoteAmount = quoteRes.data?.quote_amount ?? 0;
+    const paidAmount = (paidRes.data ?? []).reduce((n, p) => n + (p.amount ?? 0), 0);
+
     return {
       status: (payment?.status as PaymentStatus | undefined) ?? null,
       txId: payment?.tx_id ?? null,
       amount: payment?.amount ?? null,
       method: payment?.method ?? null,
+      paidAmount,
+      remaining: Math.max(0, quoteAmount - paidAmount),
     };
   });
 
 /**
  * Précharge un dossier de réservation pour un paiement en ligne : vérifie
- * l'éligibilité (devis approuvé avec montant, ou dossier confirmé) et le
- * statut d'un éventuel paiement déjà initié. Commun aux trois prestataires.
+ * l'éligibilité (devis approuvé avec montant, ou dossier confirmé), valide le
+ * montant demandé (total, acompte de 50 % ou solde restant) et le statut d'un
+ * éventuel paiement déjà initié. Commun aux trois prestataires.
  */
-async function loadReservationForPayment(reference: string) {
+async function loadReservationForPayment(reference: string, amount: number) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
   const { data: reservation, error: fetchError } = await supabaseAdmin
@@ -412,45 +458,54 @@ async function loadReservationForPayment(reference: string) {
   if (reservation.status !== "confirmee" && !quoteApproved) {
     return { error: "Ce dossier ne peut pas encore être payé en ligne." } as const;
   }
-  const amount = reservation.quote_amount ?? 0;
-  if (amount <= 0) {
-    return { error: "Aucun montant de devis à régler." } as const;
+  const validated = validatedPaymentAmount(reservation.quote_amount ?? 0, amount);
+  if (validated === null) {
+    return {
+      error:
+        "Le montant demandé ne correspond pas au devis (total, acompte de 50 % ou solde restant).",
+    } as const;
   }
 
-  // Idempotence : si un paiement est déjà initié pour cette réservation, on
-  // renvoie son état sans créer une nouvelle transaction.
+  // Idempotence : si le montant demandé a déjà été réglé (dernier paiement
+  // confirmé du même montant), on renvoie l'état sans nouvelle transaction.
+  // Un acompte déjà versé ne bloque pas le règlement du solde restant.
   const { data: existing } = await supabaseAdmin
     .from("payments")
-    .select("id, tx_ref, status")
+    .select("id, tx_ref, status, amount")
     .eq("reference", reference)
     .eq("source", "reservation")
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  if (existing?.tx_ref && existing.status === "paid") {
+  if (existing?.tx_ref && existing.status === "paid" && existing.amount === validated) {
     return {
       alreadyPaid: true as const,
       paymentRef: existing.id,
       reservation,
-      amount,
+      amount: validated,
     };
   }
 
-  return { alreadyPaid: false as const, paymentRef: existing?.id ?? null, reservation, amount };
+  return {
+    alreadyPaid: false as const,
+    paymentRef: existing?.id ?? null,
+    reservation,
+    amount: validated,
+  };
 }
 
 /**
  * Initialise un paiement FedaPay pour le devis approuvé d'une réservation.
- * Le montant est toujours celui du devis (quote_amount). FedaPay expose un
- * lien de checkout hébergé (payment_url) ouvert par le client.
+ * Le montant est validé côté serveur (total, acompte de 50 % ou solde restant).
+ * FedaPay expose un lien de checkout hébergé (payment_url) ouvert par le client.
  *
- * INPUT  : { reference: string }
+ * INPUT  : { reference: string, amount: number }
  * OUTPUT : même forme que initiateReservationPayment
  *          ({ ok, url, paymentRef, alreadyPaid } | { ok: false, error }).
  */
 export const initiateFedaPayReservationPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => referenceSchema.parse(data))
+  .inputValidator((data: unknown) => reservationAmountSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
@@ -468,7 +523,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
       };
     }
 
-    const loaded = await loadReservationForPayment(data.reference);
+    const loaded = await loadReservationForPayment(data.reference, data.amount);
     if ("error" in loaded) {
       return { ok: false as const, error: loaded.error };
     }
@@ -482,7 +537,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
     }
 
     const { reservation, amount } = loaded;
-    const tx_ref = `AT-${data.reference}`;
+    const tx_ref = `AT-${data.reference}-${Date.now().toString().slice(-6)}`;
     const origin = getRequestUrl({ xForwardedHost: true }).origin;
 
     // FedaPay attend les prénom / nom séparément ; on découpe le nom complet.
@@ -576,13 +631,14 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
 /**
  * Initialise un lien KKiaPay pour le devis approuvé d'une réservation
  * (Mobile Money). KKiaPay renvoie une URL (page ou mobile) à ouvrir par le
- * client ; le webhook confirmera la transaction.
+ * client ; le webhook confirmera la transaction. Le montant est validé côté
+ * serveur (total, acompte de 50 % ou solde restant).
  *
- * INPUT  : { reference: string }
+ * INPUT  : { reference: string, amount: number }
  * OUTPUT : même forme que initiateReservationPayment.
  */
 export const initiateKkiapayReservationPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => referenceSchema.parse(data))
+  .inputValidator((data: unknown) => reservationAmountSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
@@ -601,7 +657,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
       };
     }
 
-    const loaded = await loadReservationForPayment(data.reference);
+    const loaded = await loadReservationForPayment(data.reference, data.amount);
     if ("error" in loaded) {
       return { ok: false as const, error: loaded.error };
     }
@@ -615,7 +671,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
     }
 
     const { reservation, amount } = loaded;
-    const tx_ref = `AT-${data.reference}`;
+    const tx_ref = `AT-${data.reference}-${Date.now().toString().slice(-6)}`;
 
     // KKiaPay attend le numéro avec l'indicatif pays (« +229… »).
     const phoneDigits = reservation.phone.replace(/\D/g, "");

@@ -103,9 +103,25 @@ export const submitShopOrder = createServerFn({ method: "POST" })
     const shipping = subtotal >= FREE_DELIVERY_FROM ? 0 : fee;
     const total = subtotal + shipping;
 
+    // Réduction promo (validée côté serveur, jamais client). SANS EFFET DE
+    // BORDE : elle est contrôlée AVANT la réservation du stock, pour ne pas
+    // retenir de marchandise si le code est invalide.
+    let promoApplied = false;
+    let discountAmount = 0;
+    let finalTotal = total;
+    const code = (data.promoCode ?? "").trim().toUpperCase();
+    if (code) {
+      const promo = await validatePromoResult(code);
+      if (!promo) throw new Error(PROMO_REASONS.CODE_INVALID);
+      if ("reason" in promo) throw new Error(PROMO_REASONS[promo.reason]);
+      discountAmount = Math.floor((total * promo.percent) / 100);
+      promoApplied = true;
+      finalTotal = Math.max(0, total - discountAmount);
+    }
+
     // Réserver le stock avant de créer la commande. En cas d'échec (table
     // non migrée, stock insuffisant), on annule la commande côté client.
-    const { reserveInventory } = await import("@/lib/content.functions");
+    const { reserveInventory, restoreInventory } = await import("@/lib/content.functions");
     for (const line of lines) {
       const ok = await reserveInventory(supabaseAdmin, line.slug, line.qty);
       if (!ok) {
@@ -119,20 +135,6 @@ export const submitShopOrder = createServerFn({ method: "POST" })
     const detail = lines
       .map((l) => `• ${l.qty} × ${l.name} — ${(l.qty * l.unitPrice).toLocaleString("fr-FR")} FCFA`)
       .join("\n");
-
-    // Réduction promo (validée côté serveur, jamais client).
-    let promoApplied = false;
-    let discountAmount = 0;
-    let finalTotal = total;
-    const code = (data.promoCode ?? "").trim().toUpperCase();
-    if (code) {
-      const promo = await validatePromoResult(code);
-      if (!promo) throw new Error(PROMO_REASONS.CODE_INVALID);
-      if ("reason" in promo) throw new Error(PROMO_REASONS[promo.reason]);
-      discountAmount = Math.floor((total * promo.percent) / 100);
-      promoApplied = true;
-      finalTotal = Math.max(0, total - discountAmount);
-    }
 
     const message = [
       `Commande ${reference}`,
@@ -152,6 +154,8 @@ export const submitShopOrder = createServerFn({ method: "POST" })
       .filter(Boolean)
       .join("\n");
 
+    // Enregistrement de la commande : en cas d'échec, le stock réservé est
+    // restitué (best-effort) pour ne pas bloquer de marchandise.
     const { error } = await supabaseAdmin.from("leads").insert({
       source: "boutique",
       reference,
@@ -164,6 +168,10 @@ export const submitShopOrder = createServerFn({ method: "POST" })
 
     if (error) {
       console.error("[shop] insert failed", error);
+      for (const line of lines) {
+        const ok = await restoreInventory(supabaseAdmin, line.slug, line.qty);
+        if (!ok) console.warn(`[shop] stock restore failed for ${line.slug} ×${line.qty}`);
+      }
       throw new Error("La commande n'a pas pu être enregistrée. Réessayez.");
     }
 

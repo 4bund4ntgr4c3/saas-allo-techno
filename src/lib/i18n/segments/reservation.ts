@@ -208,6 +208,8 @@ const fr = {
   "reservation.pay.deposit.note":
     "L'acompte lance la réparation. Le solde sera à régler à la récupération.",
   "reservation.pay.deposit.amount": "Acompte : {0} FCFA",
+  "reservation.pay.deposit.paid":
+    "Acompte versé : {0} FCFA — il reste {1} FCFA à régler à la récupération.",
 
   // Garantie
   "reservation.warranty.standard": "Garantie standard (6 mois)",
@@ -434,6 +436,8 @@ const en = {
   "reservation.pay.full": "Pay full amount",
   "reservation.pay.deposit.note": "The deposit starts the repair. Balance due at pickup.",
   "reservation.pay.deposit.amount": "Deposit: {0} FCFA",
+  "reservation.pay.deposit.paid":
+    "Deposit paid: {0} FCFA — {1} FCFA still due at pickup.",
 
   // Warranty
   "reservation.warranty.standard": "Standard warranty (6 months)",

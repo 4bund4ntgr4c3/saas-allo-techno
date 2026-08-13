@@ -30,6 +30,12 @@ export function RefundsSection() {
   const [query, setQuery] = useState("");
   const [confirmPayment, setConfirmPayment] = useState<RefundablePayment | null>(null);
   const [reason, setReason] = useState("");
+  const [manualConfirmed, setManualConfirmed] = useState(false);
+
+  // FedaPay / KKiaPay n'exposent pas d'API de remboursement : le staff doit
+  // l'effectuer depuis leur dashboard puis le confirmer ici.
+  const needsManualRefund =
+    confirmPayment?.method === "FedaPay" || confirmPayment?.method === "KKiaPay";
 
   const payments = useQuery({
     queryKey: ["admin-refundable-payments"],
@@ -39,12 +45,19 @@ export function RefundsSection() {
   const doRefund = useMutation({
     mutationFn: async () => {
       if (!confirmPayment) return;
-      await refundFn({ data: { paymentId: confirmPayment.id, reason: reason.trim() } });
+      await refundFn({
+        data: {
+          paymentId: confirmPayment.id,
+          reason: reason.trim(),
+          manual: needsManualRefund ? manualConfirmed : undefined,
+        },
+      });
     },
     onSuccess: () => {
       toast.success(t("admin.refunds.toast.refundRecorded"));
       setConfirmPayment(null);
       setReason("");
+      setManualConfirmed(false);
       queryClient.invalidateQueries({ queryKey: ["admin-refundable-payments"] });
     },
     onError: (err: unknown) =>
@@ -109,6 +122,7 @@ export function RefundsSection() {
                   onClick={() => {
                     setConfirmPayment(p);
                     setReason("");
+                    setManualConfirmed(false);
                   }}
                 >
                   {t("admin.refunds.refundButton")}
@@ -130,6 +144,7 @@ export function RefundsSection() {
           if (!open) {
             setConfirmPayment(null);
             setReason("");
+            setManualConfirmed(false);
           }
         }}
       >
@@ -161,6 +176,29 @@ export function RefundsSection() {
               {t("admin.refunds.form.reasonRequired")}
             </p>
           )}
+          {needsManualRefund && (
+            <>
+              <label className="flex items-start gap-2 border border-border bg-muted/30 p-3 text-xs">
+                <input
+                  type="checkbox"
+                  checked={manualConfirmed}
+                  onChange={(e) => setManualConfirmed(e.target.checked)}
+                  className="mt-0.5 size-4 accent-primary"
+                />
+                <span>
+                  <span className="font-medium">
+                    {t("admin.refunds.manual.label", [confirmPayment?.method ?? ""])}
+                  </span>
+                  {!manualConfirmed && (
+                    <span className="mt-1 flex items-center gap-1.5 text-muted-foreground">
+                      <AlertCircle className="size-3" />
+                      {t("admin.refunds.manual.required")}
+                    </span>
+                  )}
+                </span>
+              </label>
+            </>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
@@ -168,13 +206,16 @@ export function RefundsSection() {
               onClick={() => {
                 setConfirmPayment(null);
                 setReason("");
+                setManualConfirmed(false);
               }}
             >
               {t("admin.webhooks.form.cancel")}
             </Button>
             <Button
               variant="technical"
-              disabled={doRefund.isPending || !reason.trim()}
+              disabled={
+                doRefund.isPending || !reason.trim() || (needsManualRefund && !manualConfirmed)
+              }
               onClick={() => doRefund.mutate()}
             >
               {doRefund.isPending

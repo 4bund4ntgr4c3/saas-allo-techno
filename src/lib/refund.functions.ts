@@ -12,6 +12,9 @@ const logger = createLogger("refund");
 const initiateRefundSchema = z.object({
   paymentId: z.string().uuid(),
   reason: z.string().trim().min(1, "Le motif du remboursement est requis.").max(500),
+  // Confirmation du staff pour les prestataires sans API de remboursement
+  // (FedaPay, KKiaPay) : le remboursement s'effectue depuis leur dashboard.
+  manual: z.boolean().optional(),
 });
 
 const listRefundableSchema = z.object({});
@@ -133,7 +136,7 @@ export const initiateRefund = createServerFn({ method: "POST" })
 
     const { data: payment, error: fetchError } = await supabaseAdmin
       .from("payments")
-      .select("id, reference, amount, status, source")
+      .select("id, reference, amount, status, source, method, tx_id, provider_tx_id")
       .eq("id", data.paymentId)
       .maybeSingle();
 
@@ -148,6 +151,31 @@ export const initiateRefund = createServerFn({ method: "POST" })
       );
     }
 
+    // ── Remboursement réel auprès du prestataire ──────────────────────────
+    // Flutterwave expose une API de remboursement ; FedaPay et KKiaPay non
+    // (dashboard uniquement) ; les encaissements comptoir (espèces / Mobile
+    // Money local) sont réglés sur place. Un paiement n'est marqué « refunded »
+    // qu'après l'accord du prestataire ou la confirmation manuelle du staff.
+    const isFlutterwaveBacked = ["MTN MoMo", "Moov Money", "Celtiis"].includes(
+      payment.method ?? "",
+    );
+
+    if (isFlutterwaveBacked) {
+      const txId = payment.tx_id;
+      if (!txId) {
+        throw new Error(
+          "Impossible de rembourser automatiquement : aucune référence de transaction Flutterwave. Contactez le support.",
+        );
+      }
+      await refundFlutterwaveTransaction(txId, payment.amount, data.reason);
+    } else if (payment.method === "FedaPay" || payment.method === "KKiaPay") {
+      if (data.manual !== true) {
+        throw new Error(
+          `Le remboursement ${payment.method} s'effectue depuis le dashboard ${payment.method} (aucune API de remboursement). Après l'avoir effectué, confirmez dans le formulaire.`,
+        );
+      }
+    }
+
     const { error: updateError } = await supabaseAdmin
       .from("payments")
       .update({ status: "refunded" })
@@ -156,6 +184,18 @@ export const initiateRefund = createServerFn({ method: "POST" })
     if (updateError) {
       logger.error("payment refund update failed", updateError as Error);
       throw new Error("Impossible de marquer le paiement comme remboursé.");
+    }
+
+    // Reporte le statut sur la réservation liée (source='reservation').
+    if (payment.source === "reservation") {
+      const { error: rpcError } = await supabaseAdmin.rpc("update_reservation_payment", {
+        _reference: payment.reference,
+        _status: "refunded",
+        _tx_id: "",
+      });
+      if (rpcError) {
+        logger.error("reservation refund sync failed", rpcError as Error);
+      }
     }
 
     try {
@@ -168,6 +208,8 @@ export const initiateRefund = createServerFn({ method: "POST" })
           reference: payment.reference,
           amount: payment.amount,
           source: payment.source,
+          method: payment.method,
+          manual: payment.method === "FedaPay" || payment.method === "KKiaPay" || undefined,
           reason: data.reason,
         },
       });
@@ -179,8 +221,63 @@ export const initiateRefund = createServerFn({ method: "POST" })
       paymentId: data.paymentId,
       reference: payment.reference,
       amount: payment.amount,
+      method: payment.method,
       reason: data.reason,
     });
 
     return { success: true } as const;
   });
+
+/**
+ * Demande un remboursement Flutterwave (v3). La transaction doit être
+ * identifiée par son id technique (payments.tx_id, posé par le webhook).
+ * Lance une erreur si le prestataire refuse — le statut n'est alors PAS
+ * modifié.
+ */
+async function refundFlutterwaveTransaction(
+  txId: string,
+  amount: number,
+  reason: string,
+): Promise<void> {
+  const secret = process.env["FLUTTERWAVE_SECRET_KEY"];
+  if (!secret) {
+    throw new Error("Remboursement en ligne indisponible : clé Flutterwave absente.");
+  }
+  try {
+    const res = await fetch(
+      `https://api.flutterwave.com/v3/transactions/${encodeURIComponent(txId)}/refund`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${secret}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          comment: reason.slice(0, 200),
+        }),
+      },
+    );
+    const body = (await res.json().catch(() => null)) as {
+      status?: string;
+      message?: string;
+    } | null;
+    if (!res.ok || body?.status !== "success") {
+      logger.error("Flutterwave refund refused", new Error(`HTTP ${res.status}`), {
+        status: res.status,
+        message: body?.message ?? null,
+      });
+      throw new Error(
+        `Le remboursement a été refusé par Flutterwave (${body?.message ?? `HTTP ${res.status}`}). Aucune modification n'a été enregistrée.`,
+      );
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith("Le remboursement a été refusé")) {
+      throw err;
+    }
+    logger.error("Flutterwave refund network error", err as Error);
+    throw new Error(
+      "Impossible de joindre Flutterwave pour le remboursement. Aucune modification n'a été enregistrée.",
+    );
+  }
+}

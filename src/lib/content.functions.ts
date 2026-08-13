@@ -351,6 +351,23 @@ export async function reserveInventory(
   return Boolean(data);
 }
 
+/** Ré-incrémente atomiquement le stock (annulation / échec de commande). service_role uniquement. */
+export async function restoreInventory(
+  supabaseAdmin: SupabaseClient<Database>,
+  slug: string,
+  qty: number,
+): Promise<boolean> {
+  const { data, error } = await supabaseAdmin.rpc("increment_inventory", {
+    _slug: slug,
+    _qty: qty,
+  });
+  if (error) {
+    console.error("[inventory] increment failed", error);
+    return false;
+  }
+  return Boolean(data);
+}
+
 // ---------------------------------------------------------------------------
 // Alertes stock bas
 // ---------------------------------------------------------------------------

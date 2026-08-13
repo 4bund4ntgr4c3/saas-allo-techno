@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Search, CheckCircle2, Printer, Receipt, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
+import { recordPosPayment, type PosReceipt } from "@/lib/pos.functions";
 
 interface PosReservation {
   id: string;
@@ -43,18 +45,7 @@ export function AdminPOS() {
   const [amountReceived, setAmountReceived] = useState<string>("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [lastReceipt, setLastReceipt] = useState<{
-    receiptId: string;
-    date: string;
-    customerName: string;
-    customerPhone: string;
-    items: PosItem[];
-    totalAmount: number;
-    paymentMethod: "especes" | "mtn" | "moov" | "celtiis";
-    amountReceived: number;
-    changeDue: number;
-    reservationRef: string | null;
-  } | null>(null);
+  const [lastReceipt, setLastReceipt] = useState<PosReceipt | null>(null);
 
   // Search reservations
   const reservationsQuery = useQuery({
@@ -114,44 +105,27 @@ export function AdminPOS() {
   const changeDue = Math.max(0, receivedNum - totalAmount);
 
   // Checkout Mutation
+  const checkoutFn = useServerFn(recordPosPayment);
   const checkoutMutation = useMutation({
     mutationFn: async () => {
       if (totalAmount <= 0) throw new Error("Le panier est vide");
 
-      const paymentRef = `POS-${Date.now().toString().slice(-6)}`;
-
-      // 1. Insert into payments table
-      const { error: payError } = await supabase.from("payments").insert({
-        reference: selectedReservation?.reference ?? paymentRef,
-        amount: totalAmount,
-        method: paymentMethod,
-        status: "paid",
-      } as never);
-      if (payError) console.warn("Payment insert:", payError);
-
-      // 2. If attached to a reservation, update reservation status
-      if (selectedReservation) {
-        await supabase
-          .from("reservations")
-          .update({
-            payment_status: "paid",
-            status: "terminee",
-          } as never)
-          .eq("id", selectedReservation.id);
-      }
-
-      return {
-        receiptId: paymentRef,
-        date: new Date().toLocaleString("fr-FR"),
-        customerName: customerName || "Client Comptoir",
-        customerPhone,
-        items: [...cartItems],
-        totalAmount,
-        paymentMethod,
-        amountReceived: receivedNum || totalAmount,
-        changeDue: paymentMethod === "especes" ? changeDue : 0,
-        reservationRef: selectedReservation?.reference ?? null,
-      };
+      // L'encaissement passe par la serverFn (staff) : le montant est
+      // recalculé côté serveur et la ligne `payments` est insérée avec le
+      // rôle service (l'insertion directe est bloquée par RLS).
+      return checkoutFn({
+        data: {
+          reservationId: selectedReservation?.id ?? null,
+          items: cartItems.map((it) => ({
+            slug: it.id.startsWith("quote-") ? "quote" : it.id,
+            qty: it.quantity,
+          })),
+          method: paymentMethod,
+          customerName: customerName.trim() || "Client Comptoir",
+          customerPhone: customerPhone.trim(),
+          amountReceived: paymentMethod === "especes" ? receivedNum || totalAmount : undefined,
+        },
+      });
     },
     onSuccess: (receipt) => {
       setLastReceipt(receipt);

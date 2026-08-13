@@ -2592,6 +2592,10 @@ export type Database = {
         Args: { _qty: number; _slug: string };
         Returns: boolean;
       };
+      increment_inventory: {
+        Args: { _qty: number; _slug: string };
+        Returns: boolean;
+      };
       delete_equipment: { Args: { _equipment_id: string }; Returns: boolean };
       delete_org_site: { Args: { _site_id: string }; Returns: boolean };
       delete_warranty: { Args: { _warranty_id: string }; Returns: boolean };

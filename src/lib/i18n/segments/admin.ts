@@ -564,6 +564,9 @@ const fr = {
   "admin.refunds.form.reason": "Motif du remboursement",
   "admin.refunds.form.reasonPlaceholder": "Indiquez la raison du remboursement…",
   "admin.refunds.form.reasonRequired": "Un motif est requis pour créer l'entrée d'audit.",
+  "admin.refunds.manual.label":
+    "J'ai effectué le remboursement sur le dashboard {0} (ce prestataire n'expose pas d'API de remboursement).",
+  "admin.refunds.manual.required": "Confirmez le remboursement manuel pour continuer.",
   "admin.refunds.toast.refundRecorded": "Remboursement enregistré",
   "admin.refunds.error.refundFailed": "Remboursement impossible",
 
@@ -1600,6 +1603,9 @@ const en = {
   "admin.refunds.form.reason": "Refund reason",
   "admin.refunds.form.reasonPlaceholder": "Enter the reason for the refund…",
   "admin.refunds.form.reasonRequired": "A reason is required to create the audit entry.",
+  "admin.refunds.manual.label":
+    "I have processed the refund on the {0} dashboard (this provider has no refund API).",
+  "admin.refunds.manual.required": "Confirm the manual refund to continue.",
   "admin.refunds.toast.refundRecorded": "Refund recorded",
   "admin.refunds.error.refundFailed": "Refund failed",
 
