@@ -36,7 +36,8 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const { BRANDS, DEVICES, POSTS, ACCESSORIES } = await import("@/data/catalog");
+        const { DEVICES } = await import("@/data/catalog/devices");
+        const { BRANDS, POSTS, ACCESSORIES } = await import("@/data/catalog");
         const { QUARTIER_INFO } = await import("@/data/local-seo");
         const origin = new URL(request.url).origin;
 

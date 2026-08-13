@@ -28,7 +28,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { DialogTitle } from "@/components/ui/dialog";
-import { ACCESSORIES, BRANDS, CATEGORIES, DEVICES, FAQ, POSTS, brandName } from "@/data/catalog";
+import { DEVICES } from "@/data/catalog/devices";
+import { ACCESSORIES, BRANDS, CATEGORIES, FAQ, POSTS, brandName } from "@/data/catalog";
 import { SEARCH_OPEN_EVENT } from "@/lib/search-events";
 import { useI18n } from "@/lib/i18n/context";
 

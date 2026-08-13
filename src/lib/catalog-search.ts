@@ -1,4 +1,5 @@
-import { DEVICES, brandName, type Device } from "@/data/catalog";
+import { DEVICES, type Device } from "@/data/catalog/devices";
+import { brandName } from "@/data/catalog";
 
 /** Normalize text: strip accents, punctuation, lowercase */
 export const normalizeText = (s: string) =>

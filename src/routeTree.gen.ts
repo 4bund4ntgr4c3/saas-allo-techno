@@ -53,7 +53,6 @@ import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
 import { Route as ApiIcalRouteImport } from './routes/api.ical'
 import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
 import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
-import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppGroupDashboardRouteImport } from './routes/app.group-dashboard'
 import { Route as AppScanRouteImport } from './routes/app.scan'
@@ -327,11 +326,6 @@ const ApiKkiapayWebhookRoute = ApiKkiapayWebhookRouteImport.update({
 const ApiPushSubscribeRoute = ApiPushSubscribeRouteImport.update({
   id: '/api/push-subscribe',
   path: '/api/push-subscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSitemapRoute = ApiSitemapRouteImport.update({
-  id: '/api/sitemap',
-  path: '/api/sitemap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -679,7 +673,6 @@ export interface FileRoutesByFullPath {
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
-  '/api/sitemap': typeof ApiSitemapRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
   '/$locale/': typeof LocaleIndexRoute
@@ -776,7 +769,6 @@ export interface FileRoutesByTo {
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
-  '/api/sitemap': typeof ApiSitemapRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
   '/$locale': typeof LocaleIndexRoute
@@ -878,7 +870,6 @@ export interface FileRoutesById {
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
-  '/api/sitemap': typeof ApiSitemapRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
   '/$locale/': typeof LocaleIndexRoute
@@ -980,7 +971,6 @@ export interface FileRouteTypes {
     | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
-    | '/api/sitemap'
     | '/app/group-dashboard'
     | '/app/scan'
     | '/$locale/'
@@ -1077,7 +1067,6 @@ export interface FileRouteTypes {
     | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
-    | '/api/sitemap'
     | '/app/group-dashboard'
     | '/app/scan'
     | '/$locale'
@@ -1178,7 +1167,6 @@ export interface FileRouteTypes {
     | '/api/ical'
     | '/api/kkiapay-webhook'
     | '/api/push-subscribe'
-    | '/api/sitemap'
     | '/app/group-dashboard'
     | '/app/scan'
     | '/$locale/'
@@ -1252,7 +1240,6 @@ export interface RootRouteChildren {
   ApiIcalRoute: typeof ApiIcalRoute
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
   ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
-  ApiSitemapRoute: typeof ApiSitemapRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
 }
 
@@ -1564,13 +1551,6 @@ declare module '@tanstack/react-router' {
       path: '/api/push-subscribe'
       fullPath: '/api/push-subscribe'
       preLoaderRoute: typeof ApiPushSubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/sitemap': {
-      id: '/api/sitemap'
-      path: '/api/sitemap'
-      fullPath: '/api/sitemap'
-      preLoaderRoute: typeof ApiSitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -2209,7 +2189,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiIcalRoute: ApiIcalRoute,
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
   ApiPushSubscribeRoute: ApiPushSubscribeRoute,
-  ApiSitemapRoute: ApiSitemapRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,
 }
 export const routeTree = rootRouteImport

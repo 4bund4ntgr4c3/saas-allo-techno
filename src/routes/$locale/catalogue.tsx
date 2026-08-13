@@ -3,7 +3,9 @@ import { useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
-import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
+import { DEVICES } from "@/data/catalog/devices";
+import { BRANDS, CATEGORIES, brandName } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 import { searchDevices } from "@/lib/catalog-search";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -38,12 +40,13 @@ export const Route = createFileRoute("/$locale/catalogue")({
       { q: translate(locale, "faq.catalogue.q2"), a: translate(locale, "faq.catalogue.a2") },
       { q: translate(locale, "faq.catalogue.q3"), a: translate(locale, "faq.catalogue.a3") },
     ]);
+    const deviceCount = BRANDS.reduce((acc, b) => acc + b.devices.length, 0);
     return {
       meta: [
-        { title: translate(locale, "catalogue.meta.title", [DEVICES.length]) },
+        { title: translate(locale, "catalogue.meta.title", [deviceCount]) },
         {
           name: "description",
-          content: translate(locale, "catalogue.meta.description", [DEVICES.length]),
+          content: translate(locale, "catalogue.meta.description", [deviceCount]),
         },
         { property: "og:title", content: translate(locale, "catalogue.meta.ogTitle") },
         {

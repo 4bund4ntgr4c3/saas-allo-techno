@@ -84,7 +84,8 @@ export const Route = createFileRoute("/api/v1/$")({
           }
 
           case "devices": {
-            const { DEVICES, brandName } = await import("@/data/catalog");
+            const { DEVICES } = await import("@/data/catalog/devices");
+            const { brandName } = await import("@/data/catalog");
             const brand = url.searchParams.get("brand");
             const category = url.searchParams.get("category");
             let devices = DEVICES;
@@ -105,7 +106,8 @@ export const Route = createFileRoute("/api/v1/$")({
           }
 
           case "brands": {
-            const { DEVICES, brandName } = await import("@/data/catalog");
+            const { DEVICES } = await import("@/data/catalog/devices");
+            const { brandName } = await import("@/data/catalog");
             const brands = [...new Set(DEVICES.map((d) => d.brand))].map((b) => ({
               slug: b,
               name: brandName(b),

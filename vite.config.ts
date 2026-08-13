@@ -45,20 +45,32 @@ export default defineConfig(async ({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id: string) {
-            // Regrouper les données du catalogue (DEVICES, marques, helpers) dans
-            // un chunk dédié, chargé uniquement par les routes qui en ont besoin —
-            // pas dans le bundle initial du premier rendu.
-            if (id.includes("/src/data/catalog/")) return "catalog";
-
-            // Heavy charting library → separate chunk (admin-only)
-            if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
-              return "vendor-charts";
+            // Données du catalogue (DEVICES) : module dédié hors du premier rendu.
+            // Le barrel (index.ts) est léger (company/static/accessories) et ne
+            // re-exporte pas DEVICES ; ./devices est importé uniquement par des
+            // routes lazy (ou en import dynamique depuis les loaders) — il forme
+            // donc un chunk partagé chargé à la demande.
+            if (id.includes("/src/data/catalog/devices")) {
+              return "catalog";
             }
 
-            // PDF generation (admin reports/invoices) → separate chunk
-            if (id.includes("node_modules/jspdf") || id.includes("node_modules/qrcode")) {
-              return "vendor-pdf";
+            // React core → chunk dédié chargé avec l'entrée, séparé des libs
+            // lourdes (recharts/d3) pour ne pas embarquer les graphiques admin
+            // dans le premier rendu.
+            if (id.includes("node_modules/react") || id.includes("node_modules/scheduler")) {
+              return "vendor-react";
             }
+
+            // Heavy charting library → separate chunk (admin-only).
+            // Note: pas de règle ici — recharts/d3 sont tous importés en lazy
+            // (AdminKpis, StatsDashboard, AdminAnalyticsAdvanced, chart.tsx) ;
+            // ils forment naturellement un chunk partagé hors du premier rendu.
+
+            // PDF generation (admin reports/invoices) → separate chunk.
+            // Note: règle retirée — le helper __vitePreload (partagé) était
+            // hébergé dans ce chunk et tirait jspdf dans le premier rendu.
+            // jspdf/qrcode sont tous importés en lazy (suivi, mon-compte,
+            // dossiers, devis...) et forment naturellement un chunk partagé.
 
             // Excel export (admin) → separate chunk
             if (id.includes("node_modules/xlsx")) {

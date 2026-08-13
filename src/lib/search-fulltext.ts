@@ -1,4 +1,5 @@
-import { DEVICES, brandName } from "@/data/catalog";
+import { DEVICES } from "@/data/catalog/devices";
+import { brandName } from "@/data/catalog";
 import { POSTS } from "@/data/catalog/static";
 
 export interface SearchResult {

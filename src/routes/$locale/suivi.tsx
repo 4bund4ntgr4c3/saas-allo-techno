@@ -23,7 +23,6 @@ import { QrCode } from "@/components/site/QrCode";
 import { ReschedulePanel } from "@/components/site/ReschedulePanel";
 import { ReservationPayBlock } from "@/components/site/ReservationPayBlock";
 import { Button } from "@/components/ui/button";
-import { downloadInvoicePdf, downloadQuotePdf, downloadTimelinePdf } from "@/lib/invoice";
 import {
   getReservationTracking,
   type ReservationStatus,
@@ -411,14 +410,22 @@ function StatusResult({
       <div className="mt-6 flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
         <p className="max-w-sm text-sm text-muted-foreground">{t("suivi.qr.hint")}</p>
         <div className="flex flex-wrap items-center gap-6">
-          <Button variant="outline" size="sm" onClick={() => downloadInvoicePdf(result)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void import("@/lib/invoice").then((m) => m.downloadInvoicePdf(result))}
+          >
             <FileDown className="mr-2 size-4" />
             {t("suivi.invoice")}
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => void downloadTimelinePdf({ ...result, history: timeline })}
+            onClick={() =>
+              void import("@/lib/invoice").then((m) =>
+                m.downloadTimelinePdf({ ...result, history: timeline }),
+              )
+            }
           >
             <FileDown className="mr-2 size-4" />
             {t("suivi.timelinePdf")}
@@ -437,18 +444,20 @@ function StatusResult({
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  downloadQuotePdf({
-                    reference: result.reference,
-                    customer_name: result.customer_name,
-                    phone: result.phone,
-                    email: result.email,
-                    device: result.device,
-                    issue: result.issue,
-                    quote_amount: result.quote_amount ?? 0,
-                    warranty_months: result.warranty_months,
-                    quote_token: result.quote_token ?? "",
-                    created_at: result.created_at,
-                  })
+                  void import("@/lib/invoice").then((m) =>
+                    m.downloadQuotePdf({
+                      reference: result.reference,
+                      customer_name: result.customer_name,
+                      phone: result.phone,
+                      email: result.email,
+                      device: result.device,
+                      issue: result.issue,
+                      quote_amount: result.quote_amount ?? 0,
+                      warranty_months: result.warranty_months,
+                      quote_token: result.quote_token ?? "",
+                      created_at: result.created_at,
+                    }),
+                  )
                 }
               >
                 <FileDown className="mr-2 size-4" />

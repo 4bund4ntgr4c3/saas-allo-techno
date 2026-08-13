@@ -1,5 +1,5 @@
 import { ClipboardCheck, Cpu, ShieldCheck, Wrench } from "lucide-react";
-import { formatFcfa } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import type { Estimate } from "@/lib/estimate";
 

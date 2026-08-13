@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useCart } from "@/components/shop/cart";
 import { useI18n } from "@/lib/i18n/context";
-import { formatFcfa } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 
 export function CartDrawer() {
   const { items, count, subtotal, setQty, remove, drawerOpen, closeDrawer } = useCart();

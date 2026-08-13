@@ -1,13 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  familyOf,
-  brandBySlug,
-  devicesOfBrand,
-  deviceBySlug,
-  brandName,
-  BRANDS,
-  DEVICES,
-} from "@/data/catalog";
+import { devicesOfBrand, deviceBySlug, DEVICES } from "@/data/catalog/devices";
+import { familyOf, brandBySlug, brandName, BRANDS } from "@/data/catalog";
 
 describe("familyOf", () => {
   it("removes brand prefix", () => {

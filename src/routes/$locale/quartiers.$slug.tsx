@@ -5,7 +5,7 @@ import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { LeadForm } from "@/components/site/LeadForm";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { Button } from "@/components/ui/button";
-import { BRANDS } from "@/data/catalog";
+import { BRANDS } from "@/data/catalog/static";
 import { QUARTIERS, quartierBySlug, type QuartierInfo } from "@/data/local-seo";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";

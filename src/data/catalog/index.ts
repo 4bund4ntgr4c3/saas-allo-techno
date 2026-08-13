@@ -1,61 +1,20 @@
 // Catalogue Allô Techno — données de démonstration (marques, appareils, pannes,
 // tarifs, accessoires, blog, FAQ, avis). Source unique pour tout le site.
 //
-// Les morceaux légers (COMPANY, formatFcfa, ACCESSORIES, BRANDS, CATEGORIES,
-// POSTS, FAQ, REVIEWS, STEPS) vivent dans des modules séparés : __root / Header /
-// Footer / CartProvider / page d'accueil les importent sans charger le gros
-// DEVICES (~500 Ko) au premier rendu.
+// Ce barrel est volontairement LÉGER : il re-exporte company / static /
+// accessories (+ helpers sans données) sans jamais importer le gros DEVICES,
+// qui vit dans ./devices (chunk dédié chargé uniquement par les routes qui en
+// ont besoin — voir la note en tête de ./devices).
 export { COMPANY, absoluteUrl, formatFcfa } from "./company";
 export { ACCESSORIES, ACCESSORY_CATEGORIES, type Accessory } from "./accessories";
 export { CATEGORIES, POSTS, FAQ, REVIEWS, STEPS, type Post, type Brand } from "./static";
-
-// Types
-import type { Device } from "./types";
-export type { Fault, Device } from "./types";
 import { BRANDS } from "./static";
-export { BRANDS };
+export { BRANDS } from "./static";
 
-// Import brand device arrays
-import { DEVICES as infinixDevices } from "./infinix";
-import { DEVICES as tecnoDevices } from "./tecno";
-import { DEVICES as samsungDevices } from "./samsung";
-import { DEVICES as appleDevices } from "./apple";
-import { DEVICES as miscDevices } from "./misc";
-import { DEVICES as huaweiDevices } from "./huawei";
-import { DEVICES as googleDevices } from "./google";
-import { DEVICES as oneplusDevices } from "./oneplus";
-import { DEVICES as honorDevices } from "./honor";
-import { DEVICES as sonyDevices } from "./sony";
-import { DEVICES as realmeDevices } from "./realme";
-import { DEVICES as itelDevices } from "./itel";
-import { DEVICES as oppoDevices } from "./oppo";
-import { DEVICES as xiaomiDevices } from "./xiaomi";
-import { DEVICES as hpDevices } from "./hp";
-import { DEVICES as appliancesDevices } from "./appliances";
-
-// Combined DEVICES array (lazy-loaded; voir la note en tête de fichier)
-export const DEVICES: Device[] = [
-  ...infinixDevices,
-  ...tecnoDevices,
-  ...samsungDevices,
-  ...appleDevices,
-  ...miscDevices,
-  ...huaweiDevices,
-  ...googleDevices,
-  ...oneplusDevices,
-  ...honorDevices,
-  ...sonyDevices,
-  ...realmeDevices,
-  ...itelDevices,
-  ...oppoDevices,
-  ...xiaomiDevices,
-  ...hpDevices,
-  ...appliancesDevices,
-];
+// Types (effacés à la compilation — aucun coût runtime)
+export type { Fault, Device } from "./types";
 
 export const brandBySlug = (slug: string) => BRANDS.find((b) => b.slug === slug);
-export const devicesOfBrand = (slug: string) => DEVICES.filter((d) => d.brand === slug);
-export const deviceBySlug = (slug: string) => DEVICES.find((d) => d.slug === slug);
 export const brandName = (slug: string) => brandBySlug(slug)?.name ?? slug;
 
 /**

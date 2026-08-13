@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { CtaBand, MobileMoneyBar, SectionHeader } from "@/components/site/Blocks";
-import { BRANDS, CATEGORIES, DEVICES, brandName, formatFcfa } from "@/data/catalog";
+import { DEVICES } from "@/data/catalog/devices";
+import { BRANDS, CATEGORIES, brandName } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";

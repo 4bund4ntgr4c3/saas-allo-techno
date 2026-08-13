@@ -2,7 +2,9 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Clock, Package, ShieldCheck } from "lucide-react";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
-import { brandName, deviceBySlug, devicesOfBrand, formatFcfa, type Device } from "@/data/catalog";
+import type { Device } from "@/data/catalog";
+import { BRANDS } from "@/data/catalog/static";
+import { formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -17,7 +19,8 @@ import {
 } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/$locale/appareil/$slug")({
-  loader: ({ params }): { device: Device; siblings: Device[] } => {
+  loader: async ({ params }): Promise<{ device: Device; siblings: Device[] }> => {
+    const { deviceBySlug, devicesOfBrand } = await import("@/data/catalog/devices");
     const device = deviceBySlug(params.slug);
     if (!device) throw notFound();
     return {
@@ -90,6 +93,7 @@ function DevicePage() {
   const { device, siblings } = Route.useLoaderData() as { device: Device; siblings: Device[] };
   const min = Math.min(...device.faults.map((f) => f.price));
   const { locale, t } = useI18n();
+  const brandName = BRANDS.find((b) => b.slug === device.brand)?.name ?? device.brand;
 
   return (
     <>
@@ -108,7 +112,7 @@ function DevicePage() {
             <div>
               <h1 className="at-display text-4xl md:text-6xl">{device.name}</h1>
               <p className="mt-4 font-mono text-xs uppercase text-muted-foreground">
-                {brandName(device.brand)} · {t(device.category)} · {device.year}
+                {brandName} · {t(device.category)} · {device.year}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -216,7 +220,7 @@ function DevicePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <SectionHeader
               eyebrow={t("appareil.siblings.eyebrow")}
-              title={t("appareil.siblings.title", [brandName(device.brand)])}
+              title={t("appareil.siblings.title", [brandName])}
             />
             <div className="grid gap-px border border-border bg-border md:grid-cols-3">
               {siblings.map((d) => (

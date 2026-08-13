@@ -16,15 +16,9 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
-import {
-  BRANDS,
-  DEVICES,
-  brandName,
-  deviceBySlug,
-  familyOf,
-  formatFcfa,
-  type Device,
-} from "@/data/catalog";
+import { DEVICES, deviceBySlug, type Device } from "@/data/catalog/devices";
+import { BRANDS, brandName, familyOf } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 import { fullTextSearch, type SearchResult } from "@/lib/search-fulltext";
 import { categoryMedia } from "@/data/device-media";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";

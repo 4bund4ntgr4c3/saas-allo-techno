@@ -1,4 +1,4 @@
-import { BRANDS } from "@/data/catalog";
+import { BRANDS } from "@/data/catalog/static";
 
 export function BrandLogo({
   slug,

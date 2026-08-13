@@ -1,6 +1,8 @@
 import { CalendarClock, Check, Cpu, MapPin, Pencil, Smartphone, Tag, Wallet } from "lucide-react";
 import { type Ref } from "react";
-import { brandName, deviceBySlug, formatFcfa } from "@/data/catalog";
+import { deviceBySlug } from "@/data/catalog/devices";
+import { brandName } from "@/data/catalog";
+import { formatFcfa } from "@/data/catalog/company";
 import { Button } from "@/components/ui/button";
 import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
 import { useI18n } from "@/lib/i18n/context";

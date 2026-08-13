@@ -12,7 +12,9 @@ import { ErrorRoute } from "@/components/ErrorRoute";
 const DevisComparison = lazy(() =>
   import("@/components/DevisComparison").then((m) => ({ default: m.DevisComparison })),
 );
-import { BRANDS, DEVICES, devicesOfBrand, formatFcfa } from "@/data/catalog";
+import { DEVICES, devicesOfBrand } from "@/data/catalog/devices";
+import { BRANDS } from "@/data/catalog/static";
+import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import { trackPlausibleEvent } from "@/lib/analytics";
 import { translate } from "@/lib/i18n/dictionaries";

@@ -1,15 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CtaBand, SectionHeader } from "@/components/site/Blocks";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
-import {
-  BRANDS,
-  brandBySlug,
-  devicesOfBrand,
-  formatFcfa,
-  POSTS,
-  type Brand,
-  type Device,
-} from "@/data/catalog";
+import type { Brand, Device } from "@/data/catalog";
+import { BRANDS, POSTS } from "@/data/catalog/static";
+import { formatFcfa } from "@/data/catalog/company";
 import { brandLocal, QUARTIERS } from "@/data/local-seo";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
@@ -18,7 +12,9 @@ import { normalizeLocale } from "@/lib/i18n/locales";
 import { breadcrumbSchema, faqSchema, localeSeo, localeUrl, serviceSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/reparations/$brand")({
-  loader: ({ params }): { brand: Brand; devices: Device[] } => {
+  loader: async ({ params }): Promise<{ brand: Brand; devices: Device[] }> => {
+    const { brandBySlug } = await import("@/data/catalog");
+    const { devicesOfBrand } = await import("@/data/catalog/devices");
     const brand = brandBySlug(params.brand);
     if (!brand) throw notFound();
     return { brand, devices: devicesOfBrand(brand.slug) };

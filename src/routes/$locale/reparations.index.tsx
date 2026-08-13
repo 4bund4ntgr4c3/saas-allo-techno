@@ -3,7 +3,8 @@ import { BadgeCheck, Clock, Home, ShieldCheck, Store, Wallet } from "lucide-reac
 import { SectionHeader, CtaBand } from "@/components/site/Blocks";
 import { DeviceSearch } from "@/components/site/DeviceSearch";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
-import { BRANDS, CATEGORIES, DEVICES, devicesOfBrand } from "@/data/catalog";
+import { DEVICES, devicesOfBrand } from "@/data/catalog/devices";
+import { BRANDS, CATEGORIES } from "@/data/catalog/static";
 import { categoryMedia } from "@/data/device-media";
 import { BrandLogo } from "@/components/site/BrandLogo";
 import { useI18n } from "@/lib/i18n/context";
