@@ -2,7 +2,11 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.13-b40 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.13-b41 — [Changelog](./CHANGELOG.md)
+
+## Logos Réels des Marques (Batch 41)
+
+- **Logos réels monochromes** pour les 28 marques du catalogue (Apple, Samsung, Tecno, Infinix, itel, Nokia, Sony, Nintendo, Microsoft, Philips, Whirlpool…) — SVG 1 couleur (`currentColor`) rendus en blanc ou noir selon le contexte, sources Simple Icons (CC0) et Wikimedia Commons.
 
 ## Performance du Bundle Initial & Nettoyage (Batch 40)
 

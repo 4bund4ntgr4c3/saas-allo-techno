@@ -15,6 +15,7 @@ export function BrandLogo({
       <span
         className={className}
         aria-label={name}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         dangerouslySetInnerHTML={{ __html: brand.icon }}
       />
     );

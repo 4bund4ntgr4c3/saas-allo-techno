@@ -7,6 +7,14 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.13-b41] — 2026-08-13 (Real Brand Logos — Batch 41)
+
+### Changed
+
+- **Logos réels des marques** : les glyphes SVG approximatifs de `brand-icons.ts` sont remplacés par les vrais logos monochromes (fill `currentColor` → blanc ou noir selon le contexte) pour les 28 marques : Simple Icons (CC0) + Wikimedia Commons (logos officiels ramenés à une couleur unique). Le `BrandLogo` centre désormais le SVG dans sa zone.
+
+---
+
 ## [2026.08.13-b40] — 2026-08-13 (Bundle Performance & Cleanup — Batch 40)
 
 ### Changed
