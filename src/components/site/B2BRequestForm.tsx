@@ -708,10 +708,11 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 })}
               </div>
 
-              <div className="flex justify-end pt-4 border-t border-border">
+              <div className="flex justify-end pt-4 border-t border-border w-full">
                 <Button
                   variant="technical"
                   size="lg"
+                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
                   onClick={() => {
                     if (!needType) {
                       toast.error("Veuillez sélectionner un type d'intervention.");
@@ -720,7 +721,8 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                     setStep(2);
                   }}
                 >
-                  Continuer vers les détails du parc &rarr;
+                  <span className="hidden sm:inline">Continuer vers les détails du parc &rarr;</span>
+                  <span className="sm:hidden">Détails du parc &rarr;</span>
                 </Button>
               </div>
             </div>
@@ -936,13 +938,13 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto text-center" onClick={() => setStep(1)}>
+                <Button variant="outline" size="lg" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(1)}>
                   &larr; Retour
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
-                  className="w-full sm:w-auto text-center"
+                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
                   onClick={() => {
                     if (!fleetSize) {
                       toast.error("Veuillez sélectionner la taille de votre parc.");
@@ -967,7 +969,8 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                     setStep(3);
                   }}
                 >
-                  Continuer vers le contact &rarr;
+                  <span className="hidden sm:inline">Continuer vers le contact &rarr;</span>
+                  <span className="sm:hidden">Coordonnées contact &rarr;</span>
                 </Button>
               </div>
             </div>
@@ -1063,14 +1066,14 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center" onClick={() => setStep(2)}>
+                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(2)}>
                   &larr; Retour
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
                   type="button"
-                  className="w-full sm:w-auto text-center"
+                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
                   onClick={() => {
                     if (!companyName.trim() || !contactName.trim() || !phone.trim()) {
                       toast.error(
@@ -1205,23 +1208,23 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center" onClick={() => setStep(3)}>
+                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(3)}>
                   &larr; Retour aux coordonnées
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
                   type="button"
-                  className="w-full sm:w-auto text-center"
+                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
                   onClick={onSubmitFinal}
                   disabled={busy}
                 >
                   {busy ? (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    <Loader2 className="mr-2 size-4 animate-spin shrink-0" />
                   ) : (
-                    <Sparkles className="mr-2 size-4" />
+                    <Sparkles className="mr-2 size-4 shrink-0" />
                   )}
-                  {busy ? "Traitement..." : "Valider & Générer la Proposition B2B"}
+                  <span>{busy ? "Traitement..." : "Valider & Générer la Proposition B2B"}</span>
                 </Button>
               </div>
             </div>
