@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   AlertTriangle,
@@ -8,29 +8,22 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  FileText,
   Laptop,
-  Loader2,
   Plus,
   ShieldCheck,
-  Timer,
   Wrench,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { generatePvRestitutionPdf } from "@/lib/pv-restitution-pdf";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LoadingState } from "@/components/ui/loading-state";
+import { EmptyState } from "@/components/ui/empty-state";
+import { MaintenanceCountdown } from "@/components/b2b/maintenance/MaintenanceCountdown";
+import { MaintenanceChecklistModal } from "@/components/b2b/maintenance/MaintenanceChecklistModal";
+import { ScheduleMaintenanceModal } from "@/components/b2b/maintenance/ScheduleMaintenanceModal";
 import { useI18n } from "@/lib/i18n/context";
 import { getMaintenancePlansFn } from "@/lib/maintenance-plans.functions";
+import { parseError } from "@/lib/error-parser";
 import {
   completeMaintenanceTask,
   getMyOrganizations,
@@ -43,14 +36,6 @@ import {
 export const Route = createFileRoute("/app/organizations/$orgId/maintenance")({
   component: OrgMaintenancePage,
 });
-
-const PRESET_TASKS = [
-  "Nettoyage interne & Dépoussiérage ventilateurs",
-  "Remplacement pâte thermique processeur / GPU",
-  "Contrôle santé batterie & Cycles de charge",
-  "Audit d'intégrité disque SSD & Sauvegarde",
-  "Mise à jour firmware & Diagnostic matériel",
-];
 
 function OrgMaintenancePage() {
   const { orgId } = Route.useParams();
@@ -79,34 +64,33 @@ function OrgMaintenancePage() {
   });
 
   const [showScheduleForm, setShowScheduleForm] = useState(false);
-  const [selectedEqId, setSelectedEqId] = useState<string>("");
-  const [taskTitle, setTaskTitle] = useState<string>(PRESET_TASKS[0] ?? "");
-  const [intervalMonths, setIntervalMonths] = useState<string>("3");
-  const [nextDueAt, setNextDueAt] = useState(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() + 3);
-    return d.toISOString().slice(0, 10);
-  });
+  const [selectedScheduleModal, setSelectedScheduleModal] =
+    useState<EquipmentMaintenanceSchedule | null>(null);
 
   const scheduleMut = useMutation({
-    mutationFn: () =>
+    mutationFn: (data: {
+      equipmentId: string;
+      taskTitle: string;
+      intervalMonths: number;
+      nextDueAt: string;
+    }) =>
       scheduleMaintenance({
         data: {
           org_id: orgId,
-          equipment_id: selectedEqId,
-          task_title: taskTitle,
-          interval_months: Number(intervalMonths) || 3,
-          next_due_at: nextDueAt,
+          equipment_id: data.equipmentId,
+          task_title: data.taskTitle,
+          interval_months: data.intervalMonths,
+          next_due_at: data.nextDueAt,
         },
       }),
     onSuccess: () => {
       toast.success(t("org.maintenance.schedule.success"));
       setShowScheduleForm(false);
-      setSelectedEqId("");
       queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "maintenance-schedules"] });
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : t("org.maintenance.schedule.error"));
+      const parsed = parseError(err, t("org.maintenance.schedule.error"));
+      toast.error(parsed.message);
     },
   });
 
@@ -121,58 +105,22 @@ function OrgMaintenancePage() {
       }),
     onSuccess: (res) => {
       toast.success(`${t("org.maintenance.complete.success")} ${res.nextDue}`);
+      setSelectedScheduleModal(null);
       queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "maintenance-schedules"] });
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : t("org.maintenance.complete.error"));
+      const parsed = parseError(err, t("org.maintenance.complete.error"));
+      toast.error(parsed.message);
     },
-  });
-
-  const [selectedScheduleModal, setSelectedScheduleModal] =
-    useState<EquipmentMaintenanceSchedule | null>(null);
-  const [checklistState, setChecklistState] = useState<Record<number, boolean>>({
-    0: true,
-    1: true,
-    2: false,
-    3: false,
-    4: false,
   });
 
   const scheduleList = schedulesQuery.data ?? [];
 
-  // ─── Live Countdown Timer Hook ───
-  const [timeLeft, setTimeLeft] = useState<{
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  }>({
-    days: 4,
-    hours: 18,
-    minutes: 32,
-    seconds: 45,
-  });
-
-  useEffect(() => {
-    const targetDate = new Date(
-      Date.now() + (4 * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000),
-    ).getTime();
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const diff = Math.max(0, targetDate - now);
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setTimeLeft({ days, hours, minutes, seconds });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   const overdueCount = useMemo(
     () => scheduleList.filter((s) => new Date(s.next_due_at) < new Date()).length,
-    [scheduleList],
+    [scheduleList]
   );
+
   const lastPerformed = useMemo(() => {
     const dates = scheduleList
       .filter((s) => s.last_performed_at)
@@ -181,6 +129,18 @@ function OrgMaintenancePage() {
       ? new Date(Math.max(...dates.map((d) => d.getTime()))).toLocaleDateString("fr-FR")
       : "—";
   }, [scheduleList]);
+
+  if (!org) {
+    return (
+      <div className="p-6">
+        {orgs.isLoading ? (
+          <LoadingState message={t("common.loading")} />
+        ) : (
+          <EmptyState title={t("org.error.notfound")} description="Vérifiez vos autorisations." />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -192,7 +152,7 @@ function OrgMaintenancePage() {
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          {org?.name ?? t("org.detail.back")}
+          {org.name}
         </Link>
         <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -200,65 +160,18 @@ function OrgMaintenancePage() {
             <h1 className="at-display text-2xl font-bold">{t("org.maintenance.title")}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{t("org.maintenance.subtitle")}</p>
           </div>
-          {org?.member_role &&
+          {org.member_role &&
             ["admin_org", "responsable_maintenance"].includes(org.member_role) && (
-              <Button variant="primaryBlock" onClick={() => setShowScheduleForm(!showScheduleForm)}>
-                {showScheduleForm ? <X className="size-4" /> : <Plus className="size-4" />}
+              <Button onClick={() => setShowScheduleForm(!showScheduleForm)}>
+                {showScheduleForm ? <X className="size-4 mr-1" /> : <Plus className="size-4 mr-1" />}
                 {t("org.maintenance.schedule")}
               </Button>
             )}
         </div>
       </div>
 
-      {/* ─── LIVE COUNTDOWN TIMER BANNER ─── */}
-      <div className="at-in border border-primary/40 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center bg-primary text-primary-foreground font-bold animate-pulse">
-              <Timer className="size-5" />
-            </div>
-            <div>
-              <span className="at-eyebrow text-[10px] text-primary font-extrabold uppercase tracking-widest block">
-                COMPTE À REBOURS — PROCHAINE ÉCHÉANCE SLA MATÉRIEL
-              </span>
-              <h2 className="text-base font-extrabold text-foreground">
-                Cycle de Maintenance Préventive Trimestrielle
-              </h2>
-            </div>
-          </div>
-
-          {/* Live Timer Boxes */}
-          <div className="flex items-center gap-2 font-mono">
-            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">{timeLeft.days}</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-sans">Jours</span>
-            </div>
-            <span className="text-xl font-bold text-muted-foreground">:</span>
-            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">
-                {String(timeLeft.hours).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] text-muted-foreground uppercase font-sans">Heures</span>
-            </div>
-            <span className="text-xl font-bold text-muted-foreground">:</span>
-            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">
-                {String(timeLeft.minutes).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] text-muted-foreground uppercase font-sans">Minutes</span>
-            </div>
-            <span className="text-xl font-bold text-muted-foreground">:</span>
-            <div className="flex flex-col items-center bg-card border border-border px-3 py-1.5 min-w-16 shadow-xs">
-              <span className="text-xl font-black text-primary">
-                {String(timeLeft.seconds).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] text-muted-foreground uppercase font-sans">
-                Secondes
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ─── LIVE COUNTDOWN TIMER BANNER EXTRAIT ─── */}
+      <MaintenanceCountdown />
 
       {/* ─── Preventive Maintenance Plans Cards ─── */}
       {mPlansQuery.data && mPlansQuery.data.length > 0 && (
@@ -268,7 +181,7 @@ function OrgMaintenancePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {mPlansQuery.data.map((plan) => (
-              <div key={plan.id} className="border border-border bg-card p-4 space-y-3 shadow-xs">
+              <div key={plan.id} className="border border-border bg-card p-4 space-y-3 shadow-xs rounded-lg">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <ShieldCheck className="size-5 text-primary shrink-0" />
@@ -283,8 +196,7 @@ function OrgMaintenancePage() {
                 </div>
                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/60">
                   <span>
-                    Sites :{" "}
-                    <strong className="text-foreground">{plan.targetSites.join(", ")}</strong>
+                    Sites : <strong className="text-foreground">{plan.targetSites.join(", ")}</strong>
                   </span>
                   <span className="font-mono font-bold text-foreground">
                     Prochaine échéance : {plan.nextDueDate}
@@ -297,305 +209,76 @@ function OrgMaintenancePage() {
       )}
 
       {/* ─── KPI Cards ─── */}
-      <div className="at-in grid grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
-        <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center bg-muted text-primary">
-            <ShieldCheck className="size-5" />
+      <div className="at-in grid grid-cols-3 gap-3">
+        <div className="border border-border bg-card p-4 rounded-lg">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Clock className="size-4 text-primary" />
+            <span className="text-xs font-semibold">{t("org.maintenance.kpi.scheduled")}</span>
           </div>
-          <div>
-            <p className="font-mono text-2xl font-bold tabular-nums">{scheduleList.length}</p>
-            <p className="text-xs text-muted-foreground">{t("org.maintenance.kpi.total")}</p>
-          </div>
+          <p className="mt-2 font-mono text-2xl font-bold text-foreground">{scheduleList.length}</p>
         </div>
-        <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div
-            className={`flex size-10 items-center justify-center ${overdueCount > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-success"}`}
+        <div className="border border-border bg-card p-4 rounded-lg">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <AlertTriangle
+              className={`size-4 ${overdueCount > 0 ? "text-destructive" : "text-primary"}`}
+            />
+            <span className="text-xs font-semibold">{t("org.maintenance.kpi.overdue")}</span>
+          </div>
+          <p
+            className={`mt-2 font-mono text-2xl font-bold ${
+              overdueCount > 0 ? "text-destructive" : "text-foreground"
+            }`}
           >
-            <AlertTriangle className="size-5" />
-          </div>
-          <div>
-            <p className="font-mono text-2xl font-bold tabular-nums">{overdueCount}</p>
-            <p className="text-xs text-muted-foreground">{t("org.maintenance.kpi.overdue")}</p>
-          </div>
+            {overdueCount}
+          </p>
         </div>
-        <div className="flex items-center gap-3 border border-border bg-card p-4">
-          <div className="flex size-10 items-center justify-center bg-muted text-accent">
-            <Clock className="size-5" />
+        <div className="border border-border bg-card p-4 rounded-lg">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <CheckCircle2 className="size-4 text-success" />
+            <span className="text-xs font-semibold">{t("org.maintenance.kpi.lastDone")}</span>
           </div>
-          <div>
-            <p className="font-mono text-lg font-bold tabular-nums">{lastPerformed}</p>
-            <p className="text-xs text-muted-foreground">{t("org.maintenance.kpi.lastDone")}</p>
-          </div>
+          <p className="mt-2 text-sm font-semibold text-foreground">{lastPerformed}</p>
         </div>
       </div>
 
-      {/* ─── Schedule Form ─── */}
-      {showScheduleForm && (
-        <div className="at-in border border-border bg-card p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-border pb-3">
-            <h3 className="text-sm font-bold">{t("org.maintenance.form.title")}</h3>
-            <button
-              type="button"
-              onClick={() => setShowScheduleForm(false)}
-              className="text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
+      {/* ─── Schedule Form Modale / Panel Extrait ─── */}
+      <ScheduleMaintenanceModal
+        equipmentList={equipmentQuery.data ?? []}
+        isOpen={showScheduleForm}
+        onClose={() => setShowScheduleForm(false)}
+        onSubmit={(data) => scheduleMut.mutate(data)}
+        isPending={scheduleMut.isPending}
+      />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Label className="text-xs">{t("org.maintenance.form.equipment")}</Label>
-              <Select value={selectedEqId} onValueChange={setSelectedEqId}>
-                <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder={t("org.maintenance.form.equipment.placeholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {(equipmentQuery.data ?? []).map((eq) => (
-                    <SelectItem key={eq.id} value={eq.id}>
-                      {eq.name} {eq.brand ? `(${eq.brand} ${eq.model ?? ""})` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="text-xs">{t("org.maintenance.form.task")}</Label>
-              <Select value={taskTitle} onValueChange={setTaskTitle}>
-                <SelectTrigger className="mt-1.5">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PRESET_TASKS.map((task) => (
-                    <SelectItem key={task} value={task}>
-                      {task}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="text-xs">{t("org.maintenance.form.interval")}</Label>
-              <Select value={intervalMonths} onValueChange={setIntervalMonths}>
-                <SelectTrigger className="mt-1.5">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">{t("org.maintenance.interval.monthly")}</SelectItem>
-                  <SelectItem value="3">{t("org.maintenance.interval.quarterly")}</SelectItem>
-                  <SelectItem value="6">{t("org.maintenance.interval.biannual")}</SelectItem>
-                  <SelectItem value="12">{t("org.maintenance.interval.annual")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="text-xs">{t("org.maintenance.form.dueDate")}</Label>
-              <Input
-                type="date"
-                value={nextDueAt}
-                onChange={(e) => setNextDueAt(e.target.value)}
-                className="mt-1.5"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-1">
-            <Button variant="outline" size="sm" onClick={() => setShowScheduleForm(false)}>
-              {t("common.cancel")}
-            </Button>
-            <Button
-              size="sm"
-              variant="primaryBlock"
-              disabled={!selectedEqId || scheduleMut.isPending}
-              onClick={() => scheduleMut.mutate()}
-            >
-              {scheduleMut.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <ShieldCheck className="size-4" />
-              )}
-              {t("org.maintenance.form.submit")}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* ─── INTERACTIVE MAINTENANCE CYCLE POPUP MODAL ─── */}
-      {selectedScheduleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl border border-border bg-card p-6 space-y-6 shadow-2xl at-in">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <div className="flex items-center gap-2.5">
-                <Wrench className="size-5 text-primary" />
-                <div>
-                  <h2 className="text-lg font-bold">
-                    Détails du Cycle : {selectedScheduleModal.task_title}
-                  </h2>
-                  <p className="text-xs text-muted-foreground">
-                    Échéance prévue :{" "}
-                    {new Date(selectedScheduleModal.next_due_at).toLocaleDateString("fr-FR")} ·
-                    Statut : En Cours
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setSelectedScheduleModal(null)}
-              >
-                <X className="size-4" />
-              </Button>
-            </div>
-
-            {/* Equipment & Site Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-muted/20 border border-border p-4 text-xs">
-              <div>
-                <span className="at-eyebrow text-[10px] text-muted-foreground block">
-                  Matériel Concerné
-                </span>
-                <span className="font-bold text-sm text-foreground">
-                  {selectedScheduleModal.equipment?.name ?? "Équipement Principal"}
-                </span>
-                <p className="text-muted-foreground">
-                  {selectedScheduleModal.equipment?.brand} {selectedScheduleModal.equipment?.model}
-                </p>
-              </div>
-              <div>
-                <span className="at-eyebrow text-[10px] text-muted-foreground block">
-                  Implantation / Site
-                </span>
-                <span className="font-bold text-sm text-foreground">Siège Cotonou — Marina</span>
-                <p className="text-muted-foreground">Technicien Référent : Sosthène Dossou</p>
-              </div>
-            </div>
-
-            {/* Checklist of Tasks inside this Cycle */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-sm flex items-center gap-2">
-                  <CheckCircle2 className="size-4 text-primary" />
-                  Checklist d'Intervention Préventive (
-                  {Object.values(checklistState).filter(Boolean).length} / 5 réalisées)
-                </h3>
-                <span className="font-mono text-xs text-primary font-bold">
-                  {Math.round((Object.values(checklistState).filter(Boolean).length / 5) * 100)}%
-                  Achevé
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{
-                    width: `${(Object.values(checklistState).filter(Boolean).length / 5) * 100}%`,
-                  }}
-                />
-              </div>
-
-              <div className="divide-y divide-border border border-border bg-background">
-                {PRESET_TASKS.map((task, idx) => {
-                  const isChecked = Boolean(checklistState[idx]);
-                  return (
-                    <label
-                      key={task}
-                      className="flex items-center gap-3 p-3 text-xs cursor-pointer hover:bg-accent/10 transition-colors"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() =>
-                          setChecklistState((prev) => ({ ...prev, [idx]: !prev[idx] }))
-                        }
-                        className="size-4 rounded border-border text-primary focus:ring-primary"
-                      />
-                      <span
-                        className={
-                          isChecked
-                            ? "line-through text-muted-foreground"
-                            : "font-medium text-foreground"
-                        }
-                      >
-                        {task}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  generatePvRestitutionPdf({
-                    pvNumber: `PV-MAINT-${Date.now().toString().slice(-4)}`,
-                    orgName: org?.name ?? "Oragroup Bénin",
-                    clientContactName: "Jean Dupont (DSI)",
-                    equipmentName: selectedScheduleModal.equipment?.name ?? "Serveur Principal",
-                    serialNumber: selectedScheduleModal.equipment?.serial_number ?? "SN-2026-X9",
-                    interventionSummary: `Cycle de maintenance préventive récurrente "${selectedScheduleModal.task_title}" réalisé avec succès à l'atelier Allô Techno Cotonou.`,
-                    warrantyPeriodMonths: 6,
-                    restitutionDate: new Date().toLocaleDateString("fr-FR"),
-                    technicianName: "Sosthène Dossou",
-                  })
-                }
-              >
-                <FileText className="size-4 mr-1.5 text-primary" />
-                Télécharger le PV de Maintenance (PDF)
-              </Button>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedScheduleModal(null)}
-                >
-                  Fermer
-                </Button>
-                <Button
-                  type="button"
-                  variant="primaryBlock"
-                  size="sm"
-                  onClick={() => {
-                    completeMut.mutate(selectedScheduleModal.id);
-                    setSelectedScheduleModal(null);
-                  }}
-                >
-                  <CheckCircle2 className="size-4 mr-1.5" />
-                  Valider le Cycle de Maintenance
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ─── CHECKLIST MODAL EXTRAITE ─── */}
+      <MaintenanceChecklistModal
+        schedule={selectedScheduleModal}
+        orgName={org.name}
+        isOpen={Boolean(selectedScheduleModal)}
+        onClose={() => setSelectedScheduleModal(null)}
+        onComplete={(scheduleId) => completeMut.mutate(scheduleId)}
+        isCompleting={completeMut.isPending}
+      />
 
       {/* ─── Maintenance Schedule List ─── */}
-      <div className="at-in" style={{ animationDelay: "120ms" }}>
+      <div className="at-in">
         <span className="at-eyebrow mb-3 block">{t("org.maintenance.list.title")}</span>
 
-        <div className="overflow-hidden border border-border bg-card">
+        <div className="overflow-hidden border border-border bg-card rounded-lg">
           {schedulesQuery.isLoading ? (
-            <div className="flex justify-center py-16">
-              <Loader2 className="size-6 animate-spin text-muted-foreground" />
-            </div>
+            <LoadingState message={t("common.loading")} />
           ) : scheduleList.length === 0 ? (
-            <div className="py-16 text-center">
-              <Wrench className="mx-auto size-10 text-muted-foreground" />
-              <p className="mt-4 text-sm font-medium">{t("org.maintenance.empty.title")}</p>
-              <p className="mx-auto mt-1.5 max-w-sm text-xs text-muted-foreground">
-                {t("org.maintenance.empty.text")}
-              </p>
-            </div>
+            <EmptyState
+              icon={Wrench}
+              title={t("org.maintenance.empty.title")}
+              description={t("org.maintenance.empty.text")}
+              action={
+                <Button size="sm" onClick={() => setShowScheduleForm(true)}>
+                  <Plus className="size-4 mr-1" />
+                  {t("org.maintenance.schedule")}
+                </Button>
+              }
+            />
           ) : (
             <div className="divide-y divide-border">
               {scheduleList.map((s: EquipmentMaintenanceSchedule) => {
@@ -608,7 +291,7 @@ function OrgMaintenancePage() {
                   >
                     <div className="flex items-start gap-3">
                       <div
-                        className={`flex size-10 shrink-0 items-center justify-center ${
+                        className={`flex size-10 shrink-0 items-center justify-center rounded-md ${
                           isOverdue
                             ? "bg-destructive/10 text-destructive"
                             : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
@@ -673,7 +356,7 @@ function OrgMaintenancePage() {
                           setSelectedScheduleModal(s);
                         }}
                       >
-                        Ouvrir Détails &amp; Checklist &rarr;
+                        Ouvrir Checklist &rarr;
                       </Button>
                       <Button
                         variant="outline"

@@ -5,17 +5,11 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   FileSpreadsheet,
-  Laptop,
-  Loader2,
-  Pencil,
   Plus,
   QrCode,
   Search,
-  Send,
-  Sparkles,
   X,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,9 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LoadingState } from "@/components/ui/loading-state";
+import { EmptyState } from "@/components/ui/empty-state";
+import { EditEquipmentModal } from "@/components/b2b/equipment/EditEquipmentModal";
+import { EquipmentCard } from "@/components/b2b/equipment/EquipmentCard";
 import { useI18n } from "@/lib/i18n/context";
 import { parseEquipmentFile } from "@/lib/equipment-import";
 import { generateQrLabelSheetPdf } from "@/lib/qr-label-pdf";
+import { parseError } from "@/lib/error-parser";
 import {
   addEquipmentHistory,
   createEquipment,
@@ -85,20 +84,16 @@ function EquipmentList() {
   const [status, setStatus] = useState<EquipmentStatus | "all">("all");
   const [showForm, setShowForm] = useState(false);
   const [selectedEqModal, setSelectedEqModal] = useState<EquipmentItem | null>(null);
-  const [transferSiteId, setTransferSiteId] = useState<string>("");
-  const [editName, setEditName] = useState<string>("");
-  const [editSerial, setEditSerial] = useState<string>("");
-  const [editTag, setEditTag] = useState<string>("");
 
   const transferMut = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (targetSiteId: string) => {
       if (!selectedEqModal) return;
-      const targetSite = sites.data?.find((s) => s.id === transferSiteId);
+      const targetSite = sites.data?.find((s) => s.id === targetSiteId);
       const siteName = targetSite?.name ?? "Nouveau Site";
       await updateEquipment({
         data: {
           equipment_id: selectedEqModal.id,
-          site_id: transferSiteId,
+          site_id: targetSiteId,
           location: siteName,
         },
       });
@@ -115,19 +110,21 @@ function EquipmentList() {
       setSelectedEqModal(null);
       await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
     },
-    onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Erreur de transfert"),
+    onError: (err: unknown) => {
+      const parsed = parseError(err, "Erreur de transfert du matériel");
+      toast.error(parsed.message);
+    },
   });
 
   const updateMut = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: { name: string; serial: string; tag: string }) => {
       if (!selectedEqModal) return;
       await updateEquipment({
         data: {
           equipment_id: selectedEqModal.id,
-          name: editName,
-          serial_number: editSerial || null,
-          asset_tag: editTag || null,
+          name: data.name,
+          serial_number: data.serial || null,
+          asset_tag: data.tag || null,
         },
       });
     },
@@ -136,8 +133,10 @@ function EquipmentList() {
       setSelectedEqModal(null);
       await queryClient.invalidateQueries({ queryKey: ["app", "org", orgId, "equipment"] });
     },
-    onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "Erreur de modification"),
+    onError: (err: unknown) => {
+      const parsed = parseError(err, "Erreur lors de la modification");
+      toast.error(parsed.message);
+    },
   });
 
   const [form, setForm] = useState<EquipmentInput & { type: string }>({
@@ -203,7 +202,10 @@ function EquipmentList() {
         params: { orgId, equipmentId: res.equipment_id },
       });
     },
-    onError: (err) => toast.error(t("org.equipment.form.error").replace("{0}", err.message)),
+    onError: (err: unknown) => {
+      const parsed = parseError(err, t("org.equipment.form.error"));
+      toast.error(parsed.message);
+    },
   });
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,7 +222,7 @@ function EquipmentList() {
       }
 
       toast.success(
-        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`,
+        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`
       );
 
       // Create each valid item batch
@@ -249,9 +251,13 @@ function EquipmentList() {
 
   if (!org) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {orgs.isLoading ? t("common.loading") : t("org.error.notfound")}
-      </p>
+      <div className="p-6">
+        {orgs.isLoading ? (
+          <LoadingState message={t("common.loading")} />
+        ) : (
+          <EmptyState title={t("org.error.notfound")} description="Vérifiez vos autorisations." />
+        )}
+      </div>
     );
   }
 
@@ -289,7 +295,7 @@ function EquipmentList() {
               <QrCode className="size-3.5 text-primary" />
               <span>Imprimer Planche QR (A4)</span>
             </Button>
-            <label className="inline-flex cursor-pointer items-center gap-1.5 px-3 py-2 border border-border bg-card hover:bg-muted text-foreground text-xs font-bold transition-all rounded-xs shadow-xs">
+            <label className="inline-flex cursor-pointer items-center gap-1.5 px-3 py-2 border border-border bg-card hover:bg-muted text-foreground text-xs font-bold transition-all rounded-md shadow-xs">
               <FileSpreadsheet className="size-4 text-primary" />
               <span>Import Excel/CSV</span>
               <input
@@ -299,7 +305,7 @@ function EquipmentList() {
                 onChange={handleFileUpload}
               />
             </label>
-            <Button variant="primaryBlock" onClick={() => setShowForm((v) => !v)}>
+            <Button variant="default" onClick={() => setShowForm((v) => !v)}>
               {showForm ? <X className="size-4" /> : <Plus className="size-4" />}
               {t("org.equipment.add")}
             </Button>
@@ -309,7 +315,7 @@ function EquipmentList() {
 
       {showForm ? (
         <form
-          className="grid gap-4 border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-4 border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3 rounded-lg shadow-sm"
           onSubmit={(e) => {
             e.preventDefault();
             create.mutate();
@@ -433,12 +439,8 @@ function EquipmentList() {
             />
           </div>
           <div className="sm:col-span-2 lg:col-span-3">
-            <Button type="submit" variant="primaryBlock" disabled={create.isPending}>
-              {create.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Plus className="size-4" />
-              )}
+            <Button type="submit" disabled={create.isPending}>
+              <Plus className="size-4 mr-1" />
               {t("org.equipment.form.submit")}
             </Button>
           </div>
@@ -472,238 +474,45 @@ function EquipmentList() {
         </div>
       </div>
 
-      {/* ─── INTERACTIVE EQUIPMENT DETAILS & TRANSFER MODAL ─── */}
-      {selectedEqModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl border border-border bg-card p-6 space-y-5 shadow-2xl at-in">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center bg-primary text-primary-foreground font-bold">
-                  <Laptop className="size-5" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">{selectedEqModal.name}</h2>
-                  <p className="text-xs text-muted-foreground">
-                    {[selectedEqModal.brand, selectedEqModal.model, selectedEqModal.serial_number]
-                      .filter(Boolean)
-                      .join(" · ") || selectedEqModal.type}
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setSelectedEqModal(null)}
-              >
-                <X className="size-4" />
-              </Button>
-            </div>
-
-            {/* Diagnostic IA Header */}
-            <div className="border border-primary/30 bg-primary/5 p-3.5 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="font-bold flex items-center gap-1.5 text-primary">
-                  <Sparkles className="size-4" /> Diagnostic IA &amp; Score de Santé Matériel
-                </span>
-                <Badge
-                  variant="outline"
-                  className="text-[10px] uppercase font-mono border-primary/40 text-primary"
-                >
-                  IA Allô Techno v2
-                </Badge>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center pt-1 font-mono">
-                <div className="bg-card p-2 border border-border">
-                  <span className="text-[10px] text-muted-foreground block">Santé Globale</span>
-                  <strong className="text-base text-foreground">94%</strong>
-                </div>
-                <div className="bg-card p-2 border border-border">
-                  <span className="text-[10px] text-muted-foreground block">Risque Panne (6M)</span>
-                  <strong className="text-base text-amber-600">12%</strong>
-                </div>
-                <div className="bg-card p-2 border border-border">
-                  <span className="text-[10px] text-muted-foreground block">SLA Recommandé</span>
-                  <strong className="text-base text-primary">Entretien Q3</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Edit / Transfer Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <Label className="text-xs">Désignation / Nom</Label>
-                <Input
-                  className="mt-1"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Numéro de Série</Label>
-                <Input
-                  className="mt-1"
-                  value={editSerial}
-                  onChange={(e) => setEditSerial(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Tag / Code d'Inventaire</Label>
-                <Input
-                  className="mt-1"
-                  value={editTag}
-                  onChange={(e) => setEditTag(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Transférer vers un autre Site / Implantation</Label>
-                <Select value={transferSiteId} onValueChange={setTransferSiteId}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue
-                      placeholder={
-                        selectedEqModal.site_name ?? selectedEqModal.location ?? "Choisir site..."
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(
-                      sites.data ?? [
-                        { id: "site-001", name: "Siège Cotonou — Marina" },
-                        { id: "site-002", name: "Agence Porto-Novo — Ouando" },
-                        { id: "site-003", name: "Agence Parakou — Hub Nord" },
-                        { id: "site-004", name: "Agence Natitingou" },
-                      ]
-                    ).map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-xs">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  navigate({
-                    to: "/app/organizations/$orgId/equipment/$equipmentId",
-                    params: { orgId, equipmentId: selectedEqModal.id },
-                  })
-                }
-              >
-                Accéder à la Fiche Détaillée &amp; Historique &rarr;
-              </Button>
-
-              <div className="flex items-center gap-2">
-                {transferSiteId && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={transferMut.isPending}
-                    onClick={() => transferMut.mutate()}
-                    className="border-primary/40 text-primary hover:bg-primary/10"
-                  >
-                    {transferMut.isPending ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Send className="size-3.5 mr-1" />
-                    )}
-                    Confirmer le Transfert de Site
-                  </Button>
-                )}
-                <Button
-                  type="button"
-                  variant="primaryBlock"
-                  size="sm"
-                  disabled={updateMut.isPending}
-                  onClick={() => updateMut.mutate()}
-                >
-                  {updateMut.isPending ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Pencil className="size-3.5 mr-1" />
-                  )}
-                  Enregistrer les Modifications
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ─── MODALE D'ÉDITION & TRANSFERT ÉQUIPEMENT EXTRAITE ─── */}
+      <EditEquipmentModal
+        equipment={selectedEqModal}
+        sites={sites.data ?? []}
+        isOpen={Boolean(selectedEqModal)}
+        onClose={() => setSelectedEqModal(null)}
+        onNavigateDetail={(eqId) =>
+          navigate({
+            to: "/app/organizations/$orgId/equipment/$equipmentId",
+            params: { orgId, equipmentId: eqId },
+          })
+        }
+        onSave={(data) => updateMut.mutateAsync(data)}
+        onTransfer={(targetSiteId) => transferMut.mutateAsync(targetSiteId)}
+        isSaving={updateMut.isPending}
+        isTransferring={transferMut.isPending}
+      />
 
       {equipment.isLoading ? (
-        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        <LoadingState message={t("common.loading")} />
       ) : filtered.length === 0 ? (
-        <p className="rounded-sm border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          {t("org.equipment.empty")}
-        </p>
+        <EmptyState
+          title={t("org.equipment.empty")}
+          description="Ajoutez un premier équipement ou importez votre fichier de parc."
+          action={
+            <Button size="sm" onClick={() => setShowForm(true)}>
+              <Plus className="size-4 mr-1" />
+              Ajouter un équipement
+            </Button>
+          }
+        />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((e) => (
-            <li key={e.id}>
-              <div
-                onClick={() => {
-                  setSelectedEqModal(e);
-                  setEditName(e.name ?? "");
-                  setEditSerial(e.serial_number ?? "");
-                  setEditTag(e.asset_tag ?? "");
-                  setTransferSiteId(e.site_id ?? "");
-                }}
-                className="group cursor-pointer flex h-full flex-col gap-3 border border-border bg-card p-4 transition-all hover:border-primary hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <Laptop className="size-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate font-bold group-hover:text-primary transition-colors">
-                        {e.name}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {[e.brand, e.model].filter(Boolean).join(" ") || e.type}
-                      </p>
-                    </div>
-                  </div>
-                  <Badge variant="outline">{t(`org.equipment.status.${e.status}`)}</Badge>
-                </div>
-                <dl className="mt-auto space-y-1 text-xs text-muted-foreground">
-                  {e.serial_number ? (
-                    <div className="flex justify-between gap-2">
-                      <dt>{t("org.equipment.form.serial")}</dt>
-                      <dd className="truncate text-foreground">{e.serial_number}</dd>
-                    </div>
-                  ) : null}
-                  {e.asset_tag ? (
-                    <div className="flex justify-between gap-2">
-                      <dt>{t("org.equipment.form.assetTag")}</dt>
-                      <dd className="truncate text-foreground">{e.asset_tag}</dd>
-                    </div>
-                  ) : null}
-                  <div className="flex justify-between gap-2">
-                    <dt>{t("org.equipment.form.location")}</dt>
-                    <dd className="truncate text-foreground font-semibold text-primary">
-                      {[e.location, e.site_name].filter(Boolean).join(" · ") || "Siège Cotonou"}
-                    </dd>
-                  </div>
-                </dl>
-                <div className="flex items-center justify-between border-t border-border pt-3 text-xs">
-                  <span className="inline-flex items-center gap-1 text-muted-foreground">
-                    <QrCode className="size-3" />
-                    {e.qr_id}
-                  </span>
-                  <span className="font-bold text-primary group-hover:underline">
-                    Gérer / Transférer &rarr;
-                  </span>
-                </div>
-              </div>
-            </li>
+            <EquipmentCard
+              key={e.id}
+              equipment={e}
+              onClick={() => setSelectedEqModal(e)}
+            />
           ))}
         </ul>
       )}

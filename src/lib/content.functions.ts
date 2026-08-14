@@ -71,28 +71,63 @@ const inventorySchema = z.object({
  * sûres. S'exécute côté serveur pour neutraliser d'éventuels contenus
  * historiques non filtrés.
  */
-const SAFE_HTML_TAGS =
-  /&lt;(\/?(?:p|br|strong|em|b|i|u|ul|ol|li|h2|h3|h4|blockquote|code|pre|hr|a))&gt;/gi;
-const SAFE_ANCHOR = /&lt;a href="(https?:\/\/[^"]+)"&gt;/gi;
+/**
+ * Nettoie un paragraphe de blog de manière sécurisée en appliquant
+ * une liste blanche stricte de balises autorisées et en désactivant tout vecteur XSS.
+ */
+const ALLOWED_TAGS = new Set([
+  "p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li",
+  "h2", "h3", "h4", "blockquote", "code", "pre", "hr", "a"
+]);
 
 function sanitizeBlogParagraph(par: string): string {
-  const scrubbed = par
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
-    .replace(/<object[\s\S]*?<\/object>/gi, "")
-    .replace(/<embed[\s\S]*?<\/embed>/gi, "")
-    .replace(/<link[\s\S]*?>/gi, "")
-    .replace(/<meta[\s\S]*?>/gi, "")
-    .replace(/on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/style\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/\bjavascript\s*:/gi, "");
+  if (!par || typeof par !== "string") return "";
 
-  const escaped = scrubbed
-    .replace(/&(?!amp;|lt;|gt;|quot;|#\d+;|#x[0-9a-fA-F]+;)/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  // 1. Supprimer complètement les balises actives et dangereuses
+  let sanitized = par
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, "")
+    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, "")
+    .replace(/<link\b[^>]*>/gi, "")
+    .replace(/<meta\b[^>]*>/gi, "");
 
-  return escaped.replace(SAFE_HTML_TAGS, "<$1>").replace(SAFE_ANCHOR, '<a href="$1">');
+  // 2. Nettoyer les balises HTML et filtrer les attributs
+  sanitized = sanitized.replace(/<\/?([a-zA-Z0-9]+)([^>]*)>/g, (match, tagRaw, attrsRaw) => {
+    const tag = tagRaw.toLowerCase();
+    const isClosing = match.startsWith("</");
+
+    if (!ALLOWED_TAGS.has(tag)) {
+      return ""; // Balise non autorisée -> supprimée
+    }
+
+    if (isClosing) {
+      return `</${tag}>`;
+    }
+
+    // Pour les balises orphelines / d'ouverture
+    if (tag === "br" || tag === "hr") {
+      return `<${tag} />`;
+    }
+
+    // Gestion spécifique des liens <a>
+    if (tag === "a") {
+      const hrefMatch = attrsRaw.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+      const rawUrl = hrefMatch ? (hrefMatch[1] || hrefMatch[2] || hrefMatch[3] || "") : "";
+      
+      // Valider que l'URL commence par http://, https:// ou mailto:
+      if (/^(?:https?:\/\/|mailto:)/i.test(rawUrl.trim())) {
+        const safeUrl = rawUrl.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">`;
+      }
+      return `<a>`;
+    }
+
+    return `<${tag}>`;
+  });
+
+  return sanitized;
 }
 
 function rowToPost(row: {

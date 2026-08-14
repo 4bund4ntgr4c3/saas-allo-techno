@@ -1,44 +1,39 @@
 import { describe, it, expect } from "vitest";
+import { computeTier } from "@/lib/loyalty.functions";
 
 describe("computeTier", () => {
-  it("returns bronze for 0 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns bronze for 0 points", () => {
     const result = computeTier(0);
     expect(result.tier).toBe("bronze");
     expect(result.label).toBe("Bronze");
     expect(result.next).toEqual({ tier: "argent", label: "Argent", min: 300 });
   });
 
-  it("returns bronze for 299 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns bronze for 299 points", () => {
     const result = computeTier(299);
     expect(result.tier).toBe("bronze");
   });
 
-  it("returns argent for 300 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns argent for 300 points", () => {
     const result = computeTier(300);
     expect(result.tier).toBe("argent");
     expect(result.label).toBe("Argent");
     expect(result.next).toEqual({ tier: "or", label: "Or", min: 700 });
   });
 
-  it("returns argent for 699 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns argent for 699 points", () => {
     const result = computeTier(699);
     expect(result.tier).toBe("argent");
   });
 
-  it("returns or for 700 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns or for 700 points", () => {
     const result = computeTier(700);
     expect(result.tier).toBe("or");
     expect(result.label).toBe("Or");
     expect(result.next).toBeNull();
   });
 
-  it("returns or for 1000 points", async () => {
-    const { computeTier } = await import("@/lib/loyalty.functions");
+  it("returns or for 1000 points", () => {
     const result = computeTier(1000);
     expect(result.tier).toBe("or");
   });

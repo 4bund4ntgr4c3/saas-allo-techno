@@ -45,6 +45,7 @@ import { Route as LocaleWorkAtRouteImport } from './routes/$locale/work-at'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMonCompteRouteImport } from './routes/_authenticated/mon-compte'
 import { Route as AuthenticatedReviewsAdminRouteImport } from './routes/_authenticated/reviews-admin'
+import { Route as ApiCronDemoResetRouteImport } from './routes/api.cron-demo-reset'
 import { Route as ApiCronRemindersRouteImport } from './routes/api.cron-reminders'
 import { Route as ApiDocsRouteImport } from './routes/api.docs'
 import { Route as ApiFedapayWebhookRouteImport } from './routes/api.fedapay-webhook'
@@ -288,6 +289,11 @@ const AuthenticatedReviewsAdminRoute =
     path: '/reviews-admin',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiCronDemoResetRoute = ApiCronDemoResetRouteImport.update({
+  id: '/api/cron-demo-reset',
+  path: '/api/cron-demo-reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronRemindersRoute = ApiCronRemindersRouteImport.update({
   id: '/api/cron-reminders',
   path: '/api/cron-reminders',
@@ -665,6 +671,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-demo-reset': typeof ApiCronDemoResetRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
   '/api/docs': typeof ApiDocsRoute
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
@@ -761,6 +768,7 @@ export interface FileRoutesByTo {
   '/$locale/work-at': typeof LocaleWorkAtRoute
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-demo-reset': typeof ApiCronDemoResetRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
   '/api/docs': typeof ApiDocsRoute
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
@@ -862,6 +870,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/_authenticated/reviews-admin': typeof AuthenticatedReviewsAdminRoute
+  '/api/cron-demo-reset': typeof ApiCronDemoResetRoute
   '/api/cron-reminders': typeof ApiCronRemindersRoute
   '/api/docs': typeof ApiDocsRoute
   '/api/fedapay-webhook': typeof ApiFedapayWebhookRoute
@@ -963,6 +972,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/mon-compte'
     | '/reviews-admin'
+    | '/api/cron-demo-reset'
     | '/api/cron-reminders'
     | '/api/docs'
     | '/api/fedapay-webhook'
@@ -1059,6 +1069,7 @@ export interface FileRouteTypes {
     | '/$locale/work-at'
     | '/mon-compte'
     | '/reviews-admin'
+    | '/api/cron-demo-reset'
     | '/api/cron-reminders'
     | '/api/docs'
     | '/api/fedapay-webhook'
@@ -1159,6 +1170,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/mon-compte'
     | '/_authenticated/reviews-admin'
+    | '/api/cron-demo-reset'
     | '/api/cron-reminders'
     | '/api/docs'
     | '/api/fedapay-webhook'
@@ -1232,6 +1244,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DemoRoute: typeof DemoRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiCronDemoResetRoute: typeof ApiCronDemoResetRoute
   ApiCronRemindersRoute: typeof ApiCronRemindersRoute
   ApiDocsRoute: typeof ApiDocsRoute
   ApiFedapayWebhookRoute: typeof ApiFedapayWebhookRoute
@@ -1496,6 +1509,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reviews-admin'
       preLoaderRoute: typeof AuthenticatedReviewsAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/cron-demo-reset': {
+      id: '/api/cron-demo-reset'
+      path: '/api/cron-demo-reset'
+      fullPath: '/api/cron-demo-reset'
+      preLoaderRoute: typeof ApiCronDemoResetRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/cron-reminders': {
       id: '/api/cron-reminders'
@@ -2181,6 +2201,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DemoRoute: DemoRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiCronDemoResetRoute: ApiCronDemoResetRoute,
   ApiCronRemindersRoute: ApiCronRemindersRoute,
   ApiDocsRoute: ApiDocsRoute,
   ApiFedapayWebhookRoute: ApiFedapayWebhookRoute,

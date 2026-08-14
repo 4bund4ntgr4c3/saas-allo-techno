@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,20 +9,26 @@ import {
   LayoutDashboard,
   Loader2,
   LogIn,
+  RotateCcw,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
-import { DEMO_ACCOUNTS, DEMO_PASSWORD, ensureDemoEnvironment } from "@/lib/demo.functions";
+import {
+  DEMO_ACCOUNTS,
+  DEMO_PASSWORD,
+  ensureDemoEnvironment,
+  resetDemoEnvironmentFn,
+} from "@/lib/demo.functions";
 import type { DemoRole } from "@/lib/demo.functions";
 
 export const Route = createFileRoute("/demo")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Visite guidée — Allô Techno" },
+      { title: "Visite guidée & Démo — Allô Techno" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -49,6 +55,19 @@ function DemoPage() {
     queryKey: ["demo-seed"],
     queryFn: async () => seed(),
     retry: 2,
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: () => resetDemoEnvironmentFn(),
+    onSuccess: (data) => {
+      toast.success(
+        `Environnement démo réinitialisé avec succès ! (${data.purgedReservations} réservations, ${data.purgedEquipment} équipements régénérés)`
+      );
+      queryClient.invalidateQueries({ queryKey: ["demo-seed"] });
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : "Erreur lors de la réinitialisation de la démo");
+    },
   });
 
   useEffect(() => {
@@ -86,11 +105,31 @@ function DemoPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-14">
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 border border-primary/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-          {t("demo.warning")}
-        </span>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 border border-primary/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+            {t("demo.warning")}
+          </span>
+          <span className="text-[11px] text-muted-foreground font-mono">
+            Cycle auto : reset chaque heure (00:00, 01:00...)
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={resetMutation.isPending}
+          onClick={() => resetMutation.mutate()}
+          className="gap-1.5 font-mono text-xs"
+        >
+          {resetMutation.isPending ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            <RotateCcw className="size-3.5 text-primary" />
+          )}
+          <span>Réinitialiser les données démo</span>
+        </Button>
       </div>
+
       <h1 className="at-display text-3xl font-bold tracking-tight">{t("demo.title")}</h1>
       <p className="mt-3 max-w-3xl text-sm text-muted-foreground">{t("demo.subtitle")}</p>
       <p className="mt-1 max-w-3xl text-xs text-muted-foreground">{t("demo.disclaimer")}</p>
@@ -101,10 +140,10 @@ function DemoPage() {
           return (
             <div
               key={account.id}
-              className="flex flex-col border border-border bg-card p-5 transition-shadow hover:shadow-md"
+              className="flex flex-col border border-border bg-card p-5 transition-shadow hover:shadow-md rounded-lg"
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center border border-border bg-muted">
+                <div className="flex size-10 items-center justify-center border border-border bg-muted rounded-md">
                   <Icon className="size-5 text-primary" />
                 </div>
                 <div>
@@ -115,7 +154,7 @@ function DemoPage() {
               <p className="mt-4 flex-1 text-sm text-muted-foreground">
                 {t("demo.features." + account.id)}
               </p>
-              <div className="mt-4 space-y-1 border border-border bg-surface p-3 text-xs">
+              <div className="mt-4 space-y-1 border border-border bg-surface p-3 text-xs rounded">
                 <p>
                   <span className="text-muted-foreground">{t("demo.credentials")} :</span>{" "}
                   <span className="font-mono">{account.email}</span>
@@ -126,7 +165,7 @@ function DemoPage() {
                 </p>
               </div>
               {account.id === "client" && tracking && (
-                <div className="mt-2 border border-success/30 bg-success/5 p-3 text-xs">
+                <div className="mt-2 border border-success/30 bg-success/5 p-3 text-xs rounded">
                   <p className="text-muted-foreground">{t("demo.trackingInfo")}</p>
                   <p className="mt-1 font-mono font-bold text-success">
                     {t("demo.trackingCode")} : {tracking.code} · {tracking.reference}
@@ -145,12 +184,14 @@ function DemoPage() {
           );
         })}
 
-        <div className="flex flex-col justify-center border border-dashed border-border bg-card/50 p-5">
+        <div className="flex flex-col justify-center border border-dashed border-border bg-card/50 p-5 rounded-lg">
           <h2 className="text-base font-semibold">{t("demo.visitTour")}</h2>
           <p className="mt-3 flex-1 text-sm text-muted-foreground">
             {t("demo.tourAdmin")} · {t("demo.tourApp")} · {t("demo.tourAccount")}
           </p>
-          <p className="mt-3 text-xs text-muted-foreground">{t("demo.resetNotice")}</p>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Les données de démonstration sont automatiquement restaurées chaque heure.
+          </p>
         </div>
       </div>
 

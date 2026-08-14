@@ -1,0 +1,25 @@
+name: Réinitialisation horaire de la Démo
+
+on:
+  schedule:
+    # Exécution chaque heure à la minute 0 (00:00, 01:00, 02:00, ...)
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "URL de base du site (défaut : production)"
+        required: false
+        default: "https://allotechno.africa"
+
+jobs:
+  demo-reset:
+    name: Reset & Re-seed Demo Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Appeler l'API de réinitialisation de la démo
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://allotechno.africa' }}
+        run: >
+          curl -sS -X POST
+          -H "Authorization: Bearer ${{ secrets.CRON_TOKEN }}"
+          -f "$BASE_URL/api/cron-demo-reset"

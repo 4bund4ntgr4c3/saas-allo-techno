@@ -1,21 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  History,
-  Loader2,
   MapPin,
   MessageSquare,
-  Paperclip,
   ShieldCheck,
-  Upload,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { LoadingState } from "@/components/ui/loading-state";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TicketTimeline } from "@/components/b2b/tickets/TicketTimeline";
+import { TicketAttachments } from "@/components/b2b/tickets/TicketAttachments";
 import { useI18n } from "@/lib/i18n/context";
 import { sendWhatsAppTicketNotificationFn } from "@/lib/whatsapp.functions";
+import { parseError } from "@/lib/error-parser";
 import {
   attachB2BTicketFile,
   getB2BTicketAttachmentUrls,
@@ -32,7 +33,6 @@ function OrgTicketDetail() {
   const { orgId, ticketId } = Route.useParams();
   const { t } = useI18n();
   const queryClient = useQueryClient();
-  const fileInput = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   const orgs = useQuery({ queryKey: ["app", "orgs"], queryFn: () => getMyOrganizations() });
@@ -85,23 +85,30 @@ function OrgTicketDetail() {
     },
     onSuccess: async () => {
       toast.success(t("org.tickets.detail.attachment.added"));
-      if (fileInput.current) fileInput.current.value = "";
       await queryClient.invalidateQueries({
         queryKey: ["app", "org", orgId, "tickets", ticketId],
       });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err: unknown) => {
+      const parsed = parseError(err, "Erreur lors du téléversement de la pièce jointe");
+      toast.error(parsed.message);
+    },
   });
 
   if (!org) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {orgs.isLoading ? t("common.loading") : t("org.error.notfound")}
-      </p>
+      <div className="p-6">
+        {orgs.isLoading ? (
+          <LoadingState message={t("common.loading")} />
+        ) : (
+          <EmptyState title={t("org.error.notfound")} description="Vérifiez vos autorisations." />
+        )}
+      </div>
     );
   }
+
   if (ticket.isLoading || !ticket.data) {
-    return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
+    return <LoadingState message={t("common.loading")} />;
   }
 
   const tk = ticket.data;
@@ -142,13 +149,14 @@ function OrgTicketDetail() {
                     equipmentName: tk.equipment?.id
                       ? "Équipement sous contrat"
                       : "Matériel sous ticket",
-                    status: tk.status === "resolu" ? "repaired" : "received",
+                    status: ["terminee", "pret", "livre"].includes(tk.status) ? "repaired" : "received",
                   },
                 });
                 toast.success("Message WhatsApp prêt !");
                 window.open(res.whatsappUrl, "_blank");
-              } catch {
-                toast.error("Erreur lors de la préparation de la notification WhatsApp.");
+              } catch (err) {
+                const parsed = parseError(err, "Erreur lors de la préparation de la notification WhatsApp.");
+                toast.error(parsed.message);
               }
             }}
             className="gap-1.5 font-mono text-xs border-emerald-600/40 text-emerald-600 hover:bg-emerald-500/10"
@@ -168,123 +176,32 @@ function OrgTicketDetail() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-3 text-lg font-bold">{tk.issue}</h2>
-            {tk.message ? <p className="whitespace-pre-wrap text-sm">{tk.message}</p> : null}
+          <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
+            <h2 className="mb-3 text-lg font-bold text-foreground">{tk.issue}</h2>
+            {tk.message ? <p className="whitespace-pre-wrap text-sm text-muted-foreground">{tk.message}</p> : null}
             {tk.location ? (
               <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin className="size-4" />
+                <MapPin className="size-4 text-primary" />
                 {tk.location}
               </p>
             ) : null}
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
-              <History className="size-5" />
-              {t("org.tickets.detail.timeline")}
-            </h2>
-            {tk.timeline.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                {t("org.tickets.detail.timeline.empty")}
-              </p>
-            ) : (
-              <ol className="space-y-3">
-                {tk.timeline.map((h) => (
-                  <li key={h.id} className="flex gap-3 border-l-2 border-border pl-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="flex flex-wrap items-center gap-2 text-sm">
-                        {h.old_status ? (
-                          <Badge variant="outline">{t(`org.tickets.status.${h.old_status}`)}</Badge>
-                        ) : null}
-                        <span className="text-muted-foreground">→</span>
-                        <Badge variant="outline">{t(`org.tickets.status.${h.new_status}`)}</Badge>
-                      </p>
-                      {h.note ? <p className="mt-1 text-sm">{h.note}</p> : null}
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {new Date(h.created_at).toLocaleString("fr-FR", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </div>
+          {/* ─── TIMELINE COMPOSANT EXTRAIT ─── */}
+          <TicketTimeline timeline={tk.timeline} />
 
-          <div className="rounded-sm border border-border bg-card p-5">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="flex items-center gap-2 text-lg font-bold">
-                <Paperclip className="size-5" />
-                {t("org.tickets.detail.attachments")}
-              </h2>
-              <div>
-                <input
-                  ref={fileInput}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/webm"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files ?? []);
-                    if (files.length) uploadFiles.mutate(files);
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={uploading}
-                  onClick={() => fileInput.current?.click()}
-                >
-                  {uploading ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Upload className="size-4" />
-                  )}
-                  {uploading ? "…" : t("org.tickets.detail.addAttachment")}
-                </Button>
-              </div>
-            </div>
-            {tk.attachments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                {t("org.tickets.detail.attachments.empty")}
-              </p>
-            ) : (
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {tk.attachments.map((a) => (
-                  <li key={a.id}>
-                    <a
-                      href={attachmentUrls.data?.[a.url] ?? a.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block border border-border p-3 text-sm transition-colors hover:border-primary"
-                    >
-                      {a.kind === "video" ? (
-                        <video
-                          src={attachmentUrls.data?.[a.url] ?? a.url}
-                          controls
-                          className="mb-2 aspect-video w-full bg-black"
-                        />
-                      ) : null}
-                      <p className="truncate font-medium">{a.caption ?? "Pièce jointe"}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {a.kind ?? a.stage ?? "—"} ·{" "}
-                        {new Date(a.created_at).toLocaleDateString("fr-FR")}
-                      </p>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* ─── ATTACHMENTS COMPOSANT EXTRAIT ─── */}
+          <TicketAttachments
+            attachments={tk.attachments}
+            attachmentUrls={attachmentUrls.data}
+            onUpload={(files) => uploadFiles.mutate(files)}
+            isUploading={uploading}
+          />
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-3 text-lg font-bold">{t("org.tickets.detail.info")}</h2>
+          <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
+            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.info")}</h2>
             <dl className="space-y-3 text-sm">
               <div>
                 <dt className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -315,13 +232,13 @@ function OrgTicketDetail() {
             </dl>
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-3 text-lg font-bold">{t("org.tickets.detail.equipment")}</h2>
+          <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
+            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.equipment")}</h2>
             {tk.equipment ? (
               <Link
                 to="/app/organizations/$orgId/equipment/$equipmentId"
                 params={{ orgId, equipmentId: tk.equipment.id }}
-                className="block border border-border p-3 text-sm transition-colors hover:border-primary"
+                className="block border border-border p-3 text-sm transition-colors hover:border-primary rounded-md"
               >
                 <p className="font-medium">{tk.equipment.name}</p>
                 <p className="text-xs text-muted-foreground">
@@ -341,8 +258,8 @@ function OrgTicketDetail() {
             )}
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="mb-3 text-lg font-bold">{t("org.tickets.detail.contact")}</h2>
+          <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
+            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.contact")}</h2>
             <dl className="space-y-2 text-sm">
               <div>
                 <dt className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -366,8 +283,8 @@ function OrgTicketDetail() {
           </div>
 
           {tk.equipment?.warranty_expires_at ? (
-            <p className="flex items-center gap-2 border border-dashed border-border p-4 text-xs text-muted-foreground">
-              <ShieldCheck className="size-4 shrink-0" />
+            <p className="flex items-center gap-2 border border-dashed border-border p-4 text-xs text-muted-foreground rounded-md">
+              <ShieldCheck className="size-4 shrink-0 text-primary" />
               Garantie jusqu'au {tk.equipment.warranty_expires_at.slice(0, 10)}
             </p>
           ) : null}

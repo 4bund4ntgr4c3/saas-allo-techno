@@ -109,7 +109,18 @@ async function findFreeSlot(
   throw new Error("Aucun créneau libre sur les 90 prochains jours");
 }
 
-export const ensureDemoEnvironment = createServerFn({ method: "GET" }).handler(async () => {
+export interface DemoSeedResult {
+  users: number;
+  roles: number;
+  org: boolean;
+  equipment: number;
+  tickets: number;
+  dossiers: number;
+  trackingReference?: string;
+  trackingCode?: string;
+}
+
+export const ensureDemoEnvironment = createServerFn({ method: "GET" }).handler(async (): Promise<DemoSeedResult> => {
   if (!DEMO_ENABLED) {
     throw new Error("L'environnement de démonstration est désactivé sur ce déploiement.");
   }
@@ -120,16 +131,14 @@ export const ensureDemoEnvironment = createServerFn({ method: "GET" }).handler(a
     throw new Error("Trop de requêtes. Réessayez dans une minute.");
   }
 
-  const result: {
-    users: number;
-    roles: number;
-    org: boolean;
-    equipment: number;
-    tickets: number;
-    dossiers: number;
-    trackingReference?: string;
-    trackingCode?: string;
-  } = { users: 0, roles: 0, org: false, equipment: 0, tickets: 0, dossiers: 0 };
+  const result: DemoSeedResult = {
+    users: 0,
+    roles: 0,
+    org: false,
+    equipment: 0,
+    tickets: 0,
+    dossiers: 0,
+  };
 
   const userIds: Partial<Record<DemoRole, string>> = {};
 
@@ -443,3 +452,66 @@ export const ensureDemoEnvironment = createServerFn({ method: "GET" }).handler(a
 
   return result;
 });
+
+/**
+ * Réinitialisation complète et forcée de l'environnement de démonstration.
+ * 1. Purge toutes les réservations, tickets, pièces jointes démo existants.
+ * 2. Purge et recrée le parc matériel et l'organisation B2B démo.
+ * 3. Ré-injecte un jeu de données de test complet et à jour.
+ * 
+ * Cette fonction est appelée automatiquement par le Cron horaire (/api/cron-demo-reset)
+ * et peut être invoquée manuellement depuis la page /demo.
+ */
+export async function resetAndSeedDemoEnvironment(): Promise<{
+  purgedReservations: number;
+  purgedEquipment: number;
+  seededResult: DemoSeedResult;
+  timestamp: string;
+}> {
+  if (!DEMO_ENABLED) {
+    throw new Error("L'environnement démo est désactivé sur cette instance.");
+  }
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  // 1. Purge des réservations et tickets marqués 'demo'
+  const { data: purgedRes, error: errRes } = await supabaseAdmin
+    .from("reservations")
+    .delete()
+    .eq("source", "demo")
+    .select("id");
+  if (errRes) console.warn("[demo-reset] warning purging reservations:", errRes);
+
+  // 2. Trouver l'organisation démo
+  const { data: demoOrg } = await supabaseAdmin
+    .from("organizations")
+    .select("id")
+    .eq("name", DEMO_ORG_NAME)
+    .maybeSingle();
+
+  let purgedEqCount = 0;
+  if (demoOrg) {
+    // Purge de l'historique et des équipements démo
+    const { data: purgedEq } = await supabaseAdmin
+      .from("equipment")
+      .delete()
+      .eq("org_id", demoOrg.id)
+      .select("id");
+    purgedEqCount = purgedEq?.length ?? 0;
+  }
+
+  // 3. Ré-exécuter le seed pour reconstruire un environnement frais
+  const seedResult = await ensureDemoEnvironment();
+
+  return {
+    purgedReservations: purgedRes?.length ?? 0,
+    purgedEquipment: purgedEqCount,
+    seededResult: seedResult,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+export const resetDemoEnvironmentFn = createServerFn({ method: "POST" }).handler(async () => {
+  return await resetAndSeedDemoEnvironment();
+});
+
