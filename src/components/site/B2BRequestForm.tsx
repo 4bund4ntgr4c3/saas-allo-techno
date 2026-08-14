@@ -203,16 +203,23 @@ export interface B2BRequestFormProps {
 export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFormProps) {
   const submitB2BFn = useServerFn(submitB2BLead);
 
+  const defaultNeedType: B2BNeedType =
+    (initialFormula ? "contract" : initialNeedType) || NEED_TYPES[0]!.id;
+
   const [step, setStep] = useState<1 | 2 | 3 | 4>(initialFormula ? 2 : 1);
-  const [needType, setNeedType] = useState<B2BNeedType | null>(
-    initialFormula ? "contract" : initialNeedType || null,
+  const [needType, setNeedType] = useState<B2BNeedType>(defaultNeedType);
+  const [slaFormula, setSlaFormula] = useState<SlaFormulaType>(
+    initialFormula || SLA_FORMULAS[0]!.id,
   );
-  const [slaFormula, setSlaFormula] = useState<SlaFormulaType | null>(initialFormula || null);
-  const [preventivePeriod, setPreventivePeriod] = useState<string | null>(null);
-  const [fleetSize, setFleetSize] = useState<string | null>(null);
-  const [selectedEqTypes, setSelectedEqTypes] = useState<string[]>([]);
-  const [urgency, setUrgency] = useState<string | null>(
-    initialFormula === "essentiel" ? "48h" : initialFormula === "business" ? "urgent" : null,
+  const [preventivePeriod, setPreventivePeriod] = useState<string>(PREVENTIVE_PERIODS[0]!.id);
+  const [fleetSize, setFleetSize] = useState<string>(FLEET_SIZES[0]!);
+  const [selectedEqTypes, setSelectedEqTypes] = useState<string[]>([EQUIPMENT_TYPES[0]!]);
+  const [urgency, setUrgency] = useState<string>(
+    initialFormula === "essentiel"
+      ? "48h"
+      : initialFormula === "business"
+        ? "urgent"
+        : URGENCY_LEVELS[0]!.id,
   );
 
   const [companyName, setCompanyName] = useState("");
@@ -247,6 +254,16 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
         .catch((err) => console.error("Erreur génération QR Code:", err));
     }
   }, [successCode]);
+
+  // Défilement automatique fluide vers le début du formulaire à chaque changement d'étape
+  useEffect(() => {
+    const el = document.getElementById("b2b-form");
+    if (el) {
+      const yOffset = -20;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  }, [step]);
 
   const onSubmitFinal = async (e: React.FormEvent) => {
     e.preventDefault();

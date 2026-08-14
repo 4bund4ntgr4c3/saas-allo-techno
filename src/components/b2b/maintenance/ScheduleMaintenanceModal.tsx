@@ -33,7 +33,9 @@ export function ScheduleMaintenanceModal({
   onSubmit,
   isPending = false,
 }: ScheduleMaintenanceModalProps) {
-  const [selectedEqId, setSelectedEqId] = React.useState<string>("");
+  const [selectedEqId, setSelectedEqId] = React.useState<string>(
+    () => equipmentList[0]?.id ?? "",
+  );
   const [taskTitle, setTaskTitle] = React.useState<string>(PRESET_TASKS[0] ?? "");
   const [intervalMonths, setIntervalMonths] = React.useState<string>("3");
   const [nextDueAt, setNextDueAt] = React.useState(() => {

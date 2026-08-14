@@ -46,9 +46,9 @@ export function EditEquipmentModal({
       setName(equipment.name ?? "");
       setSerial(equipment.serial_number ?? "");
       setTag(equipment.asset_tag ?? "");
-      setTransferSiteId(equipment.site_id ?? "");
+      setTransferSiteId(equipment.site_id ?? sites[0]?.id ?? "");
     }
-  }, [equipment]);
+  }, [equipment, sites]);
 
   if (!isOpen || !equipment) return null;
 

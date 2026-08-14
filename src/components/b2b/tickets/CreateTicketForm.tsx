@@ -42,7 +42,7 @@ export function CreateTicketForm({
   const { t } = useI18n();
 
   const [form, setForm] = React.useState<CreateTicketFormData>({
-    equipment_id: initialEquipmentId,
+    equipment_id: initialEquipmentId || equipmentList[0]?.id || "",
     ticket_type: "panne",
     priority: "normale",
     issue: "",
