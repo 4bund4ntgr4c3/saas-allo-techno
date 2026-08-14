@@ -31,7 +31,8 @@ export const getOrgSites = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }) => {
-    const { data: rows, error } = await orgClient().rpc("get_org_sites", {
+    const client = await orgClient();
+    const { data: rows, error } = await client.rpc("get_org_sites", {
       _org_id: data.org_id,
     });
     if (error) throw new Error(error.message);
@@ -46,7 +47,8 @@ export const createOrgSite = createServerFn({ method: "POST" })
     return { org_id, input };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: id, error } = await client.rpc(
       "create_org_site",
       rpcArgs("create_org_site", {
         _org_id: data.org_id,
@@ -70,7 +72,8 @@ export const updateOrgSite = createServerFn({ method: "POST" })
     return { site_id, input };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { error } = await client.rpc(
       "update_org_site",
       rpcArgs("update_org_site", {
         _site_id: data.site_id,
@@ -95,7 +98,8 @@ export const deleteOrgSite = createServerFn({ method: "POST" })
     return { site_id };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("delete_org_site", {
+    const client = await orgClient();
+    const { error } = await client.rpc("delete_org_site", {
       _site_id: data.site_id,
     });
     if (error) throw new Error(error.message);

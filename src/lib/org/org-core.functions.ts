@@ -87,7 +87,7 @@ export const MOCK_ORGS: Organization[] = [
 export const getMyOrganizations = createServerFn({ method: "GET" }).handler(
   async (): Promise<Organization[]> => {
     try {
-      const client = orgClient();
+      const client = await orgClient();
       const { data: members, error } = await client
         .from("organization_members")
         .select("role, organization_id, organizations(*)");
@@ -116,7 +116,8 @@ export const createOrganization = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { data: org, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: org, error } = await client.rpc(
       "create_organization",
       rpcArgs("create_organization", {
         _name: data.name.trim(),
@@ -143,7 +144,8 @@ export const updateOrganization = createServerFn({ method: "POST" })
     return { id, input };
   })
   .handler(async ({ data }) => {
-    const { data: org, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: org, error } = await client.rpc(
       "update_organization",
       rpcArgs("update_organization", {
         _org_id: data.id,
@@ -171,7 +173,8 @@ export const getOrgMembers = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }): Promise<OrgMember[]> => {
-    const { data: members, error } = await orgClient().rpc("get_org_members", {
+    const client = await orgClient();
+    const { data: members, error } = await client.rpc("get_org_members", {
       _org_id: data.org_id,
     });
     if (error) throw new Error(error.message);
@@ -185,7 +188,8 @@ export const inviteOrgMember = createServerFn({ method: "POST" })
     return { org_id, email: email.trim().toLowerCase(), role: role ?? "membre" };
   })
   .handler(async ({ data }) => {
-    const { data: member, error } = await orgClient().rpc("invite_org_member", {
+    const client = await orgClient();
+    const { data: member, error } = await client.rpc("invite_org_member", {
       _org_id: data.org_id,
       _email: data.email,
       _role: data.role,
@@ -201,7 +205,8 @@ export const setOrgMemberRole = createServerFn({ method: "POST" })
     return { org_id, user_id, role };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("set_org_member_role", {
+    const client = await orgClient();
+    const { error } = await client.rpc("set_org_member_role", {
       _org_id: data.org_id,
       _user_id: data.user_id,
       _role: data.role,
@@ -217,7 +222,8 @@ export const removeOrgMember = createServerFn({ method: "POST" })
     return { org_id, user_id };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("remove_org_member", {
+    const client = await orgClient();
+    const { error } = await client.rpc("remove_org_member", {
       _org_id: data.org_id,
       _user_id: data.user_id,
     });

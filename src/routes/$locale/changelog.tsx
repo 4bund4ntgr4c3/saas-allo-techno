@@ -37,6 +37,56 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.15 — Architecture Modulaire B2B & Sous-modules (Batch 40)",
+    date: "2026-08-15",
+    added: [
+      "Modularisation complète de org.functions.ts (46 KB) en 6 sous-modules spécialisés sous src/lib/org/",
+      "org-client.ts: client Supabase contextuel avec JWT utilisateur et guards assertOrgAccess / assertTicketAccess",
+      "org-core.functions.ts: gestion du cycle de vie des organisations et attribution de rôles B2B",
+      "org-equipment.functions.ts: inventaire matériel, QR codes et suivi des garanties constructeurs",
+      "org-sites.functions.ts: gestion des agences régionales et rattachement des départements",
+      "org-tickets.functions.ts: cycle de vie des tickets d'incidents SAV B2B et upload sécurisé de médias",
+      "org-billing-maintenance.functions.ts: facturation mensuelle B2B et plannings de maintenance récurrente",
+    ],
+    fixed: [
+      "Résolution de 100% des erreurs TypeScript strict (exactOptionalPropertyTypes)",
+      "Barrel export src/lib/org/index.ts assurant une rétrocompatibilité totale des imports",
+    ],
+  },
+  {
+    version: "2026.08.15 — Réinitialisation Automatique Horaire de la Démo (Batch 39)",
+    date: "2026-08-15",
+    added: [
+      "Purge et re-seed idempotent complet de l'environnement de démonstration (resetAndSeedDemoEnvironment)",
+      "Route API /api/cron-demo-reset avec authentification sécurisée par jeton porteur à temps constant",
+      "Workflow GitHub Actions .github/workflows/demo-reset.yml s'exécutant chaque heure (0 * * * *)",
+      "Bouton interactif de réinitialisation instantanée sur la page /demo avec retour visuel par notification toast",
+    ],
+  },
+  {
+    version: "2026.08.14 — Modularisation des Routes B2B & Composants Partagés (Batch 38)",
+    date: "2026-08-14",
+    added: [
+      "Extraction de 11 composants modulaires spécialisés pour les 5 routes B2B (equipment, maintenance, sites, billing, tickets)",
+      "Composant partagé LoadingState avec indicateur accessible et texte personnalisable",
+      "Composant partagé EmptyState avec icône contextuelle, message et bouton d'action CTA",
+      "Hook personnalisé usePersistedState pour la synchronisation localStorage sécurisée côté SSR",
+    ],
+    changed: [
+      "Allègement de plus de 50% du volume de code des routes TanStack Router",
+    ],
+  },
+  {
+    version: "2026.08.14 — Sécurité XSS, Sanitisation d'Erreurs & DB Migration (Batch 37)",
+    date: "2026-08-14",
+    added: [
+      "Désinfection HTML stricte par liste blanche autorisée dans content.functions.ts contre les attaques XSS",
+      "Parseur d'erreurs centralisé error-parser.ts masquant les détails d'implémentation PostgreSQL",
+      "Schémas Zod stricts pour toutes les entités du domaine B2B (org-schemas.ts)",
+      "Migration SQL: soft-delete (deleted_at), index GIN pg_trgm pour recherche ultra-rapide et triggers d'audit automatiques sur payments et inventory_parts",
+    ],
+  },
+  {
     version: "2026.08.11 — Fix CI/CD",
     date: "2026-08-11",
     fixed: [

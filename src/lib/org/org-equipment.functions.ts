@@ -196,7 +196,8 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const serveMock = () => (import.meta.env.DEV ? MOCK_EQUIPMENT : []);
-      const { data: rows, error } = await orgClient().rpc(
+      const client = await orgClient();
+      const { data: rows, error } = await client.rpc(
         "get_org_equipment",
         rpcArgs("get_org_equipment", {
           _org_id: data.org_id,
@@ -220,7 +221,8 @@ export const getEquipment = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     try {
-      const { data: detail, error } = await orgClient().rpc("get_equipment", {
+      const client = await orgClient();
+      const { data: detail, error } = await client.rpc("get_equipment", {
         _equipment_id: data.equipment_id,
       });
       if (error || !detail) throw new Error(error?.message ?? "Détail non trouvé");
@@ -281,7 +283,8 @@ export const getEquipmentByQr = createServerFn({ method: "POST" })
     return { qr_id: qr_id.trim() };
   })
   .handler(async ({ data }) => {
-    const { data: rows, error } = await orgClient().rpc("get_equipment_by_qr", {
+    const client = await orgClient();
+    const { data: rows, error } = await client.rpc("get_equipment_by_qr", {
       _qr_id: data.qr_id,
     });
     if (error) throw new Error(error.message);
@@ -296,7 +299,8 @@ export const createEquipment = createServerFn({ method: "POST" })
     return { org_id, input };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: id, error } = await client.rpc(
       "create_equipment",
       rpcArgs("create_equipment", {
         _org_id: data.org_id,
@@ -326,7 +330,8 @@ export const updateEquipment = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     try {
-      const { error } = await orgClient().rpc(
+      const client = await orgClient();
+      const { error } = await client.rpc(
         "update_equipment",
         rpcArgs("update_equipment", {
           _equipment_id: data.equipment_id,
@@ -362,7 +367,8 @@ export const setEquipmentStatus = createServerFn({ method: "POST" })
     return { equipment_id, status, reason: reason ?? undefined };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { error } = await client.rpc(
       "set_equipment_status",
       rpcArgs("set_equipment_status", {
         _equipment_id: data.equipment_id,
@@ -381,7 +387,8 @@ export const deleteEquipment = createServerFn({ method: "POST" })
     return { equipment_id };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("delete_equipment", {
+    const client = await orgClient();
+    const { error } = await client.rpc("delete_equipment", {
       _equipment_id: data.equipment_id,
     });
     if (error) throw new Error(error.message);
@@ -399,7 +406,8 @@ export const addEquipmentHistory = createServerFn({ method: "POST" })
     return { equipment_id, event: event.trim(), description: description ?? undefined };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { error } = await client.rpc(
       "add_equipment_history",
       rpcArgs("add_equipment_history", {
         _equipment_id: data.equipment_id,
@@ -432,7 +440,8 @@ export const upsertWarranty = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { data: id, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: id, error } = await client.rpc(
       "upsert_warranty",
       rpcArgs("upsert_warranty", {
         _equipment_id: data.equipment_id,
@@ -454,7 +463,8 @@ export const deleteWarranty = createServerFn({ method: "POST" })
     return { warranty_id };
   })
   .handler(async ({ data }) => {
-    const { error } = await orgClient().rpc("delete_warranty", {
+    const client = await orgClient();
+    const { error } = await client.rpc("delete_warranty", {
       _warranty_id: data.warranty_id,
     });
     if (error) throw new Error(error.message);

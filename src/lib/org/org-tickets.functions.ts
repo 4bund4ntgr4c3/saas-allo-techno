@@ -95,7 +95,8 @@ export const createB2BTicket = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { data: ticket, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: ticket, error } = await client.rpc(
       "create_b2b_ticket",
       rpcArgs("create_b2b_ticket", {
         _org_id: data.org_id,
@@ -131,7 +132,8 @@ export const getOrgTickets = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { data: rows, error } = await orgClient().rpc(
+    const client = await orgClient();
+    const { data: rows, error } = await client.rpc(
       "get_org_tickets",
       rpcArgs("get_org_tickets", {
         _org_id: data.org_id,
@@ -151,7 +153,8 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     return { ticket_id };
   })
   .handler(async ({ data }) => {
-    const { data: detail, error } = await orgClient().rpc("get_org_ticket", {
+    const client = await orgClient();
+    const { data: detail, error } = await client.rpc("get_org_ticket", {
       _ticket_id: data.ticket_id,
     });
     if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvé");
@@ -241,7 +244,8 @@ export const attachB2BTicketFile = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     await assertTicketAccess(data.ticket_id);
-    const { error } = await orgClient()
+    const client = await orgClient();
+    const { error } = await client
       .from("reservation_attachments")
       .insert({
         reservation_id: data.ticket_id,

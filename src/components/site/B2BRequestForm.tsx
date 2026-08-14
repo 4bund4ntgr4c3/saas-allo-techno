@@ -598,27 +598,27 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
   }
 
   return (
-    <div id="b2b-form" className="space-y-6">
+    <div id="b2b-form" className="space-y-6 w-full max-w-full overflow-hidden">
       {/* Top Header Banner */}
-      <div className="border border-border bg-card p-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="border border-border bg-card p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <span className="at-eyebrow mb-1 block">Sans création de compte préalable</span>
-          <h2 className="at-display text-2xl md:text-3xl font-bold">
+          <h2 className="at-display text-xl sm:text-2xl md:text-3xl font-bold break-words">
             Demande de Service &amp; Maintenance B2B
           </h2>
         </div>
       </div>
 
       {/* 2-Column Grid: Form Steps Space (Left) + Live Recap Card (Right) */}
-      <div className="grid gap-6 lg:grid-cols-12 items-start">
+      <div className="grid gap-6 lg:grid-cols-12 items-start w-full max-w-full">
         {/* Left Column: B2B Form Space (7 cols) */}
-        <div className="lg:col-span-7 border border-border bg-card p-4 sm:p-6 md:p-8 space-y-6">
+        <div className="lg:col-span-7 border border-border bg-card p-3 sm:p-6 md:p-8 space-y-6 min-w-0 max-w-full overflow-hidden">
           {/* Segmented 4-Step Navigation Bar Inside Form Space */}
           <div className="border border-border bg-surface p-1 grid grid-cols-2 sm:grid-cols-4 w-full gap-1 text-center font-mono text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className={`h-12 flex items-center justify-center px-1 border transition-all truncate ${
+              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
                 step === 1
                   ? "bg-foreground text-background border-foreground"
                   : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
@@ -629,7 +629,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             <button
               type="button"
               onClick={() => setStep(2)}
-              className={`h-12 flex items-center justify-center px-1 border transition-all truncate ${
+              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
                 step === 2
                   ? "bg-foreground text-background border-foreground"
                   : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
@@ -640,7 +640,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             <button
               type="button"
               onClick={() => setStep(3)}
-              className={`h-12 flex items-center justify-center px-1 border transition-all truncate ${
+              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
                 step === 3
                   ? "bg-foreground text-background border-foreground"
                   : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
@@ -651,7 +651,7 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
             <button
               type="button"
               onClick={() => setStep(4)}
-              className={`h-12 flex items-center justify-center px-1 border transition-all truncate ${
+              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
                 step === 4
                   ? "bg-foreground text-background border-foreground"
                   : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
@@ -935,13 +935,14 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 </div>
               </div>
 
-              <div className="flex justify-between pt-4 border-t border-border">
-                <Button variant="outline" size="lg" onClick={() => setStep(1)}>
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto text-center" onClick={() => setStep(1)}>
                   &larr; Retour
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
+                  className="w-full sm:w-auto text-center"
                   onClick={() => {
                     if (!fleetSize) {
                       toast.error("Veuillez sélectionner la taille de votre parc.");
@@ -1061,14 +1062,15 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <Button variant="outline" type="button" onClick={() => setStep(2)}>
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center" onClick={() => setStep(2)}>
                   &larr; Retour
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
                   type="button"
+                  className="w-full sm:w-auto text-center"
                   onClick={() => {
                     if (!companyName.trim() || !contactName.trim() || !phone.trim()) {
                       toast.error(
@@ -1202,14 +1204,15 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <Button variant="outline" type="button" onClick={() => setStep(3)}>
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center" onClick={() => setStep(3)}>
                   &larr; Retour aux coordonnées
                 </Button>
                 <Button
                   variant="technical"
                   size="lg"
                   type="button"
+                  className="w-full sm:w-auto text-center"
                   onClick={onSubmitFinal}
                   disabled={busy}
                 >

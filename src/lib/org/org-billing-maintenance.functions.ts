@@ -24,7 +24,8 @@ export const getOrgInvoices = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }): Promise<OrgInvoice[]> => {
-    const { data: invoices, error } = await orgClient()
+    const client = await orgClient();
+    const { data: invoices, error } = await client
       .from("organization_invoices" as never)
       .select("*")
       .eq("org_id", data.org_id)
@@ -44,7 +45,8 @@ export const createOrgInvoice = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }) => {
-    const { data: reservations } = await orgClient()
+    const client = await orgClient();
+    const { data: reservations } = await client
       .from("reservations")
       .select("id, reference, device, quote_amount")
       .eq("org_id", data.org_id)
@@ -63,7 +65,7 @@ export const createOrgInvoice = createServerFn({ method: "POST" })
     const total_ttc = Math.round(total_ht * (1 + tax_rate));
     const ref = `FACT-${data.period_month}-${Date.now().toString().slice(-4)}`;
 
-    const { data: invoice, error } = await orgClient()
+    const { data: invoice, error } = await client
       .from("organization_invoices" as never)
       .insert({
         org_id: data.org_id,
@@ -110,7 +112,8 @@ export const getOrgMaintenanceSchedules = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }): Promise<EquipmentMaintenanceSchedule[]> => {
-    const { data: schedules, error } = await orgClient()
+    const client = await orgClient();
+    const { data: schedules, error } = await client
       .from("equipment_maintenance_schedules" as never)
       .select("*, equipment:equipment_id(name, brand, model, asset_tag, serial_number)")
       .eq("org_id", data.org_id)
@@ -135,7 +138,8 @@ export const scheduleMaintenance = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }) => {
-    const { data: schedule, error } = await orgClient()
+    const client = await orgClient();
+    const { data: schedule, error } = await client
       .from("equipment_maintenance_schedules" as never)
       .insert({
         org_id: data.org_id,
@@ -168,7 +172,8 @@ export const completeMaintenanceTask = createServerFn({ method: "POST" })
     nextDate.setMonth(nextDate.getMonth() + 3);
     const nextDue = nextDate.toISOString().slice(0, 10);
 
-    const { error } = await orgClient()
+    const client = await orgClient();
+    const { error } = await client
       .from("equipment_maintenance_schedules" as never)
       .update({
         status: "scheduled",

@@ -1,4 +1,3 @@
-import { getRequestHeader } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { createSupabaseFetch } from "@/integrations/supabase/helpers";
@@ -8,7 +7,8 @@ import { createSupabaseFetch } from "@/integrations/supabase/helpers";
  * Reconstruit à chaque requête avec le JWT de l'utilisateur courant
  * pour que les politiques RLS et RPCs vérifient auth.uid().
  */
-export function orgClient() {
+export async function orgClient() {
+  const { getRequestHeader } = await import("@tanstack/react-start/server");
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
   if (!url || !key) throw new Error("Configuration Supabase manquante");
@@ -45,7 +45,8 @@ export function rpcArgs<K extends keyof Database["public"]["Functions"]>(
  * (admin_org, manager, responsable_maintenance ou membre).
  */
 export async function assertOrgAccess(orgId: string): Promise<void> {
-  const { data, error } = await orgClient()
+  const client = await orgClient();
+  const { data, error } = await client
     .from("organization_members")
     .select("role")
     .eq("organization_id", orgId)
@@ -59,7 +60,8 @@ export async function assertOrgAccess(orgId: string): Promise<void> {
  * Vérifie que l'utilisateur a accès au ticket (via son organisation).
  */
 export async function assertTicketAccess(ticketId: string): Promise<void> {
-  const { data, error } = await orgClient()
+  const client = await orgClient();
+  const { data, error } = await client
     .from("reservations")
     .select("org_id")
     .eq("id", ticketId)

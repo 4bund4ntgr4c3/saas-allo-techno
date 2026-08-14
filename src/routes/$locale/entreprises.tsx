@@ -94,11 +94,11 @@ function Entreprises() {
   const { locale, t } = useI18n();
   const [selectedFormula, setSelectedFormula] = useState<SlaFormulaType | undefined>(undefined);
   return (
-    <>
+    <div className="w-full max-w-full overflow-x-clip">
       <section className="border-b border-border py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <span className="at-eyebrow mb-3 block">{t("entreprises.eyebrow")}</span>
-          <h1 className="at-display text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight">
+          <h1 className="at-display text-2xl sm:text-4xl md:text-6xl font-extrabold tracking-tight break-words">
             {t("entreprises.title")}
           </h1>
           <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base text-muted-foreground">
@@ -108,14 +108,14 @@ function Entreprises() {
             <Button
               variant="technical"
               size="lg"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto text-center"
               onClick={() => {
                 document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               {t("entreprises.cta.request")} &rarr;
             </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-center">
               <Link to="/$locale/tarifs" params={{ locale }}>
                 {t("entreprises.cta.pricing")}
               </Link>
@@ -125,8 +125,8 @@ function Entreprises() {
       </section>
 
       {/* Embedded Interactive B2B Form Section */}
-      <section className="border-b border-border bg-muted/20 py-8 sm:py-12">
-        <div className="mx-auto max-w-7xl px-3 sm:px-6">
+      <section className="border-b border-border bg-muted/20 py-8 sm:py-12 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-3 sm:px-6 w-full">
           <B2BRequestForm key={selectedFormula || "default"} initialFormula={selectedFormula} />
         </div>
       </section>
@@ -137,16 +137,16 @@ function Entreprises() {
             eyebrow={t("entreprises.services.eyebrow")}
             title={t("entreprises.services.title")}
           />
-          <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px border border-border bg-border grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.t} className="bg-card p-5 sm:p-6 md:p-8">
-                  <Icon className="size-6 text-primary" />
-                  <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight">
+                <div key={s.t} className="bg-card p-5 sm:p-6 md:p-8 min-w-0">
+                  <Icon className="size-6 text-primary shrink-0" />
+                  <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight break-words">
                     {t(s.t)}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground">{t(s.x)}</p>
+                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground break-words">{t(s.x)}</p>
                 </div>
               );
             })}
@@ -163,10 +163,10 @@ function Entreprises() {
           />
           <div className="grid gap-px border border-border bg-border grid-cols-1 md:grid-cols-3">
             {PLANS.map((p) => (
-              <div key={p.name} className="bg-card p-5 sm:p-6 md:p-8 flex flex-col justify-between">
+              <div key={p.name} className="bg-card p-5 sm:p-6 md:p-8 flex flex-col justify-between min-w-0">
                 <div>
                   <span className="at-eyebrow">{t(p.name)}</span>
-                  <div className="mt-3 sm:mt-4 font-mono text-2xl sm:text-3xl font-bold">
+                  <div className="mt-3 sm:mt-4 font-mono text-2xl sm:text-3xl font-bold break-words">
                     {p.price ? formatFcfa(p.price) : t("entreprises.onQuote")}
                     <span className="ml-1 text-xs sm:text-sm text-muted-foreground font-normal">
                       {t(p.unit)}
@@ -176,7 +176,7 @@ function Entreprises() {
                     {p.items.map((i) => (
                       <li
                         key={i}
-                        className="border-b border-border pb-2.5 sm:pb-3 text-muted-foreground"
+                        className="border-b border-border pb-2.5 sm:pb-3 text-muted-foreground break-words"
                       >
                         {t(i)}
                       </li>
@@ -185,7 +185,7 @@ function Entreprises() {
                 </div>
                 <Button
                   variant="technical"
-                  className="mt-6 sm:mt-8 w-full"
+                  className="mt-6 sm:mt-8 w-full truncate"
                   onClick={() => {
                     const formulaKey: "essentiel" | "business" | "custom" = p.name.includes(
                       "essentiel",
@@ -213,6 +213,6 @@ function Entreprises() {
       </section>
 
       <CtaBand />
-    </>
+    </div>
   );
 }
