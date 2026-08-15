@@ -116,14 +116,14 @@ export const searchKB = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     await requireStaff(supabaseAdmin);
-    const { data: articles } = await supabaseAdmin.from("kb_articles" as never).select("*");
-    const all = (articles ?? []) as unknown as KBArticle[];
-    return all.filter(
-      (a) =>
-        a.title.toLowerCase().includes(data.query) ||
-        a.content.toLowerCase().includes(data.query) ||
-        a.tags.some((t) => t.toLowerCase().includes(data.query)),
-    );
+    const escaped = data.query.replace(/[%_\\]/g, "\\$&");
+    const { data: articles, error } = await supabaseAdmin
+      .from("kb_articles" as never)
+      .select("*")
+      .or(`title.ilike.%${escaped}%,content.ilike.%${escaped}%,tags.cs.{${data.query}}`)
+      .limit(50);
+    if (error) throw new Error(error.message);
+    return (articles ?? []) as unknown as KBArticle[];
   });
 
 export const KB_CATEGORIES = [

@@ -6,8 +6,8 @@ import { Building2, History, Loader2, Banknote, ImagePlus, FileDown } from "luci
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
-import { getReservationQuote } from "@/lib/admin.functions";
 import { sendQuote } from "@/lib/quote.functions";
+import type { ReservationQuote } from "@/lib/admin.functions";
 import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
 import { downloadQuotePdf } from "@/lib/invoice";
 import { logAudit } from "@/lib/audit";
@@ -360,6 +360,7 @@ function QuotePanel({
   device,
   issue,
   created_at,
+  quote,
 }: {
   reservationId: string;
   reference: string;
@@ -369,20 +370,14 @@ function QuotePanel({
   device: string;
   issue: string;
   created_at: string;
+  quote: ReservationQuote | null;
 }) {
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const { t } = useI18n();
-  const getQuoteFn = useServerFn(getReservationQuote);
   const sendQuoteFn = useServerFn(sendQuote);
   const [amount, setAmount] = useState("");
   const [warranty, setWarranty] = useState(0);
-
-  const quote = useQuery({
-    queryKey: ["reservation-quote", reservationId],
-    enabled: Boolean(reservationId),
-    queryFn: () => getQuoteFn({ data: { reservationId } }),
-  });
 
   const send = useMutation({
     mutationFn: async () => {
@@ -398,7 +393,7 @@ function QuotePanel({
     onSuccess: () => {
       toast.success(t("admin.kanban.quote.sentSuccess"));
       setAmount("");
-      queryClient.invalidateQueries({ queryKey: ["reservation-quote", reservationId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       void logAudit(supabase as never, {
         user_id: user.id,
         action: "quote.sent",
@@ -411,8 +406,8 @@ function QuotePanel({
       toast.error(err instanceof Error ? err.message : t("admin.kanban.quote.sendError")),
   });
 
-  const status = quote.data?.quote_status ?? "none";
-  const sentAmount = quote.data?.quote_amount;
+  const status = quote?.quote_status ?? "none";
+  const sentAmount = quote?.quote_amount;
 
   return (
     <div className="mt-4 border-t border-border pt-4">
@@ -425,10 +420,10 @@ function QuotePanel({
         {sentAmount != null && (
           <span className="font-mono text-muted-foreground">{formatFcfa(sentAmount)}</span>
         )}
-        {quote.data && quote.data.warranty_months > 0 && (
+        {quote && quote.warranty_months > 0 && (
           <span className="text-muted-foreground">
             ·{" "}
-            {quote.data.warranty_months >= 12
+            {quote.warranty_months >= 12
               ? t("reservation.warranty.extended")
               : t("reservation.warranty.standard")}
           </span>
@@ -491,8 +486,8 @@ function QuotePanel({
                 device,
                 issue,
                 quote_amount: sentAmount,
-                warranty_months: quote.data?.warranty_months ?? 0,
-                quote_token: quote.data?.quote_token ?? "",
+                warranty_months: quote?.warranty_months ?? 0,
+                quote_token: quote?.quote_token ?? "",
                 created_at,
               })
             }

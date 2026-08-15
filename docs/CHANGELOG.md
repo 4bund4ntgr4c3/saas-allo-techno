@@ -7,6 +7,19 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.15-b43] - 2026-08-15 (Audit Securite & Nettoyage - Batch 43)
+
+### Changed
+
+- **Perf / Admin** : fin du N+1 sur /admin/dossiers - les donnees devis (quote_amount, quote_status, quote_decided_at, quote_token, warranty_months) sont desormais incluses dans la requete de liste des reservations (1 appel au lieu de 1 par dossier) ; le panneau devis (QuotePanel) n'appelle plus getReservationQuote par carte ; invalidation de la liste apres envoi de devis.
+- **Perf / Base de connaissances** : searchKB filtre cote SQL (titre/contenu ilike + tags cs) avec limit(50) au lieu de telecharger toute la table puis filtrer en JS.
+- **Perf / Catalogue** : signature des photos en un seul appel createSignedUrls (au lieu d'un par photo) + redirection vers l'endpoint ender/image/authenticated avec width=480&format=webp (photos ~10x plus legeres sur les pages catalogue et admin).
+
+### Removed
+
+- Server fn getReservationQuote (remplacee par les donnees batchees) et son schema Zod.
+---
+
 ## [2026.08.15-b42] — 2026-08-15 (Audit Sécurité & Nettoyage — Batch 42)
 
 ### Added

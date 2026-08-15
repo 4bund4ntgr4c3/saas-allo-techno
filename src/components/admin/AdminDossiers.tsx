@@ -162,7 +162,7 @@ export function DossiersSection() {
       let q = supabase
         .from("reservations")
         .select(
-          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id",
+          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id, quote_amount, quote_status, quote_decided_at, quote_token, warranty_months",
         )
         .order("slot_date", { ascending: false })
         .limit(200);
@@ -516,6 +516,7 @@ export function DossiersSection() {
                       device={r.device}
                       issue={r.issue}
                       created_at={r.created_at}
+                      quote={r}
                     />
                   )}
 

@@ -2,7 +2,7 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.15-b42 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.15-b43 — [Changelog](./CHANGELOG.md)
 
 ## Audit & Durcissement Sécurité (Batch 42)
 
