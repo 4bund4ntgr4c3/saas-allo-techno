@@ -113,12 +113,13 @@ BEGIN
 END $$;
 
 -- 5. Vue d'agrégation KPI pour éviter les calculs en mémoire
+-- (total_amount n'existe pas sur reservations ; quote_amount = montant du devis)
 CREATE OR REPLACE VIEW public.v_kpi_summary AS
 SELECT
   COUNT(*) FILTER (WHERE status = 'terminee' OR status = 'livre') AS total_completed,
   COUNT(*) FILTER (WHERE status IN ('en_cours', 'pieces', 'pret')) AS total_in_progress,
   COUNT(*) FILTER (WHERE status = 'en_attente') AS total_pending,
-  COALESCE(SUM(total_amount) FILTER (WHERE payment_status = 'paid'), 0) AS total_revenue_paid,
+  COALESCE(SUM(quote_amount) FILTER (WHERE payment_status = 'paid'), 0) AS total_revenue_paid,
   COUNT(*) AS total_reservations,
   now() AS computed_at
 FROM public.reservations
