@@ -262,6 +262,90 @@ export const listReviews = createServerFn({ method: "GET" })
 // Écriture — réservée au personnel, vérifiée côté serveur.
 // ---------------------------------------------------------------------------
 
+const adminBlogRowSchema = z.object({
+  slug: z.string().trim().min(1),
+  locale: z.string().trim().max(5).optional(),
+});
+
+export type AdminBlogRow = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  reading_time: string;
+  body: string;
+  locale: string;
+};
+
+export type AdminReviewRow = {
+  id: string;
+  customer_name: string;
+  phone: string | null;
+  email: string | null;
+  rating: number;
+  comment: string | null;
+  status: string;
+  verified: boolean;
+  created_at: string;
+};
+
+/** Articles de blog pour l'admin (bruts, par langue) — lecture côté serveur. */
+export const getAdminBlogPosts = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => adminBlogRowSchema.partial().parse(data ?? {}))
+  .handler(async ({ data }): Promise<AdminBlogRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+    if (!(await rateLimit("admin-content", 15)))
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+    let query = supabaseAdmin
+      .from("blog_posts")
+      .select("slug, title, excerpt, date, category, reading_time, body, locale");
+    if (data.locale) query = query.eq("locale", data.locale);
+    const { data: rows, error } = await query.order("date", { ascending: false });
+    if (error) throw new Error("Impossible de charger les articles.");
+    return (rows ?? []) as AdminBlogRow[];
+  });
+
+/** Article de blog unique (utilisé pour la duplication inter-langues). */
+export const getAdminBlogPost = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ slug: z.string().trim().min(1), locale: z.string().trim().max(5) }).parse(data),
+  )
+  .handler(async ({ data }): Promise<AdminBlogRow | null> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+    if (!(await rateLimit("admin-content", 15)))
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+    const { data: row, error } = await supabaseAdmin
+      .from("blog_posts")
+      .select("slug, title, excerpt, date, category, reading_time, body, locale")
+      .eq("slug", data.slug)
+      .eq("locale", data.locale)
+      .maybeSingle();
+    if (error) throw new Error("Impossible de charger l'article.");
+    return (row as AdminBlogRow | null) ?? null;
+  });
+
+/** Avis clients pour l'admin (PII phone/email lue côté serveur uniquement). */
+export const getAdminReviews = createServerFn({ method: "POST" }).handler(
+  async (): Promise<AdminReviewRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+    if (!(await rateLimit("admin-content", 15)))
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+    const { data, error } = await supabaseAdmin
+      .from("reviews")
+      .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error("Impossible de charger les avis.");
+    return (data ?? []) as AdminReviewRow[];
+  },
+);
+
 export const upsertBlogPost = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => postSchema.parse(data))
   .handler(async ({ data }) => {
@@ -357,6 +441,39 @@ export const listInventory = createServerFn({ method: "GET" }).handler(async () 
   for (const row of data) map[row.slug] = row.quantity;
   return map;
 });
+
+/** Stock bas pour l'admin (produits sous le seuil) — lecture côté serveur. */
+export const getAdminLowStock = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{ slug: string; quantity: number; low_stock_threshold: number }[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+    if (!(await rateLimit("admin-stock", 15)))
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+    const { data, error } = await supabaseAdmin
+      .from("inventory")
+      .select("slug, quantity, low_stock_threshold");
+    if (error) throw new Error("Impossible de charger le stock.");
+    return (data ?? []).filter((row) => row.quantity <= row.low_stock_threshold);
+  },
+);
+
+/** Stock complet pour l'admin (liste de gestion) — lecture côté serveur. */
+export const getAdminStock = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{ slug: string; quantity: number; updated_at: string | null }[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
+    if (!(await rateLimit("admin-stock", 15)))
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+
+    const { data, error } = await supabaseAdmin
+      .from("inventory")
+      .select("slug, quantity, updated_at")
+      .order("slug", { ascending: true });
+    if (error) throw new Error("Impossible de charger le stock.");
+    return (data ?? []) as { slug: string; quantity: number; updated_at: string | null }[];
+  },
+);
 
 /** Renvoie le stock réel (quantité) pour un slug donné, ou null si non en base. */
 export const getInventory = createServerFn({ method: "GET" })

@@ -557,3 +557,419 @@ export const getWorkshopLoad = createServerFn({ method: "GET" }).handler(
     return (data as WorkshopLoad[]) ?? [];
   },
 );
+
+// ---------------------------------------------------------------------------
+// Requêtes admin déplacées côté serveur (audit b43)
+// ---------------------------------------------------------------------------
+
+async function requireStaffGuard(supabaseAdmin: SupabaseClient<Database>) {
+  const userId = await currentUserId(supabaseAdmin);
+  await requireFreshOtp(supabaseAdmin, userId);
+  const { data: staff, error } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+  if (error || !staff) throw new Error("Action non autorisée");
+  return userId;
+}
+
+export type DashboardActivity = {
+  id: string;
+  reservation_id: string | null;
+  new_status: string | null;
+  note: string | null;
+  created_at: string;
+  reservations: { reference: string; customer_name: string } | null;
+};
+
+export type DashboardStats = {
+  activeRepairs: number;
+  todayReservations: number;
+  monthRevenue: number;
+  pendingQuotes: number;
+  realtimeActive: number;
+  recentActivity: DashboardActivity[];
+};
+
+/** Statistiques du tableau de bord admin (6 compteurs en un seul appel serveur). */
+export const getAdminDashboardStats = createServerFn({ method: "POST" }).handler(
+  async (): Promise<DashboardStats> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-dash", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const today = new Date().toISOString().split("T")[0]!;
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+
+    const [active, todays, pending, realtime, recent, paymentsRes] = await Promise.all([
+      supabaseAdmin
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["en_attente", "en_cours"]),
+      supabaseAdmin
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .eq("slot_date", today),
+      supabaseAdmin
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "en_attente" as never),
+      supabaseAdmin
+        .from("reservations")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["en_attente", "en_cours", "pieces", "pret"] as never[]),
+      supabaseAdmin
+        .from("reservation_status_history")
+        .select(
+          "id, reservation_id, new_status, note, created_at, reservations(reference, customer_name)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(8),
+      supabaseAdmin
+        .from("payments")
+        .select("amount")
+        .gte("created_at", startOfMonth)
+        .eq("status", "paid"),
+    ]);
+
+    let monthRevenue = 0;
+    if ((paymentsRes.data ?? []).length > 0) {
+      monthRevenue = (paymentsRes.data ?? []).reduce((sum, p) => sum + (p.amount ?? 0), 0);
+    } else {
+      const { data: resData } = await supabaseAdmin
+        .from("reservations")
+        .select("quote_amount")
+        .gte("created_at", startOfMonth)
+        .eq("payment_status", "paid");
+      monthRevenue = (resData ?? []).reduce((sum, r) => sum + (r.quote_amount ?? 0), 0);
+    }
+
+    return {
+      activeRepairs: active.count ?? 0,
+      todayReservations: todays.count ?? 0,
+      monthRevenue,
+      pendingQuotes: pending.count ?? 0,
+      realtimeActive: realtime.count ?? 0,
+      recentActivity: (recent.data ?? []) as DashboardActivity[],
+    };
+  },
+);
+
+export type AnalyticsCounts = { event: string; count: number }[];
+
+/** Événements récents + comptage des événements (agrégé côté serveur, plus de 20 000 lignes vers le client). */
+export const getAdminAnalyticsData = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    events: { event: string; created_at: string }[];
+    counts: AnalyticsCounts;
+  }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-analytics", 15))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const [eventsResult, rowsResult] = await Promise.all([
+      supabaseAdmin
+        .from("analytics_events")
+        .select("event, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200),
+      supabaseAdmin
+        .from("analytics_events")
+        .select("event")
+        .order("created_at", { ascending: false })
+        .limit(20000),
+    ]);
+
+    const map = new Map<string, number>();
+    for (const row of rowsResult.data ?? []) {
+      map.set(row.event, (map.get(row.event) ?? 0) + 1);
+    }
+    const counts = [...map.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([event, count]) => ({ event, count }));
+
+    return { events: eventsResult.data ?? [], counts };
+  },
+);
+
+export type TeamMember = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  created_at: string;
+};
+
+/** Équipe admin : profils + rôles + statut admin de l'appelant (PII lue côté serveur uniquement). */
+export const getAdminTeamData = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    isAdmin: boolean;
+    members: { profiles: TeamMember[]; roles: { user_id: string; role: string }[] };
+  }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-team", 15))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const userId = await requireStaffGuard(supabaseAdmin);
+
+    const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    const [profilesResult, rolesResult] = await Promise.all([
+      supabaseAdmin
+        .from("profiles")
+        .select("id, full_name, email, phone, created_at")
+        .order("created_at", { ascending: true })
+        .limit(200),
+      supabaseAdmin.from("user_roles").select("user_id, role"),
+    ]);
+
+    return {
+      isAdmin: Boolean(isAdmin),
+      members: {
+        profiles: (profilesResult.data ?? []) as TeamMember[],
+        roles: (rolesResult.data ?? []) as { user_id: string; role: string }[],
+      },
+    };
+  },
+);
+
+export type AdminStatsData = {
+  reservations: {
+    id: string;
+    reference: string;
+    customer_name: string;
+    device: string;
+    issue: string;
+    status: string;
+    slot_date: string | null;
+    slot_period: string | null;
+    mode: string;
+    payment: string;
+    created_at: string;
+  }[];
+  leads: { source: string | null; status: string; message: string | null; created_at: string }[];
+  payments: { amount: number; status: string; created_at: string }[];
+};
+
+/** Jeux de données bruts du tableau de bord statistiques (12 mois, bornés). */
+export const getAdminStatsData = createServerFn({ method: "POST" }).handler(
+  async (): Promise<AdminStatsData> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-stats", 15))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const since = new Date(Date.now() - 12 * 30 * 24 * 3600 * 1000).toISOString();
+
+    const [reservationsResult, leadsResult, paymentsResult] = await Promise.all([
+      supabaseAdmin
+        .from("reservations")
+        .select(
+          "id, reference, customer_name, device, issue, status, slot_date, slot_period, mode, payment, created_at",
+        )
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabaseAdmin
+        .from("leads")
+        .select("source, status, message, created_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabaseAdmin
+        .from("payments")
+        .select("amount, status, created_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500),
+    ]);
+
+    return {
+      reservations: (reservationsResult.data ?? []) as AdminStatsData["reservations"],
+      leads: (leadsResult.data ?? []) as AdminStatsData["leads"],
+      payments: (paymentsResult.data ?? []) as AdminStatsData["payments"],
+    };
+  },
+);
+
+const checklistSchema = z.object({
+  reservationId: z.string().uuid(),
+  type: z.enum(["intake", "qa"]),
+  items: z.array(z.any()).optional(),
+});
+
+/** Enregistrement d'une checklist d'admission (intake) ou de contrôle qualité (qa). */
+export const saveChecklist = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => checklistSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-checklist", 30))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const column = data.type === "intake" ? "intake_checklist" : "qa_checklist";
+    const payload = {
+      checked_at: new Date().toISOString(),
+      items: data.items ?? [],
+    };
+    const { error } = await supabaseAdmin
+      .from("reservations")
+      .update({ [column]: payload } as never)
+      .eq("id", data.reservationId);
+    if (error) {
+      logger.error("Save checklist failed", error);
+      throw new Error("Impossible d'enregistrer la checklist.");
+    }
+    return { saved: true };
+  });
+
+const leadStatusSchema = z.object({
+  id: z.string().uuid(),
+  status: z.string().trim().max(30),
+});
+
+/** Commandes boutique : leads + paiements (PII lue côté serveur uniquement). */
+export const getAdminOrdersData = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    orders: {
+      id: string;
+      reference: string | null;
+      name: string | null;
+      phone: string | null;
+      message: string | null;
+      status: string;
+      created_at: string;
+    }[];
+    payments: {
+      reference: string | null;
+      status: string;
+      amount: number | null;
+      created_at: string;
+    }[];
+  }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-orders", 15))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const [leadsResult, paymentsResult] = await Promise.all([
+      supabaseAdmin
+        .from("leads")
+        .select("id, reference, name, phone, message, status, created_at")
+        .eq("source", "boutique")
+        .order("created_at", { ascending: false })
+        .limit(200),
+      supabaseAdmin
+        .from("payments")
+        .select("reference, status, amount, created_at")
+        .eq("source", "boutique")
+        .order("created_at", { ascending: false })
+        .limit(500),
+    ]);
+
+    return {
+      orders: leadsResult.data ?? [],
+      payments: paymentsResult.data ?? [],
+    };
+  },
+);
+
+/** Demandes de devis / leads (PII lue côté serveur uniquement). */
+export const getAdminLeadsData = createServerFn({ method: "POST" }).handler(
+  async (): Promise<
+    {
+      id: string;
+      source: string | null;
+      reference: string | null;
+      name: string | null;
+      phone: string | null;
+      email: string | null;
+      message: string | null;
+      status: string;
+      created_at: string;
+    }[]
+  > => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-leads", 15))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const { data, error } = await supabaseAdmin
+      .from("leads")
+      .select("id, source, reference, name, phone, email, message, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  },
+);
+
+/** Changement de statut d'un lead (commandes boutique). */
+export const setLeadStatus = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => leadStatusSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-lead-status", 30))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    await requireStaffGuard(supabaseAdmin);
+
+    const { error } = await supabaseAdmin
+      .from("leads")
+      .update({ status: data.status })
+      .eq("id", data.id);
+    if (error) {
+      logger.error("Set lead status failed", error);
+      throw new Error("Impossible de mettre à jour ce lead.");
+    }
+    return { updated: true };
+  });
+
+const teamRoleSchema = z.object({
+  userId: z.string().uuid(),
+  role: z.enum(["admin", "staff", "technicien", "user"]),
+});
+
+/** Attribution d'un rôle à un membre de l'équipe (admin requis côté serveur). */
+export const setTeamRole = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => teamRoleSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("admin-set-role", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const userId = await requireStaffGuard(supabaseAdmin);
+
+    const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Réservé à l'administrateur.");
+
+    const { error } = await supabaseAdmin.rpc("set_user_role", {
+      _user_id: data.userId,
+      _role: data.role,
+    });
+    if (error) {
+      logger.error("Set team role failed", error);
+      throw new Error("Impossible de changer ce rôle.");
+    }
+    return { updated: true };
+  });

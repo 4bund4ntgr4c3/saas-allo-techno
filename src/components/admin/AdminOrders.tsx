@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { getAdminOrdersData, setLeadStatus } from "@/lib/admin.functions";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog";
 import { field } from "@/components/admin/primitives/AdminField";
@@ -56,40 +57,25 @@ export function OrdersSection() {
 
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const getOrdersFn = useServerFn(getAdminOrdersData);
+  const setLeadStatusFn = useServerFn(setLeadStatus);
 
   const orders = useQuery({
     queryKey: ["admin-orders"],
-    queryFn: async () => {
-      const { data: leadsData, error: leadsError } = await supabase
-        .from("leads")
-        .select("id, reference, name, phone, message, status, created_at")
-        .eq("source", "boutique")
-        .order("created_at", { ascending: false })
-        .limit(200);
-      if (leadsError) throw leadsError;
-      const { data: paymentsData, error: paymentsError } = await supabase
-        .from("payments")
-        .select("reference, status, amount, created_at")
-        .eq("source", "boutique")
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (paymentsError) throw paymentsError;
-      return { orders: leadsData ?? [], payments: paymentsData ?? [] };
-    },
+    queryFn: () => getOrdersFn({ data: undefined }),
   });
 
   const paymentByReference = useMemo(() => {
     const map = new Map<string, { status: string; amount: number | null }>();
     for (const p of orders.data?.payments ?? []) {
-      map.set(p.reference, { status: p.status, amount: p.amount });
+      map.set(p.reference ?? "", { status: p.status, amount: p.amount });
     }
     return map;
   }, [orders.data?.payments]);
 
   const setStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("leads").update({ status }).eq("id", id);
-      if (error) throw error;
+      await setLeadStatusFn({ data: { id, status } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });

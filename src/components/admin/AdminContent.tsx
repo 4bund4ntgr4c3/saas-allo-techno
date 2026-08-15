@@ -10,6 +10,10 @@ import { Stars } from "@/components/site/Blocks";
 import {
   deleteBlogPost,
   deleteReview,
+  getAdminBlogPost,
+  getAdminBlogPosts,
+  getAdminLowStock,
+  getAdminReviews,
   upsertBlogPost,
   upsertReview,
   type BlogPost,
@@ -25,15 +29,10 @@ type ContentTab = "blog" | "avis" | "stock";
 export function ContentSection() {
   const { t } = useI18n();
   const [sub, setSub] = useState<ContentTab>("blog");
+  const getLowStockFn = useServerFn(getAdminLowStock);
   const lowStockQuery = useQuery({
     queryKey: ["admin-low-stock"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("inventory")
-        .select("slug, quantity, low_stock_threshold");
-      if (error) return [];
-      return (data ?? []).filter((row) => row.quantity <= row.low_stock_threshold);
-    },
+    queryFn: () => getLowStockFn({ data: undefined }),
     refetchInterval: 5 * 60 * 1000,
   });
   const lowStockCount = lowStockQuery.data?.length ?? 0;
@@ -80,17 +79,11 @@ function BlogAdmin() {
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const [locale, setLocale] = useState<string>("fr");
+  const getBlogPostsFn = useServerFn(getAdminBlogPosts);
+  const getBlogPostFn = useServerFn(getAdminBlogPost);
   const postsQuery = useQuery({
     queryKey: ["admin-blog", locale],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("blog_posts")
-        .select("slug, title, excerpt, date, category, reading_time, body, locale")
-        .eq("locale", locale)
-        .order("date", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => getBlogPostsFn({ data: { locale } }),
   });
   const [editing, setEditing] = useState<Partial<BlogPost> | null>(null);
   const [form, setForm] = useState({
@@ -140,12 +133,7 @@ function BlogAdmin() {
   };
 
   const duplicateFromLocale = async (slug: string, fromLocale: string) => {
-    const { data } = await supabase
-      .from("blog_posts")
-      .select("slug, title, excerpt, date, category, reading_time, body, locale")
-      .eq("slug", slug)
-      .eq("locale", fromLocale)
-      .maybeSingle();
+    const data = await getBlogPostFn({ data: { slug, locale: fromLocale } });
     if (!data) {
       toast.error(t("admin.content.blog.toast.notFound"));
       return;
@@ -430,16 +418,10 @@ function ReviewsAdmin() {
   const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
+  const getReviewsFn = useServerFn(getAdminReviews);
   const reviewsQuery = useQuery({
     queryKey: ["admin-reviews"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reviews")
-        .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => getReviewsFn({ data: undefined }),
   });
   const [form, setForm] = useState({
     id: "",
@@ -534,7 +516,7 @@ function ReviewsAdmin() {
                       phone: r.phone ?? "",
                       email: r.email ?? "",
                       rating: r.rating,
-                      comment: r.comment,
+                      comment: r.comment ?? "",
                       status: r.status ?? "published",
                     })
                   }

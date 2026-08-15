@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import {
   Activity,
@@ -12,95 +13,26 @@ import {
   Wrench,
   TrendingUp,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
 import { Button } from "@/components/ui/button";
+import { getAdminDashboardStats } from "@/lib/admin.functions";
 
 export function AdminDashboard() {
   const { t } = useI18n();
+  const getStatsFn = useServerFn(getAdminDashboardStats);
 
-  const activeRepairs = useQuery({
-    queryKey: ["dash-active-repairs"],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("reservations")
-        .select("*", { count: "exact", head: true })
-        .in("status", ["en_attente", "en_cours"]);
-      return count ?? 0;
-    },
-  });
-
-  const todayReservations = useQuery({
-    queryKey: ["dash-today"],
-    queryFn: async () => {
-      const today = new Date().toISOString().split("T")[0]!;
-      const { count } = await supabase
-        .from("reservations")
-        .select("*", { count: "exact", head: true })
-        .eq("slot_date", today);
-      return count ?? 0;
-    },
-  });
-
-  const monthRevenue = useQuery({
-    queryKey: ["dash-revenue"],
-    queryFn: async () => {
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { data: paymentsData } = await supabase
-        .from("payments")
-        .select("amount")
-        .gte("created_at", startOfMonth)
-        .eq("status", "paid");
-      if (paymentsData && paymentsData.length > 0) {
-        return paymentsData.reduce((sum, p) => sum + (p.amount ?? 0), 0);
-      }
-      const { data: resData } = await supabase
-        .from("reservations")
-        .select("quote_amount")
-        .gte("created_at", startOfMonth)
-        .eq("payment_status", "paid");
-      if (!resData) return 0;
-      return resData.reduce((sum, r) => sum + (r.quote_amount ?? 0), 0);
-    },
-  });
-
-  const recentActivity = useQuery({
-    queryKey: ["dash-recent"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("reservation_status_history")
-        .select(
-          "id, reservation_id, new_status, note, created_at, reservations(reference, customer_name)",
-        )
-        .order("created_at", { ascending: false })
-        .limit(8);
-      return data ?? [];
-    },
-  });
-
-  const pendingQuotes = useQuery({
-    queryKey: ["dash-pending-quotes"],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("reservations")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "en_attente" as never);
-      return count ?? 0;
-    },
-  });
-
-  const realtimeActive = useQuery({
-    queryKey: ["dash-realtime"],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("reservations")
-        .select("*", { count: "exact", head: true })
-        .in("status", ["en_attente", "en_cours", "pieces", "pret"] as never[]);
-      return count ?? 0;
-    },
+  const stats = useQuery({
+    queryKey: ["dash-stats"],
+    queryFn: () => getStatsFn({ data: undefined }),
     refetchInterval: 30_000,
   });
+
+  const activeRepairs = { data: stats.data?.activeRepairs, isLoading: stats.isLoading };
+  const todayReservations = { data: stats.data?.todayReservations, isLoading: stats.isLoading };
+  const monthRevenue = { data: stats.data?.monthRevenue, isLoading: stats.isLoading };
+  const recentActivity = { data: stats.data?.recentActivity, isLoading: stats.isLoading };
+  const pendingQuotes = { data: stats.data?.pendingQuotes, isLoading: stats.isLoading };
+  const realtimeActive = { data: stats.data?.realtimeActive, isLoading: stats.isLoading };
 
   const kpis = [
     {

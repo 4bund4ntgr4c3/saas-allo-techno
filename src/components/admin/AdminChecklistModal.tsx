@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { saveChecklist } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ClipboardCheck, CheckCircle2, XCircle, HelpCircle, Save, X } from "lucide-react";
@@ -57,18 +58,10 @@ export function AdminChecklistModal({
     return state;
   });
 
+  const saveChecklistFn = useServerFn(saveChecklist);
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
-        checked_at: new Date().toISOString(),
-        items,
-      };
-      const column = type === "intake" ? "intake_checklist" : "qa_checklist";
-      const { error } = await supabase
-        .from("reservations")
-        .update({ [column]: payload } as never)
-        .eq("id", reservationId);
-      if (error) throw error;
+      await saveChecklistFn({ data: { reservationId, type, items } });
     },
     onSuccess: () => {
       toast.success(

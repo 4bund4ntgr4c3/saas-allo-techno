@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { FileDown, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { getAdminLeadsData, setLeadStatus } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
@@ -66,24 +66,17 @@ export function CsvExportButton({
 export function LeadsSection() {
   const queryClient = useQueryClient();
   const { t } = useI18n();
+  const getLeadsFn = useServerFn(getAdminLeadsData);
+  const setLeadStatusFn = useServerFn(setLeadStatus);
 
   const leads = useQuery({
     queryKey: ["leads"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("leads")
-        .select("id, source, reference, name, phone, email, message, status, created_at")
-        .order("created_at", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getLeadsFn({ data: undefined }),
   });
 
   const setStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("leads").update({ status }).eq("id", id);
-      if (error) throw error;
+      await setLeadStatusFn({ data: { id, status } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });

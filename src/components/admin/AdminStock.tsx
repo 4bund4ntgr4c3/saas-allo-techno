@@ -4,11 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ShieldAlert } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { ACCESSORIES, formatFcfa } from "@/data/catalog";
-import { setInventory } from "@/lib/content.functions";
+import { getAdminStock, setInventory } from "@/lib/content.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 
@@ -17,16 +16,13 @@ const LOW_STOCK_THRESHOLD = 5;
 export function StockAdmin() {
   const queryClient = useQueryClient();
   const { t } = useI18n();
+  const getStockFn = useServerFn(getAdminStock);
   const stockQuery = useQuery({
     queryKey: ["admin-stock"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("inventory")
-        .select("slug, quantity, updated_at")
-        .order("slug");
-      if (error) throw error;
+      const rows = await getStockFn({ data: undefined });
       const map = new Map<string, number>();
-      for (const row of data ?? []) map.set(row.slug, row.quantity);
+      for (const row of rows) map.set(row.slug, row.quantity);
       return map;
     },
   });

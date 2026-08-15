@@ -4,9 +4,10 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { TrendingDown, TrendingUp, Download } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
+import { getAdminStatsData } from "@/lib/admin.functions";
 import { computeEstimate } from "@/lib/estimate";
 import { formatFcfa } from "@/data/catalog/company";
 import { BRANDS } from "@/data/catalog/static";
@@ -98,12 +99,6 @@ const BRAND_NAMES = [...BRANDS.map((b) => b.name)].sort((a, b) => b.length - a.l
 
 // « Total : 30 000 FCFA » (espace fine insécable entre les groupes de chiffres).
 const BOUTIQUE_TOTAL_RE = /Total\s*[:：]?\s*([\d\s]+)\s*FCFA/;
-
-function isoMonthsAgo(months: number): string {
-  const d = new Date();
-  d.setMonth(d.getMonth() - months);
-  return d.toISOString();
-}
 
 function isSameMonth(a: string, b: string): boolean {
   const x = new Date(a);
@@ -231,50 +226,31 @@ function BarRow({ label, count, total }: { label: string; count: number; total: 
 
 export function StatsDashboard() {
   const { t, locale } = useI18n();
+  const getStatsFn = useServerFn(getAdminStatsData);
 
-  const reservationsQuery = useQuery({
-    queryKey: ["admin-stats-reservations"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select(
-          "id, reference, customer_name, device, issue, status, slot_date, slot_period, mode, payment, created_at",
-        )
-        .gte("created_at", isoMonthsAgo(12))
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (error) throw error;
-      return (data ?? []) as ReservationRow[];
-    },
+  const statsData = useQuery({
+    queryKey: ["admin-stats-data"],
+    queryFn: () => getStatsFn({ data: undefined }),
   });
 
-  const leadsQuery = useQuery({
-    queryKey: ["admin-stats-leads"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("leads")
-        .select("source, status, message, created_at")
-        .gte("created_at", isoMonthsAgo(12))
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (error) throw error;
-      return (data ?? []) as LeadRow[];
-    },
-  });
+  const reservationsQuery = {
+    data: (statsData.data?.reservations ?? []) as ReservationRow[],
+    isLoading: statsData.isLoading,
+  };
 
-  const paymentsQuery = useQuery({
-    queryKey: ["admin-stats-payments"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("payments")
-        .select("amount, status, created_at")
-        .gte("created_at", isoMonthsAgo(12))
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (error) throw error;
-      return (data ?? []) as { amount: number; status: string; created_at: string }[];
-    },
-  });
+  const leadsQuery = {
+    data: (statsData.data?.leads ?? []) as LeadRow[],
+    isLoading: statsData.isLoading,
+  };
+
+  const paymentsQuery = {
+    data: (statsData.data?.payments ?? []) as {
+      amount: number;
+      status: string;
+      created_at: string;
+    }[],
+    isLoading: statsData.isLoading,
+  };
 
   const nowIso = useMemo(() => new Date().toISOString(), []);
 

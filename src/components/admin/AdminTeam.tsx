@@ -1,8 +1,9 @@
 import { Route } from "@/routes/_authenticated/admin";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import type { Enums } from "@/integrations/supabase/types";
+import { getAdminTeamData, setTeamRole } from "@/lib/admin.functions";
 import { field } from "@/components/admin/primitives/AdminField";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -17,46 +18,26 @@ export function TeamSection() {
   const { t } = useI18n();
   const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
+  const getTeamFn = useServerFn(getAdminTeamData);
+  const setRoleFn = useServerFn(setTeamRole);
 
-  const isAdmin = useQuery({
-    queryKey: ["is-admin", user.id],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("has_role", {
-        _user_id: user.id,
-        _role: "admin",
-      });
-      if (error) throw error;
-      return Boolean(data);
-    },
+  const team = useQuery({
+    queryKey: ["team", user.id],
+    queryFn: () => getTeamFn({ data: undefined }),
   });
 
-  const members = useQuery({
-    queryKey: ["team"],
-    queryFn: async () => {
-      const { data: profiles, error: pError } = await supabase
-        .from("profiles")
-        .select("id, full_name, email, phone, created_at")
-        .order("created_at", { ascending: true })
-        .limit(200);
-      if (pError) throw pError;
-      const { data: roles, error: rError } = await supabase
-        .from("user_roles")
-        .select("user_id, role");
-      if (rError) throw rError;
-      return {
-        profiles,
-        roles,
-      };
-    },
-  });
+  const isAdmin = {
+    data: team.data?.isAdmin,
+    isLoading: team.isLoading,
+  };
+  const members = {
+    data: team.data?.members,
+    isLoading: team.isLoading,
+  };
 
   const setRole = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: Enums<"app_role"> }) => {
-      const { error } = await supabase.rpc("set_user_role", {
-        _user_id: userId,
-        _role: role,
-      });
-      if (error) throw error;
+      await setRoleFn({ data: { userId, role } });
     },
     onSuccess: () => {
       toast.success(t("admin.team.roleUpdated"));

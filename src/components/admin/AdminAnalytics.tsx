@@ -1,42 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
 import { useI18n } from "@/lib/i18n/context";
 import { DataTable } from "@/components/admin/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
+import { getAdminAnalyticsData } from "@/lib/admin.functions";
 
 function AnalyticsSection() {
   const { t } = useI18n();
-  const events = useQuery({
+  const getAnalyticsFn = useServerFn(getAdminAnalyticsData);
+
+  const { data, isLoading } = useQuery({
     queryKey: ["analytics-events"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("analytics_events")
-        .select("event, created_at")
-        .order("created_at", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => getAnalyticsFn({ data: undefined }),
   });
 
-  const counts = useQuery({
-    queryKey: ["analytics-counts"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("analytics_events")
-        .select("event")
-        .order("created_at", { ascending: false })
-        .limit(20000);
-      if (error) throw error;
-      const map = new Map<string, number>();
-      for (const row of data ?? []) {
-        map.set(row.event, (map.get(row.event) ?? 0) + 1);
-      }
-      return [...map.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .map(([event, count]) => ({ event, count }));
-    },
-  });
+  const events = { data: data?.events, isLoading };
+  const counts = { data: data?.counts, isLoading };
 
   const EVENT_LABEL: Record<string, string> = {
     step_viewed: t("admin.analytics.events.stepViewed"),
