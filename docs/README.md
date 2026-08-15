@@ -2,7 +2,14 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.13-b41 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.15-b42 — [Changelog](./CHANGELOG.md)
+
+## Audit & Durcissement Sécurité (Batch 42)
+
+- **RLS durcie (migration `20260823000000_security_rls_hardening.sql`)** : fermeture des accès anonymes — RLS sur `chat_messages`/`referrals`/`saved_reports`/`google_reviews_cache`, policies staff-only sur marketing/webhooks (dont la colonne `secret`), `get_client_segments()`/`get_segment_counts()` non exécutables par le public, avis sans PII publiques, uploads storage verrouillés, commentaires réservation authentifiés avec `_author` forcé côté serveur, UPDATE réservations réservé admin/staff.
+- **Garde serveur** sur l'espace connecté (`/admin`, `/app`) : le JWT est vérifié côté serveur en plus du garde client.
+- **Seed démo impossible en production** ; **perf** : refetch réduit (staleTime 60 s), listes admin limitées, jspdf chargé au clic uniquement.
+- **Nettoyage** : 34 fichiers morts supprimés + 25 dépendances retirées (bundle inchangé ~474 Ko, 0 vulnérabilité npm).
 
 ## Logos Réels des Marques (Batch 41)
 

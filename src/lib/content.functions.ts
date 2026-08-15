@@ -76,8 +76,24 @@ const inventorySchema = z.object({
  * une liste blanche stricte de balises autorisées et en désactivant tout vecteur XSS.
  */
 const ALLOWED_TAGS = new Set([
-  "p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li",
-  "h2", "h3", "h4", "blockquote", "code", "pre", "hr", "a"
+  "p",
+  "br",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "u",
+  "ul",
+  "ol",
+  "li",
+  "h2",
+  "h3",
+  "h4",
+  "blockquote",
+  "code",
+  "pre",
+  "hr",
+  "a",
 ]);
 
 function sanitizeBlogParagraph(par: string): string {
@@ -114,8 +130,8 @@ function sanitizeBlogParagraph(par: string): string {
     // Gestion spécifique des liens <a>
     if (tag === "a") {
       const hrefMatch = attrsRaw.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
-      const rawUrl = hrefMatch ? (hrefMatch[1] || hrefMatch[2] || hrefMatch[3] || "") : "";
-      
+      const rawUrl = hrefMatch ? hrefMatch[1] || hrefMatch[2] || hrefMatch[3] || "" : "";
+
       // Valider que l'URL commence par http://, https:// ou mailto:
       if (/^(?:https?:\/\/|mailto:)/i.test(rawUrl.trim())) {
         const safeUrl = rawUrl.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -213,7 +229,8 @@ export const listBlogPosts = createServerFn({ method: "GET" })
       .from("blog_posts")
       .select("body, slug, title, excerpt, date, category, reading_time, locale")
       .eq("locale", locale)
-      .order("date", { ascending: false });
+      .order("date", { ascending: false })
+      .limit(100);
     if (error || !rows || rows.length === 0) return data.fallback ?? [];
     return (rows as BlogPostRow[]).map(rowToPost);
   });
@@ -229,7 +246,8 @@ export const listReviews = createServerFn({ method: "GET" })
       .from("reviews")
       .select("id, customer_name, phone, email, rating, comment, status, verified, created_at")
       .eq("status", "published")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(50);
     if (error || !rows || rows.length === 0) return data.fallback ?? [];
     return (rows as ReviewRow[]).map((r) => ({
       name: r.customer_name,
@@ -407,14 +425,10 @@ export async function restoreInventory(
 // Alertes stock bas
 // ---------------------------------------------------------------------------
 
-export type LowStockItem = {
-  slug: string;
-  quantity: number;
-  low_stock_threshold: number;
-};
-
 /** Renvoie la liste des accessoires dont le stock est inférieur ou égal au seuil. */
-export async function checkLowStock(): Promise<LowStockItem[]> {
+export async function checkLowStock(): Promise<
+  { slug: string; quantity: number; low_stock_threshold: number }[]
+> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("inventory")

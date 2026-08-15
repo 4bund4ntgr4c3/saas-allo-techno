@@ -13,7 +13,7 @@ export interface OrgSite {
   equipment_count: number;
 }
 
-export interface OrgSiteInput {
+interface OrgSiteInput {
   name: string;
   address?: string | null;
   city?: string;

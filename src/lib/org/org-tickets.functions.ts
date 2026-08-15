@@ -4,7 +4,7 @@ import { orgClient, rpcArgs } from "./org-client";
 
 export type B2BTicketType = Enums<"b2b_ticket_type">;
 export type B2BTicketPriority = Enums<"b2b_ticket_priority">;
-export type ReservationStatus = Enums<"reservation_status">;
+type ReservationStatus = Enums<"reservation_status">;
 
 export const B2B_TICKET_TYPES: B2BTicketType[] = [
   "panne",
@@ -74,7 +74,7 @@ export interface OrgTicketDetail extends OrgTicketSummary {
   }[];
 }
 
-export interface B2BTicketInput {
+interface B2BTicketInput {
   org_id: string;
   issue: string;
   equipment_id?: string | null;
@@ -91,7 +91,7 @@ export const createB2BTicket = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const input = data as B2BTicketInput;
     if (!input.org_id) throw new Error("id d'organisation requis");
-    if (!input.issue?.trim()) throw new Error("La description du problème est requise");
+    if (!input.issue?.trim()) throw new Error("La description du problÃƒÂ¨me est requise");
     return input;
   })
   .handler(async ({ data }) => {
@@ -157,12 +157,12 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     const { data: detail, error } = await client.rpc("get_org_ticket", {
       _ticket_id: data.ticket_id,
     });
-    if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvé");
+    if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvÃƒÂ©");
     return detail as unknown as OrgTicketDetail;
   });
 
 // ---------------------------------------------------------------------------
-// Pièces jointes des tickets
+// PiÃƒÂ¨ces jointes des tickets
 // ---------------------------------------------------------------------------
 
 const B2B_ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/heic"]);
@@ -178,14 +178,14 @@ function b2bAssertValidMedia(
   const kind: "photo" | "video" = contentType.startsWith("video/") ? "video" : "photo";
   if (kind === "video") {
     if (!B2B_ALLOWED_VIDEO_MIME.has(contentType)) {
-      throw new Error("Format de vidéo non accepté (MP4, WebM).");
+      throw new Error("Format de vidÃƒÂ©o non acceptÃƒÂ© (MP4, WebM).");
     }
     if (fileSize > B2B_MAX_VIDEO_BYTES) {
-      throw new Error("Vidéo trop lourde (25 Mo maximum).");
+      throw new Error("VidÃƒÂ©o trop lourde (25 Mo maximum).");
     }
   } else {
     if (!B2B_ALLOWED_IMAGE_MIME.has(contentType)) {
-      throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
+      throw new Error("Format de photo non acceptÃƒÂ© (JPG, PNG, WebP, HEIC).");
     }
     if (fileSize > B2B_MAX_IMAGE_BYTES) {
       throw new Error("Photo trop lourde (5 Mo maximum).");
@@ -211,7 +211,7 @@ export const getB2BTicketUpload = createServerFn({ method: "POST" })
       fileSize: number;
     };
     if (!ticket_id || !fileName || !contentType || !fileSize) {
-      throw new Error("Paramètres de fichier incomplets");
+      throw new Error("ParamÃƒÂ¨tres de fichier incomplets");
     }
     const { ext, kind } = b2bAssertValidMedia(fileName, contentType, fileSize);
     return { ticket_id, ext, kind };
@@ -226,7 +226,7 @@ export const getB2BTicketUpload = createServerFn({ method: "POST" })
       .createSignedUploadUrl(path, { upsert: false });
     if (error || !signed) {
       console.error("[org] signed upload url failed", error);
-      throw new Error("L'envoi du fichier n'a pas pu être préparé. Réessayez.");
+      throw new Error("L'envoi du fichier n'a pas pu ÃƒÂªtre prÃƒÂ©parÃƒÂ©. RÃƒÂ©essayez.");
     }
     return { signedUrl: signed.signedUrl, path, kind: data.kind };
   });
@@ -245,15 +245,13 @@ export const attachB2BTicketFile = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await assertTicketAccess(data.ticket_id);
     const client = await orgClient();
-    const { error } = await client
-      .from("reservation_attachments")
-      .insert({
-        reservation_id: data.ticket_id,
-        stage: "signalement",
-        kind: data.kind,
-        url: data.path,
-        caption: data.caption ?? null,
-      });
+    const { error } = await client.from("reservation_attachments").insert({
+      reservation_id: data.ticket_id,
+      stage: "signalement",
+      kind: data.kind,
+      url: data.path,
+      caption: data.caption ?? null,
+    });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

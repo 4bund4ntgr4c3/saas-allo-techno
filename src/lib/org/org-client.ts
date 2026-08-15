@@ -39,33 +39,3 @@ export function rpcArgs<K extends keyof Database["public"]["Functions"]>(
 ): RpcArgs<K> {
   return Object.fromEntries(Object.entries(args).filter(([, v]) => v !== undefined)) as RpcArgs<K>;
 }
-
-/**
- * Vérifie que l'utilisateur appelant a accès à l'organisation cible
- * (admin_org, manager, responsable_maintenance ou membre).
- */
-export async function assertOrgAccess(orgId: string): Promise<void> {
-  const client = await orgClient();
-  const { data, error } = await client
-    .from("organization_members")
-    .select("role")
-    .eq("organization_id", orgId)
-    .maybeSingle();
-  if (error || !data) {
-    throw new Error("Accès refusé à cette organisation");
-  }
-}
-
-/**
- * Vérifie que l'utilisateur a accès au ticket (via son organisation).
- */
-export async function assertTicketAccess(ticketId: string): Promise<void> {
-  const client = await orgClient();
-  const { data, error } = await client
-    .from("reservations")
-    .select("org_id")
-    .eq("id", ticketId)
-    .maybeSingle();
-  if (error || !data?.org_id) throw new Error("Ticket introuvable");
-  await assertOrgAccess(data.org_id);
-}

@@ -22,7 +22,11 @@ function AnalyticsSection() {
   const counts = useQuery({
     queryKey: ["analytics-counts"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("analytics_events").select("event");
+      const { data, error } = await supabase
+        .from("analytics_events")
+        .select("event")
+        .order("created_at", { ascending: false })
+        .limit(20000);
       if (error) throw error;
       const map = new Map<string, number>();
       for (const row of data ?? []) {

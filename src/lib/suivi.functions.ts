@@ -308,8 +308,8 @@ export const getReservationTracking = createServerFn({ method: "POST" })
         reservation: valid
           ? (reservation as ReservationStatus)
           : publicReservation(reservation as ReservationStatus),
-        timeline: timelineRows,
-        sla,
+        timeline: valid ? timelineRows : [],
+        sla: valid ? sla : null,
       };
     },
   );

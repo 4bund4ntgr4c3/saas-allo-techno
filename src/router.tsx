@@ -6,7 +6,14 @@ import { NotFoundComponent } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60_000,
+        gcTime: 10 * 60_000,
+      },
+    },
+  });
 
   // Nonce CSP généré par requête dans le middleware global (src/start.ts). La
   // SSR TanStack le répand automatiquement sur les balises <script>/<style>

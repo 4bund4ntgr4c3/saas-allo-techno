@@ -40,7 +40,8 @@ export function AdminDeliveries() {
           "id, reference, customer_name, phone, device, issue, delivery_status, delivery_address, slot_date, slot_period, status",
         )
         .eq("mode", "domicile")
-        .order("slot_date", { ascending: false });
+        .order("slot_date", { ascending: false })
+        .limit(200);
       if (error) throw error;
       return data ?? [];
     },

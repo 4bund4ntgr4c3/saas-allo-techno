@@ -23,7 +23,7 @@ export interface Organization {
   created_at: string;
 }
 
-export interface OrgMember {
+interface OrgMember {
   user_id: string;
   role: OrgRole;
   email: string | null;
@@ -45,7 +45,7 @@ export interface OrganizationInput {
   equipment_count?: number | null;
 }
 
-export const MOCK_ORGS: Organization[] = [
+const MOCK_ORGS: Organization[] = [
   {
     id: "demo-oragroup",
     name: "Oragroup Bénin (Siège Cotonou)",
@@ -137,35 +137,6 @@ export const createOrganization = createServerFn({ method: "POST" })
     return org as unknown as { id: string; name: string };
   });
 
-export const updateOrganization = createServerFn({ method: "POST" })
-  .validator((data: unknown) => {
-    const { id, input } = data as { id: string; input: Partial<OrganizationInput> };
-    if (!id) throw new Error("id d'organisation requis");
-    return { id, input };
-  })
-  .handler(async ({ data }) => {
-    const client = await orgClient();
-    const { data: org, error } = await client.rpc(
-      "update_organization",
-      rpcArgs("update_organization", {
-        _org_id: data.id,
-        _name: data.input.name ?? undefined,
-        _trade_name: data.input.trade_name ?? undefined,
-        _registration_number: data.input.registration_number ?? undefined,
-        _address: data.input.address ?? undefined,
-        _country: data.input.country ?? undefined,
-        _phone: data.input.phone ?? undefined,
-        _email: data.input.email ?? undefined,
-        _sector: data.input.sector ?? undefined,
-        _size: data.input.size ?? undefined,
-        _site_count: data.input.site_count ?? undefined,
-        _equipment_count: data.input.equipment_count ?? undefined,
-      }),
-    );
-    if (error) throw new Error(error.message);
-    return org as unknown as { id: string; name: string };
-  });
-
 export const getOrgMembers = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { org_id } = data as { org_id: string };
@@ -229,18 +200,4 @@ export const removeOrgMember = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     return { ok: true };
-  });
-
-export const getUserOrgsFn = createServerFn({ method: "POST" }).handler(async () => {
-  return await getMyOrganizations();
-});
-
-export const createOrganizationFn = createServerFn({ method: "POST" })
-  .validator((data: unknown) => {
-    const input = data as OrganizationInput;
-    if (!input.name?.trim()) throw new Error("Nom d'organisation requis");
-    return input;
-  })
-  .handler(async ({ data }) => {
-    return await createOrganization({ data });
   });

@@ -71,7 +71,8 @@ export function OrdersSection() {
         .from("payments")
         .select("reference, status, amount, created_at")
         .eq("source", "boutique")
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: false })
+        .limit(500);
       if (paymentsError) throw paymentsError;
       return { orders: leadsData ?? [], payments: paymentsData ?? [] };
     },

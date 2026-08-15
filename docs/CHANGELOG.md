@@ -7,6 +7,37 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.15-b42] — 2026-08-15 (Audit Sécurité & Nettoyage — Batch 42)
+
+### Added
+
+- **Migration RLS `20260823000000_security_rls_hardening.sql`** : clôture des accès anonymes —
+  - `chat_messages`, `referrals`, `saved_reports`, `google_reviews_cache` : RLS activée (policies staff-only, lecture de ses propres parrainages) ;
+  - policies publiques (`using (true)` sans `to`) de `marketing_campaigns`, `campaign_sends`, `outbound_webhooks` (colonne `secret`) et `webhook_logs` remplacées par des policies `authenticated` + `is_staff()` ;
+  - `get_client_segments()` / `get_segment_counts()` : `REVOKE EXECUTE` anon/public + garde JWT (anon et authenticated non-staff bloqués, service role intact) ;
+  - `reviews` : SELECT public retiré (PII phone/email exposées) → staff only ;
+  - `product_reviews` : INSERT authentifié uniquement + suppression staff ;
+  - storage `device-photos` : INSERT anon et UPDATE global retirés ;
+  - `reservation_comments` : INSERT authentifié, RPC `add_reservation_comment` gardé (anon bloqué) et `_author` forcé à `'customer'` côté serveur ;
+  - policy UPDATE `reservations` restreinte à admin/staff (les techniciens passent par le RPC d'affectation vérifiant l'assignation).
+- **Garde d'authentification serveur** sur l'espace connecté (`_authenticated/route.tsx`, `/admin` et `/app`) : le JWT est vérifié côté serveur (server fn) en plus du garde client.
+- **Garde production du seed démo** : `DEMO_ENABLED` ne peut plus être vrai en production, `DEMO_PASSWORD` surchargeable via variable d'environnement.
+
+### Changed
+
+- **Perf** : `QueryClient` global avec `staleTime: 60 s` / `gcTime: 10 min` (fini le refetch systématique) ; `.limit()` ajoutés sur les listes admin (payments 500, analytics_events 20 000, livraisons 200, historique mon-compte 50, blog 100, avis 50) ; `jspdf`/`jspdf-autotable` chargés à la volée au clic sur le formulaire B2B (plus de 390 Ko statiques sur `/devis` et `/entreprises`).
+
+### Removed
+
+- **Dead code** : 34 fichiers — `usePersistedState.ts`, `org-schemas.ts` (+ son test dédié), 5 composants site inutilisés (PullToRefresh, QrScanner, SignatureCapture, SlotPicker, GoogleReviewsWidget), 24 wrappers shadcn inutilisés, 3 libs PDF mortes (`guarantee.functions.ts`, `invoice-pdf.ts`, `devis-pdf.ts`), exports org morts (`updateOrganization`, `getUserOrgsFn`, `createOrganizationFn`, `OrgMember`, `MOCK_ORGS`, `MOCK_EQUIPMENT`, `EquipmentByQr`, `ReservationStatus`, `B2BTicketInput`, `OrgSiteInput`, `assertOrgAccess`, `assertTicketAccess` — dont un doublon divergent avec la version locale), `LowStockItem`.
+- **25 dépendances** inutilisées (`motion`, `date-fns`, `signature_pad`, `html5-qrcode`, `react-day-picker`, `input-otp`, `vaul`, `react-resizable-panels`, `embla-carousel-react`, `dompurify`, 15 paquets `@radix-ui/*`) — `bun.lock` resynchronisé.
+
+### Fixed
+
+- **Fuite du suivi** : le timeline (historique statuts + notes staff) n'est plus renvoyé quand le code de suivi est invalide (`suivi.functions.ts`) — seules les données publiques le sont.
+
+---
+
 ## [2026.08.13-b41] — 2026-08-13 (Real Brand Logos — Batch 41)
 
 ### Changed

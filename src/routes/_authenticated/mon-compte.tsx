@@ -143,7 +143,8 @@ function Dashboard() {
         .select(
           "id, reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, message, created_at, quote_amount, quote_status, payment_status, warranty_months",
         )
-        .order("slot_date", { ascending: false });
+        .order("slot_date", { ascending: false })
+        .limit(50);
       if (error) throw error;
       return data;
     },

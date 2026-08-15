@@ -18,8 +18,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import QRCode from "qrcode";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import { Button } from "@/components/ui/button";
 import { submitB2BLead } from "@/lib/leads.functions";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
@@ -314,8 +312,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
     }
   };
 
-  const generatePDF = () => {
+  const generatePDF = async () => {
     if (!successCode) return;
+    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+      import("jspdf"),
+      import("jspdf-autotable"),
+    ]);
     const doc = new jsPDF();
 
     // Top Header Banner
@@ -738,7 +740,9 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                     setStep(2);
                   }}
                 >
-                  <span className="hidden sm:inline">Continuer vers les détails du parc &rarr;</span>
+                  <span className="hidden sm:inline">
+                    Continuer vers les détails du parc &rarr;
+                  </span>
                   <span className="sm:hidden">Détails du parc &rarr;</span>
                 </Button>
               </div>
@@ -955,7 +959,12 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(1)}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                  onClick={() => setStep(1)}
+                >
                   &larr; Retour
                 </Button>
                 <Button
@@ -1083,7 +1092,13 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(2)}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  type="button"
+                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                  onClick={() => setStep(2)}
+                >
                   &larr; Retour
                 </Button>
                 <Button
@@ -1225,7 +1240,13 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button variant="outline" size="lg" type="button" className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider" onClick={() => setStep(3)}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  type="button"
+                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                  onClick={() => setStep(3)}
+                >
                   &larr; Retour aux coordonnées
                 </Button>
                 <Button
