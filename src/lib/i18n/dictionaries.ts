@@ -613,11 +613,34 @@ for (const key of Object.keys(dictionariesBase)) {
 }
 
 export type LocaleSegments = { fr: Dictionary; en: Dictionary };
+
+type DictionaryListener = () => void;
+const listeners = new Set<DictionaryListener>();
+let version = 0;
+
+/**
+ * S'abonne aux enregistrements de segments (segments lazy chargés après le
+ * premier rendu). Le provider i18n s'en sert pour se re-rendre et afficher
+ * les traductions dès qu'un segment arrive.
+ */
+export function subscribeDictionaries(listener: DictionaryListener): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+export function getDictionaryVersion(): number {
+  return version;
+}
+
 export function registerSegments(...segments: LocaleSegments[]) {
   for (const seg of segments) {
     Object.assign(dictionaries.fr, seg.fr);
     Object.assign(dictionaries.en, seg.en);
   }
+  version++;
+  listeners.forEach((listener) => listener());
 }
 
 /** Retourne la valeur traduite, avec repli sur le français puis sur la clé. */

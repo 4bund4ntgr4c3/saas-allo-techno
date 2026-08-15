@@ -38,7 +38,7 @@ const ROLES: {
     role: "b2b",
     email: "demo.b2b@allotechno.africa",
     url: "/app",
-    accessSelector: '[data-tour="app-header"]',
+    accessSelector: 'a[href="/app/group-dashboard"]',
   },
 ];
 

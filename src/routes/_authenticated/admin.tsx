@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { verifyOtpLogin, getOtpStatus } from "@/lib/otp.functions";
 import { useI18n } from "@/lib/i18n/context";
+// Déclenche le chargement du segment lazy dès l'évaluation de l'entrée (le
+// loader ci-dessous ne re-s'exécute pas côté client à l'hydratation full-SSR).
+void import("@/lib/i18n/segments/admin");
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";

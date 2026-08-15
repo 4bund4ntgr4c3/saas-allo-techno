@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
+// Déclenche le chargement du segment lazy dès l'évaluation de l'entrée.
+void import("@/lib/i18n/segments/org");
 import { getMyOrganizations } from "@/lib/org.functions";
 import { SEARCH_OPEN_EVENT } from "@/lib/search-events";
 import { Button } from "@/components/ui/button";

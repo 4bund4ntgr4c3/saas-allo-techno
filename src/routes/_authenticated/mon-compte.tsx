@@ -26,6 +26,8 @@ import { listCustomerReviews, type CustomerReview } from "@/lib/reviews.function
 import { listCustomerPayments, type CustomerPayment } from "@/lib/payments.functions";
 import { saveOfflineData } from "@/lib/offline-cache";
 import { useI18n } from "@/lib/i18n/context";
+// Déclenche le chargement du segment lazy dès l'évaluation de l'entrée.
+void import("@/lib/i18n/segments/mon-compte");
 import { TourLauncher } from "@/components/tour/TourLauncher";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 import {

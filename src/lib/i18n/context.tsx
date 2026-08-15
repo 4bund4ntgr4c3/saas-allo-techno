@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { translate } from "./dictionaries";
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { getDictionaryVersion, subscribeDictionaries, translate } from "./dictionaries";
 import { isLocale, normalizeLocale, type Locale } from "./locales";
 // Import unique de TOUS les segments — garantit l'enregistrement avant tout
 // rendu, y compris sur Cloudflare Workers.
@@ -50,13 +50,25 @@ export function I18nProvider({
     }
   }, [locale]);
 
+  // Segments lazy (admin/org/mon-compte) : useSyncExternalStore garantit un
+  // re-rendu dès qu'un segment s'enregistre, même si l'enregistrement arrive
+  // pendant le rendu d'hydratation (abonnement effectué pendant le rendu).
+  const dictionaryVersion = useSyncExternalStore(
+    subscribeDictionaries,
+    getDictionaryVersion,
+    getDictionaryVersion,
+  );
+
   const value = useMemo<I18nContextValue>(
     () => ({
       locale,
       setLocale,
       t: (key, params) => translate(locale, key, params),
     }),
-    [locale],
+    // dictionaryVersion est volontairement dépendance : un nouvel objet value
+    // force le re-rendu des consommateurs dès qu'un segment lazy s'enregistre.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [locale, dictionaryVersion],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
