@@ -115,10 +115,10 @@ END $$;
 -- 5. Vue d'agrégation KPI pour éviter les calculs en mémoire
 CREATE OR REPLACE VIEW public.v_kpi_summary AS
 SELECT
-  COUNT(*) FILTER (WHERE status = 'terminee' OR status = 'livree') AS total_completed,
-  COUNT(*) FILTER (WHERE status = 'en_cours' OR status = 'en_reparation' OR status = 'diagnostic') AS total_in_progress,
+  COUNT(*) FILTER (WHERE status = 'terminee' OR status = 'livre') AS total_completed,
+  COUNT(*) FILTER (WHERE status IN ('en_cours', 'pieces', 'pret')) AS total_in_progress,
   COUNT(*) FILTER (WHERE status = 'en_attente') AS total_pending,
-  COALESCE(SUM(total_amount) FILTER (WHERE payment_status = 'paid' OR payment_status = 'paye'), 0) AS total_revenue_paid,
+  COALESCE(SUM(total_amount) FILTER (WHERE payment_status = 'paid'), 0) AS total_revenue_paid,
   COUNT(*) AS total_reservations,
   now() AS computed_at
 FROM public.reservations
