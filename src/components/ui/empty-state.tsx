@@ -23,7 +23,7 @@ export function EmptyState({
       aria-label={title}
       className={cn(
         "flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 p-8 text-center bg-card/40 transition-colors",
-        className
+        className,
       )}
       {...props}
     >

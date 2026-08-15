@@ -12,7 +12,7 @@ export interface ParsedError {
 
 export function parseError(
   err: unknown,
-  fallbackMessage = "Une erreur inattendue est survenue. Veuillez réessayer."
+  fallbackMessage = "Une erreur inattendue est survenue. Veuillez réessayer.",
 ): ParsedError {
   if (!err) {
     return { message: fallbackMessage };

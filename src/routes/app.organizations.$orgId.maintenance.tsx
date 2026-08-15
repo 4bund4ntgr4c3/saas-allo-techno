@@ -118,7 +118,7 @@ function OrgMaintenancePage() {
 
   const overdueCount = useMemo(
     () => scheduleList.filter((s) => new Date(s.next_due_at) < new Date()).length,
-    [scheduleList]
+    [scheduleList],
   );
 
   const lastPerformed = useMemo(() => {
@@ -163,7 +163,11 @@ function OrgMaintenancePage() {
           {org.member_role &&
             ["admin_org", "responsable_maintenance"].includes(org.member_role) && (
               <Button onClick={() => setShowScheduleForm(!showScheduleForm)}>
-                {showScheduleForm ? <X className="size-4 mr-1" /> : <Plus className="size-4 mr-1" />}
+                {showScheduleForm ? (
+                  <X className="size-4 mr-1" />
+                ) : (
+                  <Plus className="size-4 mr-1" />
+                )}
                 {t("org.maintenance.schedule")}
               </Button>
             )}
@@ -181,7 +185,10 @@ function OrgMaintenancePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {mPlansQuery.data.map((plan) => (
-              <div key={plan.id} className="border border-border bg-card p-4 space-y-3 shadow-xs rounded-lg">
+              <div
+                key={plan.id}
+                className="border border-border bg-card p-4 space-y-3 shadow-xs rounded-lg"
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <ShieldCheck className="size-5 text-primary shrink-0" />
@@ -196,7 +203,8 @@ function OrgMaintenancePage() {
                 </div>
                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/60">
                   <span>
-                    Sites : <strong className="text-foreground">{plan.targetSites.join(", ")}</strong>
+                    Sites :{" "}
+                    <strong className="text-foreground">{plan.targetSites.join(", ")}</strong>
                   </span>
                   <span className="font-mono font-bold text-foreground">
                     Prochaine échéance : {plan.nextDueDate}

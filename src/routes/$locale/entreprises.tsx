@@ -146,7 +146,9 @@ function Entreprises() {
                   <h3 className="mt-4 sm:mt-6 text-base sm:text-lg font-bold tracking-tight break-words">
                     {t(s.t)}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground break-words">{t(s.x)}</p>
+                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground break-words">
+                    {t(s.x)}
+                  </p>
                 </div>
               );
             })}
@@ -163,7 +165,10 @@ function Entreprises() {
           />
           <div className="grid gap-px border border-border bg-border grid-cols-1 md:grid-cols-3">
             {PLANS.map((p) => (
-              <div key={p.name} className="bg-card p-5 sm:p-6 md:p-8 flex flex-col justify-between min-w-0">
+              <div
+                key={p.name}
+                className="bg-card p-5 sm:p-6 md:p-8 flex flex-col justify-between min-w-0"
+              >
                 <div>
                   <span className="at-eyebrow">{t(p.name)}</span>
                   <div className="mt-3 sm:mt-4 font-mono text-2xl sm:text-3xl font-bold break-words">

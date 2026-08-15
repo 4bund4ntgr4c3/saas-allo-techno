@@ -1,6 +1,6 @@
 /**
  * Point d'entrée des fonctions et types B2B.
- * 
+ *
  * Les implémentations ont été modularisées dans `src/lib/org/` :
  * - `org-client.ts` : Client Supabase contextuel et helpers d'authentification B2B.
  * - `org-core.functions.ts` : Organisations, membres et gestion des rôles B2B.

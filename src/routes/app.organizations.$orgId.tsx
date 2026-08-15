@@ -237,13 +237,18 @@ function OrgDetail() {
       ) : (
         <>
           {/* ─── KPI Cards ─── */}
-          <div className="at-in grid grid-cols-1 sm:grid-cols-3 gap-3" style={{ animationDelay: "60ms" }}>
+          <div
+            className="at-in grid grid-cols-1 sm:grid-cols-3 gap-3"
+            style={{ animationDelay: "60ms" }}
+          >
             {kpiCards.map((kpi) => (
               <div
                 key={kpi.label}
                 className="flex items-center gap-3 border border-border bg-card p-4 min-w-0"
               >
-                <div className={`flex size-10 items-center justify-center bg-muted shrink-0 ${kpi.color}`}>
+                <div
+                  className={`flex size-10 items-center justify-center bg-muted shrink-0 ${kpi.color}`}
+                >
                   <kpi.icon className="size-5" />
                 </div>
                 <div className="min-w-0">

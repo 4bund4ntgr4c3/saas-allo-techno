@@ -42,10 +42,7 @@ export function ActiveContractCard({ contract, onPayMobileMoney }: ActiveContrac
             <strong className="text-foreground">
               Garantie Prise en Charge {contract.responseSlaHours}h
             </strong>{" "}
-            ·{" "}
-            <strong className="text-foreground">
-              Résolution {contract.resolutionSlaHours}h
-            </strong>
+            · <strong className="text-foreground">Résolution {contract.resolutionSlaHours}h</strong>
           </p>
         </div>
       </div>

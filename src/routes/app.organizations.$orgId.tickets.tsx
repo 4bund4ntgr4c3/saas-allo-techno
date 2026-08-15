@@ -6,7 +6,10 @@ import { AlertTriangle, ArrowLeft, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/loading-state";
 import { EmptyState } from "@/components/ui/empty-state";
-import { CreateTicketForm, type CreateTicketFormData } from "@/components/b2b/tickets/CreateTicketForm";
+import {
+  CreateTicketForm,
+  type CreateTicketFormData,
+} from "@/components/b2b/tickets/CreateTicketForm";
 import { TicketCard } from "@/components/b2b/tickets/TicketCard";
 import { useI18n } from "@/lib/i18n/context";
 import { parseError } from "@/lib/error-parser";
@@ -89,11 +92,11 @@ function OrgTickets() {
 
   const openTickets = useMemo(
     () => (tickets.data ?? []).filter((tk) => !["resolu", "ferme"].includes(tk.status)),
-    [tickets.data]
+    [tickets.data],
   );
   const closedTickets = useMemo(
     () => (tickets.data ?? []).filter((tk) => ["resolu", "ferme"].includes(tk.status)),
-    [tickets.data]
+    [tickets.data],
   );
 
   if (!org) {

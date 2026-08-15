@@ -18,6 +18,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Perf / Admin dossiers** : pagination serveur de /admin/dossiers — nouveaux filtres appliques en SQL (statut, recherche ilike, dates, B2B/particulier, technicien via derniere assignation) avec compteur exact et range() ; debounce de la recherche (400 ms) ; navigation Page/Precedent/Suivant avec total ; le tableau n'affiche plus que 50 dossiers par page au lieu de 200 en une fois.
 - **Perf / SSR** : route rules Nitro avec cache CDN pour les pages publiques — /fr|/en/blog/** et /fr|/en/catalogue servis avec `Cache-Control: public, s-maxage=300/600, stale-while-revalidate` (revalidation en arriere-plan, pas de purge manuelle) ; applique au HTML SSR, les reponses avec cookie restent non cachees.
 - **Maintenance / Deprecations** : remplacement de `createServerFn().inputValidator()` (deprecie) par `.validator()` dans les 21 fichiers serveur (84 appels) ; suppression du plugin `vite-tsconfig-paths` au profit de `resolve.tsconfigPaths: true` natif de Vite 8 (dependance retiree de package.json, bun.lock resynchronise) ; le mock de createServerFn dans integration-reservation.test.ts expose desormais `validator`.
+- **Maintenance / Style** : prettier applique sur 24 fichiers de routes et composants restes en dehors du format (api.cron-demo-reset, app.organizations.*, demo, etc.) — `eslint src` passe a 0 erreur (les 25 warnings restants sont des fast-refresh/exhaustive-deps preexistants dans les routes).
 
 ### Removed
 

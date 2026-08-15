@@ -203,11 +203,7 @@ export function EditSiteModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Annuler
             </Button>
-            <Button
-              type="button"
-              disabled={isSaving}
-              onClick={() => onSave(formData)}
-            >
+            <Button type="button" disabled={isSaving} onClick={() => onSave(formData)}>
               {isSaving ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
               Enregistrer les Modifications
             </Button>

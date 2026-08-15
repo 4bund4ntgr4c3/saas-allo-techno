@@ -2,14 +2,7 @@ import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tansta
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  FileSpreadsheet,
-  Plus,
-  QrCode,
-  Search,
-  X,
-} from "lucide-react";
+import { ArrowLeft, FileSpreadsheet, Plus, QrCode, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -222,7 +215,7 @@ function EquipmentList() {
       }
 
       toast.success(
-        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`
+        `${summary.validRows.length} équipement(s) analysés avec succès ! (${summary.duplicatesCount} doublon(s) ignoré(s))`,
       );
 
       // Create each valid item batch
@@ -508,11 +501,7 @@ function EquipmentList() {
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((e) => (
-            <EquipmentCard
-              key={e.id}
-              equipment={e}
-              onClick={() => setSelectedEqModal(e)}
-            />
+            <EquipmentCard key={e.id} equipment={e} onClick={() => setSelectedEqModal(e)} />
           ))}
         </ul>
       )}

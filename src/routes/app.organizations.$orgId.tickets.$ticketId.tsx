@@ -2,12 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  MapPin,
-  MessageSquare,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, MapPin, MessageSquare, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -149,13 +144,18 @@ function OrgTicketDetail() {
                     equipmentName: tk.equipment?.id
                       ? "Équipement sous contrat"
                       : "Matériel sous ticket",
-                    status: ["terminee", "pret", "livre"].includes(tk.status) ? "repaired" : "received",
+                    status: ["terminee", "pret", "livre"].includes(tk.status)
+                      ? "repaired"
+                      : "received",
                   },
                 });
                 toast.success("Message WhatsApp prêt !");
                 window.open(res.whatsappUrl, "_blank");
               } catch (err) {
-                const parsed = parseError(err, "Erreur lors de la préparation de la notification WhatsApp.");
+                const parsed = parseError(
+                  err,
+                  "Erreur lors de la préparation de la notification WhatsApp.",
+                );
                 toast.error(parsed.message);
               }
             }}
@@ -178,7 +178,9 @@ function OrgTicketDetail() {
         <div className="space-y-6 lg:col-span-2">
           <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
             <h2 className="mb-3 text-lg font-bold text-foreground">{tk.issue}</h2>
-            {tk.message ? <p className="whitespace-pre-wrap text-sm text-muted-foreground">{tk.message}</p> : null}
+            {tk.message ? (
+              <p className="whitespace-pre-wrap text-sm text-muted-foreground">{tk.message}</p>
+            ) : null}
             {tk.location ? (
               <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
                 <MapPin className="size-4 text-primary" />
@@ -201,7 +203,9 @@ function OrgTicketDetail() {
 
         <div className="space-y-6">
           <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
-            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.info")}</h2>
+            <h2 className="mb-3 text-base font-bold text-foreground">
+              {t("org.tickets.detail.info")}
+            </h2>
             <dl className="space-y-3 text-sm">
               <div>
                 <dt className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -233,7 +237,9 @@ function OrgTicketDetail() {
           </div>
 
           <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
-            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.equipment")}</h2>
+            <h2 className="mb-3 text-base font-bold text-foreground">
+              {t("org.tickets.detail.equipment")}
+            </h2>
             {tk.equipment ? (
               <Link
                 to="/app/organizations/$orgId/equipment/$equipmentId"
@@ -259,7 +265,9 @@ function OrgTicketDetail() {
           </div>
 
           <div className="rounded-lg border border-border bg-card p-5 shadow-xs">
-            <h2 className="mb-3 text-base font-bold text-foreground">{t("org.tickets.detail.contact")}</h2>
+            <h2 className="mb-3 text-base font-bold text-foreground">
+              {t("org.tickets.detail.contact")}
+            </h2>
             <dl className="space-y-2 text-sm">
               <div>
                 <dt className="text-xs uppercase tracking-wide text-muted-foreground">

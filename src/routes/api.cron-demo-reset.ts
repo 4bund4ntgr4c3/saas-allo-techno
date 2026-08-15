@@ -6,7 +6,7 @@ const logger = createLogger("cron-demo-reset");
 /**
  * Déclencheur du job de réinitialisation automatique de l'environnement de démonstration
  * (GitHub Actions / Cloudflare Cron Triggers, planifié chaque heure).
- * 
+ *
  * Authentification par jeton porteur (CRON_TOKEN) comparé à temps constant.
  * Route API brute (non bloquée par le CSRF middleware).
  */
@@ -37,10 +37,10 @@ export const Route = createFileRoute("/api/cron-demo-reset")({
           });
         } catch (err) {
           logger.error("Demo environment reset failed", err as Error);
-          return new Response(
-            JSON.stringify({ error: (err as Error).message }),
-            { status: 500, headers: { "content-type": "application/json" } }
-          );
+          return new Response(JSON.stringify({ error: (err as Error).message }), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          });
         }
       },
     },

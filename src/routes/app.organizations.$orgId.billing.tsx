@@ -2,15 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Calendar,
-  CreditCard,
-  Download,
-  FileText,
-  Plus,
-  Receipt,
-} from "lucide-react";
+import { ArrowLeft, Calendar, CreditCard, Download, FileText, Plus, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -113,7 +105,10 @@ function OrgBillingPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `journal-syscohada-${new Date().toISOString().slice(0, 7)}.csv`);
+      link.setAttribute(
+        "download",
+        `journal-syscohada-${new Date().toISOString().slice(0, 7)}.csv`,
+      );
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -188,10 +183,7 @@ function OrgBillingPage() {
 
       {/* ─── Active SLA Contract Banner Extraite ─── */}
       {contract.data && (
-        <ActiveContractCard
-          contract={contract.data}
-          onPayMobileMoney={handlePayMobileMoney}
-        />
+        <ActiveContractCard contract={contract.data} onPayMobileMoney={handlePayMobileMoney} />
       )}
 
       {/* ─── RSE & Bilan Carbone Card Extraite ─── */}
@@ -275,18 +267,14 @@ function OrgBillingPage() {
                   {invoiceList.map((inv: OrgInvoice) => (
                     <tr key={inv.id} className="transition-colors hover:bg-muted/30">
                       <td className="px-4 py-3 font-mono font-medium">{inv.reference}</td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {inv.period_month ?? "—"}
-                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{inv.period_month ?? "—"}</td>
                       <td className="px-4 py-3 text-right font-mono font-semibold">
                         {formatFcfa(inv.total_ttc)}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <Badge
                           variant="outline"
-                          className={`text-[10px] font-semibold ${
-                            STATUS_BADGE[inv.status] ?? ""
-                          }`}
+                          className={`text-[10px] font-semibold ${STATUS_BADGE[inv.status] ?? ""}`}
                         >
                           {t(`org.billing.status.${inv.status}`)}
                         </Badge>

@@ -61,12 +61,14 @@ function DemoPage() {
     mutationFn: () => resetDemoEnvironmentFn(),
     onSuccess: (data) => {
       toast.success(
-        `Environnement démo réinitialisé avec succès ! (${data.purgedReservations} réservations, ${data.purgedEquipment} équipements régénérés)`
+        `Environnement démo réinitialisé avec succès ! (${data.purgedReservations} réservations, ${data.purgedEquipment} équipements régénérés)`,
       );
       queryClient.invalidateQueries({ queryKey: ["demo-seed"] });
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : "Erreur lors de la réinitialisation de la démo");
+      toast.error(
+        err instanceof Error ? err.message : "Erreur lors de la réinitialisation de la démo",
+      );
     },
   });
 

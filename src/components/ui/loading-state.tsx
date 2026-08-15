@@ -34,7 +34,7 @@ export function LoadingState({
       className={cn(
         "flex flex-col items-center justify-center gap-3 p-6 text-muted-foreground",
         fullPage ? "min-h-[60vh] w-full" : "w-full py-12",
-        className
+        className,
       )}
       {...props}
     >

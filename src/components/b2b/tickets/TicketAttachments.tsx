@@ -65,9 +65,7 @@ export function TicketAttachments({
         </div>
       </div>
       {attachments.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t("org.tickets.detail.attachments.empty")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("org.tickets.detail.attachments.empty")}</p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {attachments.map((a) => (
@@ -85,10 +83,11 @@ export function TicketAttachments({
                     className="mb-2 aspect-video w-full bg-black rounded"
                   />
                 ) : null}
-                <p className="truncate font-medium text-foreground">{a.caption ?? "Pièce jointe"}</p>
+                <p className="truncate font-medium text-foreground">
+                  {a.caption ?? "Pièce jointe"}
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  {a.kind ?? a.stage ?? "—"} ·{" "}
-                  {new Date(a.created_at).toLocaleDateString("fr-FR")}
+                  {a.kind ?? a.stage ?? "—"} · {new Date(a.created_at).toLocaleDateString("fr-FR")}
                 </p>
               </a>
             </li>

@@ -17,9 +17,7 @@ export function GenerateInvoiceModal({
   onSubmit,
   isPending = false,
 }: GenerateInvoiceModalProps) {
-  const [periodMonth, setPeriodMonth] = React.useState(() =>
-    new Date().toISOString().slice(0, 7)
-  );
+  const [periodMonth, setPeriodMonth] = React.useState(() => new Date().toISOString().slice(0, 7));
   const [notes, setNotes] = React.useState("");
 
   if (!isOpen) return null;

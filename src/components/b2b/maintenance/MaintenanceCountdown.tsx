@@ -26,7 +26,7 @@ export function MaintenanceCountdown({
 
   React.useEffect(() => {
     const targetDate = new Date(
-      Date.now() + (targetDays * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000)
+      Date.now() + (targetDays * 864e5 + 18 * 3600e3 + 32 * 60e3 + 45 * 1000),
     ).getTime();
 
     const interval = setInterval(() => {

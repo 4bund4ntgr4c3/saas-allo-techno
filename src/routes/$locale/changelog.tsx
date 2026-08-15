@@ -72,9 +72,7 @@ const ENTRIES: ChangelogEntry[] = [
       "Composant partagé EmptyState avec icône contextuelle, message et bouton d'action CTA",
       "Hook personnalisé usePersistedState pour la synchronisation localStorage sécurisée côté SSR",
     ],
-    changed: [
-      "Allègement de plus de 50% du volume de code des routes TanStack Router",
-    ],
+    changed: ["Allègement de plus de 50% du volume de code des routes TanStack Router"],
   },
   {
     version: "2026.08.14 — Sécurité XSS, Sanitisation d'Erreurs & DB Migration (Batch 37)",

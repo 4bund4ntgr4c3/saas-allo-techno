@@ -83,7 +83,9 @@ export function TicketCard({ ticket, onClick }: TicketCardProps) {
       </dl>
 
       <div className="flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground">
-        <span>Type : {ticket.ticket_type ? t(`org.tickets.type.${ticket.ticket_type}`) : "SAV"}</span>
+        <span>
+          Type : {ticket.ticket_type ? t(`org.tickets.type.${ticket.ticket_type}`) : "SAV"}
+        </span>
         <span className="text-primary font-medium text-[11px] group-hover:underline">
           Consulter &amp; Suivre &rarr;
         </span>
