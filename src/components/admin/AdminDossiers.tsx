@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ import {
   getAdminAssignments,
   getAdminOrganizations,
   getAdminReservations,
+  getAdminReservationsPage,
   getAdminTechnicians,
   setReservationStatus,
   type AtelierCard as AtelierCardType,
@@ -63,8 +64,11 @@ export function DossiersSection() {
   const [techFilter, setTechFilter] = useState<string>("tous");
   const [typeFilter, setTypeFilter] = useState<"tous" | "b2b" | "particulier">("tous");
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 50;
   const [openId, setOpenId] = useState<string | null>(null);
   const [view, setView] = useState<"liste" | "kanban">("liste");
   const [labelTarget, setLabelTarget] = useState<DeviceLabelData | null>(null);
@@ -142,6 +146,50 @@ export function DossiersSection() {
     queryKey: ["admin-reservations", isTechnicien ? user.id : "all"],
     queryFn: () => getReservationsFn({ data: undefined }),
   });
+
+  const getReservationsPageFn = useServerFn(getAdminReservationsPage);
+  const reservationsPage = useQuery({
+    queryKey: [
+      "admin-reservations-page",
+      page,
+      filter,
+      debouncedQuery,
+      dateFrom,
+      dateTo,
+      typeFilter,
+      techFilter,
+      isTechnicien ? user.id : "all",
+    ],
+    enabled: view === "liste",
+    queryFn: () =>
+      getReservationsPageFn({
+        data: {
+          page,
+          perPage: PER_PAGE,
+          status: filter === "toutes" ? undefined : filter,
+          q: debouncedQuery || undefined,
+          dateFrom: dateFrom || undefined,
+          dateTo: dateTo || undefined,
+          type: typeFilter,
+          techFilter: techFilter === "tous" ? undefined : techFilter,
+        },
+      }),
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter, techFilter, typeFilter, debouncedQuery, dateFrom, dateTo]);
+
+  const totalPages = Math.max(1, Math.ceil((reservationsPage.data?.total ?? 0) / PER_PAGE));
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status, note }: { id: string; status: Status; note?: string }) => {
@@ -242,6 +290,9 @@ export function DossiersSection() {
     ...r,
     org_name: r.org_id ? (orgName.get(r.org_id) ?? "") : "",
   }));
+
+  const pageRows = reservationsPage.data?.rows ?? [];
+  const pageTotal = reservationsPage.data?.total ?? 0;
 
   return (
     <div className="space-y-8">
@@ -383,163 +434,196 @@ export function DossiersSection() {
             </Button>
           </div>
 
-          {reservations.isLoading ? (
+          {reservationsPage.isLoading && pageRows.length === 0 ? (
             <AdminSkeleton rows={5} />
-          ) : rows.length === 0 ? (
+          ) : pageRows.length === 0 ? (
             <AdminEmptyState
               icon={<Wrench className="size-6" />}
               title={t("admin.dossier.empty")}
               description={t("admin.dossier.emptyDesc")}
             />
           ) : (
-            <ul className="space-y-4">
-              {rows.map((r) => (
-                <li key={r.id} className="rounded-sm border border-border bg-card p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
-                      <h2 className="text-lg font-semibold">
-                        {r.customer_name} — {r.device}
-                      </h2>
-                      <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)} ·{" "}
-                        {r.phone}
-                      </p>
-                    </div>
-                    <span
-                      className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
-                    >
-                      {t("admin.status." + r.status)}
-                    </span>
-                    {r.org_id && orgName.get(r.org_id) && (
-                      <span className="inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1 text-xs font-medium">
-                        <Building2 className="size-3.5 text-muted-foreground" />
-                        {orgName.get(r.org_id)}
+            <>
+              <ul className="space-y-4">
+                {pageRows.map((r) => (
+                  <li key={r.id} className="rounded-sm border border-border bg-card p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <p className="font-mono text-sm text-muted-foreground">{r.reference}</p>
+                        <h2 className="text-lg font-semibold">
+                          {r.customer_name} — {r.device}
+                        </h2>
+                        <p className="mt-1 text-sm text-muted-foreground">{r.issue}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {formatDateFr(r.slot_date, locale)} · {t("admin.period." + r.slot_period)}{" "}
+                          · {r.phone}
+                        </p>
+                      </div>
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs ${STATUS_TONE[r.status] ?? ""}`}
+                      >
+                        {t("admin.status." + r.status)}
                       </span>
-                    )}
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <AdminQuickContact data={r} />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setLabelTarget(r)}
-                        className="text-xs gap-1"
-                        title="Imprimer l'étiquette atelier"
-                      >
-                        <Tag className="size-3.5" />
-                        <span>Étiquette</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setChecklistTarget({
-                            id: r.id,
-                            reference: r.reference,
-                            device: r.device,
-                            type:
-                              r.status === "pret" || r.status === "livre" || r.status === "terminee"
-                                ? "qa"
-                                : "intake",
-                            initial:
-                              r.status === "pret" || r.status === "livre" || r.status === "terminee"
-                                ? ((r as unknown as AtelierCardType).qa_checklist?.items ?? null)
-                                : ((r as unknown as AtelierCardType).intake_checklist?.items ??
-                                  null),
-                          })
-                        }
-                        className="text-xs gap-1"
-                        title="Inspection & Contrôle Qualité"
-                      >
-                        <ClipboardCheck className="size-3.5" />
-                        <span>Contrôle QA</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => downloadInvoicePdf(r)}
-                        title="Télécharger facture PDF"
-                      >
-                        <FileDown className="size-4" />
-                      </Button>
+                      {r.org_id && orgName.get(r.org_id) && (
+                        <span className="inline-flex items-center gap-1.5 border border-border bg-muted px-3 py-1 text-xs font-medium">
+                          <Building2 className="size-3.5 text-muted-foreground" />
+                          {orgName.get(r.org_id)}
+                        </span>
+                      )}
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <AdminQuickContact data={r} />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLabelTarget(r)}
+                          className="text-xs gap-1"
+                          title="Imprimer l'étiquette atelier"
+                        >
+                          <Tag className="size-3.5" />
+                          <span>Étiquette</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setChecklistTarget({
+                              id: r.id,
+                              reference: r.reference,
+                              device: r.device,
+                              type:
+                                r.status === "pret" ||
+                                r.status === "livre" ||
+                                r.status === "terminee"
+                                  ? "qa"
+                                  : "intake",
+                              initial:
+                                r.status === "pret" ||
+                                r.status === "livre" ||
+                                r.status === "terminee"
+                                  ? ((r as unknown as AtelierCardType).qa_checklist?.items ?? null)
+                                  : ((r as unknown as AtelierCardType).intake_checklist?.items ??
+                                    null),
+                            })
+                          }
+                          className="text-xs gap-1"
+                          title="Inspection & Contrôle Qualité"
+                        >
+                          <ClipboardCheck className="size-3.5" />
+                          <span>Contrôle QA</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => downloadInvoicePdf(r)}
+                          title="Télécharger facture PDF"
+                        >
+                          <FileDown className="size-4" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  <StageControls
-                    current={r.status}
-                    pending={updateStatus.isPending}
-                    onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
-                    historyOpen={openId === r.id}
-                    onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
-                  />
-
-                  {!isTechnicien && (
-                    <QuotePanel
-                      reservationId={r.id}
-                      reference={r.reference}
-                      customer_name={r.customer_name}
-                      phone={r.phone}
-                      email={r.email}
-                      device={r.device}
-                      issue={r.issue}
-                      created_at={r.created_at}
-                      quote={r}
+                    <StageControls
+                      current={r.status}
+                      pending={updateStatus.isPending}
+                      onApply={(status, note) => updateStatus.mutate({ id: r.id, status, note })}
+                      historyOpen={openId === r.id}
+                      onToggleHistory={() => setOpenId(openId === r.id ? null : r.id)}
                     />
-                  )}
 
-                  {!isTechnicien && <PhotoPanel reservationId={r.id} />}
-
-                  <div
-                    className="mt-4 flex flex-wrap items-center gap-2 text-xs"
-                    data-tour="admin-technician"
-                  >
-                    <Wrench className="size-3.5 text-muted-foreground" />
-                    <span className="text-muted-foreground">{t("admin.dossier.technician")} :</span>
-                    {isTechnicien ? (
-                      <strong>
-                        {latestTechByReservation.get(r.id)?.technician_id === user.id
-                          ? t("admin.dossier.you")
-                          : t("admin.dossier.notAssignedToYou")}
-                      </strong>
-                    ) : (
-                      <select
-                        className={`${field} max-w-56 py-1.5 text-xs`}
-                        value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
-                        disabled={assignTech.isPending}
-                        onChange={(e) =>
-                          assignTech.mutate({ reservationId: r.id, technicianId: e.target.value })
-                        }
-                      >
-                        <option value="">{t("admin.dossier.unassigned")}</option>
-                        {(technicians.data ?? []).map((tech) => (
-                          <option key={tech.id} value={tech.id}>
-                            {tech.full_name ?? t("admin.dossier.technician")}
-                          </option>
-                        ))}
-                      </select>
+                    {!isTechnicien && (
+                      <QuotePanel
+                        reservationId={r.id}
+                        reference={r.reference}
+                        customer_name={r.customer_name}
+                        phone={r.phone}
+                        email={r.email}
+                        device={r.device}
+                        issue={r.issue}
+                        created_at={r.created_at}
+                        quote={r}
+                      />
                     )}
-                    <span className="text-muted-foreground">
-                      {latestTechByReservation.get(r.id)
-                        ? (technicianName.get(
-                            latestTechByReservation.get(r.id)?.technician_id ?? "",
-                          ) ?? "")
-                        : ""}
-                    </span>
-                  </div>
 
-                  {r.mode === "domicile" && !isTechnicien && (
-                    <DeliveryBlock
-                      r={r}
-                      pending={updateDelivery.isPending}
-                      onUpdate={(v) => updateDelivery.mutate(v)}
-                    />
-                  )}
+                    {!isTechnicien && <PhotoPanel reservationId={r.id} />}
 
-                  {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
-                </li>
-              ))}
-            </ul>
+                    <div
+                      className="mt-4 flex flex-wrap items-center gap-2 text-xs"
+                      data-tour="admin-technician"
+                    >
+                      <Wrench className="size-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        {t("admin.dossier.technician")} :
+                      </span>
+                      {isTechnicien ? (
+                        <strong>
+                          {latestTechByReservation.get(r.id)?.technician_id === user.id
+                            ? t("admin.dossier.you")
+                            : t("admin.dossier.notAssignedToYou")}
+                        </strong>
+                      ) : (
+                        <select
+                          className={`${field} max-w-56 py-1.5 text-xs`}
+                          value={latestTechByReservation.get(r.id)?.technician_id ?? ""}
+                          disabled={assignTech.isPending}
+                          onChange={(e) =>
+                            assignTech.mutate({ reservationId: r.id, technicianId: e.target.value })
+                          }
+                        >
+                          <option value="">{t("admin.dossier.unassigned")}</option>
+                          {(technicians.data ?? []).map((tech) => (
+                            <option key={tech.id} value={tech.id}>
+                              {tech.full_name ?? t("admin.dossier.technician")}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <span className="text-muted-foreground">
+                        {latestTechByReservation.get(r.id)
+                          ? (technicianName.get(
+                              latestTechByReservation.get(r.id)?.technician_id ?? "",
+                            ) ?? "")
+                          : ""}
+                      </span>
+                    </div>
+
+                    {r.mode === "domicile" && !isTechnicien && (
+                      <DeliveryBlock
+                        r={r}
+                        pending={updateDelivery.isPending}
+                        onUpdate={(v) => updateDelivery.mutate(v)}
+                      />
+                    )}
+
+                    {openId === r.id ? <StatusHistory reservationId={r.id} /> : null}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+                <p className="text-xs text-muted-foreground">
+                  {pageTotal} dossier{pageTotal > 1 ? "s" : ""} · Page {Math.min(page, totalPages)}{" "}
+                  / {totalPages}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page <= 1 || reservationsPage.isFetching}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    ← Précédent
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page >= totalPages || reservationsPage.isFetching}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    Suivant →
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </>
       )}

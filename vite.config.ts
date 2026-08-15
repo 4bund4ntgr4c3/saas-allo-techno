@@ -100,7 +100,26 @@ export default defineConfig(async ({ mode }) => {
       }),
       tailwindcss(),
       tsConfigPaths({ projects: ["./tsconfig.json"] }),
-      nitro({ defaultPreset: "cloudflare-module", compatibilityDate: "2026-08-01" }),
+      nitro({
+        defaultPreset: "cloudflare-module",
+        compatibilityDate: "2026-08-01",
+        routeRules: {
+          // Cache CDN des pages publiques (HTML SSR) : s-maxage + revalidation
+          // en arrière-plan, sans purge manuelle (stale-while-revalidate).
+          "/fr/blog/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/blog/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/catalogue": {
+            headers: { "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },
+          },
+          "/en/catalogue": {
+            headers: { "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },
+          },
+        },
+      }),
       viteReact(),
       ...(process.env["ANALYZE"]
         ? [visualizer({ open: true, filename: "bundle-stats.html" })]

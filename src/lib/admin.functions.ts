@@ -1285,3 +1285,141 @@ export const getAdminReservations = createServerFn({ method: "POST" }).handler(
     return (data ?? []) as AdminReservationRow[];
   },
 );
+
+// ---------------------------------------------------------------------------
+// Liste des dossiers pagin�e (tableau /admin/dossiers) � filtres en SQL.
+// ---------------------------------------------------------------------------
+
+const reservationsPageSchema = z.object({
+  page: z.number().int().min(1).max(10000).default(1),
+  perPage: z.number().int().min(10).max(200).default(50),
+  status: z.string().trim().max(30).optional(),
+  q: z.string().trim().max(80).optional(),
+  dateFrom: z.string().trim().max(20).optional(),
+  dateTo: z.string().trim().max(20).optional(),
+  type: z.enum(["tous", "b2b", "particulier"]).optional(),
+  techFilter: z.string().trim().max(60).optional(),
+});
+
+export const getAdminReservationsPage = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => reservationsPageSchema.parse(data))
+  .handler(async ({ data }): Promise<{ rows: AdminReservationRow[]; total: number }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-reservations", 15)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    let isTech = false;
+    if (!staff) {
+      const { data: t } = await supabaseAdmin.rpc("has_role", {
+        _user_id: userId,
+        _role: "technicien",
+      });
+      isTech = !!t;
+      if (!isTech) throw new Error("Action non autoris�e");
+    }
+
+    const q = (data.q ?? "").replace(/[%_]/g, "");
+
+    // Filtre technicien : derni�re assignation connue par dossier.
+    let techIds: string[] | null = null;
+    if (data.techFilter && data.techFilter !== "tous") {
+      const { data: assignments, error: aError } = await supabaseAdmin
+        .from("technician_assignments")
+        .select("reservation_id, technician_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(2000);
+      if (aError) throw new Error("Impossible de filtrer par technicien.");
+      const latest = new Map<string, string | null>();
+      for (const a of assignments ?? []) {
+        if (!latest.has(a.reservation_id)) latest.set(a.reservation_id, a.technician_id);
+      }
+      techIds = [...latest.entries()]
+        .filter(([, tech]) =>
+          data.techFilter === "non-assigne" ? tech === null : tech === data.techFilter,
+        )
+        .map(([rid]) => rid);
+      if (data.techFilter !== "non-assigne" && techIds.length === 0) {
+        return { rows: [], total: 0 };
+      }
+    }
+
+    const selectCols =
+      "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id, quote_amount, quote_status, quote_decided_at, quote_token, warranty_months";
+
+    const buildCount = () => {
+      let c = supabaseAdmin.from("reservations").select("id", { count: "exact", head: true });
+      if (data.status && data.status !== "toutes")
+        c = c.eq("status", data.status as Enums<"reservation_status">);
+      if (q) {
+        c = c.or(
+          `reference.ilike.%${q}%,customer_name.ilike.%${q}%,device.ilike.%${q}%,issue.ilike.%${q}%`,
+        );
+      }
+      if (data.dateFrom) c = c.gte("slot_date", data.dateFrom);
+      if (data.dateTo) c = c.lte("slot_date", data.dateTo);
+      if (data.type === "b2b") c = c.not("org_id", "is", null);
+      if (data.type === "particulier") c = c.is("org_id", null);
+      if (isTech) c = c.eq("assigned_technician_id", userId);
+      return c;
+    };
+
+    const buildRows = () => {
+      let r = supabaseAdmin
+        .from("reservations")
+        .select(selectCols)
+        .order("slot_date", { ascending: false });
+      if (data.status && data.status !== "toutes")
+        r = r.eq("status", data.status as Enums<"reservation_status">);
+      if (q) {
+        r = r.or(
+          `reference.ilike.%${q}%,customer_name.ilike.%${q}%,device.ilike.%${q}%,issue.ilike.%${q}%`,
+        );
+      }
+      if (data.dateFrom) r = r.gte("slot_date", data.dateFrom);
+      if (data.dateTo) r = r.lte("slot_date", data.dateTo);
+      if (data.type === "b2b") r = r.not("org_id", "is", null);
+      if (data.type === "particulier") r = r.is("org_id", null);
+      if (isTech) r = r.eq("assigned_technician_id", userId);
+      return r;
+    };
+
+    let total = 0;
+    const countQuery = buildCount();
+    if (techIds) {
+      if (data.techFilter === "non-assigne") {
+        if (techIds.length > 0) {
+          const { count } = await countQuery.not("id", "in", `(${techIds.join(",")})`);
+          total = count ?? 0;
+        }
+      } else {
+        const { count } = await countQuery.in("id", techIds);
+        total = count ?? 0;
+      }
+    } else {
+      const { count } = await countQuery;
+      total = count ?? 0;
+    }
+
+    const rowsBuilder = buildRows();
+    const from = (data.page - 1) * data.perPage;
+    const to = from + data.perPage - 1;
+    let rowsQuery = rowsBuilder;
+    if (techIds) {
+      if (data.techFilter === "non-assigne") {
+        rowsQuery =
+          techIds.length === 0
+            ? rowsBuilder.limit(0)
+            : rowsBuilder.not("id", "in", `(${techIds.join(",")})`);
+      } else {
+        rowsQuery = rowsBuilder.in("id", techIds);
+      }
+    }
+    const { data: rows, error } = await rowsQuery.range(from, to);
+    if (error) {
+      logger.error("Admin reservations page failed", error);
+      throw new Error("Impossible de charger les dossiers.");
+    }
+    return { rows: (rows ?? []) as AdminReservationRow[], total };
+  });
