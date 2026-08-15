@@ -178,24 +178,16 @@ export const listCatalog = createServerFn({ method: "POST" })
     }
 
     const bucket = supabaseAdmin.storage.from("catalog-images");
-    const localPhotos = (photos ?? []).filter((photo) => !photo.url.startsWith("http"));
-    const signedPhotos: CatalogPhoto[] = [...(photos ?? [])];
-    if (localPhotos.length > 0) {
-      const localByPath = new Map(localPhotos.map((photo) => [photo.url, photo]));
-      const { data: signedBatch } = await bucket.createSignedUrls(
-        localPhotos.map((photo) => photo.url),
-        7 * 24 * 3600,
-      );
-      for (const item of signedBatch ?? []) {
-        const photo = localByPath.get(item.path ?? "");
-        if (photo && item.signedUrl) {
-          const transformed = item.signedUrl
-            .replace("/object/sign/", "/render/image/authenticated/")
-            .concat("&width=480&format=webp");
-          signedPhotos[signedPhotos.indexOf(photo)] = { ...photo, url: transformed };
-        }
-      }
-    }
+    const signedPhotos = await Promise.all(
+      (photos ?? []).map(async (photo): Promise<CatalogPhoto> => {
+        if (photo.url.startsWith("http")) return photo;
+        const { data: signed } = await bucket.createSignedUrl(photo.url, 7 * 24 * 3600, {
+          transform: { width: 480 },
+        });
+        if (!signed?.signedUrl) return photo;
+        return { ...photo, url: signed.signedUrl };
+      }),
+    );
 
     return {
       categories: categories ?? [],
