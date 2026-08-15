@@ -13,7 +13,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 - **Perf / Admin** : fin du N+1 sur /admin/dossiers - les donnees devis (quote_amount, quote_status, quote_decided_at, quote_token, warranty_months) sont desormais incluses dans la requete de liste des reservations (1 appel au lieu de 1 par dossier) ; le panneau devis (QuotePanel) n'appelle plus getReservationQuote par carte ; invalidation de la liste apres envoi de devis.
 - **Perf / Base de connaissances** : searchKB filtre cote SQL (titre/contenu ilike + tags cs) avec limit(50) au lieu de telecharger toute la table puis filtrer en JS.
-- **Perf / Catalogue** : signature des photos en un seul appel createSignedUrls (au lieu d'un par photo) + redirection vers l'endpoint ender/image/authenticated avec width=480&format=webp (photos ~10x plus legeres sur les pages catalogue et admin).
+- **Perf / Catalogue** : photos signees avec 	ransform: { width: 480 } (le proxy render redimensionne cote CDN, la page ne telecharge plus les originaux ~5 Mo) ; la conversion webp n'est pas exposee par storage-js 2.111 (format restreint a origin).
 
 ### Removed
 
