@@ -41,6 +41,10 @@ export default defineConfig(async ({ mode }) => {
       host: "::",
       port: 8080,
     },
+    // manualChunks (bundle client) : les warnings Nitro
+    // « manualChunks option is ignored » concernent uniquement la passe SSR —
+    // le bundle client les applique bien (vérifié : sans cette config, React
+    // (250 Ko) fusionne dans l'entrée et xlsx (354 Ko) dans la route equipment).
     build: {
       rollupOptions: {
         output: {
