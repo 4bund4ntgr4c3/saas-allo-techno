@@ -520,7 +520,7 @@ export function SearchModal() {
       : [];
 
     return { pages, categories, brands, devices, accessories, posts, faq };
-  }, [query]);
+  }, [query, isB2B]);
 
   const total = useMemo(() => Object.values(groups).reduce((n, g) => n + g.length, 0), [groups]);
 

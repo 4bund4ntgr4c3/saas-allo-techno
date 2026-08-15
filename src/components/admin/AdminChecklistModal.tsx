@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ClipboardCheck, CheckCircle2, XCircle, HelpCircle, Save, X } from "lucide-react";
 
-export type CheckStatus = "ok" | "ko" | "na";
+type CheckStatus = "ok" | "ko" | "na";
 
-export interface CheckItem {
+interface CheckItem {
   id: string;
   label: string;
   category: "ecran" | "audio_cameras" | "connectique" | "chassis_boutons";
@@ -16,7 +16,7 @@ export interface CheckItem {
   notes?: string;
 }
 
-export const CHECKPOINTS: { id: string; label: string; category: CheckItem["category"] }[] = [
+const CHECKPOINTS: { id: string; label: string; category: CheckItem["category"] }[] = [
   { id: "display", label: "Écran / Affichage (taches, lignes)", category: "ecran" },
   { id: "touch", label: "Vitre & Réactivité Tactile", category: "ecran" },
   { id: "cam_front", label: "Caméra Avant & Face ID", category: "audio_cameras" },

@@ -383,7 +383,7 @@ function BlogAdmin() {
   );
 }
 
-export function parsePostBody(raw: string): string[] {
+function parsePostBody(raw: string): string[] {
   try {
     const parsed: unknown = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed.filter((p): p is string => typeof p === "string");

@@ -99,7 +99,7 @@ const URGENCY_LEVELS = [
   { id: "planned", label: "Planifié ce mois-ci" },
 ];
 
-export const PREVENTIVE_PERIODS = [
+const PREVENTIVE_PERIODS = [
   {
     id: "2m",
     shortLabel: "2 mois",
@@ -130,7 +130,7 @@ export const PREVENTIVE_PERIODS = [
   },
 ];
 
-export function calculateEstimate(
+function calculateEstimate(
   needType: B2BNeedType | null,
   slaFormula: SlaFormulaType | null,
   fleetSize: string | null,
@@ -187,10 +187,6 @@ export function calculateEstimate(
   }
 
   return "Sur Devis B2B";
-}
-
-export function calculateSlaEstimate(formula: SlaFormulaType, fleetSize: string): string {
-  return calculateEstimate("contract", formula, fleetSize, "3m");
 }
 
 export interface B2BRequestFormProps {

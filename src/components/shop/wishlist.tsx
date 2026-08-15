@@ -1,17 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { WishlistContext, STORAGE_KEY, type WishlistContextValue } from "./wishlist-store";
 
-const STORAGE_KEY = "at-wishlist";
-
-type WishlistContextValue = {
-  slugs: string[];
-  has: (slug: string) => boolean;
-  toggle: (slug: string) => void;
-  add: (slug: string) => void;
-  remove: (slug: string) => void;
-  count: number;
-};
-
-const WishlistContext = createContext<WishlistContextValue | null>(null);
+export { useWishlist, type WishlistContextValue } from "./wishlist-store";
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [slugs, setSlugs] = useState<string[]>([]);
@@ -57,10 +47,4 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   );
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
-}
-
-export function useWishlist() {
-  const ctx = useContext(WishlistContext);
-  if (!ctx) throw new Error("useWishlist doit être utilisé dans un WishlistProvider");
-  return ctx;
 }

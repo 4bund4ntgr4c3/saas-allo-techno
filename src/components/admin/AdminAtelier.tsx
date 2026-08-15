@@ -308,7 +308,7 @@ export function AtelierBoard() {
   );
 }
 
-export function shortDate(iso: string): string {
+function shortDate(iso: string): string {
   return `${iso.slice(8)}/${iso.slice(5, 7)}`;
 }
 

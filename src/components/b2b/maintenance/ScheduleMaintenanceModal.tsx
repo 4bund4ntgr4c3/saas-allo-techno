@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EquipmentItem } from "@/lib/org.functions";
-import { PRESET_TASKS } from "./MaintenanceChecklistModal";
+import { PRESET_TASKS } from "./preset-tasks";
 
 export interface ScheduleMaintenanceModalProps {
   equipmentList: EquipmentItem[];

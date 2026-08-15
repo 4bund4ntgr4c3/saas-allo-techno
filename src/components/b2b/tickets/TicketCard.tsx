@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import type { OrgTicketSummary, B2BTicketPriority } from "@/lib/org.functions";
 import { useI18n } from "@/lib/i18n/context";
 
-export const PRIORITY_BADGE: Record<B2BTicketPriority, string> = {
+const PRIORITY_BADGE: Record<B2BTicketPriority, string> = {
   faible: "bg-muted text-muted-foreground",
   normale: "bg-muted text-foreground",
   haute: "bg-amber-500/15 text-amber-600 border-amber-500/20",

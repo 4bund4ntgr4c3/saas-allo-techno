@@ -38,7 +38,7 @@ export const Route = createFileRoute("/app/organizations/$orgId/equipment")({
   component: EquipmentList,
 });
 
-export const EQUIPMENT_TYPES = [
+const EQUIPMENT_TYPES = [
   "ordinateur",
   "ecran",
   "imprimante",

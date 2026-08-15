@@ -22,7 +22,7 @@ const PAY_LABEL: Record<string, string> = {
 };
 
 /** Retrouve les pannes catalogue citées dans le texte libre pour estimer le coût. */
-export function matchedFaults(deviceSlug: string, panne: string) {
+function matchedFaults(deviceSlug: string, panne: string) {
   const device = deviceBySlug(deviceSlug);
   if (!device) return [];
   const text = panne.toLowerCase();

@@ -1,28 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { translate } from "./dictionaries";
 import { isLocale, normalizeLocale, type Locale } from "./locales";
 // Import unique de TOUS les segments — garantit l'enregistrement avant tout
 // rendu, y compris sur Cloudflare Workers.
 import "./segments/index";
+import { I18nContext, STORAGE_KEY, readStoredLocale, type I18nContextValue } from "./context-store";
 
-type I18nContextValue = {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  /** Retourne une chaîne traduite. */
-  t: (key: string, params?: (string | number)[]) => string;
-};
-
-const I18nContext = createContext<I18nContextValue | null>(null);
-
-const STORAGE_KEY = "at-locale";
-
-function readStoredLocale(): Locale | null {
-  if (typeof window !== "undefined") {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (isLocale(stored)) return stored;
-  }
-  return null;
-}
+export { useI18n, type I18nContextValue } from "./context-store";
 
 export function I18nProvider({
   children,
@@ -38,13 +22,13 @@ export function I18nProvider({
     return "fr";
   });
 
-  // Hydratation sécurisée des préférences utilisateur au montage client
+  // Hydratation sécurisée des préférences utilisateur au montage client :
+  // ne remplace que le défaut SSR 'fr', jamais un choix déjà effectué.
   useEffect(() => {
-    if (!initialLocale) {
-      const stored = readStoredLocale() ?? normalizeLocale(window.navigator.language);
-      if (stored && stored !== locale) {
-        setLocale(stored);
-      }
+    if (initialLocale) return;
+    const stored = readStoredLocale() ?? normalizeLocale(window.navigator.language);
+    if (stored) {
+      setLocale((prev) => (prev === "fr" && stored !== prev ? stored : prev));
     }
   }, [initialLocale]);
 
@@ -76,12 +60,4 @@ export function I18nProvider({
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
-}
-
-export function useI18n(): I18nContextValue {
-  const ctx = useContext(I18nContext);
-  if (!ctx) {
-    throw new Error("useI18n doit être utilisé dans <I18nProvider>");
-  }
-  return ctx;
 }

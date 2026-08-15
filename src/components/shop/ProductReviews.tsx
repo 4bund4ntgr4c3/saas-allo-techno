@@ -61,7 +61,7 @@ export function ProductReviewsSection({ productSlug }: ProductReviewsSectionProp
     return () => {
       cancelled = true;
     };
-  }, [productSlug]);
+  }, [productSlug, fetchReviews, fetchRating]);
 
   async function handleSubmit() {
     if (stars < 1 || !name.trim() || text.trim().length < 10) return;

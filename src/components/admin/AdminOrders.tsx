@@ -17,7 +17,7 @@ const PAYMENT_BADGE_TONE: Record<string, string> = {
   refunded: "border-border text-muted-foreground",
 };
 
-export function extractOrderTotal(message: string | null): number | null {
+function extractOrderTotal(message: string | null): number | null {
   if (!message) return null;
   const matches = [...message.matchAll(/Total\s*:\s*([\d\s\u00A0]+)\s*FCFA/g)];
   if (matches.length === 0) return null;

@@ -3,14 +3,7 @@ import { CheckCircle2, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePvRestitutionPdf } from "@/lib/pv-restitution-pdf";
 import type { EquipmentMaintenanceSchedule } from "@/lib/org.functions";
-
-export const PRESET_TASKS = [
-  "Nettoyage interne & Dépoussiérage ventilateurs",
-  "Remplacement pâte thermique processeur / GPU",
-  "Contrôle santé batterie & Cycles de charge",
-  "Audit d'intégrité disque SSD & Sauvegarde",
-  "Mise à jour firmware & Diagnostic matériel",
-];
+import { PRESET_TASKS } from "./preset-tasks";
 
 export interface MaintenanceChecklistModalProps {
   schedule: EquipmentMaintenanceSchedule | null;

@@ -114,7 +114,7 @@ function OrgMaintenancePage() {
     },
   });
 
-  const scheduleList = schedulesQuery.data ?? [];
+  const scheduleList = useMemo(() => schedulesQuery.data ?? [], [schedulesQuery.data]);
 
   const overdueCount = useMemo(
     () => scheduleList.filter((s) => new Date(s.next_due_at) < new Date()).length,

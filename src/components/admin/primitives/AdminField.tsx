@@ -1,8 +1,6 @@
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
-
-const field =
-  "h-10 w-full border border-border bg-card px-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+import { field } from "./field";
 
 type AdminFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -58,4 +56,5 @@ const AdminSelect = forwardRef<
 });
 AdminSelect.displayName = "AdminSelect";
 
-export { AdminField, AdminSelect, field };
+export { AdminField, AdminSelect };
+export { field } from "./field";

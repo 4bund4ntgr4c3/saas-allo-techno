@@ -32,7 +32,24 @@ export default tseslint.config(
           ],
         },
       ],
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      // Contexte + hook dans un meme fichier (pattern React standard, partage
+      // par ~140 imports) : le plugin react-refresh ne peut pas verifier le
+      // fast refresh de ces exports — autorises explicitement.
+      "react-refresh/only-export-components": [
+        "warn",
+        {
+          allowConstantExport: true,
+          allowExportNames: [
+            "CartContext",
+            "FREE_DELIVERY_FROM",
+            "getDeliveryOptions",
+            "useCart",
+            "useI18n",
+            "useWishlist",
+            "field",
+          ],
+        },
+      ],
       "@typescript-eslint/no-unused-vars": "off",
     },
   },

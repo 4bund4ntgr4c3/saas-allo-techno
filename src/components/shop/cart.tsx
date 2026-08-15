@@ -1,27 +1,22 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ACCESSORIES, type Accessory } from "@/data/catalog/accessories";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ACCESSORIES } from "@/data/catalog/accessories";
+import {
+  CartContext,
+  STORAGE_KEY,
+  type CartContextValue,
+  type CartItem,
+  type CartLine,
+} from "./cart-store";
 
-const STORAGE_KEY = "at-cart";
-
-export type CartLine = { slug: string; qty: number };
-export type CartItem = { accessory: Accessory; qty: number };
-
-type CartContextValue = {
-  lines: CartLine[];
-  items: CartItem[];
-  count: number;
-  subtotal: number;
-  hydrated: boolean;
-  add: (slug: string, qty?: number) => void;
-  setQty: (slug: string, qty: number) => void;
-  remove: (slug: string) => void;
-  clear: () => void;
-  drawerOpen: boolean;
-  openDrawer: () => void;
-  closeDrawer: () => void;
-};
-
-const CartContext = createContext<CartContextValue | null>(null);
+export {
+  CartContext,
+  FREE_DELIVERY_FROM,
+  getDeliveryOptions,
+  useCart,
+  type CartContextValue,
+  type CartItem,
+  type CartLine,
+} from "./cart-store";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -114,41 +109,4 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [lines, hydrated, add, setQty, remove, clear, drawerOpen, openDrawer, closeDrawer]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
-
-export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart doit être utilisé dans un CartProvider");
-  return ctx;
-}
-
-export const FREE_DELIVERY_FROM = 50000;
-
-export function getDeliveryOptions(t: (key: string) => string) {
-  return [
-    {
-      id: "retrait",
-      label: t("shop.delivery.retrait"),
-      fee: 0,
-      eta: t("shop.delivery.eta.retrait"),
-    },
-    {
-      id: "calavi",
-      label: t("shop.delivery.calavi"),
-      fee: 1000,
-      eta: t("shop.delivery.eta.calavi"),
-    },
-    {
-      id: "cotonou",
-      label: t("shop.delivery.cotonou"),
-      fee: 2000,
-      eta: t("shop.delivery.eta.cotonou"),
-    },
-    {
-      id: "interieur",
-      label: t("shop.delivery.interior"),
-      fee: 2000,
-      eta: t("shop.delivery.eta.interior"),
-    },
-  ] as const;
 }

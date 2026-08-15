@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -74,28 +74,31 @@ export function StockAdmin() {
       .sort((a, b) => a.quantity - b.quantity);
   }, [stockQuery.data]);
 
-  const save = async (a: { slug: string; stock: number }) => {
-    const value = Number(drafts[a.slug] ?? a.stock);
-    if (!Number.isFinite(value) || value < 0) {
-      toast.error(t("admin.stock.toast.invalidQty"));
-      return;
-    }
-    setSavingSlug(a.slug);
-    try {
-      await setFn({ data: { slug: a.slug, quantity: value } });
-      queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
-      setDrafts((d) => {
-        const next = { ...d };
-        delete next[a.slug];
-        return next;
-      });
-      toast.success(`${a.slug} : ${t("admin.stock.toast.updated")}`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : t("admin.stock.toast.updateError"));
-    } finally {
-      setSavingSlug(null);
-    }
-  };
+  const save = useCallback(
+    async (a: { slug: string; stock: number }) => {
+      const value = Number(drafts[a.slug] ?? a.stock);
+      if (!Number.isFinite(value) || value < 0) {
+        toast.error(t("admin.stock.toast.invalidQty"));
+        return;
+      }
+      setSavingSlug(a.slug);
+      try {
+        await setFn({ data: { slug: a.slug, quantity: value } });
+        queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
+        setDrafts((d) => {
+          const next = { ...d };
+          delete next[a.slug];
+          return next;
+        });
+        toast.success(`${a.slug} : ${t("admin.stock.toast.updated")}`);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : t("admin.stock.toast.updateError"));
+      } finally {
+        setSavingSlug(null);
+      }
+    },
+    [drafts, t, queryClient, setFn],
+  );
 
   const columns = useMemo<ColumnDef<StockItem, unknown>[]>(
     () => [
