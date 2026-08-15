@@ -4,53 +4,39 @@ import {
   getSatisfactionEntries,
   type SatisfactionEntry,
 } from "@/lib/satisfaction.functions";
+import { getAdminCompletedDossiers, type CompletedDossierRow } from "@/lib/admin.functions";
 import { Star, ThumbsUp, ThumbsDown, Gift, MessageSquare } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface CompletedDossier {
-  id: string;
-  reference: string;
-  customer_name: string;
-  phone: string;
-  device: string;
-  updated_at: string;
-}
 
 export function AdminSatisfaction() {
   const { t } = useI18n();
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getSatisfactionStats>> | null>(null);
   const [entries, setEntries] = useState<SatisfactionEntry[]>([]);
-  const [completedDossiers, setCompletedDossiers] = useState<CompletedDossier[]>([]);
+  const [completedDossiers, setCompletedDossiers] = useState<CompletedDossierRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const [s, e, { data: completed }] = await Promise.all([
+        const [s, e, completed] = await Promise.all([
           getSatisfactionStats(),
           getSatisfactionEntries(),
-          supabase
-            .from("reservations")
-            .select("id, reference, customer_name, phone, device, updated_at")
-            .in("status", ["terminee", "livre"])
-            .order("updated_at", { ascending: false })
-            .limit(10),
+          getAdminCompletedDossiers({ data: undefined }),
         ]);
         setStats(s);
         setEntries(e);
-        setCompletedDossiers((completed as CompletedDossier[]) ?? []);
+        setCompletedDossiers(completed);
       } finally {
         setLoading(false);
       }
     })();
   }, []);
 
-  const sendSurveyWhatsApp = (d: CompletedDossier) => {
-    const clean = d.phone.replace(/[^\d+]/g, "").replace(/^00/, "+");
+  const sendSurveyWhatsApp = (d: CompletedDossierRow) => {
+    const clean = (d.phone ?? "").replace(/[^\d+]/g, "").replace(/^00/, "+");
     const formatted = clean.startsWith("+")
       ? clean.slice(1)
       : clean.startsWith("229")

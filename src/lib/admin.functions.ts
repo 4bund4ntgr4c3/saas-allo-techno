@@ -973,3 +973,156 @@ export const setTeamRole = createServerFn({ method: "POST" })
     }
     return { updated: true };
   });
+
+// ---------------------------------------------------------------------------
+// Requ�tes admin restantes (deliveries, satisfaction, POS, kanban, chat)
+// ---------------------------------------------------------------------------
+
+export type AdminDeliveryRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  phone: string | null;
+  device: string;
+  issue: string | null;
+  delivery_status: string | null;
+  delivery_address: string | null;
+  slot_date: string | null;
+  slot_period: string | null;
+  status: string;
+};
+
+/** Livraisons � domicile pour l'admin � PII (t�l�phone/adresse) lue c�t� serveur. */
+export const getAdminDeliveries = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!(await rateLimit("admin-deliveries", 20)))
+    throw new Error("Trop de demandes. R�essayez dans une minute.");
+  await requireStaffGuard(supabaseAdmin);
+
+  const { data, error } = await supabaseAdmin
+    .from("reservations")
+    .select(
+      "id, reference, customer_name, phone, device, issue, delivery_status, delivery_address, slot_date, slot_period, status",
+    )
+    .eq("mode", "domicile")
+    .order("slot_date", { ascending: false })
+    .limit(200);
+  if (error) throw new Error("Impossible de charger les livraisons.");
+  return (data ?? []) as AdminDeliveryRow[];
+});
+
+export type CompletedDossierRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  phone: string | null;
+  device: string;
+  updated_at: string;
+};
+
+/** Dossiers termin�s r�cents (satisfaction client) � PII lue c�t� serveur. */
+export const getAdminCompletedDossiers = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!(await rateLimit("admin-completed", 20)))
+    throw new Error("Trop de demandes. R�essayez dans une minute.");
+  await requireStaffGuard(supabaseAdmin);
+
+  const { data, error } = await supabaseAdmin
+    .from("reservations")
+    .select("id, reference, customer_name, phone, device, updated_at")
+    .in("status", ["terminee", "livre"])
+    .order("updated_at", { ascending: false })
+    .limit(10);
+  if (error) throw new Error("Impossible de charger les dossiers.");
+  return (data ?? []) as CompletedDossierRow[];
+});
+
+export type ReservationSearchRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  phone: string | null;
+  device: string;
+  issue: string | null;
+  quote_amount: number | null;
+  payment_status: string | null;
+  status: string;
+};
+
+/** Recherche de r�servations (POS) � PII lue c�t� serveur uniquement. */
+export const searchAdminReservations = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => z.object({ q: z.string().trim().min(2).max(60) }).parse(data))
+  .handler(async ({ data }): Promise<ReservationSearchRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-search", 30)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    await requireStaffGuard(supabaseAdmin);
+
+    const q = data.q.replace(/[%_]/g, "");
+    const { data: rows, error } = await supabaseAdmin
+      .from("reservations")
+      .select(
+        "id, reference, customer_name, phone, device, issue, quote_amount, payment_status, status",
+      )
+      .or(`reference.ilike.%${q}%,customer_name.ilike.%${q}%,phone.ilike.%${q}%`)
+      .order("created_at", { ascending: false })
+      .limit(6);
+    if (error) throw new Error("Recherche impossible.");
+    return (rows ?? []) as ReservationSearchRow[];
+  });
+
+export type StatusHistoryRow = {
+  id: string;
+  old_status: string | null;
+  new_status: string | null;
+  note: string | null;
+  created_at: string;
+};
+
+/** Historique des changements de statut d'une r�servation (kanban). */
+export const getReservationStatusHistory = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ reservationId: z.string().trim().min(1) }).parse(data),
+  )
+  .handler(async ({ data }): Promise<StatusHistoryRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-history", 30)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    await requireStaffGuard(supabaseAdmin);
+
+    const { data: rows, error } = await supabaseAdmin
+      .from("reservation_status_history")
+      .select("id, old_status, new_status, note, created_at")
+      .eq("reservation_id", data.reservationId)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error("Impossible de charger l'historique.");
+    return (rows ?? []) as StatusHistoryRow[];
+  });
+
+export type ConversationReservationRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  device: string;
+  phone: string | null;
+  status: string;
+  created_at: string;
+};
+
+/** R�servations r�centes pour la liste de conversations du chat admin. */
+export const getAdminConversationReservations = createServerFn({ method: "POST" }).handler(
+  async (): Promise<ConversationReservationRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-chat", 20)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    await requireStaffGuard(supabaseAdmin);
+
+    const { data, error } = await supabaseAdmin
+      .from("reservations")
+      .select("id, reference, customer_name, device, phone, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(30);
+    if (error) throw new Error("Impossible de charger les conversations.");
+    return (data ?? []) as ConversationReservationRow[];
+  },
+);

@@ -7,24 +7,13 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
+import { getAdminConversationReservations } from "@/lib/admin.functions";
 import {
   getChatMessages,
   sendChatMessage,
   markMessagesRead,
   type ChatMessage,
 } from "@/lib/chat.functions";
-
-interface ReservationConversation {
-  id: string;
-  reference: string;
-  customer_name: string;
-  device: string;
-  phone: string;
-  status: string;
-  lastMessage?: string;
-  lastMessageAt?: string;
-  unreadCount?: number;
-}
 
 export function AdminChat() {
   const { t } = useI18n();
@@ -37,19 +26,12 @@ export function AdminChat() {
   const getMessagesFn = useServerFn(getChatMessages);
   const sendMessageFn = useServerFn(sendChatMessage);
   const markReadFn = useServerFn(markMessagesRead);
+  const getConversationsFn = useServerFn(getAdminConversationReservations);
 
   // Fetch recent active reservations to show in conversation list
   const reservationsQuery = useQuery({
     queryKey: ["admin-chat-conversations"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select("id, reference, customer_name, device, phone, status, created_at")
-        .order("created_at", { ascending: false })
-        .limit(30);
-      if (error) throw error;
-      return (data ?? []) as ReservationConversation[];
-    },
+    queryFn: () => getConversationsFn({ data: undefined }),
   });
 
   // Select first conversation by default once loaded
@@ -135,7 +117,7 @@ export function AdminChat() {
       r.reference.toLowerCase().includes(q) ||
       r.customer_name.toLowerCase().includes(q) ||
       r.device.toLowerCase().includes(q) ||
-      r.phone.includes(q)
+      (r.phone ?? "").includes(q)
     );
   });
 

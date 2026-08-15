@@ -1,22 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Search, CheckCircle2, Printer, Receipt, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { formatFcfa } from "@/data/catalog/company";
 import { field } from "@/components/admin/primitives/AdminField";
 import { recordPosPayment, type PosReceipt } from "@/lib/pos.functions";
-
-interface PosReservation {
-  id: string;
-  reference: string | null;
-  customer_name: string | null;
-  phone: string | null;
-  device: string | null;
-  quote_amount: number | null;
-}
+import { searchAdminReservations, type ReservationSearchRow } from "@/lib/admin.functions";
 
 interface PosItem {
   id: string;
@@ -37,7 +28,7 @@ const QUICK_ACCESSORIES = [
 export function AdminPOS() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReservation, setSelectedReservation] = useState<PosReservation | null>(null);
+  const [selectedReservation, setSelectedReservation] = useState<ReservationSearchRow | null>(null);
   const [cartItems, setCartItems] = useState<PosItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<"especes" | "mtn" | "moov" | "celtiis">(
     "especes",
@@ -48,25 +39,14 @@ export function AdminPOS() {
   const [lastReceipt, setLastReceipt] = useState<PosReceipt | null>(null);
 
   // Search reservations
+  const searchFn = useServerFn(searchAdminReservations);
   const reservationsQuery = useQuery({
     queryKey: ["pos-reservations", searchQuery],
     enabled: searchQuery.trim().length >= 2,
-    queryFn: async () => {
-      const q = searchQuery.trim();
-      const { data, error } = await supabase
-        .from("reservations")
-        .select(
-          "id, reference, customer_name, phone, device, issue, quote_amount, payment_status, status",
-        )
-        .or(`reference.ilike.%${q}%,customer_name.ilike.%${q}%,phone.ilike.%${q}%`)
-        .order("created_at", { ascending: false })
-        .limit(6);
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => searchFn({ data: { q: searchQuery.trim() } }),
   });
 
-  const handleSelectReservation = (res: PosReservation) => {
+  const handleSelectReservation = (res: ReservationSearchRow) => {
     setSelectedReservation(res);
     setCustomerName(res.customer_name ?? "");
     setCustomerPhone(res.phone ?? "");

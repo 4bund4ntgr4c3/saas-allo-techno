@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -15,6 +15,7 @@ import {
   Search,
 } from "lucide-react";
 import { setDeliveryStatus } from "@/lib/delivery.functions";
+import { getAdminDeliveries } from "@/lib/admin.functions";
 import { field } from "@/components/admin/primitives/AdminField";
 import { AdminEmptyState } from "@/components/admin/primitives/AdminEmptyState";
 import { formatDateFr } from "@/lib/reservation-schema";
@@ -31,20 +32,10 @@ export function AdminDeliveries() {
     customer: string;
   } | null>(null);
 
+  const getDeliveriesFn = useServerFn(getAdminDeliveries);
   const deliveriesQuery = useQuery({
     queryKey: ["admin-deliveries"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select(
-          "id, reference, customer_name, phone, device, issue, delivery_status, delivery_address, slot_date, slot_period, status",
-        )
-        .eq("mode", "domicile")
-        .order("slot_date", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => getDeliveriesFn({ data: undefined }),
   });
 
   const updateDeliveryMut = useMutation({
@@ -83,7 +74,7 @@ export function AdminDeliveries() {
       d.reference.toLowerCase().includes(q) ||
       d.customer_name.toLowerCase().includes(q) ||
       (d.delivery_address && d.delivery_address.toLowerCase().includes(q)) ||
-      d.phone.includes(q);
+      (d.phone ?? "").includes(q);
     return matchStatus && matchQuery;
   });
 
@@ -204,7 +195,7 @@ export function AdminDeliveries() {
                   </div>
                   <p className="text-[11px] text-muted-foreground flex items-center gap-2">
                     <Clock className="size-3" />
-                    <span>Créneau : {formatDateFr(d.slot_date, locale)}</span>
+                    <span>Créneau : {formatDateFr(d.slot_date ?? "", locale)}</span>
                   </p>
                 </div>
               </div>
@@ -216,7 +207,7 @@ export function AdminDeliveries() {
                     variant="outline"
                     size="sm"
                     className="text-xs p-1 h-8 gap-1"
-                    onClick={() => window.open(`tel:${d.phone}`, "_self")}
+                    onClick={() => window.open(`tel:${d.phone ?? ""}`, "_self")}
                   >
                     <Phone className="size-3" />
                     <span>Appel</span>
@@ -225,7 +216,7 @@ export function AdminDeliveries() {
                     variant="outline"
                     size="sm"
                     className="text-xs p-1 h-8 gap-1 text-success hover:text-success"
-                    onClick={() => openWhatsAppCourier(d.phone, d.customer_name, d.reference)}
+                    onClick={() => openWhatsAppCourier(d.phone ?? "", d.customer_name, d.reference)}
                   >
                     <MessageSquare className="size-3" />
                     <span>WhatsApp</span>

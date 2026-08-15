@@ -3,11 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Building2, History, Loader2, Banknote, ImagePlus, FileDown } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
 import { sendQuote } from "@/lib/quote.functions";
-import type { ReservationQuote } from "@/lib/admin.functions";
+import {
+  getReservationStatusHistory,
+  type ReservationQuote,
+  type StatusHistoryRow,
+} from "@/lib/admin.functions";
 import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
 import { downloadQuotePdf } from "@/lib/invoice";
 import { logAudit } from "@/lib/audit";
@@ -16,6 +19,7 @@ import { field } from "@/components/admin/primitives/AdminField";
 import { formatFcfa } from "@/data/catalog";
 import { Route } from "@/routes/_authenticated/admin";
 import type { Enums } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 type Status = Enums<"reservation_status">;
 
@@ -309,17 +313,10 @@ function StageControls({
 
 function StatusHistoryList({ reservationId }: { reservationId: string }) {
   const { t } = useI18n();
-  const history = useQuery({
+  const getHistoryFn = useServerFn(getReservationStatusHistory);
+  const history = useQuery<StatusHistoryRow[]>({
     queryKey: ["status-history", reservationId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reservation_status_history")
-        .select("id, old_status, new_status, note, created_at")
-        .eq("reservation_id", reservationId)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getHistoryFn({ data: { reservationId } }),
   });
 
   if (history.isLoading) {
