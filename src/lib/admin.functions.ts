@@ -1126,3 +1126,162 @@ export const getAdminConversationReservations = createServerFn({ method: "POST" 
     return (data ?? []) as ConversationReservationRow[];
   },
 );
+
+// ---------------------------------------------------------------------------
+// Requ�tes admin dossier (assignations, �quipe technique, organisations)
+// ---------------------------------------------------------------------------
+
+export type AssignmentRow = {
+  id: string;
+  reservation_id: string;
+  technician_id: string | null;
+  assigned_by: string;
+  created_at: string;
+};
+
+/** Assignations technicien r�centes (dossier) � lues c�t� serveur. */
+export const getAdminAssignments = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!(await rateLimit("admin-assignments", 20)))
+    throw new Error("Trop de demandes. R�essayez dans une minute.");
+  await requireStaffGuard(supabaseAdmin);
+
+  const { data, error } = await supabaseAdmin
+    .from("technician_assignments")
+    .select("id, reservation_id, technician_id, assigned_by, created_at")
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (error) throw new Error("Impossible de charger les assignations.");
+  return (data ?? []) as AssignmentRow[];
+});
+
+/** Techniciens (id + nom, PII lue c�t� serveur). */
+export const getAdminTechnicians = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{ id: string; full_name: string }[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-technicians", 20)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    await requireStaffGuard(supabaseAdmin);
+
+    const { data: roles, error: rError } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "technicien");
+    if (rError) throw new Error("Impossible de charger les techniciens.");
+    const ids = roles.map((r) => r.user_id);
+    if (ids.length === 0) return [];
+
+    const { data, error } = await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", ids);
+    if (error) throw new Error("Impossible de charger les techniciens.");
+    return (data ?? []) as { id: string; full_name: string }[];
+  },
+);
+
+/** Organisations (id + nom) pour l'affichage des dossiers. */
+export const getAdminOrganizations = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{ id: string; name: string }[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-organizations", 20)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    await requireStaffGuard(supabaseAdmin);
+
+    const { data, error } = await supabaseAdmin.from("organizations").select("id, name");
+    if (error) throw new Error("Impossible de charger les organisations.");
+    return (data ?? []) as { id: string; name: string }[];
+  },
+);
+
+/** Assignation d'un technicien � un dossier (staff uniquement). */
+export const createTechnicianAssignment = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z
+      .object({ reservationId: z.string().trim().min(1), technicianId: z.string().nullable() })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-assign", 30)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    const userId = await requireStaffGuard(supabaseAdmin);
+
+    const { error } = await supabaseAdmin.from("technician_assignments").insert({
+      reservation_id: data.reservationId,
+      technician_id: data.technicianId,
+      assigned_by: userId,
+    });
+    if (error) {
+      logger.error("Assign technician failed", error);
+      throw new Error("Impossible d'assigner le technicien.");
+    }
+    return { assigned: true };
+  });
+
+// ---------------------------------------------------------------------------
+// Liste des dossiers (admin) � PII compl�te lue c�t� serveur uniquement.
+// ---------------------------------------------------------------------------
+
+export type AdminReservationRow = {
+  id: string;
+  reference: string;
+  customer_name: string;
+  phone: string;
+  email: string | null;
+  device: string;
+  issue: string;
+  mode: string;
+  payment: string;
+  slot_date: string;
+  slot_period: Enums<"slot_period">;
+  slot_hour: string | null;
+  status: Enums<"reservation_status">;
+  delivery_status: Enums<"delivery_status">;
+  delivery_address: string | null;
+  staff_notes: string | null;
+  created_at: string;
+  assigned_technician_id: string | null;
+  org_id: string | null;
+  quote_amount: number | null;
+  quote_status: string;
+  quote_decided_at: string | null;
+  quote_token: string | null;
+  warranty_months: number;
+};
+
+/** Liste des dossiers /admin/dossiers � staff (ou technicien pour ses dossiers). */
+export const getAdminReservations = createServerFn({ method: "POST" }).handler(
+  async (): Promise<AdminReservationRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await rateLimit("admin-reservations", 15)))
+      throw new Error("Trop de demandes. R�essayez dans une minute.");
+    const userId = await currentUserId(supabaseAdmin);
+    await requireFreshOtp(supabaseAdmin, userId);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    let isTech = false;
+    if (!staff) {
+      const { data } = await supabaseAdmin.rpc("has_role", {
+        _user_id: userId,
+        _role: "technicien",
+      });
+      isTech = !!data;
+      if (!isTech) throw new Error("Action non autoris�e");
+    }
+
+    let query = supabaseAdmin
+      .from("reservations")
+      .select(
+        "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id, quote_amount, quote_status, quote_decided_at, quote_token, warranty_months",
+      )
+      .order("slot_date", { ascending: false })
+      .limit(200);
+    if (isTech) query = query.eq("assigned_technician_id", userId);
+    const { data, error } = await query;
+    if (error) {
+      logger.error("Admin reservations failed", error);
+      throw new Error("Impossible de charger les dossiers.");
+    }
+    return (data ?? []) as AdminReservationRow[];
+  },
+);

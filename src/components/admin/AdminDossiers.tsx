@@ -15,6 +15,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatDateFr } from "@/lib/reservation-schema";
 import {
+  createTechnicianAssignment,
+  getAdminAssignments,
+  getAdminOrganizations,
+  getAdminReservations,
+  getAdminTechnicians,
   setReservationStatus,
   type AtelierCard as AtelierCardType,
   type AtelierChecklist,
@@ -86,47 +91,28 @@ export function DossiersSection() {
   });
   const isTechnicien = role.data === "technicien";
 
+  const getAssignmentsFn = useServerFn(getAdminAssignments);
   const assignments = useQuery({
     queryKey: ["assignments"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("technician_assignments")
-        .select("id, reservation_id, technician_id, assigned_by, created_at")
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getAssignmentsFn({ data: undefined }),
   });
 
+  const getTechniciansFn = useServerFn(getAdminTechnicians);
   const technicians = useQuery({
     queryKey: ["technicians"],
     enabled: !isTechnicien,
-    queryFn: async () => {
-      const { data: roles, error: rError } = await supabase
-        .from("user_roles")
-        .select("user_id")
-        .eq("role", "technicien");
-      if (rError) throw rError;
-      const ids = roles.map((r) => r.user_id);
-      if (ids.length === 0) return [];
-      const { data, error } = await supabase.from("profiles").select("id, full_name").in("id", ids);
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getTechniciansFn({ data: undefined }),
   });
 
+  const getOrganizationsFn = useServerFn(getAdminOrganizations);
   const organizations = useQuery({
     queryKey: ["organizations"],
     enabled: !isTechnicien,
-    queryFn: async () => {
-      const { data, error } = await supabase.from("organizations").select("id, name");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getOrganizationsFn({ data: undefined }),
   });
   const orgName = new Map((organizations.data ?? []).map((o) => [o.id, o.name]));
 
+  const assignTechFn = useServerFn(createTechnicianAssignment);
   const assignTech = useMutation({
     mutationFn: async ({
       reservationId,
@@ -135,12 +121,7 @@ export function DossiersSection() {
       reservationId: string;
       technicianId: string;
     }) => {
-      const { error } = await supabase.from("technician_assignments").insert({
-        reservation_id: reservationId,
-        technician_id: technicianId || null,
-        assigned_by: user.id,
-      });
-      if (error) throw error;
+      await assignTechFn({ data: { reservationId, technicianId } });
     },
     onSuccess: () => {
       toast.success(t("admin.dossier.technicianAssigned"));
@@ -156,23 +137,10 @@ export function DossiersSection() {
       toast.error(err instanceof Error ? err.message : t("admin.dossier.assignError")),
   });
 
+  const getReservationsFn = useServerFn(getAdminReservations);
   const reservations = useQuery({
     queryKey: ["admin-reservations", isTechnicien ? user.id : "all"],
-    queryFn: async () => {
-      let q = supabase
-        .from("reservations")
-        .select(
-          "id, reference, customer_name, phone, email, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, delivery_status, delivery_address, staff_notes, created_at, assigned_technician_id, org_id, quote_amount, quote_status, quote_decided_at, quote_token, warranty_months",
-        )
-        .order("slot_date", { ascending: false })
-        .limit(200);
-      if (isTechnicien) {
-        q = q.eq("assigned_technician_id" as never, user.id);
-      }
-      const { data, error } = await q;
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => getReservationsFn({ data: undefined }),
   });
 
   const updateStatus = useMutation({
