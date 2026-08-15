@@ -48,7 +48,7 @@ async function requireStaff(supabaseAdmin: SupabaseClient<Database>): Promise<st
  * membre du staff — vérifié côté serveur (les RPC tournent sous service role).
  */
 export const sendQuote = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => sendQuoteSchema.parse(data))
+  .validator((data: unknown) => sendQuoteSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -100,7 +100,7 @@ export const sendQuote = createServerFn({ method: "POST" })
  * décidé, le RPC invalide le jeton (le devis ne peut être traité qu'une fois).
  */
 export const decideOnQuote = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => decideSchema.parse(data))
+  .validator((data: unknown) => decideSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -139,7 +139,7 @@ export type QuoteStatus = {
  * tant que le devis n'a pas été traité.
  */
 export const getQuoteStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => tokenSchema.parse(data))
+  .validator((data: unknown) => tokenSchema.parse(data))
   .handler(async ({ data }): Promise<{ found: true; quote: QuoteStatus } | { found: false }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -197,7 +197,7 @@ const quoteChoiceSchema = z.object({
 });
 
 export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ reference: z.string().min(3) }).parse(data))
+  .validator((data: unknown) => z.object({ reference: z.string().min(3) }).parse(data))
   .handler(async ({ data }): Promise<MultiOptionQuote | null> => {
     const { reference } = data;
 
@@ -238,7 +238,7 @@ export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
   });
 
 export const acceptMultiOptionQuoteFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => quoteChoiceSchema.parse(data))
+  .validator((data: unknown) => quoteChoiceSchema.parse(data))
   .handler(async ({ data }) => {
     const { reference, optionId } = data;
 

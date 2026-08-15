@@ -117,7 +117,7 @@ const photoUploadSchema = z.object({
  * Le client PUT le fichier directement sur l'URL signée.
  */
 export const getDevicePhotoUpload = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => photoUploadSchema.parse(data))
+  .validator((data: unknown) => photoUploadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -171,7 +171,7 @@ const staffPhotoUploadSchema = z.object({
  * authentification fraîche. Renvoie une URL signée + le chemin stocké.
  */
 export const getStaffPhotoUpload = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => staffPhotoUploadSchema.parse(data))
+  .validator((data: unknown) => staffPhotoUploadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -209,7 +209,7 @@ const addStagePhotoSchema = z.object({
  * dans reservation_attachments, rattachée à l'étape correspondante.
  */
 export const addStagePhoto = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => addStagePhotoSchema.parse(data))
+  .validator((data: unknown) => addStagePhotoSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -260,7 +260,7 @@ const registerAttachmentSchema = z.object({
  * l'URL signée terminé. Vérifie le code de suivi secret (preuve de propriété).
  */
 export const registerDeviceAttachment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => registerAttachmentSchema.parse(data))
+  .validator((data: unknown) => registerAttachmentSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -312,7 +312,7 @@ export type ReservationAttachment = {
  * publiques servables.
  */
 export const getReservationAttachments = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => attachmentsLookupSchema.parse(data))
+  .validator((data: unknown) => attachmentsLookupSchema.parse(data))
   .handler(
     async ({
       data,

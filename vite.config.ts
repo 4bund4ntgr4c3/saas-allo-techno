@@ -2,7 +2,6 @@ import { loadEnv } from "vite";
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -18,6 +17,7 @@ export default defineConfig(async ({ mode }) => {
     define: envDefine,
     resolve: {
       alias: { "@": `${process.cwd()}/src` },
+      tsconfigPaths: true,
       dedupe: [
         "react",
         "react-dom",
@@ -99,7 +99,6 @@ export default defineConfig(async ({ mode }) => {
         server: { entry: "server" },
       }),
       tailwindcss(),
-      tsConfigPaths({ projects: ["./tsconfig.json"] }),
       nitro({
         defaultPreset: "cloudflare-module",
         compatibilityDate: "2026-08-01",

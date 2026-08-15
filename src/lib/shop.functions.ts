@@ -68,7 +68,7 @@ async function validatePromoResult(
 
 /** Enregistre une commande boutique (leads, source 'boutique') et alerte l'équipe. */
 export const submitShopOrder = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => shopOrderSchema.parse(data))
+  .validator((data: unknown) => shopOrderSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -193,7 +193,7 @@ const validatePromoSchema = z.object({
 
 /** Valide un code promo (affichage du montant estimé, la décision reste serveur). */
 export const validatePromoCode = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => validatePromoSchema.parse(data))
+  .validator((data: unknown) => validatePromoSchema.parse(data))
   .handler(async ({ data }) => {
     if (!(await rateLimit("promo-validate", 20))) {
       throw new Error("Trop de tentatives. Réessayez dans une minute.");

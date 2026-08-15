@@ -206,7 +206,7 @@ type ReviewRow = {
  * sinon la liste statique fournie (repli sur le français). Si aucune langue n'est
  * fournie, on la détecte côté serveur depuis l'en-tête Accept-Language. */
 export const listBlogPosts = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         fallback: z.array(z.any()).optional(),
@@ -237,9 +237,7 @@ export const listBlogPosts = createServerFn({ method: "GET" })
 
 /** Renvoie les avis : ceux de la table si présents, sinon ceux statiques fournis. */
 export const listReviews = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) =>
-    z.object({ fallback: z.array(z.any()).optional() }).parse(data),
-  )
+  .validator((data: unknown) => z.object({ fallback: z.array(z.any()).optional() }).parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
@@ -292,7 +290,7 @@ export type AdminReviewRow = {
 
 /** Articles de blog pour l'admin (bruts, par langue) — lecture côté serveur. */
 export const getAdminBlogPosts = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => adminBlogRowSchema.partial().parse(data ?? {}))
+  .validator((data: unknown) => adminBlogRowSchema.partial().parse(data ?? {}))
   .handler(async ({ data }): Promise<AdminBlogRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
@@ -310,7 +308,7 @@ export const getAdminBlogPosts = createServerFn({ method: "POST" })
 
 /** Article de blog unique (utilisé pour la duplication inter-langues). */
 export const getAdminBlogPost = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z.object({ slug: z.string().trim().min(1), locale: z.string().trim().max(5) }).parse(data),
   )
   .handler(async ({ data }): Promise<AdminBlogRow | null> => {
@@ -347,7 +345,7 @@ export const getAdminReviews = createServerFn({ method: "POST" }).handler(
 );
 
 export const upsertBlogPost = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => postSchema.parse(data))
+  .validator((data: unknown) => postSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
@@ -372,7 +370,7 @@ export const upsertBlogPost = createServerFn({ method: "POST" })
   });
 
 export const deleteBlogPost = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({ slug: z.string().trim().min(1), locale: z.string().trim().max(5).optional() })
       .parse(data),
@@ -390,7 +388,7 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
   });
 
 export const upsertReview = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reviewSchema.parse(data))
+  .validator((data: unknown) => reviewSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
@@ -417,7 +415,7 @@ export const upsertReview = createServerFn({ method: "POST" })
   });
 
 export const deleteReview = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
@@ -477,7 +475,7 @@ export const getAdminStock = createServerFn({ method: "POST" }).handler(
 
 /** Renvoie le stock réel (quantité) pour un slug donné, ou null si non en base. */
 export const getInventory = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) => z.object({ slug: z.string().trim().min(1) }).parse(data))
+  .validator((data: unknown) => z.object({ slug: z.string().trim().min(1) }).parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
@@ -491,7 +489,7 @@ export const getInventory = createServerFn({ method: "GET" })
 
 /** Mets à jour le stock d'un accessoire (backoffice). Réservé au personnel. */
 export const setInventory = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => inventorySchema.parse(data))
+  .validator((data: unknown) => inventorySchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");

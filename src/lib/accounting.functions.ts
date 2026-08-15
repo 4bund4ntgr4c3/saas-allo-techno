@@ -13,7 +13,7 @@ export type SyscohadaEntry = {
 };
 
 export const exportSyscohadaJournalFn = createServerFn({ method: "POST" })
-  .inputValidator(
+  .validator(
     z.object({
       periodStart: z.string().optional(),
       periodEnd: z.string().optional(),

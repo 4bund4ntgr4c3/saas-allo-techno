@@ -33,7 +33,7 @@ async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<s
 }
 
 export const getAuditLogs = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => getAuditLogsSchema.parse(data))
+  .validator((data: unknown) => getAuditLogsSchema.parse(data))
   .handler(async ({ data }): Promise<AuditLogRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

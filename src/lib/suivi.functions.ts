@@ -132,7 +132,7 @@ function publicReservation(row: ReservationStatus): ReservationStatus {
 }
 
 export const getReservationStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => lookupSchema.parse(data))
+  .validator((data: unknown) => lookupSchema.parse(data))
   .handler(
     async ({
       data,
@@ -171,7 +171,7 @@ export const getReservationStatus = createServerFn({ method: "POST" })
  * par les triggers PostgreSQL côté serveur. Le code de suivi secret est requis.
  */
 export const rescheduleReservation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => rescheduleSchema.parse(data))
+  .validator((data: unknown) => rescheduleSchema.parse(data))
   .handler(async ({ data }): Promise<ReservationStatus> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -254,7 +254,7 @@ export const rescheduleReservation = createServerFn({ method: "POST" })
   });
 
 export const getReservationTracking = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => lookupSchema.parse(data))
+  .validator((data: unknown) => lookupSchema.parse(data))
   .handler(
     async ({
       data,
@@ -325,7 +325,7 @@ export type Comment = {
 };
 
 export const getReservationComments = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => lookupSchema.parse(data))
+  .validator((data: unknown) => lookupSchema.parse(data))
   .handler(async ({ data }): Promise<Comment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -347,7 +347,7 @@ export const getReservationComments = createServerFn({ method: "POST" })
   });
 
 export const addReservationComment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     lookupSchema
       .extend({
         body: z.string().trim().min(1, "Message requis").max(1000),

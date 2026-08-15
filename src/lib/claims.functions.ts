@@ -64,7 +64,7 @@ async function requireStaff(supabaseAdmin: SupabaseClient<Database>): Promise<vo
  * CL-YYYY-NNNN générée ; l'équipe est alertée (best-effort) par e-mail/WhatsApp.
  */
 export const submitWarrantyClaim = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => submitSchema.parse(data))
+  .validator((data: unknown) => submitSchema.parse(data))
   .handler(async ({ data }): Promise<{ reference: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -109,7 +109,7 @@ export const submitWarrantyClaim = createServerFn({ method: "POST" })
 
 /** Liste des réclamations (personnel uniquement), plus récentes d'abord. */
 export const listWarrantyClaims = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => listSchema.parse(data))
+  .validator((data: unknown) => listSchema.parse(data))
   .handler(async (): Promise<WarrantyClaimRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -137,7 +137,7 @@ export const listWarrantyClaims = createServerFn({ method: "POST" })
 
 /** Mise à jour du statut (et note interne) par le personnel, avec alerte client. */
 export const setWarrantyClaimStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => setStatusSchema.parse(data))
+  .validator((data: unknown) => setStatusSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

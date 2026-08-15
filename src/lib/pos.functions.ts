@@ -57,7 +57,7 @@ export type PosReceipt = {
  * propagation des erreurs. Renvoie les données du reçu.
  */
 export const recordPosPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => posSchema.parse(data))
+  .validator((data: unknown) => posSchema.parse(data))
   .handler(async ({ data }): Promise<PosReceipt> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

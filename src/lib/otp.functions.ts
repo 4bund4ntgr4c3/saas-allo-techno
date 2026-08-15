@@ -60,7 +60,7 @@ export const enrollOtp = createServerFn({ method: "POST" }).handler(async () => 
 
 /** Confirme le premier code saisi et active la double authentification. */
 export const confirmOtp = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => codeSchema.parse(data))
+  .validator((data: unknown) => codeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = await adminOnly(supabaseAdmin);
@@ -85,7 +85,7 @@ export const confirmOtp = createServerFn({ method: "POST" })
 
 /** Désactive la double authentification après vérification du code courant. */
 export const disableOtp = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => codeSchema.parse(data))
+  .validator((data: unknown) => codeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = await adminOnly(supabaseAdmin);
@@ -124,7 +124,7 @@ export const getOtpStatus = createServerFn({ method: "GET" }).handler(async () =
 
 /** Vérifie le code saisi pour déverrouiller l'interface d'administration. */
 export const verifyOtpLogin = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => codeSchema.parse(data))
+  .validator((data: unknown) => codeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let userId: string | null = null;

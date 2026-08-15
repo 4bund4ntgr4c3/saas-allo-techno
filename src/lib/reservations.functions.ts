@@ -13,7 +13,7 @@ const createReservationSchema = reservationInputSchema.extend({
 });
 
 export const createReservation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => createReservationSchema.parse(data))
+  .validator((data: unknown) => createReservationSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

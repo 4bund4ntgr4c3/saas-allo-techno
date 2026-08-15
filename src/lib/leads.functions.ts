@@ -22,7 +22,7 @@ const leadSchema = z.object({
 
 /** Enregistre un lead (devis / contact / assistance suivi) et alerte l'équipe. */
 export const submitLead = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => leadSchema.parse(data))
+  .validator((data: unknown) => leadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -99,7 +99,7 @@ function randomPassword(length = 16): string {
 
 /** Enregistre une demande B2B et crée automatiquement un compte client s'il n'existe pas. */
 export const submitB2BLead = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => b2bLeadSchema.parse(data))
+  .validator((data: unknown) => b2bLeadSchema.parse(data))
   .handler(async ({ data }): Promise<SubmitB2BLeadResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

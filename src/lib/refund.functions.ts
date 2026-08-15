@@ -46,7 +46,7 @@ export type RefundablePayment = {
 };
 
 export const listRefundablePayments = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => listRefundableSchema.parse(data))
+  .validator((data: unknown) => listRefundableSchema.parse(data))
   .handler(async (): Promise<RefundablePayment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -123,7 +123,7 @@ export const listRefundablePayments = createServerFn({ method: "POST" })
   });
 
 export const initiateRefund = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => initiateRefundSchema.parse(data))
+  .validator((data: unknown) => initiateRefundSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

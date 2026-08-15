@@ -64,7 +64,7 @@ async function requireFreshOtp(supabaseAdmin: SupabaseClient<Database>, userId: 
  * WhatsApp). L'appelant doit être membre du staff — vérifié côté serveur.
  */
 export const setReservationStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => setStatusSchema.parse(data))
+  .validator((data: unknown) => setStatusSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -226,7 +226,7 @@ const boardSchema = z.object({});
  * statuts + date de restitution estimée). Réservé au staff + 2FA récente.
  */
 export const getAtelierBoard = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => boardSchema.parse(data))
+  .validator((data: unknown) => boardSchema.parse(data))
   .handler(async (): Promise<AtelierBoardData> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -323,7 +323,7 @@ const assignTechnicianSchema = z.object({
  * assigned_technician_id de reservations. Staff ou technicien, 2FA vérifiée.
  */
 export const assignTechnician = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => assignTechnicianSchema.parse(data))
+  .validator((data: unknown) => assignTechnicianSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -370,7 +370,7 @@ export type AdminKpis = {
  * statuts) et pannes les plus estimées (événements analytics).
  */
 export const getAdminKpis = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => boardSchema.parse(data))
+  .validator((data: unknown) => boardSchema.parse(data))
   .handler(async (): Promise<AdminKpis> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -495,7 +495,7 @@ const transferSchema = z.object({
 
 /** Transfère un dossier vers un autre atelier (staff uniquement). */
 export const transferReservation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => transferSchema.parse(data))
+  .validator((data: unknown) => transferSchema.parse(data))
   .handler(async ({ data }): Promise<TransferResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -809,7 +809,7 @@ const checklistSchema = z.object({
 
 /** Enregistrement d'une checklist d'admission (intake) ou de contrôle qualité (qa). */
 export const saveChecklist = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => checklistSchema.parse(data))
+  .validator((data: unknown) => checklistSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -921,7 +921,7 @@ export const getAdminLeadsData = createServerFn({ method: "POST" }).handler(
 
 /** Changement de statut d'un lead (commandes boutique). */
 export const setLeadStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => leadStatusSchema.parse(data))
+  .validator((data: unknown) => leadStatusSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -948,7 +948,7 @@ const teamRoleSchema = z.object({
 
 /** Attribution d'un rôle à un membre de l'équipe (admin requis côté serveur). */
 export const setTeamRole = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => teamRoleSchema.parse(data))
+  .validator((data: unknown) => teamRoleSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -1051,7 +1051,7 @@ export type ReservationSearchRow = {
 
 /** Recherche de r�servations (POS) � PII lue c�t� serveur uniquement. */
 export const searchAdminReservations = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ q: z.string().trim().min(2).max(60) }).parse(data))
+  .validator((data: unknown) => z.object({ q: z.string().trim().min(2).max(60) }).parse(data))
   .handler(async ({ data }): Promise<ReservationSearchRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-search", 30)))
@@ -1081,9 +1081,7 @@ export type StatusHistoryRow = {
 
 /** Historique des changements de statut d'une r�servation (kanban). */
 export const getReservationStatusHistory = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({ reservationId: z.string().trim().min(1) }).parse(data),
-  )
+  .validator((data: unknown) => z.object({ reservationId: z.string().trim().min(1) }).parse(data))
   .handler(async ({ data }): Promise<StatusHistoryRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-history", 30)))
@@ -1196,7 +1194,7 @@ export const getAdminOrganizations = createServerFn({ method: "POST" }).handler(
 
 /** Assignation d'un technicien � un dossier (staff uniquement). */
 export const createTechnicianAssignment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({ reservationId: z.string().trim().min(1), technicianId: z.string().nullable() })
       .parse(data),
@@ -1302,7 +1300,7 @@ const reservationsPageSchema = z.object({
 });
 
 export const getAdminReservationsPage = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reservationsPageSchema.parse(data))
+  .validator((data: unknown) => reservationsPageSchema.parse(data))
   .handler(async ({ data }): Promise<{ rows: AdminReservationRow[]; total: number }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-reservations", 15)))

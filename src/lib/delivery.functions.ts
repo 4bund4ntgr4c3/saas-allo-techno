@@ -30,7 +30,7 @@ async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<s
  * membre du staff — vérifié côté serveur.
  */
 export const setDeliveryStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => deliverySchema.parse(data))
+  .validator((data: unknown) => deliverySchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

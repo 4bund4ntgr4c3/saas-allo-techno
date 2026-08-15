@@ -152,7 +152,7 @@ async function createFlutterwaveLink(input: FlutterwaveCheckoutInput): Promise<s
  * bascule alors sur « paiement à la remise »), ou { available:true, link }.
  */
 export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => initiateSchema.parse(data))
+  .validator((data: unknown) => initiateSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
@@ -226,7 +226,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
 
 /** Retourne le statut du dernier paiement d'une commande (ou null). */
 export const getOrderPaymentStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => referenceSchema.parse(data))
+  .validator((data: unknown) => referenceSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -263,7 +263,7 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
  *        | { ok: false, error: string }
  */
 export const initiateReservationPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reservationPaySchema.parse(data))
+  .validator((data: unknown) => reservationPaySchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
@@ -385,7 +385,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
  *          — champs null si aucun paiement n'a encore été initié.
  */
 export const getReservationPaymentStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => referenceSchema.parse(data))
+  .validator((data: unknown) => referenceSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -505,7 +505,7 @@ async function loadReservationForPayment(reference: string, amount: number) {
  *          ({ ok, url, paymentRef, alreadyPaid } | { ok: false, error }).
  */
 export const initiateFedaPayReservationPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reservationAmountSchema.parse(data))
+  .validator((data: unknown) => reservationAmountSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");
@@ -638,7 +638,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
  * OUTPUT : même forme que initiateReservationPayment.
  */
 export const initiateKkiapayReservationPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => reservationAmountSchema.parse(data))
+  .validator((data: unknown) => reservationAmountSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getRequestUrl } = await import("@tanstack/react-start/server");

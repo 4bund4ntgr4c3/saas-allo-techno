@@ -131,7 +131,7 @@ const createReturnSchema = z.object({
  * référence RT-YYYY-NNNN et insère la ligne (service_role, RLS contournée).
  */
 export const createReturn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => createReturnSchema.parse(data))
+  .validator((data: unknown) => createReturnSchema.parse(data))
   .handler(async ({ data }): Promise<{ reference: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -175,7 +175,7 @@ const listSchema = z.object({});
 
 /** Liste des retours (personnel uniquement), plus récents d'abord. */
 export const listReturns = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => listSchema.parse(data))
+  .validator((data: unknown) => listSchema.parse(data))
   .handler(async (): Promise<ReturnRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -250,7 +250,7 @@ async function notifyReturnStatus(returnRow: {
  * e-mail, best-effort).
  */
 export const setReturnStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => setStatusSchema.parse(data))
+  .validator((data: unknown) => setStatusSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

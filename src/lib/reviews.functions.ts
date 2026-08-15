@@ -264,7 +264,7 @@ export type GetReviewInviteResult =
   { ok: true; reservation: ReviewInviteReservation } | { ok: false; error: string };
 
 export const getReviewInvite = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => inviteTokenSchema.parse(data))
+  .validator((data: unknown) => inviteTokenSchema.parse(data))
   .handler(async ({ data }): Promise<GetReviewInviteResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -324,7 +324,7 @@ export type CustomerReview = {
 };
 
 export const listCustomerReviews = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emptySchema.parse(data ?? {}))
+  .validator((data: unknown) => emptySchema.parse(data ?? {}))
   .handler(async (): Promise<CustomerReview[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -383,7 +383,7 @@ export const listCustomerReviews = createServerFn({ method: "POST" })
 export type SubmitReviewResult = { ok: true } | { ok: false; error: string };
 
 export const submitReview = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => submitReviewSchema.parse(data))
+  .validator((data: unknown) => submitReviewSchema.parse(data))
   .handler(async ({ data }): Promise<SubmitReviewResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -456,7 +456,7 @@ export const submitReview = createServerFn({ method: "POST" })
 // ---------------------------------------------------------------------------
 
 export const listPublishedReviews = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emptySchema.parse(data ?? {}))
+  .validator((data: unknown) => emptySchema.parse(data ?? {}))
   .handler(async (): Promise<PublishedReview[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -503,7 +503,7 @@ export const listPublishedReviews = createServerFn({ method: "POST" })
 export type SendReviewInviteResult = { ok: true } | { ok: false; error: string };
 
 export const sendReviewInvite = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => sendInviteSchema.parse(data))
+  .validator((data: unknown) => sendInviteSchema.parse(data))
   .handler(async ({ data }): Promise<SendReviewInviteResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -587,7 +587,7 @@ export const sendReviewInvite = createServerFn({ method: "POST" })
 // ---------------------------------------------------------------------------
 
 export const adminListReviews = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emptySchema.parse(data ?? {}))
+  .validator((data: unknown) => emptySchema.parse(data ?? {}))
   .handler(async (): Promise<AdminReviewRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -650,7 +650,7 @@ export const adminListReviews = createServerFn({ method: "POST" })
   });
 
 export const adminSetReviewStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => setReviewStatusSchema.parse(data))
+  .validator((data: unknown) => setReviewStatusSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

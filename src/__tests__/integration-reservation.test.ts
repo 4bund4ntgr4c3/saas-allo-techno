@@ -44,7 +44,7 @@ vi.mock("@tanstack/react-start", () => ({
   createServerFn: () => {
     const builder = {
       middleware: () => builder,
-      inputValidator: (validator: (data: unknown) => unknown) => ({
+      validator: (validator: (data: unknown) => unknown) => ({
         handler:
           (handlerFn: (ctx: { data: unknown }) => Promise<unknown>) =>
           async (args: { data: unknown }) => {

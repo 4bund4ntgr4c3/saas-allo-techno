@@ -134,7 +134,7 @@ export type CatalogData = {
  * renvoyées sous forme d'URLs signées courtes.
  */
 export const listCatalog = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emptySchema.parse(data))
+  .validator((data: unknown) => emptySchema.parse(data))
   .handler(async (): Promise<CatalogData> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -208,7 +208,7 @@ const brandSchema = z.object({
 
 /** Création ou mise à jour d'une marque (upsert sur le slug). */
 export const upsertBrand = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => brandSchema.parse(data))
+  .validator((data: unknown) => brandSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -241,7 +241,7 @@ const categorySchema = z.object({
 
 /** Création ou mise à jour d'une catégorie d'appareils (upsert sur le slug). */
 export const upsertCategory = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => categorySchema.parse(data))
+  .validator((data: unknown) => categorySchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -277,7 +277,7 @@ const deviceSchema = z.object({
 
 /** Création ou mise à jour d'un appareil (upsert sur le slug). */
 export const upsertDevice = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => deviceSchema.parse(data))
+  .validator((data: unknown) => deviceSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -318,7 +318,7 @@ const faultSchema = z.object({
 
 /** Création ou mise à jour d'une panne d'un appareil (id ou slug). */
 export const upsertFault = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => faultSchema.parse(data))
+  .validator((data: unknown) => faultSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -352,7 +352,7 @@ const slugSchema = z.object({
 
 /** Suppression d'un appareil (cascade pannes + photos). */
 export const deleteDevice = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => slugSchema.parse(data))
+  .validator((data: unknown) => slugSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -374,7 +374,7 @@ export const deleteDevice = createServerFn({ method: "POST" })
 
 /** Suppression d'une marque (cascade appareils + pannes + photos). */
 export const deleteBrand = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => slugSchema.parse(data))
+  .validator((data: unknown) => slugSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -396,7 +396,7 @@ export const deleteBrand = createServerFn({ method: "POST" })
 
 /** Suppression d'une catégorie (cascade appareils + pannes + photos). */
 export const deleteCategory = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => slugSchema.parse(data))
+  .validator((data: unknown) => slugSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -422,7 +422,7 @@ const faultIdSchema = z.object({
 
 /** Suppression d'une panne. */
 export const deleteFault = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => faultIdSchema.parse(data))
+  .validator((data: unknown) => faultIdSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -451,7 +451,7 @@ const photoSchema = z.object({
 
 /** Ajoute une photo (URL) au catalogue d'un appareil. */
 export const addCatalogPhoto = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => photoSchema.parse(data))
+  .validator((data: unknown) => photoSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -480,7 +480,7 @@ const photoIdSchema = z.object({
 
 /** Supprime une photo du catalogue d'un appareil. */
 export const deleteCatalogPhoto = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => photoIdSchema.parse(data))
+  .validator((data: unknown) => photoIdSchema.parse(data))
   .handler(async ({ data }): Promise<boolean> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -517,7 +517,7 @@ const uploadSchema = z.object({
  * via addCatalogPhoto.
  */
 export const getCatalogUpload = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => uploadSchema.parse(data))
+  .validator((data: unknown) => uploadSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

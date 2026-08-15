@@ -17,7 +17,7 @@ const trackSchema = z.object({
  * valider les données, de limiter le débit et de ne pas exposer d'INSERT anon.
  */
 export const trackEvent = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => trackSchema.parse(data))
+  .validator((data: unknown) => trackSchema.parse(data))
   .handler(async ({ data }) => {
     if (!(await rateLimit("analytics", 60))) return;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

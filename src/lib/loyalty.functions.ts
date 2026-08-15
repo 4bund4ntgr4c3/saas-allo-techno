@@ -192,7 +192,7 @@ export const ensureReferralCode = createServerFn({ method: "POST" }).handler(asy
 
 /** Applique un code de parrainage : crédite les bonus au parrainé et au parrain. */
 export const applyReferralCode = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => applyCodeSchema.parse(data))
+  .validator((data: unknown) => applyCodeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("loyalty-apply", 10))) {
