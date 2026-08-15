@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface ScheduledReport {
   id: string;
@@ -15,6 +15,10 @@ export interface ScheduledReport {
 }
 
 export const getScheduledReports = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-scheduled-reports", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("scheduled_reports" as never)
@@ -31,6 +35,10 @@ export const createScheduledReport = createServerFn({ method: "POST" })
     return r;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-scheduled-report", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const next = new Date();
     if (data.frequency === "weekly") next.setDate(next.getDate() + 7);
@@ -50,6 +58,10 @@ export const deleteScheduledReport = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("delete-scheduled-report", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("scheduled_reports" as never)
@@ -65,6 +77,10 @@ export const toggleScheduledReport = createServerFn({ method: "POST" })
     return { id, active };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("toggle-scheduled-report", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("scheduled_reports" as never)

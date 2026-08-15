@@ -31,7 +31,7 @@ import {
   downloadReservationsCsv,
   downloadReservationsPdf,
 } from "@/lib/invoice";
-import { logAudit } from "@/lib/audit";
+import { logAuditEntry } from "@/lib/audit.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { exportReservationsCsv } from "@/lib/export.functions";
 import type { Enums } from "@/integrations/supabase/types";
@@ -130,11 +130,8 @@ export function DossiersSection() {
     onSuccess: () => {
       toast.success(t("admin.dossier.technicianAssigned"));
       queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      void logAudit(supabase as never, {
-        user_id: user.id,
-        action: "reservation.assigned",
-        entity: "reservation",
-        details: {},
+      void logAuditEntry({
+        data: { action: "reservation.assigned", entity: "reservation", details: {} },
       });
     },
     onError: (err: unknown) =>
@@ -199,12 +196,14 @@ export function DossiersSection() {
       toast.success(t("admin.dossier.statusUpdated", [t("admin.status." + vars.status)]));
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
       queryClient.invalidateQueries({ queryKey: ["status-history"] });
-      void logAudit(supabase as never, {
-        user_id: user.id,
-        action: vars.status === "annulee" ? "reservation.cancelled" : "reservation.status_changed",
-        entity: "reservation",
-        entity_id: vars.id,
-        details: { status: vars.status, note: vars.note },
+      void logAuditEntry({
+        data: {
+          action:
+            vars.status === "annulee" ? "reservation.cancelled" : "reservation.status_changed",
+          entity: "reservation",
+          entity_id: vars.id,
+          details: { status: vars.status, note: vars.note },
+        },
       });
     },
     onError: (err: unknown) => {

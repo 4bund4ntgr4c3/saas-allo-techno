@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type SyscohadaEntry = {
   date: string;
@@ -20,6 +21,9 @@ export const exportSyscohadaJournalFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data }): Promise<{ entries: SyscohadaEntry[]; csvContent: string }> => {
+    if (!(await rateLimit("export-syscohada-journal-fn", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const today = (data.periodEnd || new Date().toISOString()).slice(0, 10);
 
     // Standard SYSCOHADA Journal Entries (UEMOA / Bénin accounting chart)

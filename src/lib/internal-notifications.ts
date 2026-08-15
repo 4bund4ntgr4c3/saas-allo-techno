@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface InternalNotification {
   id: string;
@@ -14,6 +14,10 @@ export interface InternalNotification {
 }
 
 export const getInternalNotifications = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-internal-notifications", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("internal_notifications" as never)
@@ -30,6 +34,10 @@ export const markNotificationRead = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("mark-notification-read", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("internal_notifications" as never)
@@ -40,6 +48,10 @@ export const markNotificationRead = createServerFn({ method: "POST" })
   });
 
 export const markAllRead = createServerFn({ method: "POST" }).handler(async () => {
+  if (!(await rateLimit("mark-all-read", 20))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { error } = await supabaseAdmin
     .from("internal_notifications" as never)
@@ -55,6 +67,10 @@ export const createNotification = createServerFn({ method: "POST" })
     return n;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-notification", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("internal_notifications" as never)
@@ -64,6 +80,10 @@ export const createNotification = createServerFn({ method: "POST" })
   });
 
 export const getUnreadCount = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-unread-count", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { count } = await supabaseAdmin
     .from("internal_notifications" as never)

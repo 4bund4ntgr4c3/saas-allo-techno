@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface EscalationRule {
   id: string;
@@ -51,12 +51,20 @@ const DEFAULT_RULES: EscalationRule[] = [
 ];
 
 export const getEscalationRules = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-escalation-rules", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin.from("escalation_rules" as never).select("*");
   return (data?.length ? data : DEFAULT_RULES) as unknown as EscalationRule[];
 });
 
 export const checkEscalations = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("check-escalations", 20))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data: rules } = await supabaseAdmin
     .from("escalation_rules" as never)
@@ -106,6 +114,10 @@ export const checkEscalations = createServerFn({ method: "GET" }).handler(async 
 });
 
 export const getEscalationHistory = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-escalation-history", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("escalation_events" as never)

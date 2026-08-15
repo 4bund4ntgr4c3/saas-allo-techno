@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export type B2bPaymentProvider = "fedapay" | "kkiapay" | "bank_transfer";
 export type MobileMoneyOperator = "mtn" | "moov" | "celtiis" | "card";
@@ -27,6 +27,10 @@ export const initiateSlaPaymentFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data }) => {
+    if (!(await rateLimit("initiate-sla-payment-fn", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const paymentRef = `SLA-${data.contractNumber}-${Date.now().toString().slice(-6)}`;
 

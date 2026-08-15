@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { isSafeOutboundUrl } from "@/lib/security";
+import { isSafeOutboundUrl, rateLimit } from "@/lib/security";
 
 export const Route = createFileRoute("/api/push-subscribe")({
   server: {
@@ -36,6 +36,13 @@ export const Route = createFileRoute("/api/push-subscribe")({
       },
 
       POST: async ({ request }) => {
+        if (!(await rateLimit("push-subscribe", 10))) {
+          return Response.json(
+            { error: "Trop de demandes. Réessayez dans une minute." },
+            { status: 429 },
+          );
+        }
+
         let body: {
           endpoint?: string;
           keys?: { p256dh?: string; auth?: string };

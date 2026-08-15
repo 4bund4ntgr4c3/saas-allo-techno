@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface Part {
   id: string;
@@ -30,6 +30,10 @@ export interface StockMovement {
 }
 
 export const getInventory = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-inventory", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("inventory_parts" as never)
@@ -40,6 +44,10 @@ export const getInventory = createServerFn({ method: "GET" }).handler(async () =
 });
 
 export const getLowStockParts = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-low-stock-parts", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("inventory_parts" as never)
@@ -57,6 +65,10 @@ export const createPart = createServerFn({ method: "POST" })
     return p;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-part", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("inventory_parts" as never).insert(data as never);
     if (error) throw new Error(error.message);
@@ -70,6 +82,10 @@ export const updatePart = createServerFn({ method: "POST" })
     return { id, updates };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("update-part", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("inventory_parts" as never)
@@ -86,6 +102,10 @@ export const recordMovement = createServerFn({ method: "POST" })
     return m;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("record-movement", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error: movErr } = await supabaseAdmin
       .from("stock_movements" as never)
@@ -122,6 +142,10 @@ export const getStockMovements = createServerFn({ method: "POST" })
     return { part_id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-stock-movements", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: movements, error } = await supabaseAdmin
       .from("stock_movements" as never)
@@ -139,6 +163,10 @@ export const deletePart = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("delete-part", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("inventory_parts" as never)
@@ -167,6 +195,10 @@ export interface SupplierOrderDraft {
 
 export const createSupplierOrderFromLowStock = createServerFn({ method: "POST" }).handler(
   async (): Promise<SupplierOrderDraft> => {
+    if (!(await rateLimit("create-supplier-order-from-low-stock", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: parts, error } = await supabaseAdmin
       .from("inventory_parts" as never)
@@ -205,6 +237,10 @@ export const createSupplierOrderFromLowStock = createServerFn({ method: "POST" }
 );
 
 export const getInventoryValuation = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-inventory-valuation", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data: parts, error } = await supabaseAdmin
     .from("inventory_parts" as never)

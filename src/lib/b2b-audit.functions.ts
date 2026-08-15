@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export type AuditLogEntry = {
   id: string;
@@ -21,6 +21,10 @@ export const getB2bAuditLogsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<AuditLogEntry[]> => {
+    if (!(await rateLimit("get-b2b-audit-logs-fn", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     return [
       {

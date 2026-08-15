@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface ChatMessage {
   id: string;
@@ -18,6 +18,10 @@ export const getChatMessages = createServerFn({ method: "POST" })
     return { reservation_id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-chat-messages", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: messages, error } = await supabaseAdmin
       .from("chat_messages" as never)
@@ -38,6 +42,10 @@ export const sendChatMessage = createServerFn({ method: "POST" })
     return { reservation_id, content: content.trim() };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("send-chat-message", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const staffUserId = await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("chat_messages" as never).insert({
       reservation_id: data.reservation_id,
@@ -58,6 +66,10 @@ export const markMessagesRead = createServerFn({ method: "POST" })
     return { reservation_id, reader_type };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("mark-messages-read", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("chat_messages" as never)

@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
-import { isSafeOutboundUrl } from "@/lib/security";
+import { isSafeOutboundUrl, rateLimit } from "@/lib/security";
 
 export interface WebhookConfig {
   id: string;
@@ -16,6 +15,10 @@ export interface WebhookConfig {
 const WEBHOOK_COLUMNS = "id, url, events, active, created_at, last_triggered_at";
 
 export const getWebhooks = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-webhooks", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("webhook_configs" as never)
@@ -36,6 +39,10 @@ const webhookSchema = z.object({
 export const createWebhook = createServerFn({ method: "POST" })
   .validator((data: unknown) => webhookSchema.parse(data))
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-webhook", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("webhook_configs" as never).insert({
       url: data.url,
@@ -53,6 +60,10 @@ export const toggleWebhook = createServerFn({ method: "POST" })
     return { id, active };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("toggle-webhook", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("webhook_configs" as never)
@@ -68,6 +79,10 @@ export const deleteWebhook = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("delete-webhook", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("webhook_configs" as never)
@@ -83,6 +98,10 @@ export const testWebhook = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("test-webhook", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: webhook } = await supabaseAdmin
       .from("webhook_configs" as never)

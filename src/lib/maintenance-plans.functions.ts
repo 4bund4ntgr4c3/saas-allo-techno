@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type MaintenancePlanItem = {
   id: string;
@@ -16,6 +17,9 @@ export type MaintenancePlanItem = {
 export const getMaintenancePlansFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ orgId: z.string() }).parse(data))
   .handler(async ({ data }): Promise<MaintenancePlanItem[]> => {
+    if (!(await rateLimit("get-maintenance-plans-fn", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { orgId } = data;
     const today = new Date();
     const nextMonth = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)

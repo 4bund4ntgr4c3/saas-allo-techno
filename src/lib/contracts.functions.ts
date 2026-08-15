@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type B2BContract = {
   id: string;
@@ -19,6 +20,9 @@ export type B2BContract = {
 export const getOrgContractFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ orgId: z.string() }).parse(data))
   .handler(async ({ data }): Promise<B2BContract | null> => {
+    if (!(await rateLimit("get-org-contract-fn", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { orgId } = data;
 
     // Standard B2B SLA Contract details

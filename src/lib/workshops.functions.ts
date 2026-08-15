@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface Workshop {
   id: string;
@@ -17,6 +17,10 @@ export interface Workshop {
 }
 
 export const getWorkshops = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-workshops", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("workshops" as never)
@@ -33,6 +37,10 @@ export const createWorkshop = createServerFn({ method: "POST" })
     return w;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-workshop", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin.from("workshops" as never).insert(data as never);
     if (error) throw new Error(error.message);
@@ -46,6 +54,10 @@ export const updateWorkshop = createServerFn({ method: "POST" })
     return { id, updates };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("update-workshop", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("workshops" as never)
@@ -61,6 +73,10 @@ export const deleteWorkshop = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("delete-workshop", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("workshops" as never)

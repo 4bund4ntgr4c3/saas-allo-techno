@@ -9,6 +9,54 @@ const getAuditLogsSchema = z.object({
   offset: z.number().int().min(0).optional().default(0),
 });
 
+const logAuditEntrySchema = z.object({
+  action: z.enum([
+    "reservation.status_changed",
+    "reservation.cancelled",
+    "reservation.assigned",
+    "quote.sent",
+    "quote.approved",
+    "quote.declined",
+    "payment.confirmed",
+    "payment.refunded",
+    "review.published",
+    "review.hidden",
+    "lead.status_changed",
+    "claim.status_changed",
+    "user.role_changed",
+    "stock.updated",
+    "blog.post_created",
+    "blog.post_updated",
+  ]),
+  entity: z.string().min(1).max(64),
+  entity_id: z.string().max(64).nullable().optional(),
+  details: z.record(z.string(), z.unknown()).nullable().optional(),
+});
+
+export const logAuditEntry = createServerFn({ method: "POST" })
+  .validator((data: unknown) => logAuditEntrySchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!(await rateLimit("audit-write", 30))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+
+    const userId = await currentUserId(supabaseAdmin);
+    const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
+    if (!staff) throw new Error("Action non autorisée");
+
+    const { error } = await supabaseAdmin.from("audit_log" as never).insert({
+      user_id: userId,
+      action: data.action,
+      entity: data.entity,
+      entity_id: data.entity_id ?? null,
+      details: data.details ?? null,
+    } as never);
+    if (error) throw new Error(error.message);
+    return { logged: true };
+  });
+
 export type AuditLogRow = {
   id: string;
   user_id: string | null;

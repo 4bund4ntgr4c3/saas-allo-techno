@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface ExtendedWarranty {
   id: string;
@@ -37,6 +37,10 @@ export const createExtendedWarranty = createServerFn({ method: "POST" })
     return { reservation_id, customer_name, phone, device, warranty_months, price };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-extended-warranty", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const start = new Date();
     const end = new Date(start);
@@ -58,6 +62,10 @@ export const createExtendedWarranty = createServerFn({ method: "POST" })
   });
 
 export const getExtendedWarranties = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-extended-warranties", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("extended_warranties" as never)
@@ -68,6 +76,10 @@ export const getExtendedWarranties = createServerFn({ method: "GET" }).handler(a
 });
 
 export const getActiveWarranties = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-active-warranties", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("extended_warranties" as never)
@@ -83,6 +95,10 @@ export const claimWarranty = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("claim-warranty", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("extended_warranties" as never)

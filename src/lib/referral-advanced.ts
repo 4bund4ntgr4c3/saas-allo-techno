@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface ReferralStats {
   total_referrals: number;
@@ -33,6 +33,10 @@ export const getReferralStats = createServerFn({ method: "POST" })
     return { user_id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-referral-stats", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: referrals } = await supabaseAdmin
       .from("referrals" as never)
@@ -75,6 +79,10 @@ export const getReferralEntries = createServerFn({ method: "POST" })
     return { user_id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-referral-entries", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: entries } = await supabaseAdmin
       .from("referrals" as never)
@@ -85,5 +93,8 @@ export const getReferralEntries = createServerFn({ method: "POST" })
   });
 
 export const getReferralTiers = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-referral-tiers", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
   return TIER_THRESHOLDS;
 });

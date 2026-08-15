@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface SLAConfig {
   id: string;
@@ -59,6 +59,10 @@ const DEFAULT_SLA: SLAConfig[] = [
 ];
 
 export const getSLAConfig = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-sla-config", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("sla_configs" as never)
@@ -68,6 +72,10 @@ export const getSLAConfig = createServerFn({ method: "GET" }).handler(async () =
 });
 
 export const getSLABreaches = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-sla-breaches", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data: configs } = await supabaseAdmin
     .from("sla_configs" as never)
@@ -118,6 +126,10 @@ export const getSLABreaches = createServerFn({ method: "GET" }).handler(async ()
 });
 
 export const getSLAStats = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-sla-stats", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data: history } = await supabaseAdmin
     .from("reservation_status_history" as never)

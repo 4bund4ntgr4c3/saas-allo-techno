@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export type SlaPerformanceMetrics = {
   responseSlaCompliancePercent: number;
@@ -24,6 +24,10 @@ export const getSlaPerformanceMetricsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<SlaPerformanceMetrics> => {
+    if (!(await rateLimit("get-sla-performance-metrics-fn", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     return {
       responseSlaCompliancePercent: 98.4,

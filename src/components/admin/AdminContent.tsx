@@ -1,10 +1,8 @@
-import { Route } from "@/routes/_authenticated/admin";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Copy } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Stars } from "@/components/site/Blocks";
 import {
@@ -18,7 +16,7 @@ import {
   upsertReview,
   type BlogPost,
 } from "@/lib/content.functions";
-import { logAudit } from "@/lib/audit";
+import { logAuditEntry } from "@/lib/audit.functions";
 import { StockAdmin } from "@/components/admin/AdminStock";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
@@ -416,7 +414,6 @@ function paragraphsToHtml(paragraphs: string[]): string {
 
 function ReviewsAdmin() {
   const { t } = useI18n();
-  const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const getReviewsFn = useServerFn(getAdminReviews);
   const reviewsQuery = useQuery({
@@ -468,12 +465,13 @@ function ReviewsAdmin() {
       toast.success(
         form.id ? t("admin.content.review.toast.updated") : t("admin.content.review.toast.added"),
       );
-      void logAudit(supabase as never, {
-        user_id: user.id,
-        action: form.status === "published" ? "review.published" : "review.hidden",
-        entity: "review",
-        entity_id: form.id || null,
-        details: { status: form.status, customer_name: form.customer_name },
+      void logAuditEntry({
+        data: {
+          action: form.status === "published" ? "review.published" : "review.hidden",
+          entity: "review",
+          entity_id: form.id || null,
+          details: { status: form.status, customer_name: form.customer_name },
+        },
       });
       reset();
     } catch (err) {

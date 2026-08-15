@@ -215,6 +215,9 @@ export const listBlogPosts = createServerFn({ method: "GET" })
       .parse(data ?? {}),
   )
   .handler(async ({ data }) => {
+    if (!(await rateLimit("list-blog-posts", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     let locale = data.locale && data.locale !== "" ? data.locale : "fr";
     if (locale === "fr") {
       try {
@@ -239,6 +242,9 @@ export const listBlogPosts = createServerFn({ method: "GET" })
 export const listReviews = createServerFn({ method: "GET" })
   .validator((data: unknown) => z.object({ fallback: z.array(z.any()).optional() }).parse(data))
   .handler(async ({ data }) => {
+    if (!(await rateLimit("list-reviews", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("reviews")
@@ -432,6 +438,9 @@ export const deleteReview = createServerFn({ method: "POST" })
 
 /** Renvoie le stock réel pour tous les accessoires suivis. Map slug -> quantité. */
 export const listInventory = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("list-inventory", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin.from("inventory").select("slug, quantity");
   if (error || !data) return {};
@@ -477,6 +486,9 @@ export const getAdminStock = createServerFn({ method: "POST" }).handler(
 export const getInventory = createServerFn({ method: "GET" })
   .validator((data: unknown) => z.object({ slug: z.string().trim().min(1) }).parse(data))
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-inventory", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée");
     const { data: row } = await supabaseAdmin

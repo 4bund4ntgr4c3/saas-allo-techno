@@ -13,13 +13,11 @@ import {
 } from "@/lib/admin.functions";
 import { addStagePhoto, getStaffPhotoUpload } from "@/lib/photos.functions";
 import { downloadQuotePdf } from "@/lib/invoice";
-import { logAudit } from "@/lib/audit";
+import { logAuditEntry } from "@/lib/audit.functions";
 import { useI18n } from "@/lib/i18n/context";
 import { field } from "@/components/admin/primitives/AdminField";
 import { formatFcfa } from "@/data/catalog";
-import { Route } from "@/routes/_authenticated/admin";
 import type { Enums } from "@/integrations/supabase/types";
-import { supabase } from "@/integrations/supabase/client";
 
 type Status = Enums<"reservation_status">;
 
@@ -369,7 +367,6 @@ function QuotePanel({
   created_at: string;
   quote: ReservationQuote | null;
 }) {
-  const { user } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const sendQuoteFn = useServerFn(sendQuote);
@@ -391,12 +388,13 @@ function QuotePanel({
       toast.success(t("admin.kanban.quote.sentSuccess"));
       setAmount("");
       queryClient.invalidateQueries({ queryKey: ["admin-reservations"] });
-      void logAudit(supabase as never, {
-        user_id: user.id,
-        action: "quote.sent",
-        entity: "reservation",
-        entity_id: reservationId,
-        details: { reference },
+      void logAuditEntry({
+        data: {
+          action: "quote.sent",
+          entity: "reservation",
+          entity_id: reservationId,
+          details: { reference },
+        },
       });
     },
     onError: (err: unknown) =>

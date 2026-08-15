@@ -38,6 +38,9 @@ async function adminOnly(supabaseAdmin: SupabaseClient<Database>): Promise<strin
 
 /** Génère un secret TOTP pour l'administrateur (désactivé tant que non confirmé). */
 export const enrollOtp = createServerFn({ method: "POST" }).handler(async () => {
+  if (!(await rateLimit("enroll-otp", 10))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const userId = await adminOnly(supabaseAdmin);
 
@@ -62,6 +65,9 @@ export const enrollOtp = createServerFn({ method: "POST" }).handler(async () => 
 export const confirmOtp = createServerFn({ method: "POST" })
   .validator((data: unknown) => codeSchema.parse(data))
   .handler(async ({ data }) => {
+    if (!(await rateLimit("confirm-otp", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = await adminOnly(supabaseAdmin);
 
@@ -87,6 +93,9 @@ export const confirmOtp = createServerFn({ method: "POST" })
 export const disableOtp = createServerFn({ method: "POST" })
   .validator((data: unknown) => codeSchema.parse(data))
   .handler(async ({ data }) => {
+    if (!(await rateLimit("disable-otp", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = await adminOnly(supabaseAdmin);
 
@@ -109,6 +118,9 @@ export const disableOtp = createServerFn({ method: "POST" })
 
 /** Retourne uniquement l'état d'activation de la 2FA — jamais le secret. */
 export const getOtpStatus = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-otp-status", 10))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const userId = await currentUserId(supabaseAdmin);
 

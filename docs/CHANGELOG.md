@@ -7,6 +7,22 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.15-b44] - 2026-08-15 (Audit Scurit & Perf - Batch 44)
+
+### Changed
+
+- **Securite / Bundle** : plus aucun code `client.server.ts` (service role) dans les chunks navigateur - les 22 modules serveur qui l'importaient sont migres vers des imports dynamiques `await import("@/integrations/supabase/client.server")` a l'interieur des handlers (72 imports) ; code mort supprime de feature-flags.ts (isFeatureEnabled, clearFlagCache, FLAG_CACHE, CACHE_TTL_MS).
+- **Securite / Audit** : les ecritures d'audit passent par la server fn `logAuditEntry` (schema zod des 16 actions, rateLimit `audit-write` 30/min, verifie currentUserId + RPC is_staff) au lieu de `logAudit` cote client qui echouait silencieusement (table RLS sans policies) ; appels remplaces dans AdminKanban (quote.sent), AdminDossiers (reservation.assigned, reservation.status_changed/cancelled) et AdminContent (review.published/hidden).
+- **Securite / Rate limiting** : couverture totale des server fns - les 188 `createServerFn` de src/lib portent desormais un `rateLimit` (lectures 60/min, ecritures 20/min, sensibles 10/min : OTP, paiements, envois, exports, uploads) ; `POST /api/push-subscribe` limite a 10/min (429) ; `getAdminReviews` confirme cote serveur (isStaff + rateLimit) - le telephone des clients n'est plus lisible par une requete non-gardee.
+- **Securite / Ownership** : /app/mon-compte ne liste et n'annule que ses propres reservations (filtre `.eq("user_id", user.id)` ajoute sur la liste et la mutation d'annulation).
+- **Perf / i18n** : les segments de traduction lourds reserves aux zones restreintes ne sont plus charges au premier rendu (dictionnaires ~125 Ko de source en moins dans l'entree) - `admin` (93 Ko), `org` (24 Ko) et `mon-compte` (8 Ko) sont enregistres via le `loader` de leur route (import dynamique du chunk) au lieu d'etre importes statiquement par le segment index ; cles `admin.*`/`org.*`/`mc.*` confirmees consommees uniquement sous les layouts /admin, /app et mon-compte ; cles eparses corrigees (ProductReviews utilisait `admin.roles.toast.error` -> `common.error`).
+
+### Fixed
+
+- Imports `supabase`/`user` devenus inutiles dans AdminContent et AdminKanban (retires, tsc passe a 0 erreur).
+
+---
+
 ## [2026.08.15-b43] - 2026-08-15 (Audit Securite & Nettoyage - Batch 43)
 
 ### Changed

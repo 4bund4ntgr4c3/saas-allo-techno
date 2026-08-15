@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export type WhatsAppAlertInput = {
   phoneNumber: string; // e.g. "+22990000000"
@@ -25,6 +25,10 @@ export const sendWhatsAppTicketNotificationFn = createServerFn({ method: "POST" 
   )
   .handler(
     async ({ data }): Promise<{ success: boolean; whatsappUrl: string; messageText: string }> => {
+      if (!(await rateLimit("send-whats-app-ticket-notification-fn", 10))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await requireStaff(supabaseAdmin);
       let statusText = "pris en charge par notre équipe d'experts à l'atelier Allô Techno.";
       if (data.status === "diagnostic_ready") {

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type EsgMetrics = {
   repairedUnitsCount: number;
@@ -17,6 +18,9 @@ export const getOrgEsgMetricsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<EsgMetrics> => {
+    if (!(await rateLimit("get-org-esg-metrics-fn", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     // Standard ESG / Carbon Footprint Metrics for Electronics Repair
     // Avg laptop manufacture = 250kg CO2, 2.5kg electronic waste
     // Avg smartphone manufacture = 70kg CO2, 0.2kg electronic waste

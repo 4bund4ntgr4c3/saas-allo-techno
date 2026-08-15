@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface ReportConfig {
   id: string;
@@ -33,6 +33,10 @@ export const generateReport = createServerFn({ method: "POST" })
     return { date_from, date_to, metrics, group_by };
   })
   .handler(async ({ data }): Promise<ReportResult> => {
+    if (!(await rateLimit("generate-report", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const [reservations, payments] = await Promise.all([
       supabaseAdmin
@@ -114,6 +118,10 @@ export const generateReport = createServerFn({ method: "POST" })
   });
 
 export const getSavedReports = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-saved-reports", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("saved_reports" as never)

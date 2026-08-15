@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface KBArticle {
   id: string;
@@ -16,6 +16,10 @@ export interface KBArticle {
 }
 
 export const getKBArticles = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-kb-articles", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("kb_articles" as never)
@@ -31,6 +35,10 @@ export const getKBArticle = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-kb-article", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { data: article, error } = await supabaseAdmin
       .from("kb_articles" as never)
@@ -54,6 +62,10 @@ export const createKBArticle = createServerFn({ method: "POST" })
     return a;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("create-kb-article", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const now = new Date().toISOString();
     const { error } = await supabaseAdmin
@@ -70,6 +82,10 @@ export const updateKBArticle = createServerFn({ method: "POST" })
     return { id, updates: { ...updates, updated_at: new Date().toISOString() } };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("update-kb-article", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
@@ -85,6 +101,10 @@ export const deleteKBArticle = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("delete-kb-article", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
@@ -100,6 +120,10 @@ export const markHelpful = createServerFn({ method: "POST" })
     return { id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("mark-helpful", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const { error } = await supabaseAdmin
       .from("kb_articles" as never)
@@ -115,6 +139,10 @@ export const searchKB = createServerFn({ method: "POST" })
     return { query: query.toLowerCase() };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("search-kb", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireStaff(supabaseAdmin);
     const escaped = data.query.replace(/[%_\\]/g, "\\$&");
     const { data: articles, error } = await supabaseAdmin

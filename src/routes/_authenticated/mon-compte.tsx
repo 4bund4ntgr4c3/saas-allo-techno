@@ -37,6 +37,7 @@ import {
 } from "@/lib/reservation-schema";
 
 export const Route = createFileRoute("/_authenticated/mon-compte")({
+  loader: () => import("@/lib/i18n/segments/mon-compte"),
   head: () => ({
     meta: [
       { title: "Mon compte — réservations Allô Techno" },
@@ -143,6 +144,7 @@ function Dashboard() {
         .select(
           "id, reference, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, message, created_at, quote_amount, quote_status, payment_status, warranty_months",
         )
+        .eq("user_id", user.id)
         .order("slot_date", { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -254,9 +256,10 @@ function Dashboard() {
       const { data: row, error: fetchError } = await supabase
         .from("reservations")
         .select(
-          "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
+          "id, user_id, reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status",
         )
         .eq("id", id)
+        .eq("user_id", user.id)
         .maybeSingle();
       if (fetchError) throw fetchError;
       if (!row) throw new Error("Réservation introuvable");
@@ -264,7 +267,8 @@ function Dashboard() {
       const { error } = await supabase
         .from("reservations")
         .update({ status: "annulee" })
-        .eq("id", id);
+        .eq("id", id)
+        .eq("user_id", user.id);
       if (error) throw error;
 
       try {

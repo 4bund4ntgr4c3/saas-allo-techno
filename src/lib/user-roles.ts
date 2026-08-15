@@ -3,9 +3,9 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { createSupabaseFetch } from "@/integrations/supabase/helpers";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireAdmin } from "@/lib/rbac";
 import type { AppRole } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface UserRole {
   user_id: string;
@@ -15,6 +15,10 @@ export interface UserRole {
 }
 
 export const getUserRoles = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-user-roles", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireAdmin(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("user_roles")
@@ -54,6 +58,10 @@ export const setUserRole = createServerFn({ method: "POST" })
     return { user_id, role };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("set-user-role", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await requireAdmin(supabaseAdmin);
     const { error } = await adminUserClient().rpc("set_user_role", {
       _user_id: data.user_id,

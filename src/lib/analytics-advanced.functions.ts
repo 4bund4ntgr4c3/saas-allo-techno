@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export type FunnelStep = {
   step: string;
@@ -14,6 +15,9 @@ export type SourceStat = {
 
 export const getConversionFunnel = createServerFn({ method: "GET" }).handler(
   async (): Promise<FunnelStep[]> => {
+    if (!(await rateLimit("get-conversion-funnel", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { requireStaff } = await import("@/lib/rbac");
     await requireStaff(supabaseAdmin);
@@ -52,6 +56,9 @@ export const getConversionFunnel = createServerFn({ method: "GET" }).handler(
 
 export const getSourceStats = createServerFn({ method: "GET" }).handler(
   async (): Promise<SourceStat[]> => {
+    if (!(await rateLimit("get-source-stats", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { requireStaff } = await import("@/lib/rbac");
     await requireStaff(supabaseAdmin);
@@ -87,6 +94,9 @@ export const getSourceStats = createServerFn({ method: "GET" }).handler(
 
 export const getRecentErrors = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ message: string; count: number; last: string }[]> => {
+    if (!(await rateLimit("get-recent-errors", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { requireStaff } = await import("@/lib/rbac");
     await requireStaff(supabaseAdmin);

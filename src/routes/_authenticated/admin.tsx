@@ -17,6 +17,7 @@ import { TourLauncher } from "@/components/tour/TourLauncher";
 import { TourOverlay } from "@/components/tour/TourOverlay";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  loader: () => import("@/lib/i18n/segments/admin"),
   head: () => ({
     meta: [{ title: "Administration — Allô Techno" }, { name: "robots", content: "noindex" }],
   }),

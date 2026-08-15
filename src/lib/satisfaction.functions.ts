@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaff } from "@/lib/rbac";
+import { rateLimit } from "@/lib/security";
 
 export interface SatisfactionEntry {
   id: string;
@@ -35,6 +35,10 @@ export const submitSatisfaction = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("submit-satisfaction", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("satisfaction_surveys" as never)
       .insert(data as never);
@@ -43,6 +47,10 @@ export const submitSatisfaction = createServerFn({ method: "POST" })
   });
 
 export const getSatisfactionStats = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-satisfaction-stats", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data } = await supabaseAdmin
     .from("satisfaction_surveys" as never)
@@ -90,6 +98,10 @@ export const getSatisfactionStats = createServerFn({ method: "GET" }).handler(as
 });
 
 export const getSatisfactionEntries = createServerFn({ method: "GET" }).handler(async () => {
+  if (!(await rateLimit("get-satisfaction-entries", 60))) {
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
+  }
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await requireStaff(supabaseAdmin);
   const { data, error } = await supabaseAdmin
     .from("satisfaction_surveys" as never)

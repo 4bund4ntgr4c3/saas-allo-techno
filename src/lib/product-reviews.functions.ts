@@ -24,6 +24,9 @@ export const getProductReviews = createServerFn({ method: "POST" })
     return { product_slug };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-product-reviews", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("product_reviews" as never)
@@ -58,6 +61,9 @@ export const getProductRating = createServerFn({ method: "POST" })
     return { product_slug };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("get-product-rating", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("product_reviews" as never)

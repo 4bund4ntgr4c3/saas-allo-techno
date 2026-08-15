@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { rateLimit } from "@/lib/security";
 
 export interface DeviceHistoryEntry {
@@ -20,6 +19,7 @@ export const getDeviceHistory = createServerFn({ method: "POST" })
     return { phone, email, device };
   })
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("device-history", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
@@ -75,6 +75,7 @@ export const getDeviceStats = createServerFn({ method: "POST" })
     return { phone, email };
   })
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("device-stats", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }

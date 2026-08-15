@@ -31,6 +31,7 @@ export const Route = createFileRoute("/app")({
       // Ignore auth error for demo mode
     }
   },
+  loader: () => import("@/lib/i18n/segments/org"),
   component: AppLayout,
 });
 
