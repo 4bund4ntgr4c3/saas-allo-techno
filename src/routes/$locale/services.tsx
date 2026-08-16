@@ -10,6 +10,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
 import type { Locale } from "@/lib/i18n/locales";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
+import { TradeInEstimator } from "@/components/site/TradeInEstimator";
 import { localeSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/$locale/services")({
@@ -105,6 +106,13 @@ function Services() {
           <p className="mt-8 text-sm text-muted-foreground">
             {t("services.contact", [COMPANY.phone, COMPANY.city])}
           </p>
+        </div>
+      </section>
+
+      {/* ─── Trade-In / Reprise d'Ancien Matériel ─── */}
+      <section className="border-t border-border py-12 sm:py-16 bg-surface/40">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <TradeInEstimator />
         </div>
       </section>
 

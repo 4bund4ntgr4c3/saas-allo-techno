@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Trade-In Argus, Suivi Fret Pièces, Journal SAV & Certificat Garantie SHA-256 (Batch 45)",
+    date: "2026-08-17",
+    added: [
+      "Simulateur de reprise et argus informatique Trade-In (src/lib/trade-in.ts, TradeInEstimator.tsx) avec estimation instantanée de la valeur de rachat et bonus bon d'achat +10%",
+      "Système de traçabilité des pièces détachées et fret aérien en transit (src/lib/parts-tracker.ts, SupplierPartsTracker.tsx) depuis les hubs de Dubaï, Paris et Shenzhen",
+      "Journal des interactions clients et mémos d'atelier SAV (src/lib/interactions.functions.ts, ClientInteractionDrawer.tsx) pour consigner les appels et consignes techniques",
+      "Générateur officiel de Certificat de Garantie Numérique Inviolable (src/lib/warranty-certificate-pdf.ts) avec scellé cryptographique SHA-256 et QR code d'authentification",
+    ],
+    fixed: [
+      "Intégration du simulateur Trade-In sur la page Services (/fr/services) avec redirection WhatsApp pré-remplie",
+      "Sécurisation des certificats de garantie contre la falsification via empreinte numérique de 32 octets",
+    ],
+  },
+  {
     version: "2026.08.17 — Scanner QR Caméra PWA, Alertes Climat Tropical & Paiement Mobile Money Direct (Batch 44)",
     date: "2026-08-17",
     added: [
