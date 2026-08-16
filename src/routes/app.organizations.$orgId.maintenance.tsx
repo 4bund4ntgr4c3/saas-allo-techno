@@ -21,6 +21,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { MaintenanceCountdown } from "@/components/b2b/maintenance/MaintenanceCountdown";
 import { MaintenanceChecklistModal } from "@/components/b2b/maintenance/MaintenanceChecklistModal";
 import { ScheduleMaintenanceModal } from "@/components/b2b/maintenance/ScheduleMaintenanceModal";
+import { TropicalAdvisoryCard } from "@/components/b2b/TropicalAdvisoryCard";
 import { useI18n } from "@/lib/i18n/context";
 import { getMaintenancePlansFn } from "@/lib/maintenance-plans.functions";
 import { parseError } from "@/lib/error-parser";
@@ -215,6 +216,9 @@ function OrgMaintenancePage() {
           </div>
         </div>
       )}
+
+      {/* ─── Tropical Climate Hardware Protection Advisory ─── */}
+      <TropicalAdvisoryCard />
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3">

@@ -37,6 +37,21 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Scanner QR Caméra PWA, Alertes Climat Tropical & Paiement Mobile Money Direct (Batch 44)",
+    date: "2026-08-17",
+    added: [
+      "Scanner QR Code temps réel avec flux vidéo caméra (src/components/scanner/QrCameraScanner.tsx) avec support de l'API BarcodeDetector et cadre laser animé",
+      "Intégration directe du scanner caméra dans la route /app/scan avec retour haptique et résolution automatique des URLs",
+      "Moteur d'alertes préventives pour le climat tropical d'Afrique de l'Ouest (tropical-climate-advisor.ts) : poussière de l'Harmattan, humidité côtière et surchauffe estivale",
+      "Composant d'alerte et de recommandation matérielle proactive (TropicalAdvisoryCard.tsx) intégré sur le portail de maintenance",
+      "Module de paiement instantané Mobile Money Bénin (MobileMoneyDirectPay.tsx) avec détection automatique d'opérateur (MTN MoMo, Moov Money, Celtiis Cash)",
+    ],
+    fixed: [
+      "Gestion adaptative des permissions de caméra avec bascule caméra avant / arrière",
+      "Affichage des instructions USSD de validation Mobile Money avec décompte temps réel",
+    ],
+  },
+  {
     version: "2026.08.16 — Impression Thermique 58/80mm, Suivi Client WhatsApp & Audit Sécurité APDP (Batch 43)",
     date: "2026-08-16",
     added: [
