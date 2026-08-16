@@ -187,7 +187,7 @@ function OrgBillingPage() {
       )}
 
       {/* ─── RSE & Bilan Carbone Card Extraite ─── */}
-      {esgQuery.data && <EsgMetricsCard metrics={esgQuery.data} />}
+      {esgQuery.data && <EsgMetricsCard metrics={esgQuery.data} organization={org} />}
 
       {/* ─── KPI Cards ─── */}
       <div className="at-in grid grid-cols-3 gap-3">

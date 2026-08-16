@@ -28,11 +28,22 @@ export const Route = createFileRoute("/api/cron-reminders")({
         }
 
         const { runReminders } = await import("@/lib/reminders.functions");
+        const { runB2BReminders } = await import("@/lib/b2b-reminders.functions");
         try {
-          const result = await runReminders();
-          return new Response(JSON.stringify(result), {
-            headers: { "content-type": "application/json" },
-          });
+          const [b2cResult, b2bResult] = await Promise.all([
+            runReminders(),
+            runB2BReminders(),
+          ]);
+          return new Response(
+            JSON.stringify({
+              b2c: b2cResult,
+              b2b: b2bResult,
+              timestamp: new Date().toISOString(),
+            }),
+            {
+              headers: { "content-type": "application/json" },
+            },
+          );
         } catch (err) {
           logger.error("Reminder execution failed", err as Error);
           return new Response("Server error", { status: 500 });

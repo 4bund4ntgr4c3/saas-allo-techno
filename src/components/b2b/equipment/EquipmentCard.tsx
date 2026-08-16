@@ -1,7 +1,8 @@
-import { Laptop, QrCode } from "lucide-react";
+import { Laptop, QrCode, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { EquipmentItem } from "@/lib/org.functions";
 import { useI18n } from "@/lib/i18n/context";
+import { computeEquipmentHealthScore } from "@/lib/health-score";
 
 export interface EquipmentCardProps {
   equipment: EquipmentItem;
@@ -10,6 +11,10 @@ export interface EquipmentCardProps {
 
 export function EquipmentCard({ equipment, onClick }: EquipmentCardProps) {
   const { t } = useI18n();
+  const health = computeEquipmentHealthScore({
+    status: equipment.status,
+    created_at: equipment.created_at,
+  });
 
   return (
     <li>
@@ -39,7 +44,16 @@ export function EquipmentCard({ equipment, onClick }: EquipmentCardProps) {
               </p>
             </div>
           </div>
-          <Badge variant="outline">{t(`org.equipment.status.${equipment.status}`)}</Badge>
+          <div className="flex flex-col items-end gap-1 shrink-0">
+            <Badge variant="outline">{t(`org.equipment.status.${equipment.status}`)}</Badge>
+            <span
+              className={`inline-flex items-center gap-1 font-mono text-[10px] px-1.5 py-0.5 rounded border ${health.bgClass} ${health.textClass} ${health.borderClass}`}
+              title={`Score de Santé : ${health.score}% - ${health.label}`}
+            >
+              <Activity className="size-2.5" />
+              {health.score}%
+            </span>
+          </div>
         </div>
 
         <dl className="mt-auto space-y-1 text-xs text-muted-foreground">

@@ -37,6 +37,22 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.16 — Alertes SLA WhatsApp, Bilan RSE Certifié PDF & Health Score (Batch 41)",
+    date: "2026-08-16",
+    added: [
+      "Moteur de rappels automatisés B2B (src/lib/b2b-reminders.functions.ts) avec déduplication stricte dans scheduled_notifications",
+      "Escalade SLA automatique WhatsApp : alerte immédiate de l'astreinte technique pour les tickets B2B urgents en attente depuis plus de 2 heures",
+      "Relances WhatsApp / Email préventives J-7 pour les maintenances d'équipements planifiées à échéance",
+      "Générateur officiel de Bilan d'Impact Environnemental & RSE en PDF (src/lib/esg-pdf.ts) avec calcul des émissions CO2 évitées et des DEEE recyclés",
+      "Bouton de téléchargement du Rapport RSE PDF certifié directement sur le portail facturation B2B (EsgMetricsCard)",
+      "Indice de Santé Matériel (Health Score 0-100%) calculé dynamiquement sur chaque fiche et carte d'équipement (src/lib/health-score.ts)",
+    ],
+    fixed: [
+      "Intégration transparente des tâches B2B dans le point d'entrée cron quotidien /api/cron-reminders",
+      "Affichage visuel du score de durabilité et de santé sur l'inventaire matériel B2B",
+    ],
+  },
+  {
     version: "2026.08.15 — Architecture Modulaire B2B & Sous-modules (Batch 40)",
     date: "2026-08-15",
     added: [
