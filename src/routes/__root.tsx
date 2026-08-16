@@ -187,7 +187,7 @@ function RootShell({ children }: { children: ReactNode }) {
   // La langue SSR suit le premier segment d'URL (/fr, /en) ; sinon français.
   const lang = useRouterState({ select: (s) => s.location.pathname.split("/")[1] ?? "fr" });
   const locale = normalizeLocale(lang);
-  const nonce = getGlobalStartContext()?.nonce as string | undefined;
+  const nonce = (getGlobalStartContext() as { nonce?: string } | undefined)?.nonce;
   return (
     <html lang={lang === "en" ? "en" : "fr"}>
       <head>

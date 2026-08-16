@@ -18,7 +18,7 @@ export const getRouter = () => {
   // Nonce CSP généré par requête dans le middleware global (src/start.ts). La
   // SSR TanStack le répand automatiquement sur les balises <script>/<style>
   // inline pour que la CSP stricte les laisse passer.
-  const nonce = getGlobalStartContext()?.nonce as string | undefined;
+  const nonce = (getGlobalStartContext() as { nonce?: string } | undefined)?.nonce;
 
   const router = createRouter({
     routeTree,

@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Diagnostic Matériel Web, Simulateur ROI DSI, Badge Technicien & Bordereaux UEMOA (Batch 46)",
+    date: "2026-08-17",
+    added: [
+      "Banc de test matériel interactif en direct (src/routes/$locale/diagnostic-auto.tsx) : testeur de touches clavier, détecteur de pixels morts, test microphone/haut-parleurs et flux webcam",
+      "Simulateur de rentabilité et d'amortissement de flotte informatique pour DSI/DAF (RoiCalculatorModal.tsx) calculant les économies nettes en FCFA par rapport au rachat systématique de neuf",
+      "Badge numérique de technicien certifié (src/components/tech/TechnicianBadgeModal.tsx) avec matricule, accréditations Apple/Dell/Micro-Soudure et QR code d'authentification",
+      "Générateur officiel d'ordres de virement bancaire normalisés UEMOA / Bénin (src/lib/bank-transfer-orders.ts) pour Ecobank, BOA, UBA et Société Générale Bénin",
+    ],
+    fixed: [
+      "Intégration du simulateur ROI sur la page Entreprises (/fr/entreprises) avec liaison directe vers l'audit gratuit",
+      "Capture audio WebRTC et oscillateur sinusoïdal pour vérification instantanée des transducteurs audio",
+    ],
+  },
+  {
     version: "2026.08.17 — Trade-In Argus, Suivi Fret Pièces, Journal SAV & Certificat Garantie SHA-256 (Batch 45)",
     date: "2026-08-17",
     added: [

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { B2BRequestForm } from "@/components/site/B2BRequestForm";
 import type { SlaFormulaType } from "@/components/site/B2BRequestForm";
 import { CoverageZoneEstimator } from "@/components/site/CoverageZoneEstimator";
+import { RoiCalculatorModal } from "@/components/b2b/RoiCalculatorModal";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -209,6 +210,13 @@ function Entreprises() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ─── Fleet ROI & Financial Depreciation Calculator ─── */}
+      <section className="border-t border-border py-10 sm:py-16 bg-surface/30">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <RoiCalculatorModal />
         </div>
       </section>
 

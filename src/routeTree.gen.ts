@@ -24,6 +24,7 @@ import { Route as LocaleChangelogRouteImport } from './routes/$locale/changelog'
 import { Route as LocaleCheckoutRouteImport } from './routes/$locale/checkout'
 import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
 import { Route as LocaleDevisRouteImport } from './routes/$locale/devis'
+import { Route as LocaleDiagnosticAutoRouteImport } from './routes/$locale/diagnostic-auto'
 import { Route as LocaleEngagementsRouteImport } from './routes/$locale/engagements'
 import { Route as LocaleEntreprisesRouteImport } from './routes/$locale/entreprises'
 import { Route as LocaleFaqRouteImport } from './routes/$locale/faq'
@@ -181,6 +182,11 @@ const LocaleContactRoute = LocaleContactRouteImport.update({
 const LocaleDevisRoute = LocaleDevisRouteImport.update({
   id: '/devis',
   path: '/devis',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleDiagnosticAutoRoute = LocaleDiagnosticAutoRouteImport.update({
+  id: '/diagnostic-auto',
+  path: '/diagnostic-auto',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleEngagementsRoute = LocaleEngagementsRouteImport.update({
@@ -650,6 +656,7 @@ export interface FileRoutesByFullPath {
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
@@ -748,6 +755,7 @@ export interface FileRoutesByTo {
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
@@ -849,6 +857,7 @@ export interface FileRoutesById {
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/devis': typeof LocaleDevisRoute
+  '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
   '/$locale/entreprises': typeof LocaleEntreprisesRoute
   '/$locale/faq': typeof LocaleFaqRoute
@@ -951,6 +960,7 @@ export interface FileRouteTypes {
     | '/$locale/checkout'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
@@ -1049,6 +1059,7 @@ export interface FileRouteTypes {
     | '/$locale/checkout'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
@@ -1149,6 +1160,7 @@ export interface FileRouteTypes {
     | '/$locale/checkout'
     | '/$locale/contact'
     | '/$locale/devis'
+    | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
     | '/$locale/entreprises'
     | '/$locale/faq'
@@ -1361,6 +1373,13 @@ declare module '@tanstack/react-router' {
       path: '/devis'
       fullPath: '/$locale/devis'
       preLoaderRoute: typeof LocaleDevisRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/diagnostic-auto': {
+      id: '/$locale/diagnostic-auto'
+      path: '/diagnostic-auto'
+      fullPath: '/$locale/diagnostic-auto'
+      preLoaderRoute: typeof LocaleDiagnosticAutoRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/engagements': {
@@ -2051,6 +2070,7 @@ interface LocaleRouteChildren {
   LocaleCheckoutRoute: typeof LocaleCheckoutRoute
   LocaleContactRoute: typeof LocaleContactRoute
   LocaleDevisRoute: typeof LocaleDevisRoute
+  LocaleDiagnosticAutoRoute: typeof LocaleDiagnosticAutoRoute
   LocaleEngagementsRoute: typeof LocaleEngagementsRoute
   LocaleEntreprisesRoute: typeof LocaleEntreprisesRoute
   LocaleFaqRoute: typeof LocaleFaqRoute
@@ -2090,6 +2110,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleCheckoutRoute: LocaleCheckoutRoute,
   LocaleContactRoute: LocaleContactRoute,
   LocaleDevisRoute: LocaleDevisRoute,
+  LocaleDiagnosticAutoRoute: LocaleDiagnosticAutoRoute,
   LocaleEngagementsRoute: LocaleEngagementsRoute,
   LocaleEntreprisesRoute: LocaleEntreprisesRoute,
   LocaleFaqRoute: LocaleFaqRoute,
