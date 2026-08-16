@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Alertes de Stock Atelier, Commande Fournisseur Automatique & Sitemap XML (Batch 49)",
+    date: "2026-08-17",
+    added: [
+      "Moteur d'alertes et de surveillance des seuils de stocks critiques de l'atelier (stock-alerts.functions.ts, StockAlertBadge.tsx) pour les dalles, batteries, pâtes thermiques et puces SMD",
+      "Génération automatique des bons de commande de réapprovisionnement auprès des hubs fournisseurs (Dubaï, Paris, Shenzhen)",
+      "Route de génération dynamique de sitemap XML (src/routes/sitemap.xml.ts) pour le référencement naturel multilingue (fr/en) sur les moteurs de recherche",
+      "Suite complète de tests unitaires Vitest consolidée (src/__tests__/advanced-tools.test.ts) avec 100% de réussite",
+    ],
+    fixed: [
+      "Optimisation du cache HTTP du sitemap XML (max-age 86400s) et conformité du schéma sitemaps.org",
+      "Calcul consolidé du budget de réapprovisionnement de l'atelier en temps réel",
+    ],
+  },
+  {
     version: "2026.08.17 — Suivi Coursier GPS, Destruction Sécurisée NIST, Test Recrutement Technicien & Diagnostic IA (Batch 48)",
     date: "2026-08-17",
     added: [
