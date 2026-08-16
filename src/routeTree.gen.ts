@@ -34,6 +34,8 @@ import { Route as LocaleHistoriqueRouteImport } from './routes/$locale/historiqu
 import { Route as LocaleMagasinsRouteImport } from './routes/$locale/magasins'
 import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
 import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
+import { Route as LocaleParrainageRouteImport } from './routes/$locale/parrainage'
+import { Route as LocalePremiersSecoursRouteImport } from './routes/$locale/premiers-secours'
 import { Route as LocalePromotionsRouteImport } from './routes/$locale/promotions'
 import { Route as LocaleReclamationRouteImport } from './routes/$locale/reclamation'
 import { Route as LocaleReconditionnesRouteImport } from './routes/$locale/reconditionnes'
@@ -232,6 +234,16 @@ const LocaleMentionsLegalesRoute = LocaleMentionsLegalesRouteImport.update({
 const LocalePanierRoute = LocalePanierRouteImport.update({
   id: '/panier',
   path: '/panier',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleParrainageRoute = LocaleParrainageRouteImport.update({
+  id: '/parrainage',
+  path: '/parrainage',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocalePremiersSecoursRoute = LocalePremiersSecoursRouteImport.update({
+  id: '/premiers-secours',
+  path: '/premiers-secours',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocalePromotionsRoute = LocalePromotionsRouteImport.update({
@@ -666,6 +678,8 @@ export interface FileRoutesByFullPath {
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/parrainage': typeof LocaleParrainageRoute
+  '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
   '/$locale/reclamation': typeof LocaleReclamationRoute
   '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
@@ -765,6 +779,8 @@ export interface FileRoutesByTo {
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/parrainage': typeof LocaleParrainageRoute
+  '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
   '/$locale/reclamation': typeof LocaleReclamationRoute
   '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
@@ -867,6 +883,8 @@ export interface FileRoutesById {
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/panier': typeof LocalePanierRoute
+  '/$locale/parrainage': typeof LocaleParrainageRoute
+  '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
   '/$locale/promotions': typeof LocalePromotionsRoute
   '/$locale/reclamation': typeof LocaleReclamationRoute
   '/$locale/reconditionnes': typeof LocaleReconditionnesRoute
@@ -970,6 +988,8 @@ export interface FileRouteTypes {
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
+    | '/$locale/parrainage'
+    | '/$locale/premiers-secours'
     | '/$locale/promotions'
     | '/$locale/reclamation'
     | '/$locale/reconditionnes'
@@ -1069,6 +1089,8 @@ export interface FileRouteTypes {
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
+    | '/$locale/parrainage'
+    | '/$locale/premiers-secours'
     | '/$locale/promotions'
     | '/$locale/reclamation'
     | '/$locale/reconditionnes'
@@ -1170,6 +1192,8 @@ export interface FileRouteTypes {
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
     | '/$locale/panier'
+    | '/$locale/parrainage'
+    | '/$locale/premiers-secours'
     | '/$locale/promotions'
     | '/$locale/reclamation'
     | '/$locale/reconditionnes'
@@ -1443,6 +1467,20 @@ declare module '@tanstack/react-router' {
       path: '/panier'
       fullPath: '/$locale/panier'
       preLoaderRoute: typeof LocalePanierRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/parrainage': {
+      id: '/$locale/parrainage'
+      path: '/parrainage'
+      fullPath: '/$locale/parrainage'
+      preLoaderRoute: typeof LocaleParrainageRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/premiers-secours': {
+      id: '/$locale/premiers-secours'
+      path: '/premiers-secours'
+      fullPath: '/$locale/premiers-secours'
+      preLoaderRoute: typeof LocalePremiersSecoursRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/promotions': {
@@ -2080,6 +2118,8 @@ interface LocaleRouteChildren {
   LocaleMagasinsRoute: typeof LocaleMagasinsRoute
   LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
   LocalePanierRoute: typeof LocalePanierRoute
+  LocaleParrainageRoute: typeof LocaleParrainageRoute
+  LocalePremiersSecoursRoute: typeof LocalePremiersSecoursRoute
   LocalePromotionsRoute: typeof LocalePromotionsRoute
   LocaleReclamationRoute: typeof LocaleReclamationRoute
   LocaleReconditionnesRoute: typeof LocaleReconditionnesRoute
@@ -2120,6 +2160,8 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleMagasinsRoute: LocaleMagasinsRoute,
   LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
   LocalePanierRoute: LocalePanierRoute,
+  LocaleParrainageRoute: LocaleParrainageRoute,
+  LocalePremiersSecoursRoute: LocalePremiersSecoursRoute,
   LocalePromotionsRoute: LocalePromotionsRoute,
   LocaleReclamationRoute: LocaleReclamationRoute,
   LocaleReconditionnesRoute: LocaleReconditionnesRoute,

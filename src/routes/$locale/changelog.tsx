@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Programme Parrainage MoMo, Audit Énergétique SBEE, Premiers Secours SAV & Passerelle SMS (Batch 47)",
+    date: "2026-08-17",
+    added: [
+      "Programme de parrainage et affiliation avec reversement Mobile Money (src/routes/$locale/parrainage.tsx, referral.functions.ts) : lien unique, bon filleul 2 000 FCFA et virement MoMo des commissions",
+      "Calculateur d'audit énergétique de parc informatique et économies SBEE (src/components/b2b/energy/EnergyAuditCalculator.tsx) avec calcul des kWh et CO2 évité",
+      "Guide interactif de premiers secours et gestes d'urgence matérielle (src/routes/$locale/premiers-secours.tsx) pour les accidents de liquide renversé, surtension et surchauffe",
+      "Passerelle transactionnelle SMS locale Bénin (src/lib/sms-notifications.ts) pour alertes automatiques de devis prêt et matériel disponible au retrait en boutique",
+    ],
+    fixed: [
+      "Interface de demande de virement de commission Mobile Money avec seuil minimum de 5 000 FCFA",
+      "Numérotation d'urgence et liaison directe WhatsApp pour les désoxydations critiques",
+    ],
+  },
+  {
     version: "2026.08.17 — Diagnostic Matériel Web, Simulateur ROI DSI, Badge Technicien & Bordereaux UEMOA (Batch 46)",
     date: "2026-08-17",
     added: [
