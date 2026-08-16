@@ -21,6 +21,7 @@ import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { PwaUpdatePrompt } from "@/components/site/PwaUpdatePrompt";
 import { BackToTop } from "@/components/site/BackToTop";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { WishlistProvider } from "@/components/shop/wishlist";
@@ -255,6 +256,7 @@ function RootComponent() {
             <SearchModal />
           </Suspense>
           <Toaster />
+          <OfflineBanner />
           {!isAppOrAdmin && (
             <>
               <AddToCartWidget />

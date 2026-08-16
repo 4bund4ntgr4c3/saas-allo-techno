@@ -25,6 +25,9 @@ export type InvoiceRow = Pick<
 > & {
   org_id?: string | null;
   org_name?: string | null;
+  signature_base64?: string | null;
+  signer_name?: string | null;
+  signed_at?: string | null;
 };
 
 export type TimelineRow = {
@@ -147,6 +150,26 @@ export async function downloadInvoicePdf(r: InvoiceRow) {
     margin,
     noteY,
   );
+
+  if (r.signature_base64) {
+    const sigY = noteY + 16;
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Signature Électronique Certifiée :`, margin, sigY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(71, 85, 105);
+    doc.text(
+      `Signataire : ${r.signer_name ?? r.customer_name} · Le ${new Date(r.signed_at ?? Date.now()).toLocaleString("fr-FR")}`,
+      margin,
+      sigY + 5,
+    );
+    try {
+      doc.addImage(r.signature_base64, "PNG", margin, sigY + 8, 45, 20);
+    } catch {
+      // Ignore format error silently
+    }
+  }
 
   doc.save(`allotechno-${r.reference}.pdf`);
 }

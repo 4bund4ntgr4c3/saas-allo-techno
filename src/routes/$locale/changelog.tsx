@@ -37,6 +37,22 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.16 — Signature Électronique, Mode PWA Hors-Ligne & Tableau Analytique SLA (Batch 42)",
+    date: "2026-08-16",
+    added: [
+      "Composant de signature électronique tactile (src/components/ui/SignaturePad.tsx) pour validation au doigt ou à la souris sur mobile et tablette",
+      "Modale d'attestation de signature (SignatureModal.tsx) et intégration automatique du tracé de signature dans les factures et reçus PDF (invoice.ts)",
+      "Moteur PWA Offline-First (src/lib/offline-sync.ts) avec file d'attente locale et synchronisation en tâche de fond dès retour du réseau",
+      "Bandeau d'état réseau non-intrusif (OfflineBanner.tsx) et hook réactif useNetworkStatus intégré globalement dans l'application",
+      "Tableau de bord de performance SLA & analytique flotte (SlaAnalyticsDashboard.tsx) avec indicateurs MTTR (Mean Time To Repair), Uptime 99.8% et graphiques interactifs Recharts",
+      "Suite de tests E2E Playwright complète (e2e/b2b-full-flow.spec.ts) validant le parcours multi-étapes et les outils entreprise",
+    ],
+    fixed: [
+      "Persistance locale des actions techniciens terrain en cas de coupure de connectivité",
+      "Rendu dynamique et haute performance des graphiques de répartition et de tendance de maintenance",
+    ],
+  },
+  {
     version: "2026.08.16 — Alertes SLA WhatsApp, Bilan RSE Certifié PDF & Health Score (Batch 41)",
     date: "2026-08-16",
     added: [

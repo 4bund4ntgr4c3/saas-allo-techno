@@ -38,6 +38,7 @@ import {
   type Organization,
   type OrgRole,
 } from "@/lib/org.functions";
+import { SlaAnalyticsDashboard } from "@/components/b2b/analytics/SlaAnalyticsDashboard";
 
 export const Route = createFileRoute("/app/organizations/$orgId")({
   component: OrgDetail,
@@ -257,6 +258,12 @@ function OrgDetail() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* ─── SLA Analytics & Real-Time Performance Dashboard ─── */}
+          <div className="at-in" style={{ animationDelay: "120ms" }}>
+            <span className="at-eyebrow mb-3 block">Performance SLA &amp; Suivi Analytique</span>
+            <SlaAnalyticsDashboard />
           </div>
 
           {/* ─── Organization Info ─── */}
