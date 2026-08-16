@@ -70,6 +70,7 @@ import { Route as LocaleQuartiersIndexRouteImport } from './routes/$locale/quart
 import { Route as LocaleQuartiersSlugRouteImport } from './routes/$locale/quartiers.$slug'
 import { Route as LocaleReparationsIndexRouteImport } from './routes/$locale/reparations.index'
 import { Route as LocaleReparationsBrandRouteImport } from './routes/$locale/reparations.$brand'
+import { Route as LocaleWorkAtTestTechniqueRouteImport } from './routes/$locale/work-at/test-technique'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as AuthenticatedAdminAnalyticsAdvancedRouteImport } from './routes/_authenticated/admin/analytics-advanced'
@@ -417,6 +418,12 @@ const LocaleReparationsBrandRoute = LocaleReparationsBrandRouteImport.update({
   path: '/reparations/$brand',
   getParentRoute: () => LocaleRoute,
 } as any)
+const LocaleWorkAtTestTechniqueRoute =
+  LocaleWorkAtTestTechniqueRouteImport.update({
+    id: '/test-technique',
+    path: '/test-technique',
+    getParentRoute: () => LocaleWorkAtRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -688,7 +695,7 @@ export interface FileRoutesByFullPath {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
-  '/$locale/work-at': typeof LocaleWorkAtRoute
+  '/$locale/work-at': typeof LocaleWorkAtRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
@@ -711,6 +718,7 @@ export interface FileRoutesByFullPath {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/work-at/test-technique': typeof LocaleWorkAtTestTechniqueRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
   '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
@@ -789,7 +797,7 @@ export interface FileRoutesByTo {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
-  '/$locale/work-at': typeof LocaleWorkAtRoute
+  '/$locale/work-at': typeof LocaleWorkAtRouteWithChildren
   '/mon-compte': typeof AuthenticatedMonCompteRoute
   '/reviews-admin': typeof AuthenticatedReviewsAdminRoute
   '/api/cron-demo-reset': typeof ApiCronDemoResetRoute
@@ -811,6 +819,7 @@ export interface FileRoutesByTo {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/work-at/test-technique': typeof LocaleWorkAtTestTechniqueRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
   '/admin/atelier': typeof AuthenticatedAdminAtelierRoute
@@ -893,7 +902,7 @@ export interface FileRoutesById {
   '/$locale/services': typeof LocaleServicesRoute
   '/$locale/suivi': typeof LocaleSuiviRoute
   '/$locale/tarifs': typeof LocaleTarifsRoute
-  '/$locale/work-at': typeof LocaleWorkAtRoute
+  '/$locale/work-at': typeof LocaleWorkAtRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/mon-compte': typeof AuthenticatedMonCompteRoute
   '/_authenticated/reviews-admin': typeof AuthenticatedReviewsAdminRoute
@@ -916,6 +925,7 @@ export interface FileRoutesById {
   '/$locale/boutique/comparer': typeof LocaleBoutiqueComparerRoute
   '/$locale/quartiers/$slug': typeof LocaleQuartiersSlugRoute
   '/$locale/reparations/$brand': typeof LocaleReparationsBrandRoute
+  '/$locale/work-at/test-technique': typeof LocaleWorkAtTestTechniqueRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/analytics-advanced': typeof AuthenticatedAdminAnalyticsAdvancedRoute
   '/_authenticated/admin/atelier': typeof AuthenticatedAdminAtelierRoute
@@ -1021,6 +1031,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/$locale/work-at/test-technique'
     | '/admin/analytics'
     | '/admin/analytics-advanced'
     | '/admin/atelier'
@@ -1121,6 +1132,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/$locale/work-at/test-technique'
     | '/admin/analytics'
     | '/admin/analytics-advanced'
     | '/admin/atelier'
@@ -1225,6 +1237,7 @@ export interface FileRouteTypes {
     | '/$locale/boutique/comparer'
     | '/$locale/quartiers/$slug'
     | '/$locale/reparations/$brand'
+    | '/$locale/work-at/test-technique'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/analytics-advanced'
     | '/_authenticated/admin/atelier'
@@ -1721,6 +1734,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleReparationsBrandRouteImport
       parentRoute: typeof LocaleRoute
     }
+    '/$locale/work-at/test-technique': {
+      id: '/$locale/work-at/test-technique'
+      path: '/test-technique'
+      fullPath: '/$locale/work-at/test-technique'
+      preLoaderRoute: typeof LocaleWorkAtTestTechniqueRouteImport
+      parentRoute: typeof LocaleWorkAtRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -2100,6 +2120,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface LocaleWorkAtRouteChildren {
+  LocaleWorkAtTestTechniqueRoute: typeof LocaleWorkAtTestTechniqueRoute
+}
+
+const LocaleWorkAtRouteChildren: LocaleWorkAtRouteChildren = {
+  LocaleWorkAtTestTechniqueRoute: LocaleWorkAtTestTechniqueRoute,
+}
+
+const LocaleWorkAtRouteWithChildren = LocaleWorkAtRoute._addFileChildren(
+  LocaleWorkAtRouteChildren,
+)
+
 interface LocaleRouteChildren {
   LocaleAboutRoute: typeof LocaleAboutRoute
   LocaleAvisRoute: typeof LocaleAvisRoute
@@ -2128,7 +2160,7 @@ interface LocaleRouteChildren {
   LocaleServicesRoute: typeof LocaleServicesRoute
   LocaleSuiviRoute: typeof LocaleSuiviRoute
   LocaleTarifsRoute: typeof LocaleTarifsRoute
-  LocaleWorkAtRoute: typeof LocaleWorkAtRoute
+  LocaleWorkAtRoute: typeof LocaleWorkAtRouteWithChildren
   LocaleIndexRoute: typeof LocaleIndexRoute
   LocaleAppareilSlugRoute: typeof LocaleAppareilSlugRoute
   LocaleBlogSlugRoute: typeof LocaleBlogSlugRoute
@@ -2170,7 +2202,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleServicesRoute: LocaleServicesRoute,
   LocaleSuiviRoute: LocaleSuiviRoute,
   LocaleTarifsRoute: LocaleTarifsRoute,
-  LocaleWorkAtRoute: LocaleWorkAtRoute,
+  LocaleWorkAtRoute: LocaleWorkAtRouteWithChildren,
   LocaleIndexRoute: LocaleIndexRoute,
   LocaleAppareilSlugRoute: LocaleAppareilSlugRoute,
   LocaleBlogSlugRoute: LocaleBlogSlugRoute,

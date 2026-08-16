@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Suivi Coursier GPS, Destruction Sécurisée NIST, Test Recrutement Technicien & Diagnostic IA (Batch 48)",
+    date: "2026-08-17",
+    added: [
+      "Composant de suivi en direct du coursier express (CourierLiveTrackerModal.tsx) avec trajet Cotonou/Calavi, progression temps réel et contact direct",
+      "Générateur officiel de Certificat de Destruction Sécurisée des Données & DEEE (data-destruction-certificate-pdf.ts) conforme NIST SP 800-88 et DoD 5220.22-M pour DSI et banques",
+      "Portail d'évaluation technique et QCM de recrutement en micro-soudure (src/routes/$locale/work-at/test-technique.tsx) avec score immédiat et candidature WhatsApp",
+      "Assistant de diagnostic prédictif guidé par IA (AiDiagnosticAssistant.tsx, ai-diagnostic.functions.ts) analysant les descriptions de pannes et chiffrant les devis estimatifs",
+    ],
+    fixed: [
+      "Calcul des scores d'évaluation technique avec explications pédagogiques détaillées",
+      "Sécurisation des attestations de destruction de supports de stockage avec jeton APDP certifié",
+    ],
+  },
+  {
     version: "2026.08.17 — Programme Parrainage MoMo, Audit Énergétique SBEE, Premiers Secours SAV & Passerelle SMS (Batch 47)",
     date: "2026-08-17",
     added: [
