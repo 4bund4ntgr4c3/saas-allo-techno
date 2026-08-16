@@ -5,6 +5,7 @@ import { CtaBand, SectionHeader, TrustStats } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
 import { B2BRequestForm } from "@/components/site/B2BRequestForm";
 import type { SlaFormulaType } from "@/components/site/B2BRequestForm";
+import { CoverageZoneEstimator } from "@/components/site/CoverageZoneEstimator";
 import { COMPANY, formatFcfa } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -208,6 +209,13 @@ function Entreprises() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ─── Coverage & Fast Courier Arrival Estimator ─── */}
+      <section className="border-t border-border py-10 sm:py-14 bg-surface/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <CoverageZoneEstimator />
         </div>
       </section>
 

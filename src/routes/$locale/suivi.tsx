@@ -40,6 +40,7 @@ import { normalizeLocale } from "@/lib/i18n/locales";
 import { trackPlausibleEvent } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
+import { COMPANY } from "@/data/catalog/company";
 
 export const Route = createFileRoute("/$locale/suivi")({
   validateSearch: (
@@ -649,6 +650,21 @@ function StatusResult({
           <Link to="/$locale/reservation" params={{ locale }}>
             {t("suivi.new")}
           </Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          className="border-emerald-600/40 text-emerald-700 hover:bg-emerald-600 hover:text-white"
+        >
+          <a
+            href={`https://wa.me/${COMPANY.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
+              `Bonjour l'équipe Allô Techno, je vous contacte concernant mon dossier de réparation référence ${result.reference} (${result.device}).`,
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Contacter l'Atelier sur WhatsApp &rarr;
+          </a>
         </Button>
       </div>
 

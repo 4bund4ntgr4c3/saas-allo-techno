@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.16 — Impression Thermique 58/80mm, Suivi Client WhatsApp & Audit Sécurité APDP (Batch 43)",
+    date: "2026-08-16",
+    added: [
+      "Générateur d'impression de reçus thermiques de caisse ESC/POS 58mm/80mm (src/lib/thermal-receipt.ts) avec QR code de suivi scannable direct",
+      "Bouton d'assistance WhatsApp directe avec référence et contexte pré-remplis sur la page de suivi client (/fr/suivi)",
+      "Module d'estimation cartographique des délais d'intervention coursier et technicien par quartier (CoverageZoneEstimator.tsx, locations.ts)",
+      "Journal d'audit de sécurité et export de conformité APDP / RGPD (org-audit.functions.ts) pour la traçabilité des accès et actions sensibles",
+    ],
+    fixed: [
+      "Formatage optimisé pour imprimantes thermiques de comptoir sans marge inutile",
+      "Calcul précis des temps de parcours pour le Grand Cotonou, Abomey-Calavi et Porto-Novo",
+    ],
+  },
+  {
     version: "2026.08.16 — Signature Électronique, Mode PWA Hors-Ligne & Tableau Analytique SLA (Batch 42)",
     date: "2026-08-16",
     added: [
