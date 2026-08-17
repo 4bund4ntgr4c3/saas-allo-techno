@@ -24,6 +24,7 @@ import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
 import { Route as LocaleChangelogRouteImport } from './routes/$locale/changelog'
 import { Route as LocaleCheckoutRouteImport } from './routes/$locale/checkout'
 import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
+import { Route as LocaleDepannageDomicileRouteImport } from './routes/$locale/depannage-domicile'
 import { Route as LocaleDevisRouteImport } from './routes/$locale/devis'
 import { Route as LocaleDiagnosticAutoRouteImport } from './routes/$locale/diagnostic-auto'
 import { Route as LocaleEngagementsRouteImport } from './routes/$locale/engagements'
@@ -189,6 +190,11 @@ const LocaleCheckoutRoute = LocaleCheckoutRouteImport.update({
 const LocaleContactRoute = LocaleContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleDepannageDomicileRoute = LocaleDepannageDomicileRouteImport.update({
+  id: '/depannage-domicile',
+  path: '/depannage-domicile',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleDevisRoute = LocaleDevisRouteImport.update({
@@ -699,6 +705,7 @@ export interface FileRoutesByFullPath {
   '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/depannage-domicile': typeof LocaleDepannageDomicileRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -805,6 +812,7 @@ export interface FileRoutesByTo {
   '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/depannage-domicile': typeof LocaleDepannageDomicileRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -914,6 +922,7 @@ export interface FileRoutesById {
   '/$locale/changelog': typeof LocaleChangelogRoute
   '/$locale/checkout': typeof LocaleCheckoutRoute
   '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/depannage-domicile': typeof LocaleDepannageDomicileRoute
   '/$locale/devis': typeof LocaleDevisRoute
   '/$locale/diagnostic-auto': typeof LocaleDiagnosticAutoRoute
   '/$locale/engagements': typeof LocaleEngagementsRoute
@@ -1024,6 +1033,7 @@ export interface FileRouteTypes {
     | '/$locale/changelog'
     | '/$locale/checkout'
     | '/$locale/contact'
+    | '/$locale/depannage-domicile'
     | '/$locale/devis'
     | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
@@ -1130,6 +1140,7 @@ export interface FileRouteTypes {
     | '/$locale/changelog'
     | '/$locale/checkout'
     | '/$locale/contact'
+    | '/$locale/depannage-domicile'
     | '/$locale/devis'
     | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
@@ -1238,6 +1249,7 @@ export interface FileRouteTypes {
     | '/$locale/changelog'
     | '/$locale/checkout'
     | '/$locale/contact'
+    | '/$locale/depannage-domicile'
     | '/$locale/devis'
     | '/$locale/diagnostic-auto'
     | '/$locale/engagements'
@@ -1459,6 +1471,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/$locale/contact'
       preLoaderRoute: typeof LocaleContactRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/depannage-domicile': {
+      id: '/$locale/depannage-domicile'
+      path: '/depannage-domicile'
+      fullPath: '/$locale/depannage-domicile'
+      preLoaderRoute: typeof LocaleDepannageDomicileRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/devis': {
@@ -2217,6 +2236,7 @@ interface LocaleRouteChildren {
   LocaleChangelogRoute: typeof LocaleChangelogRoute
   LocaleCheckoutRoute: typeof LocaleCheckoutRoute
   LocaleContactRoute: typeof LocaleContactRoute
+  LocaleDepannageDomicileRoute: typeof LocaleDepannageDomicileRoute
   LocaleDevisRoute: typeof LocaleDevisRoute
   LocaleDiagnosticAutoRoute: typeof LocaleDiagnosticAutoRoute
   LocaleEngagementsRoute: typeof LocaleEngagementsRoute
@@ -2262,6 +2282,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleChangelogRoute: LocaleChangelogRoute,
   LocaleCheckoutRoute: LocaleCheckoutRoute,
   LocaleContactRoute: LocaleContactRoute,
+  LocaleDepannageDomicileRoute: LocaleDepannageDomicileRoute,
   LocaleDevisRoute: LocaleDevisRoute,
   LocaleDiagnosticAutoRoute: LocaleDiagnosticAutoRoute,
   LocaleEngagementsRoute: LocaleEngagementsRoute,

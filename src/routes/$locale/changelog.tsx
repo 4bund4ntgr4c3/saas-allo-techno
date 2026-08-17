@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Dépannage VIP Domicile, Export Inventaire Excel, Rachat Flotte & Import Pièces (Batch 56)",
+    date: "2026-08-17",
+    added: [
+      "Réservation d'interventions de dépannage informatique mobile VIP à domicile et bureau (home-repair-booking.functions.ts, src/routes/$locale/depannage-domicile.tsx)",
+      "Module d'exportation d'inventaire complet de parc informatique au format Excel XLSX (equipment-inventory-export.ts) avec scores de santé et garanties",
+      "Estimateur de rachat cash et reprise financière en bloc de flottes informatiques d'entreprise (FleetBuybackEstimator.tsx) avec bonus avoir flotte de +15%",
+      "Simulateur de fret aérien et importation express de pièces détachées rares (CustomPartsImportModal.tsx) depuis Paris, Dubaï et Shenzhen sous 3 à 8 jours",
+    ],
+    fixed: [
+      "Auto-scroll vers le haut du formulaire lors des transitions d'étapes sur le portail mobile",
+      "Largeurs de colonnes optimisées sur le classeur Excel d'inventaire DSI",
+    ],
+  },
+  {
     version: "2026.08.17 — Auto-Diagnostic Navigateur, Certificat Fiscal DEEE, Usure Harmattan & Plan 3-2-1 (Batch 55)",
     date: "2026-08-17",
     added: [
