@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface SharedSparePart {
   partId: string;
@@ -55,6 +56,9 @@ export const MOCK_SHARED_SPARES: SharedSparePart[] = [
 
 export const getSharedSparesCatalogFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ spares: SharedSparePart[]; totalStockUnits: number }> => {
+    if (!(await rateLimit("get-shared-spares-catalog", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalUnits = MOCK_SHARED_SPARES.reduce((sum, p) => sum + p.quantityAvailable, 0);
     return {
       spares: MOCK_SHARED_SPARES,

@@ -147,6 +147,48 @@ async function processSyncQueue() {
   await tx.done;
 }
 
+/* ── Web Push ────────────────────────────────────────────────────── */
+
+self.addEventListener("push", (event) => {
+  let data = { title: "Allô Techno Africa", body: "Nouvelle notification", url: "/" };
+  if (event.data) {
+    try {
+      data = Object.assign(data, event.data.json());
+    } catch {
+      /* payload non-JSON : titre par défaut */
+    }
+  }
+  const title = String(data.title || "Allô Techno Africa");
+  const body = String(data.body || "");
+  const url = String(data.url || "/");
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: "/favicon.ico",
+      badge: "/favicon.ico",
+      data: { url },
+      tag: "at-push",
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url =
+    event.notification.data && event.notification.data.url ? event.notification.data.url : "/";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const client of list) {
+        if ("focus" in client && client.url.startsWith(self.location.origin)) {
+          if ("navigate" in client) client.navigate(url);
+          return client.focus();
+        }
+      }
+      return clients.openWindow(url);
+    }),
+  );
+});
+
 /* ── Fetch router ────────────────────────────────────────────────── */
 
 self.addEventListener("fetch", (event) => {

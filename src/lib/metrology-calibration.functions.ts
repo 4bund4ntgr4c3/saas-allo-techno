@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface CalibrationRecord {
   equipmentId: string;
@@ -55,6 +56,9 @@ export const MOCK_CALIBRATIONS: CalibrationRecord[] = [
 
 export const getMetrologyRecordsFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ records: CalibrationRecord[]; overallCompliancePercent: number }> => {
+    if (!(await rateLimit("get-metrology-records", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       records: MOCK_CALIBRATIONS,
       overallCompliancePercent: 100,

@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface TechIncentiveProfile {
   technicianId: string;
@@ -52,6 +53,9 @@ export const MOCK_TECH_INCENTIVES: TechIncentiveProfile[] = [
 
 export const getTechIncentivesLeaderboardFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ technicians: TechIncentiveProfile[]; totalCommissionsPoolFcfa: number }> => {
+    if (!(await rateLimit("get-tech-incentives-leaderboard", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalPool = MOCK_TECH_INCENTIVES.reduce((sum, t) => sum + t.totalCommissionEarnedFcfa, 0);
     return {
       technicians: MOCK_TECH_INCENTIVES.sort(

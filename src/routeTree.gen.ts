@@ -61,6 +61,7 @@ import { Route as ApiFlutterwaveWebhookRouteImport } from './routes/api.flutterw
 import { Route as ApiHealthzRouteImport } from './routes/api.healthz'
 import { Route as ApiIcalRouteImport } from './routes/api.ical'
 import { Route as ApiKkiapayWebhookRouteImport } from './routes/api.kkiapay-webhook'
+import { Route as ApiPushSendRouteImport } from './routes/api.push-send'
 import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscribe'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppGroupDashboardRouteImport } from './routes/app.group-dashboard'
@@ -379,6 +380,11 @@ const ApiIcalRoute = ApiIcalRouteImport.update({
 const ApiKkiapayWebhookRoute = ApiKkiapayWebhookRouteImport.update({
   id: '/api/kkiapay-webhook',
   path: '/api/kkiapay-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPushSendRoute = ApiPushSendRouteImport.update({
+  id: '/api/push-send',
+  path: '/api/push-send',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPushSubscribeRoute = ApiPushSubscribeRouteImport.update({
@@ -756,6 +762,7 @@ export interface FileRoutesByFullPath {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-send': typeof ApiPushSendRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
@@ -864,6 +871,7 @@ export interface FileRoutesByTo {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-send': typeof ApiPushSendRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
@@ -977,6 +985,7 @@ export interface FileRoutesById {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/ical': typeof ApiIcalRoute
   '/api/kkiapay-webhook': typeof ApiKkiapayWebhookRoute
+  '/api/push-send': typeof ApiPushSendRoute
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
@@ -1090,6 +1099,7 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/ical'
     | '/api/kkiapay-webhook'
+    | '/api/push-send'
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
@@ -1198,6 +1208,7 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/ical'
     | '/api/kkiapay-webhook'
+    | '/api/push-send'
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
@@ -1310,6 +1321,7 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/ical'
     | '/api/kkiapay-webhook'
+    | '/api/push-send'
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
@@ -1387,6 +1399,7 @@ export interface RootRouteChildren {
   ApiHealthzRoute: typeof ApiHealthzRoute
   ApiIcalRoute: typeof ApiIcalRoute
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
+  ApiPushSendRoute: typeof ApiPushSendRoute
   ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
@@ -1756,6 +1769,13 @@ declare module '@tanstack/react-router' {
       path: '/api/kkiapay-webhook'
       fullPath: '/api/kkiapay-webhook'
       preLoaderRoute: typeof ApiKkiapayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/push-send': {
+      id: '/api/push-send'
+      path: '/api/push-send'
+      fullPath: '/api/push-send'
+      preLoaderRoute: typeof ApiPushSendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/push-subscribe': {
@@ -2453,6 +2473,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthzRoute: ApiHealthzRoute,
   ApiIcalRoute: ApiIcalRoute,
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
+  ApiPushSendRoute: ApiPushSendRoute,
   ApiPushSubscribeRoute: ApiPushSubscribeRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,

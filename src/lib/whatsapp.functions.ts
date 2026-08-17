@@ -25,7 +25,7 @@ export const sendWhatsAppTicketNotificationFn = createServerFn({ method: "POST" 
   )
   .handler(
     async ({ data }): Promise<{ success: boolean; whatsappUrl: string; messageText: string }> => {
-      if (!(await rateLimit("send-whats-app-ticket-notification-fn", 10))) {
+      if (!(await rateLimit("send-whats-app-ticket-notification", 10))) {
         throw new Error("Trop de demandes. Réessayez dans une minute.");
       }
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

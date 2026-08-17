@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface EscrowListing {
   listingId: string;
@@ -58,6 +59,9 @@ export const MOCK_ESCROW_LISTINGS: EscrowListing[] = [
 
 export const getEscrowListingsFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ listings: EscrowListing[]; totalVerifiedCount: number }> => {
+    if (!(await rateLimit("get-escrow-listings", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       listings: MOCK_ESCROW_LISTINGS,
       totalVerifiedCount: MOCK_ESCROW_LISTINGS.length,

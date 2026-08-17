@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface StockItemAlert {
   id: string;
@@ -71,6 +72,9 @@ export const getLowStockAlertsFn = createServerFn({ method: "POST" }).handler(
     urgentCount: number;
     totalRestockBudgetFcfa: number;
   }> => {
+    if (!(await rateLimit("get-low-stock-alerts", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const urgentCount = MOCK_STOCK_ALERTS.filter(
       (item) => item.currentStock <= item.minThreshold / 2,
     ).length;
@@ -98,6 +102,9 @@ export const triggerSupplierRestockOrderFn = createServerFn({ method: "POST" })
     async ({
       data: input,
     }): Promise<{ success: boolean; purchaseOrderId: string; message: string }> => {
+      if (!(await rateLimit("trigger-supplier-restock-order", 10))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       return {
         success: true,
         purchaseOrderId: `PO-SUPPLIER-${Date.now().toString().slice(-6)}`,

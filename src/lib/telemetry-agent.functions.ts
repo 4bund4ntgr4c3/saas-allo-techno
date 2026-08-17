@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface TelemetryEndpoint {
   deviceId: string;
@@ -87,6 +88,9 @@ export const getLiveTelemetryFleetFn = createServerFn({ method: "POST" }).handle
     criticalCount: number;
     fleetHealthAverage: number;
   }> => {
+    if (!(await rateLimit("get-live-telemetry-fleet", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       endpoints: MOCK_TELEMETRY_DATA,
       criticalCount: MOCK_TELEMETRY_DATA.filter((e) => e.riskStatus === "critique").length,

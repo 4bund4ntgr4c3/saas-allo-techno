@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface AiDiagnosticResult {
   detectedIssue: string;
@@ -24,6 +25,9 @@ export const analyzeDeviceSymptomFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<AiDiagnosticResult> => {
+    if (!(await rateLimit("analyze-device-symptom", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const text = input.symptomDescription.toLowerCase();
 
     // 1. Détection de liquide / eau

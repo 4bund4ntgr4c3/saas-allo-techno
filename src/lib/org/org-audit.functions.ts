@@ -6,6 +6,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { orgClient } from "./org-client";
+import { rateLimit } from "@/lib/security";
 
 export interface OrgAuditLogEntry {
   id: string;
@@ -29,6 +30,9 @@ export const getOrgSecurityAuditLogsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<OrgAuditLogEntry[]> => {
+    if (!(await rateLimit("get-org-security-audit-logs", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
 
     const { data, error } = await client
@@ -104,6 +108,9 @@ export const exportOrgSecurityAuditCsvFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<{ csvContent: string; count: number }> => {
+    if (!(await rateLimit("export-org-security-audit-csv", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const logs: OrgAuditLogEntry[] = await getOrgSecurityAuditLogsFn({
       data: { org_id: input.org_id, limit: 100 },
     });

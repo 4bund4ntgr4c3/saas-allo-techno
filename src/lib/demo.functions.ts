@@ -517,7 +517,7 @@ export async function resetAndSeedDemoEnvironment(): Promise<{
 }
 
 export const resetDemoEnvironmentFn = createServerFn({ method: "POST" }).handler(async () => {
-  if (!(await rateLimit("reset-demo-environment-fn", 20))) {
+  if (!(await rateLimit("reset-demo-environment", 20))) {
     throw new Error("Trop de demandes. Réessayez dans une minute.");
   }
   return await resetAndSeedDemoEnvironment();

@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface PosLineItem {
   id: string;
@@ -47,6 +48,9 @@ export const processPosCheckoutFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<PosTransactionResult> => {
+    if (!(await rateLimit("process-pos-checkout", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const total = input.items.reduce((sum, item) => sum + item.unitPriceFcfa * item.quantity, 0);
     const totalPaid = input.cashReceivedFcfa + input.momoReceivedFcfa + input.cardReceivedFcfa;
     const changeDue = Math.max(0, totalPaid - total);

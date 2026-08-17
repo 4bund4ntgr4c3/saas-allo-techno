@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface TechnicianWorkload {
   technicianId: string;
@@ -60,6 +61,9 @@ export const getSmartDispatchQueueFn = createServerFn({ method: "POST" }).handle
     technicians: TechnicianWorkload[];
     activeDispatches: DispatchedTicket[];
   }> => {
+    if (!(await rateLimit("get-smart-dispatch-queue", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       technicians: MOCK_TECHNICIANS,
       activeDispatches: [

@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface BoardAnalysisResult {
   analysisId: string;
@@ -33,6 +34,9 @@ export const analyzeMotherboardImageFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<BoardAnalysisResult> => {
+    if (!(await rateLimit("analyze-motherboard-image", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const isApple = input.imageSampleId.includes("mac");
     return {
       analysisId: `VISION-${Date.now().toString().slice(-6)}`,

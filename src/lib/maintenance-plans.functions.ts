@@ -17,7 +17,7 @@ export type MaintenancePlanItem = {
 export const getMaintenancePlansFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ orgId: z.string() }).parse(data))
   .handler(async ({ data }): Promise<MaintenancePlanItem[]> => {
-    if (!(await rateLimit("get-maintenance-plans-fn", 60))) {
+    if (!(await rateLimit("get-maintenance-plans", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { orgId } = data;

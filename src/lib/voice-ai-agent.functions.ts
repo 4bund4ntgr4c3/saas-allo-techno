@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface VoiceAiResponse {
   sessionId: string;
@@ -26,6 +27,9 @@ export const processVoiceQueryFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<VoiceAiResponse> => {
+    if (!(await rateLimit("process-voice-query", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const text = input.audioTranscript.toLowerCase();
     const isFon = input.language === "fon";
 

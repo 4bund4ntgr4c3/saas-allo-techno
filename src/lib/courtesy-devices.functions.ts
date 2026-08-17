@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface CourtesyDevice {
   id: string;
@@ -64,6 +65,9 @@ export const getAvailableCourtesyDevicesFn = createServerFn({ method: "POST" }).
   async (): Promise<{
     devices: CourtesyDevice[];
   }> => {
+    if (!(await rateLimit("get-available-courtesy-devices", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       devices: COURTESY_FLEET,
     };
@@ -83,6 +87,9 @@ export const bookCourtesyDeviceFn = createServerFn({ method: "POST" })
     async ({
       data: input,
     }): Promise<{ success: boolean; loanContractRef: string; message: string }> => {
+      if (!(await rateLimit("book-courtesy-device", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const loanRef = `LOAN-${Date.now().toString().slice(-6)}`;
       return {
         success: true,

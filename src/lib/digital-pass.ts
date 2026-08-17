@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface DigitalLoyaltyCard {
   cardId: string;
@@ -25,6 +26,9 @@ export const getDigitalLoyaltyCardFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<DigitalLoyaltyCard> => {
+    if (!(await rateLimit("get-digital-loyalty-card", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const memberNo = `ATC-${input.phone.replace(/\D/g, "").slice(-4)}`;
     return {
       cardId: `PASS-WALLET-${Date.now().toString().slice(-6)}`,

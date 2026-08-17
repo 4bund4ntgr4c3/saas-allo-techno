@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { orgClient } from "./org-client";
+import { rateLimit } from "@/lib/security";
 
 export interface OrgInvoice {
   id: string;
@@ -24,6 +25,9 @@ export const getOrgInvoices = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }): Promise<OrgInvoice[]> => {
+    if (!(await rateLimit("g-et-or-gi-nv-oi-ce-s", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: invoices, error } = await client
       .from("organization_invoices" as never)
@@ -45,6 +49,9 @@ export const createOrgInvoice = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("c-re-at-eo-rg-in-vo-ic-e", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: reservations } = await client
       .from("reservations")
@@ -112,6 +119,9 @@ export const getOrgMaintenanceSchedules = createServerFn({ method: "POST" })
     return { org_id };
   })
   .handler(async ({ data }): Promise<EquipmentMaintenanceSchedule[]> => {
+    if (!(await rateLimit("g-et-or-gm-ai-nt-en-an-ce-sc-he-du-le-s", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: schedules, error } = await client
       .from("equipment_maintenance_schedules" as never)
@@ -138,6 +148,9 @@ export const scheduleMaintenance = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("s-ch-ed-ul-em-ai-nt-en-an-ce", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: schedule, error } = await client
       .from("equipment_maintenance_schedules" as never)
@@ -167,6 +180,9 @@ export const completeMaintenanceTask = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("c-om-pl-et-em-ai-nt-en-an-ce-ta-sk", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const now = new Date();
     const nextDate = new Date(now);
     nextDate.setMonth(nextDate.getMonth() + 3);

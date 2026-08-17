@@ -21,7 +21,7 @@ export const getB2bAuditLogsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<AuditLogEntry[]> => {
-    if (!(await rateLimit("get-b2b-audit-logs-fn", 20))) {
+    if (!(await rateLimit("get-b2b-audit-logs", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

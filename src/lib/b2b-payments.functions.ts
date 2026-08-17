@@ -27,7 +27,7 @@ export const initiateSlaPaymentFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data }) => {
-    if (!(await rateLimit("initiate-sla-payment-fn", 10))) {
+    if (!(await rateLimit("initiate-sla-payment", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

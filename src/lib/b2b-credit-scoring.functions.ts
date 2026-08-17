@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface CreditScoringResult {
   scoreRating: "AAA (Excellent)" | "AA (Très Solvable)" | "A (Solvable)" | "B (Garantie Requise)";
@@ -29,6 +30,9 @@ export const evaluateB2bCreditLineFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<CreditScoringResult> => {
+    if (!(await rateLimit("evaluate-b2b-credit-line", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const isLargeCorp = input.annualRevenueBracket === "plus_200m";
     const creditApproved = isLargeCorp
       ? Math.min(input.requestedCreditFcfa, 5000000)

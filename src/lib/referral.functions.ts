@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface ReferralStats {
   referralCode: string;
@@ -30,6 +31,9 @@ export const getReferralStatsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<ReferralStats> => {
+    if (!(await rateLimit("get-referral-stats", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const code = `AT-${input.userPhone.replace(/\D/g, "").slice(-4)}`;
     return {
       referralCode: code,
@@ -77,6 +81,9 @@ export const requestPayoutMomoFn = createServerFn({ method: "POST" })
   )
   .handler(
     async ({ data: input }): Promise<{ success: boolean; payoutId: string; message: string }> => {
+      if (!(await rateLimit("request-payout-momo", 10))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       return {
         success: true,
         payoutId: `PAYOUT-MOMO-${Date.now().toString().slice(-6)}`,

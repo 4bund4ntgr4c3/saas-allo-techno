@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface NetworkScanReport {
   scanId: string;
@@ -33,6 +34,9 @@ export const runNetworkSecurityScanFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<NetworkScanReport> => {
+    if (!(await rateLimit("run-network-security-scan", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       scanId: `NETSCAN-${Date.now().toString().slice(-6)}`,
       targetSubnet: input.targetSubnet,

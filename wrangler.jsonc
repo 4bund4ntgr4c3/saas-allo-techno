@@ -21,4 +21,14 @@
   //   { "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }
   // ]
   // Le code src/lib/security.ts utilisera KV automatiquement si le binding existe.
+  //
+  // Notifications Web Push (RFC 8291/8292) — obligatoire pour /api/push-send :
+  // npx web-push generate-vapid-keys --json  →  puis :
+  // wrangler secret put VAPID_PUBLIC_KEY
+  // wrangler secret put VAPID_PRIVATE_KEY
+  // La clé publique VAPID doit aussi être exposée au client en var non secrète
+  // VITE_VAPID_PUBLIC_KEY (src/lib/push-notifications.ts) pour l'abonnement.
+  //
+  // SMS transactionnels (Termii) — sinon les SMS sont simulés (log seulement) :
+  // wrangler secret put TERMII_API_KEY
 }

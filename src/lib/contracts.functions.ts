@@ -20,7 +20,7 @@ export type B2BContract = {
 export const getOrgContractFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ orgId: z.string() }).parse(data))
   .handler(async ({ data }): Promise<B2BContract | null> => {
-    if (!(await rateLimit("get-org-contract-fn", 60))) {
+    if (!(await rateLimit("get-org-contract", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { orgId } = data;

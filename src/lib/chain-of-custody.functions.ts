@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface EvidenceTransferEvent {
   eventId: string;
@@ -50,6 +51,9 @@ export const MOCK_EVIDENCE_RECORDS: EvidenceTransferEvent[] = [
 
 export const getChainOfCustodyLogsFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ records: EvidenceTransferEvent[]; totalActiveEvidence: number }> => {
+    if (!(await rateLimit("get-chain-of-custody-logs", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       records: MOCK_EVIDENCE_RECORDS,
       totalActiveEvidence: MOCK_EVIDENCE_RECORDS.length,

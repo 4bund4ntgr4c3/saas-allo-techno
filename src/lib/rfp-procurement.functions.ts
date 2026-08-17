@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface RfpRequirement {
   id: string;
@@ -80,6 +81,9 @@ export const submitB2bRfpConsultationFn = createServerFn({ method: "POST" })
       tco: ReturnType<typeof calculateFleetTco>;
       message: string;
     }> => {
+      if (!(await rateLimit("submit-b2b-rfp-consultation", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const rfpId = `RFP-${Date.now().toString().slice(-6)}`;
       const unitCost = Math.round(input.targetBudgetFcfa / input.laptopCount);
       const tco = calculateFleetTco(input.laptopCount, unitCost, input.includeEnergyEfficiency);

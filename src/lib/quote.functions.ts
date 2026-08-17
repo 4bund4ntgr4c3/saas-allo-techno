@@ -199,7 +199,7 @@ const quoteChoiceSchema = z.object({
 export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ reference: z.string().min(3) }).parse(data))
   .handler(async ({ data }): Promise<MultiOptionQuote | null> => {
-    if (!(await rateLimit("get-multi-option-quote-fn", 10))) {
+    if (!(await rateLimit("get-multi-option-quote", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { reference } = data;
@@ -243,7 +243,7 @@ export const getMultiOptionQuoteFn = createServerFn({ method: "POST" })
 export const acceptMultiOptionQuoteFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => quoteChoiceSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!(await rateLimit("accept-multi-option-quote-fn", 10))) {
+    if (!(await rateLimit("accept-multi-option-quote", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { reference, optionId } = data;

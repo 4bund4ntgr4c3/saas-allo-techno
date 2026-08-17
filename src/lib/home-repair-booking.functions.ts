@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface HomeRepairBooking {
   bookingId: string;
@@ -37,6 +38,9 @@ export const bookHomeRepairFn = createServerFn({ method: "POST" })
   )
   .handler(
     async ({ data: input }): Promise<{ success: boolean; bookingId: string; message: string }> => {
+      if (!(await rateLimit("book-home-repair", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const bookingId = `VIP-HOME-${Date.now().toString().slice(-6)}`;
       return {
         success: true,

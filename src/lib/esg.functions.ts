@@ -18,7 +18,7 @@ export const getOrgEsgMetricsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<EsgMetrics> => {
-    if (!(await rateLimit("get-org-esg-metrics-fn", 60))) {
+    if (!(await rateLimit("get-org-esg-metrics", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     // Standard ESG / Carbon Footprint Metrics for Electronics Repair

@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface RecurringSubscription {
   subscriptionId: string;
@@ -51,6 +52,9 @@ export const getB2bSubscriptionsFn = createServerFn({ method: "POST" }).handler(
     totalMrrFcfa: number;
     collectionRatePercent: number;
   }> => {
+    if (!(await rateLimit("get-b2b-subscriptions", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalMrr = MOCK_SUBSCRIPTIONS.reduce((acc, sub) => acc + sub.monthlyAmountFcfa, 0);
     return {
       subscriptions: MOCK_SUBSCRIPTIONS,

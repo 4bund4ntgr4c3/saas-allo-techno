@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { Enums } from "@/integrations/supabase/types";
 import { orgClient, rpcArgs } from "./org-client";
+import { rateLimit } from "@/lib/security";
 
 export type B2BTicketType = Enums<"b2b_ticket_type">;
 export type B2BTicketPriority = Enums<"b2b_ticket_priority">;
@@ -95,6 +96,9 @@ export const createB2BTicket = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("c-re-at-eb2-bt-ic-ke-t", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: ticket, error } = await client.rpc(
       "create_b2b_ticket",
@@ -132,6 +136,9 @@ export const getOrgTickets = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("g-et-or-gt-ic-ke-ts", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: rows, error } = await client.rpc(
       "get_org_tickets",
@@ -153,6 +160,9 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     return { ticket_id };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("g-et-or-gt-ic-ke-t", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const client = await orgClient();
     const { data: detail, error } = await client.rpc("get_org_ticket", {
       _ticket_id: data.ticket_id,
@@ -217,6 +227,9 @@ export const getB2BTicketUpload = createServerFn({ method: "POST" })
     return { ticket_id, ext, kind };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("g-et-b2-bt-ic-ke-tu-pl-oa-d", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     await assertTicketAccess(data.ticket_id);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const id = crypto.randomUUID();
@@ -243,6 +256,12 @@ export const attachB2BTicketFile = createServerFn({ method: "POST" })
     return { ticket_id, path: path.trim(), kind, caption: caption ?? undefined };
   })
   .handler(async ({ data }) => {
+    if (!(await rateLimit("g-et-b2-bt-ic-ke-ta-tt-ac-hm-en-tu-rl-s", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
+    if (!(await rateLimit("a-tt-ac-hb2-bt-ic-ke-tf-il-e", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     await assertTicketAccess(data.ticket_id);
     const client = await orgClient();
     const { error } = await client.from("reservation_attachments").insert({

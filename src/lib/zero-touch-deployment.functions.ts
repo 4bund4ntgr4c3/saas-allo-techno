@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface AutoDeployProfile {
   profileId: string;
@@ -33,6 +34,9 @@ export const submitAutoDeployBatchFn = createServerFn({ method: "POST" })
   )
   .handler(
     async ({ data: input }): Promise<{ success: boolean; batchId: string; message: string }> => {
+      if (!(await rateLimit("submit-auto-deploy-batch", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const batchId = `DEPLOY-${Date.now().toString().slice(-6)}`;
       return {
         success: true,

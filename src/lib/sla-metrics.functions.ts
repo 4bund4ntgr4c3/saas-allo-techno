@@ -24,7 +24,7 @@ export const getSlaPerformanceMetricsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<SlaPerformanceMetrics> => {
-    if (!(await rateLimit("get-sla-performance-metrics-fn", 60))) {
+    if (!(await rateLimit("get-sla-performance-metrics", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

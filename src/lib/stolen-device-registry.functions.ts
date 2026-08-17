@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface StolenDeviceRecord {
   serialNumber: string;
@@ -45,6 +46,9 @@ export const checkDeviceStolenStatusFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<StolenDeviceRecord> => {
+    if (!(await rateLimit("check-device-stolen-status", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const cleanSn = input.serialNumber.trim().toUpperCase();
     const record = MOCK_STOLEN_DATABASE[cleanSn];
 
@@ -73,6 +77,9 @@ export const reportStolenDeviceFn = createServerFn({ method: "POST" })
     async ({
       data: input,
     }): Promise<{ success: boolean; registryToken: string; message: string }> => {
+      if (!(await rateLimit("report-stolen-device", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const token = `ALERT-ANTI-RECEL-${Date.now().toString().slice(-6)}`;
       return {
         success: true,

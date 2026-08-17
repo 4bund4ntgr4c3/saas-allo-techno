@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface PrivacyRecord {
   recordId: string;
@@ -41,6 +42,9 @@ export const MOCK_PRIVACY_VAULT: PrivacyRecord[] = [
 
 export const getPrivacyRecordsFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ records: PrivacyRecord[]; totalSealedCount: number }> => {
+    if (!(await rateLimit("get-privacy-records", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       records: MOCK_PRIVACY_VAULT,
       totalSealedCount: MOCK_PRIVACY_VAULT.length,

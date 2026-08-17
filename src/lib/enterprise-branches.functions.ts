@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface EnterpriseBranch {
   branchId: string;
@@ -57,6 +58,9 @@ export const getEnterpriseBranchesFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async (): Promise<{ branches: EnterpriseBranch[]; totalFleetCount: number }> => {
+    if (!(await rateLimit("get-enterprise-branches", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalFleet = MOCK_BRANCHES.reduce((acc, b) => acc + b.activeFleetCount, 0);
     return {
       branches: MOCK_BRANCHES,

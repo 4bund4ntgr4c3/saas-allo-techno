@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export type InteractionChannel = "phone_call" | "whatsapp" | "in_person" | "internal_memo";
 
@@ -46,6 +47,9 @@ export const getClientInteractionsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<ClientInteractionEntry[]> => {
+    if (!(await rateLimit("get-client-interactions", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return MOCK_INTERACTIONS.filter(
       (i) => i.reference === input.reference || input.reference === "ALL",
     );
@@ -63,6 +67,9 @@ export const addClientInteractionFn = createServerFn({ method: "POST" })
   )
   .handler(
     async ({ data: input }): Promise<{ success: boolean; entry: ClientInteractionEntry }> => {
+      if (!(await rateLimit("add-client-interaction", 20))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const entry: ClientInteractionEntry = {
         id: `int-${Date.now()}`,
         reference: input.reference,

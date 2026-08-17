@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface LostItem {
   id: string;
@@ -56,6 +57,9 @@ export const getLostItemsFn = createServerFn({ method: "POST" }).handler(
     items: LostItem[];
     pendingCount: number;
   }> => {
+    if (!(await rateLimit("get-lost-items", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       items: MOCK_LOST_ITEMS,
       pendingCount: MOCK_LOST_ITEMS.filter((i) => i.status !== "restitue").length,
@@ -70,6 +74,9 @@ export const notifyOwnerLostItemFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<{ success: boolean; message: string }> => {
+    if (!(await rateLimit("notify-owner-lost-item", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       success: true,
       message: `Notification SMS transmise au propriétaire pour l'objet ${input.itemId}.`,
