@@ -17,10 +17,14 @@ export function RepairabilityScoreBadge({ modelName = "ThinkPad T14" }: { modelN
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${repairability.colorClass}`}>
+          <span
+            className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${repairability.colorClass}`}
+          >
             {repairability.score.toFixed(1)} / 10
           </span>
-          <span className="font-bold text-xs text-muted-foreground">Classe {repairability.grade}</span>
+          <span className="font-bold text-xs text-muted-foreground">
+            Classe {repairability.grade}
+          </span>
         </div>
       </div>
 
@@ -37,7 +41,13 @@ export function RepairabilityScoreBadge({ modelName = "ThinkPad T14" }: { modelN
         </div>
         <div>
           <span className="block">Composants :</span>
-          <strong className={repairability.modularComponents ? "text-emerald-600 font-semibold" : "text-amber-600 font-semibold"}>
+          <strong
+            className={
+              repairability.modularComponents
+                ? "text-emerald-600 font-semibold"
+                : "text-amber-600 font-semibold"
+            }
+          >
             {repairability.modularComponents ? "Modulaires" : "Soudés"}
           </strong>
         </div>

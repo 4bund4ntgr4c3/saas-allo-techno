@@ -27,11 +27,15 @@ export function BatteryPackRepairEstimator() {
               Laboratoire Batteries Lithium &amp; Recellage
             </h3>
             <p className="text-xs text-muted-foreground">
-              Reconditionnement de packs de batteries pour trottinettes, VAE, drones et stations solaires
+              Reconditionnement de packs de batteries pour trottinettes, VAE, drones et stations
+              solaires
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Garantie Jusqu'à 12 Mois
         </Badge>
       </div>
@@ -40,7 +44,9 @@ export function BatteryPackRepairEstimator() {
         {/* Controls */}
         <div className="lg:col-span-6 space-y-4">
           <div>
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">1. Type d'Équipement Lithium</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">
+              1. Type d'Équipement Lithium
+            </span>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: "trottinette_36v", label: "Trottinette Électrique (36V/48V)" },
@@ -65,7 +71,9 @@ export function BatteryPackRepairEstimator() {
           </div>
 
           <div>
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">2. Prestation Technique Requise</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">
+              2. Prestation Technique Requise
+            </span>
             <div className="space-y-2">
               {[
                 {
@@ -114,20 +122,26 @@ export function BatteryPackRepairEstimator() {
               Estimation Forfaitaire de Réparation
             </span>
             <strong className="text-2xl sm:text-3xl font-mono font-extrabold text-primary block mt-1">
-              {formatFcfa(estimate.estimatedPriceFcfa.min)} — {formatFcfa(estimate.estimatedPriceFcfa.max)}
+              {formatFcfa(estimate.estimatedPriceFcfa.min)} —{" "}
+              {formatFcfa(estimate.estimatedPriceFcfa.max)}
             </strong>
             <p className="text-xs text-muted-foreground mt-1">
-              Soudure par points professionnelle sous bande nickel pure (pas d'échauffement thermique).
+              Soudure par points professionnelle sous bande nickel pure (pas d'échauffement
+              thermique).
             </p>
 
             <div className="mt-4 space-y-2.5 border-t border-border pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Technologie employée :</span>
-                <span className="font-semibold text-foreground text-right max-w-[200px]">{estimate.cellTechnology}</span>
+                <span className="font-semibold text-foreground text-right max-w-[200px]">
+                  {estimate.cellTechnology}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Délai d'intervention :</span>
-                <span className="font-mono font-bold text-foreground">{estimate.turnaroundDays}</span>
+                <span className="font-mono font-bold text-foreground">
+                  {estimate.turnaroundDays}
+                </span>
               </div>
               <div className="flex justify-between text-emerald-600 font-bold">
                 <span className="flex items-center gap-1">

@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { normalizeLocale, type Locale } from "@/lib/i18n/locales";
 import { localeSeo } from "@/lib/seo";
@@ -16,7 +13,8 @@ export const Route = createFileRoute("/$locale/guide-esd")({
         { title: "Guide de Sécurité Électrostatique (ESD) — Allô Techno Labs" },
         {
           name: "description",
-          content: "Règles indispensables pour manipuler les cartes mères, processeurs et puces mémoire sans risque de décharge électrostatique.",
+          content:
+            "Règles indispensables pour manipuler les cartes mères, processeurs et puces mémoire sans risque de décharge électrostatique.",
         },
         ...seo.meta,
       ],
@@ -52,14 +50,17 @@ function EsdSafetyGuidePage() {
       <section className="border-b border-border py-12 bg-surface/40">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-3 flex items-center justify-between">
-            <span className="at-eyebrow text-primary font-bold">Laboratoire &amp; Bonnes Pratiques</span>
+            <span className="at-eyebrow text-primary font-bold">
+              Laboratoire &amp; Bonnes Pratiques
+            </span>
             <PageBreadcrumb items={[{ label: "Guide Sécurité ESD" }]} />
           </div>
           <h1 className="at-display text-3xl sm:text-5xl font-extrabold text-foreground">
             Guide de Sécurité Électrostatique (ESD)
           </h1>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl">
-            Découvrez comment notre atelier protège vos composants électroniques ultra-sensibles contre les micro-destructions invisibles causées par l'électricité statique.
+            Découvrez comment notre atelier protège vos composants électroniques ultra-sensibles
+            contre les micro-destructions invisibles causées par l'électricité statique.
           </p>
         </div>
       </section>
@@ -68,7 +69,10 @@ function EsdSafetyGuidePage() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 mt-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {rules.map((rule, idx) => (
-            <div key={idx} className="border border-border bg-card p-5 rounded-2xl space-y-2.5 shadow-xs">
+            <div
+              key={idx}
+              className="border border-border bg-card p-5 rounded-2xl space-y-2.5 shadow-xs"
+            >
               <span className="font-mono text-xs font-bold text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">
                 Norme IEC 61340-5-1
               </span>
@@ -86,7 +90,9 @@ function EsdSafetyGuidePage() {
             </span>
             <ul className="space-y-2 text-foreground">
               <li>✓ Toucher une surface métallique mise à la terre avant de saisir une carte.</li>
-              <li>✓ Transporter les composants dans des sachets antistatiques métallisés blindés.</li>
+              <li>
+                ✓ Transporter les composants dans des sachets antistatiques métallisés blindés.
+              </li>
               <li>✓ Utiliser des tournevis avec manche dissipateur ESD certifié.</li>
             </ul>
           </div>
@@ -96,7 +102,9 @@ function EsdSafetyGuidePage() {
               <XCircle className="size-4" /> Erreurs Fréquentes à Proscrire :
             </span>
             <ul className="space-y-2 text-foreground">
-              <li>✕ Porter des pulls en laine ou vêtements synthétiques en ouvrant un ordinateur.</li>
+              <li>
+                ✕ Porter des pulls en laine ou vêtements synthétiques en ouvrant un ordinateur.
+              </li>
               <li>✕ Poser une carte mère nue sur du papier journal ou une nappe en plastique.</li>
               <li>✕ Passer un pinceau ordinaire non-antistatique sur un processeur ouvert.</li>
             </ul>

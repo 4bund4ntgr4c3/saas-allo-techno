@@ -30,7 +30,7 @@ export function EnergyAuditCalculator() {
 
   const co2SavedKg = React.useMemo(() => {
     // Facteur d'émission moyen réseau électrique Bénin/CEDEAO : ~0.55 kg CO2 / kWh
-    return Math.round((annualKwhCurrent * 0.35) * 0.55);
+    return Math.round(annualKwhCurrent * 0.35 * 0.55);
   }, [annualKwhCurrent]);
 
   return (
@@ -43,11 +43,15 @@ export function EnergyAuditCalculator() {
               Audit Énergétique Flotte &amp; Facture SBEE
             </h3>
             <p className="text-xs text-muted-foreground">
-              Estimez les dépenses électriques de vos ordinateurs et les gains de sobriété énergétique
+              Estimez les dépenses électriques de vos ordinateurs et les gains de sobriété
+              énergétique
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs border-amber-500/40 text-amber-600 bg-amber-500/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs border-amber-500/40 text-amber-600 bg-amber-500/10"
+        >
           Tarif SBEE Pro : {sbeeKwhRateFcfa} FCFA / kWh
         </Badge>
       </div>
@@ -110,17 +114,22 @@ export function EnergyAuditCalculator() {
               {formatFcfa(annualSavingsFcfa)} / an
             </strong>
             <p className="text-xs text-muted-foreground mt-1">
-              Grâce à l'optimisation thermique, au dépoussiérage et aux réglages de gestion d'alimentation.
+              Grâce à l'optimisation thermique, au dépoussiérage et aux réglages de gestion
+              d'alimentation.
             </p>
 
             <div className="mt-4 space-y-2 border-t border-border/60 pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Consommation annuelle globale :</span>
-                <span className="font-mono font-bold text-foreground">{annualKwhCurrent.toLocaleString()} kWh</span>
+                <span className="font-mono font-bold text-foreground">
+                  {annualKwhCurrent.toLocaleString()} kWh
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Facture brute annuelle SBEE :</span>
-                <span className="font-mono text-destructive font-bold">{formatFcfa(annualBillCurrentFcfa)}</span>
+                <span className="font-mono text-destructive font-bold">
+                  {formatFcfa(annualBillCurrentFcfa)}
+                </span>
               </div>
               <div className="flex justify-between font-bold text-emerald-600 pt-1 border-t border-border/40">
                 <span className="flex items-center gap-1">

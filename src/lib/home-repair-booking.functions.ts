@@ -10,7 +10,12 @@ export interface HomeRepairBooking {
   bookingId: string;
   customerName: string;
   phone: string;
-  zone: "Cotonou Centre" | "Akpakpa / PK10" | "Haie Vive / Les Cocotiers" | "Abomey-Calavi" | "Porto-Novo";
+  zone:
+    | "Cotonou Centre"
+    | "Akpakpa / PK10"
+    | "Haie Vive / Les Cocotiers"
+    | "Abomey-Calavi"
+    | "Porto-Novo";
   addressDetails: string;
   issueType: "ecran_ssd" | "panne_logicielle" | "reseau_wifi" | "maintenance_complete";
   preferredDate: string;
@@ -30,11 +35,13 @@ export const bookHomeRepairFn = createServerFn({ method: "POST" })
       preferredTimeSlot: z.string(),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; bookingId: string; message: string }> => {
-    const bookingId = `VIP-HOME-${Date.now().toString().slice(-6)}`;
-    return {
-      success: true,
-      bookingId,
-      message: `Votre demande d'intervention sur site N° ${bookingId} pour ${input.customerName} (${input.zone}) a été confirmée. Un technicien d'astreinte vous contactera sous 15 minutes.`,
-    };
-  });
+  .handler(
+    async ({ data: input }): Promise<{ success: boolean; bookingId: string; message: string }> => {
+      const bookingId = `VIP-HOME-${Date.now().toString().slice(-6)}`;
+      return {
+        success: true,
+        bookingId,
+        message: `Votre demande d'intervention sur site N° ${bookingId} pour ${input.customerName} (${input.zone}) a été confirmée. Un technicien d'astreinte vous contactera sous 15 minutes.`,
+      };
+    },
+  );

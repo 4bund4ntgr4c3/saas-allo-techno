@@ -12,10 +12,12 @@ export function TechIncentivesLeaderboard() {
   const [totalPool, setTotalPool] = React.useState(0);
 
   React.useEffect(() => {
-    getTechIncentivesLeaderboardFn().then((res) => {
-      setTechs(res.technicians);
-      setTotalPool(res.totalCommissionsPoolFcfa);
-    }).catch(() => {});
+    getTechIncentivesLeaderboardFn()
+      .then((res) => {
+        setTechs(res.technicians);
+        setTotalPool(res.totalCommissionsPoolFcfa);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -28,12 +30,16 @@ export function TechIncentivesLeaderboard() {
               Leaderboard &amp; Primes de Performance Techniciens
             </h3>
             <p className="text-xs text-muted-foreground">
-              Commissions automatiques indexées sur les SLA express, tickets résolus et avis 5 étoiles
+              Commissions automatiques indexées sur les SLA express, tickets résolus et avis 5
+              étoiles
             </p>
           </div>
         </div>
 
-        <Badge variant="outline" className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10"
+        >
           Cagnotte MoMo : {formatFcfa(totalPool)}
         </Badge>
       </div>
@@ -45,13 +51,15 @@ export function TechIncentivesLeaderboard() {
             className="p-4 rounded-xl border border-border bg-surface/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs text-xs"
           >
             <div className="flex items-center gap-3">
-              <span className={`size-8 rounded-full flex items-center justify-center font-bold text-xs font-mono shrink-0 ${
-                idx === 0
-                  ? "bg-amber-500 text-white shadow-xs"
-                  : idx === 1
-                  ? "bg-slate-300 text-slate-800"
-                  : "bg-amber-700/60 text-white"
-              }`}>
+              <span
+                className={`size-8 rounded-full flex items-center justify-center font-bold text-xs font-mono shrink-0 ${
+                  idx === 0
+                    ? "bg-amber-500 text-white shadow-xs"
+                    : idx === 1
+                      ? "bg-slate-300 text-slate-800"
+                      : "bg-amber-700/60 text-white"
+                }`}
+              >
                 #{idx + 1}
               </span>
 
@@ -78,13 +86,18 @@ export function TechIncentivesLeaderboard() {
 
             <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-0 border-border/60">
               <div className="text-left sm:text-right">
-                <span className="text-[10px] text-muted-foreground block">Prime MoMo Cumulée :</span>
+                <span className="text-[10px] text-muted-foreground block">
+                  Prime MoMo Cumulée :
+                </span>
                 <strong className="font-mono text-base font-extrabold text-primary">
                   {formatFcfa(tech.totalCommissionEarnedFcfa)}
                 </strong>
               </div>
 
-              <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-600/30 font-mono">
+              <Badge
+                variant="outline"
+                className="text-[10px] text-emerald-600 border-emerald-600/30 font-mono"
+              >
                 <Smartphone className="size-3 mr-1" /> {tech.momoPayoutPhoneNumber}
               </Badge>
             </div>

@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
-import {
-  CheckCircle2,
-  AlertCircle,
-  Plus,
-} from "lucide-react";
+import { CheckCircle2, AlertCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
@@ -13,9 +9,7 @@ import {
   type EnterpriseBranch,
 } from "@/lib/enterprise-branches.functions";
 
-export const Route = createFileRoute(
-  "/$locale/app/organizations/$orgId/branches",
-)({
+export const Route = createFileRoute("/$locale/app/organizations/$orgId/branches")({
   component: EnterpriseBranchesPage,
 });
 
@@ -42,12 +36,16 @@ function EnterpriseBranchesPage() {
             <h1 className="text-xl sm:text-2xl font-black text-foreground">
               Gestion Multi-Filiales &amp; Succursales
             </h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/40 bg-primary/10">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs text-primary border-primary/40 bg-primary/10"
+            >
               {totalFleet} Postes Actifs
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            Supervision budgétaire décentralisée, agences régionales et circuit d'approbation hiérarchique
+            Supervision budgétaire décentralisée, agences régionales et circuit d'approbation
+            hiérarchique
           </p>
         </div>
 
@@ -59,7 +57,10 @@ function EnterpriseBranchesPage() {
       {/* Branches List */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {branches.map((b) => {
-          const spendPercent = Math.min(100, (b.currentMonthSpentFcfa / b.monthlyBudgetCapFcfa) * 100);
+          const spendPercent = Math.min(
+            100,
+            (b.currentMonthSpentFcfa / b.monthlyBudgetCapFcfa) * 100,
+          );
           return (
             <div
               key={b.branchId}
@@ -71,11 +72,18 @@ function EnterpriseBranchesPage() {
                     {b.city}
                   </span>
                   {b.pendingApprovalsCount > 0 ? (
-                    <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold">
-                      <AlertCircle className="size-3 mr-1" /> {b.pendingApprovalsCount} Devis en Attente
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold"
+                    >
+                      <AlertCircle className="size-3 mr-1" /> {b.pendingApprovalsCount} Devis en
+                      Attente
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+                    >
                       <CheckCircle2 className="size-3 mr-1" /> Conforme
                     </Badge>
                   )}
@@ -108,7 +116,9 @@ function EnterpriseBranchesPage() {
 
               <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Parc de l'agence :</span>
-                <strong className="font-mono font-bold text-foreground">{b.activeFleetCount} PC &amp; Mac</strong>
+                <strong className="font-mono font-bold text-foreground">
+                  {b.activeFleetCount} PC &amp; Mac
+                </strong>
               </div>
             </div>
           );

@@ -20,7 +20,8 @@ export const USEFUL_TOOLS: ToolItem[] = [
     id: "tool-crystaldisk",
     name: "CrystalDiskInfo Standard",
     category: "diagnostic",
-    description: "Vérifie la santé de votre disque dur ou SSD (S.M.A.R.T., température, secteurs défectueux).",
+    description:
+      "Vérifie la santé de votre disque dur ou SSD (S.M.A.R.T., température, secteurs défectueux).",
     os: "Windows",
     version: "v9.3.2",
     fileSize: "5.4 Mo",
@@ -31,7 +32,8 @@ export const USEFUL_TOOLS: ToolItem[] = [
     id: "tool-coconut",
     name: "coconutBattery for Mac",
     category: "diagnostic",
-    description: "Affiche le nombre exact de cycles de recharge, la capacité résiduelle en mAh et la santé de la batterie Mac/iPhone.",
+    description:
+      "Affiche le nombre exact de cycles de recharge, la capacité résiduelle en mAh et la santé de la batterie Mac/iPhone.",
     os: "macOS",
     version: "v3.9.12",
     fileSize: "12.8 Mo",
@@ -42,7 +44,8 @@ export const USEFUL_TOOLS: ToolItem[] = [
     id: "tool-adwcleaner",
     name: "Malwarebytes AdwCleaner",
     category: "securite",
-    description: "Élimine les logiciels publicitaires (Adware), barres d'outils indésirables et pirates de navigateur.",
+    description:
+      "Élimine les logiciels publicitaires (Adware), barres d'outils indésirables et pirates de navigateur.",
     os: "Windows",
     version: "v8.4.1",
     fileSize: "8.2 Mo",
@@ -53,7 +56,8 @@ export const USEFUL_TOOLS: ToolItem[] = [
     id: "tool-clonezilla",
     name: "Clonezilla Live ISO",
     category: "clonage_ssd",
-    description: "Outil professionnel pour cloner un disque dur HDD vers un SSD ultra-rapide sans perdre ses données.",
+    description:
+      "Outil professionnel pour cloner un disque dur HDD vers un SSD ultra-rapide sans perdre ses données.",
     os: "Multiplateforme",
     version: "v3.1.2",
     fileSize: "380 Mo",
@@ -64,7 +68,8 @@ export const USEFUL_TOOLS: ToolItem[] = [
     id: "tool-anydesk",
     name: "AnyDesk Assistance à Distance",
     category: "securite",
-    description: "Permet à notre atelier de prendre la main à distance sur votre PC/Mac pour un dépannage express.",
+    description:
+      "Permet à notre atelier de prendre la main à distance sur votre PC/Mac pour un dépannage express.",
     os: "Windows & Mac",
     version: "v8.0.8",
     fileSize: "4.1 Mo",

@@ -17,7 +17,11 @@ export interface RepairabilityScore {
 export function getDeviceRepairability(modelIdOrBrand: string): RepairabilityScore {
   const query = modelIdOrBrand.toLowerCase();
 
-  if (query.includes("thinkpad") || query.includes("dell latitude") || query.includes("hp elitebook")) {
+  if (
+    query.includes("thinkpad") ||
+    query.includes("dell latitude") ||
+    query.includes("hp elitebook")
+  ) {
     return {
       score: 8.8,
       grade: "A",
@@ -26,7 +30,8 @@ export function getDeviceRepairability(modelIdOrBrand: string): RepairabilitySco
       partsAvailabilityRating: 18.0,
       documentationRating: 19.0,
       modularComponents: true,
-      notes: "Excellente démontabilité avec vis cruciformes standard, RAM et SSD amovibles, manuels de maintenance officiels publics.",
+      notes:
+        "Excellente démontabilité avec vis cruciformes standard, RAM et SSD amovibles, manuels de maintenance officiels publics.",
     };
   }
 
@@ -39,7 +44,8 @@ export function getDeviceRepairability(modelIdOrBrand: string): RepairabilitySco
       partsAvailabilityRating: 14.0,
       documentationRating: 12.0,
       modularComponents: false,
-      notes: "Composants RAM et SSD soudés sur la carte logique Apple Silicon. Nécessite des compétences avancées de micro-soudure.",
+      notes:
+        "Composants RAM et SSD soudés sur la carte logique Apple Silicon. Nécessite des compétences avancées de micro-soudure.",
     };
   }
 
@@ -52,7 +58,8 @@ export function getDeviceRepairability(modelIdOrBrand: string): RepairabilitySco
       partsAvailabilityRating: 17.5,
       documentationRating: 15.0,
       modularComponents: true,
-      notes: "Pièces d'origine disponibles sous 24h, écrans et batteries remplaçables avec outillage de précision.",
+      notes:
+        "Pièces d'origine disponibles sous 24h, écrans et batteries remplaçables avec outillage de précision.",
     };
   }
 

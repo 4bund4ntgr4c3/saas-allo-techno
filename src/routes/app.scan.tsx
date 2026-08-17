@@ -41,9 +41,15 @@ function ScanPage() {
     try {
       if (code.includes("http")) {
         const url = new URL(code);
-        code = url.searchParams.get("q") || url.searchParams.get("ref") || url.pathname.split("/").pop() || code;
+        code =
+          url.searchParams.get("q") ||
+          url.searchParams.get("ref") ||
+          url.pathname.split("/").pop() ||
+          code;
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     setShowCamera(false);
     navigate({ to: "/app/scan", search: { q: code } });
   };
@@ -76,10 +82,7 @@ function ScanPage() {
       {/* ─── Mode Caméra Directe ─── */}
       {showCamera && (
         <div className="space-y-3">
-          <QrCameraScanner
-            onScan={handleScanSuccess}
-            onClose={() => setShowCamera(false)}
-          />
+          <QrCameraScanner onScan={handleScanSuccess} onClose={() => setShowCamera(false)} />
         </div>
       )}
 
@@ -111,7 +114,9 @@ function ScanPage() {
         <div className="border border-destructive/30 bg-destructive/5 p-4 rounded-lg flex items-center gap-3">
           <AlertTriangle className="size-5 text-destructive shrink-0" />
           <div>
-            <strong className="text-sm font-semibold text-destructive block">Équipement introuvable</strong>
+            <strong className="text-sm font-semibold text-destructive block">
+              Équipement introuvable
+            </strong>
             <p className="text-xs text-muted-foreground">
               Le code QR "{q}" ne correspond à aucun matériel actif dans vos organisations.
             </p>
@@ -129,7 +134,9 @@ function ScanPage() {
               <div>
                 <h2 className="text-lg font-bold text-foreground">{result.data[0].name}</h2>
                 <p className="text-xs text-muted-foreground">
-                  {[result.data[0].brand, result.data[0].model].filter(Boolean).join(" · ") || result.data[0].type} — {result.data[0].org_name}
+                  {[result.data[0].brand, result.data[0].model].filter(Boolean).join(" · ") ||
+                    result.data[0].type}{" "}
+                  — {result.data[0].org_name}
                 </p>
               </div>
             </div>
@@ -151,7 +158,9 @@ function ScanPage() {
             </div>
             <div>
               <span className="text-muted-foreground block">Modèle :</span>
-              <span className="font-medium">{result.data[0].model || result.data[0].brand || "Standard"}</span>
+              <span className="font-medium">
+                {result.data[0].model || result.data[0].brand || "Standard"}
+              </span>
             </div>
           </div>
 

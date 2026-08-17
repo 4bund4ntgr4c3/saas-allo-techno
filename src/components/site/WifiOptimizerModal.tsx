@@ -28,7 +28,10 @@ export function WifiOptimizerModal() {
             Testeur de Débit Wi-Fi &amp; Optimiseur Réseau
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Serveur : Cotonou IXP / Lagos
         </Badge>
       </div>
@@ -38,16 +41,22 @@ export function WifiOptimizerModal() {
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div>
             <span className="text-[10px] text-muted-foreground uppercase block">Latence Ping</span>
-            <strong className="font-mono text-lg font-bold text-foreground">{testing ? "..." : `${ping} ms`}</strong>
+            <strong className="font-mono text-lg font-bold text-foreground">
+              {testing ? "..." : `${ping} ms`}
+            </strong>
           </div>
           <div>
-            <span className="text-[10px] text-muted-foreground uppercase block">Téléchargement</span>
+            <span className="text-[10px] text-muted-foreground uppercase block">
+              Téléchargement
+            </span>
             <strong className="font-mono text-lg font-bold text-emerald-600">
               {testing ? "..." : `${downloadMbps} Mbps`}
             </strong>
           </div>
           <div>
-            <span className="text-[10px] text-muted-foreground uppercase block">Envoi (Upload)</span>
+            <span className="text-[10px] text-muted-foreground uppercase block">
+              Envoi (Upload)
+            </span>
             <strong className="font-mono text-lg font-bold text-primary">
               {testing ? "..." : `${uploadMbps} Mbps`}
             </strong>
@@ -61,7 +70,11 @@ export function WifiOptimizerModal() {
           onClick={runTest}
           className="text-xs font-bold uppercase tracking-wider h-8"
         >
-          {testing ? <Loader2 className="size-3.5 mr-1.5 animate-spin" /> : <Gauge className="size-3.5 mr-1.5" />}
+          {testing ? (
+            <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+          ) : (
+            <Gauge className="size-3.5 mr-1.5" />
+          )}
           {testing ? "Mesure en cours..." : "Lancer le Test de Vitesse"}
         </Button>
       </div>
@@ -78,7 +91,8 @@ export function WifiOptimizerModal() {
             <div>
               <strong className="text-foreground">Basculez sur la bande 5 GHz ou Wi-Fi 6 :</strong>
               <p className="text-muted-foreground text-[11px] mt-0.5">
-                La bande 2.4 GHz est saturée à Cotonou par les box voisines. La bande 5 GHz offre jusqu'à 3x plus de débit pour les visioconférences.
+                La bande 2.4 GHz est saturée à Cotonou par les box voisines. La bande 5 GHz offre
+                jusqu'à 3x plus de débit pour les visioconférences.
               </p>
             </div>
           </div>
@@ -86,9 +100,12 @@ export function WifiOptimizerModal() {
           <div className="p-3 rounded-lg border border-border bg-surface/50 flex items-start gap-2.5">
             <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <strong className="text-foreground">Équipez vos bureaux d'un réseau Mesh TP-Link Deco :</strong>
+              <strong className="text-foreground">
+                Équipez vos bureaux d'un réseau Mesh TP-Link Deco :
+              </strong>
               <p className="text-muted-foreground text-[11px] mt-0.5">
-                Élimine les zones blanches sans signal à travers les murs en béton épais sans perte de débit.
+                Élimine les zones blanches sans signal à travers les murs en béton épais sans perte
+                de débit.
               </p>
             </div>
           </div>

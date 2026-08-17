@@ -37,7 +37,8 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
-    version: "2026.08.17 — Ligne de Crédit B2B BNPL, Bourse Pièces UEMOA, Générateur PSSI & Métrologie ISO 9001 (Batch 61)",
+    version:
+      "2026.08.17 — Ligne de Crédit B2B BNPL, Bourse Pièces UEMOA, Générateur PSSI & Métrologie ISO 9001 (Batch 61)",
     date: "2026-08-17",
     added: [
       "Moteur d'évaluation de solvabilité et ligne de crédit B2B 30/60 jours (b2b-credit-scoring.functions.ts, B2bCreditLineModal.tsx) avec scoring IFU",
@@ -51,7 +52,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Allô Voice IA 24/7, Solaire Datacenter DSI, Chaîne de Garde Forensique & Primes MoMo (Batch 60)",
+    version:
+      "2026.08.17 — Allô Voice IA 24/7, Solaire Datacenter DSI, Chaîne de Garde Forensique & Primes MoMo (Batch 60)",
     date: "2026-08-17",
     added: [
       "Agent vocal IA conversationnel 24/7 en français et fon (voice-ai-agent.functions.ts, VoiceAiAssistantModal.tsx) avec devis vocal immédiat et réservation",
@@ -65,7 +67,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Terminal POS Caisse & ESC/POS, NetScan Vulnérabilités DSI, Dispatch IA & Multi-Filiales (Batch 59)",
+    version:
+      "2026.08.17 — Terminal POS Caisse & ESC/POS, NetScan Vulnérabilités DSI, Dispatch IA & Multi-Filiales (Batch 59)",
     date: "2026-08-17",
     added: [
       "Terminal de caisse tactile POS et impression de tickets thermiques 80mm ESC/POS (pos-cashier.functions.ts, PosTerminalModal.tsx) avec split MoMo/Espèces et e-MECeF",
@@ -79,7 +82,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — IA Vision Schémas Micro-Soudure, AutoDeploy MDM, Coffre APDP & Garantie Care+ (Batch 58)",
+    version:
+      "2026.08.17 — IA Vision Schémas Micro-Soudure, AutoDeploy MDM, Coffre APDP & Garantie Care+ (Batch 58)",
     date: "2026-08-17",
     added: [
       "Copilote schématique de micro-soudure et IA vision de cartes mères (board-vision-ai.functions.ts, BoardVisionInspector.tsx) avec détection de CMS défaillants",
@@ -93,7 +97,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — E-Procurement B2B, Télémétrie Pulse, Facturation e-MECeF & Séquestre Escrow (Batch 57)",
+    version:
+      "2026.08.17 — E-Procurement B2B, Télémétrie Pulse, Facturation e-MECeF & Séquestre Escrow (Batch 57)",
     date: "2026-08-17",
     added: [
       "Portail e-procurement B2B et appels d'offres (rfp-procurement.functions.ts, RfpProcurementModal.tsx) avec calcul de TCO sur 3 ans (énergie SBEE + SLA)",
@@ -107,7 +112,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Dépannage VIP Domicile, Export Inventaire Excel, Rachat Flotte & Import Pièces (Batch 56)",
+    version:
+      "2026.08.17 — Dépannage VIP Domicile, Export Inventaire Excel, Rachat Flotte & Import Pièces (Batch 56)",
     date: "2026-08-17",
     added: [
       "Réservation d'interventions de dépannage informatique mobile VIP à domicile et bureau (home-repair-booking.functions.ts, src/routes/$locale/depannage-domicile.tsx)",
@@ -121,7 +127,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Auto-Diagnostic Navigateur, Certificat Fiscal DEEE, Usure Harmattan & Plan 3-2-1 (Batch 55)",
+    version:
+      "2026.08.17 — Auto-Diagnostic Navigateur, Certificat Fiscal DEEE, Usure Harmattan & Plan 3-2-1 (Batch 55)",
     date: "2026-08-17",
     added: [
       "Suite d'auto-diagnostic matériel exécutée directement dans le navigateur (BrowserHardwareTesterModal.tsx) : test mires pixels morts, balance audio stéréo et heatmap clavier",
@@ -135,7 +142,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Optimiseur Wi-Fi, Bordereaux Expédition Intervilles, Calculateur Onduleur & Guide ESD (Batch 54)",
+    version:
+      "2026.08.17 — Optimiseur Wi-Fi, Bordereaux Expédition Intervilles, Calculateur Onduleur & Guide ESD (Batch 54)",
     date: "2026-08-17",
     added: [
       "Testeur de débit et optimiseur de réseau local Wi-Fi 5GHz / Mesh (WifiOptimizerModal.tsx) mesurant la latence vers Cotonou/Lagos et préconisant des réglages",
@@ -149,7 +157,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Hub Utilitaires Toolbox, Bilan RSE Carbone Annuel, Objets Oubliés & Paiement 3x/4x (Batch 53)",
+    version:
+      "2026.08.17 — Hub Utilitaires Toolbox, Bilan RSE Carbone Annuel, Objets Oubliés & Paiement 3x/4x (Batch 53)",
     date: "2026-08-17",
     added: [
       "Hub de téléchargement d'utilitaires et pilotes officiels (driver-tools.ts, src/routes/$locale/outils.tsx) : outils de test batterie, santé disques SSD et désinfection",
@@ -163,7 +172,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Carte Wallet VIP, Lab Batteries Lithium, Alertes Cyber DSI & Baie Réseau (Batch 52)",
+    version:
+      "2026.08.17 — Carte Wallet VIP, Lab Batteries Lithium, Alertes Cyber DSI & Baie Réseau (Batch 52)",
     date: "2026-08-17",
     added: [
       "Carte de fidélité et pass VIP dématérialisé Apple/Google Wallet (digital-pass.ts, DigitalWalletCardModal.tsx) avec solde de points Allô Club et QR de remise",
@@ -177,7 +187,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Contrat SLA B2B, Indice Réparabilité, Registre Anti-Recel & Démo VIP DSI (Batch 51)",
+    version:
+      "2026.08.17 — Contrat SLA B2B, Indice Réparabilité, Registre Anti-Recel & Démo VIP DSI (Batch 51)",
     date: "2026-08-17",
     added: [
       "Générateur officiel de convention-cadre de maintenance B2B (b2b-contract-pdf.ts) avec niveaux de service SLA Platine/Gold/Silver, clauses d'astreinte et pénalités de retard",
@@ -191,7 +202,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Prêt PC Courtoisie, Sauvetage Données Salle Blanche, Abonnements Sérénité & Points Relais (Batch 50)",
+    version:
+      "2026.08.17 — Prêt PC Courtoisie, Sauvetage Données Salle Blanche, Abonnements Sérénité & Points Relais (Batch 50)",
     date: "2026-08-17",
     added: [
       "Service de réservation de PC et Mac portables de courtoisie (courtesy-devices.functions.ts, CourtesyDeviceBookingModal.tsx) avec caution et contrat numérique",
@@ -205,7 +217,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Alertes de Stock Atelier, Commande Fournisseur Automatique & Sitemap XML (Batch 49)",
+    version:
+      "2026.08.17 — Alertes de Stock Atelier, Commande Fournisseur Automatique & Sitemap XML (Batch 49)",
     date: "2026-08-17",
     added: [
       "Moteur d'alertes et de surveillance des seuils de stocks critiques de l'atelier (stock-alerts.functions.ts, StockAlertBadge.tsx) pour les dalles, batteries, pâtes thermiques et puces SMD",
@@ -219,7 +232,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Suivi Coursier GPS, Destruction Sécurisée NIST, Test Recrutement Technicien & Diagnostic IA (Batch 48)",
+    version:
+      "2026.08.17 — Suivi Coursier GPS, Destruction Sécurisée NIST, Test Recrutement Technicien & Diagnostic IA (Batch 48)",
     date: "2026-08-17",
     added: [
       "Composant de suivi en direct du coursier express (CourierLiveTrackerModal.tsx) avec trajet Cotonou/Calavi, progression temps réel et contact direct",
@@ -233,7 +247,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Programme Parrainage MoMo, Audit Énergétique SBEE, Premiers Secours SAV & Passerelle SMS (Batch 47)",
+    version:
+      "2026.08.17 — Programme Parrainage MoMo, Audit Énergétique SBEE, Premiers Secours SAV & Passerelle SMS (Batch 47)",
     date: "2026-08-17",
     added: [
       "Programme de parrainage et affiliation avec reversement Mobile Money (src/routes/$locale/parrainage.tsx, referral.functions.ts) : lien unique, bon filleul 2 000 FCFA et virement MoMo des commissions",
@@ -247,7 +262,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Diagnostic Matériel Web, Simulateur ROI DSI, Badge Technicien & Bordereaux UEMOA (Batch 46)",
+    version:
+      "2026.08.17 — Diagnostic Matériel Web, Simulateur ROI DSI, Badge Technicien & Bordereaux UEMOA (Batch 46)",
     date: "2026-08-17",
     added: [
       "Banc de test matériel interactif en direct (src/routes/$locale/diagnostic-auto.tsx) : testeur de touches clavier, détecteur de pixels morts, test microphone/haut-parleurs et flux webcam",
@@ -261,7 +277,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Trade-In Argus, Suivi Fret Pièces, Journal SAV & Certificat Garantie SHA-256 (Batch 45)",
+    version:
+      "2026.08.17 — Trade-In Argus, Suivi Fret Pièces, Journal SAV & Certificat Garantie SHA-256 (Batch 45)",
     date: "2026-08-17",
     added: [
       "Simulateur de reprise et argus informatique Trade-In (src/lib/trade-in.ts, TradeInEstimator.tsx) avec estimation instantanée de la valeur de rachat et bonus bon d'achat +10%",
@@ -275,7 +292,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.17 — Scanner QR Caméra PWA, Alertes Climat Tropical & Paiement Mobile Money Direct (Batch 44)",
+    version:
+      "2026.08.17 — Scanner QR Caméra PWA, Alertes Climat Tropical & Paiement Mobile Money Direct (Batch 44)",
     date: "2026-08-17",
     added: [
       "Scanner QR Code temps réel avec flux vidéo caméra (src/components/scanner/QrCameraScanner.tsx) avec support de l'API BarcodeDetector et cadre laser animé",
@@ -290,7 +308,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.16 — Impression Thermique 58/80mm, Suivi Client WhatsApp & Audit Sécurité APDP (Batch 43)",
+    version:
+      "2026.08.16 — Impression Thermique 58/80mm, Suivi Client WhatsApp & Audit Sécurité APDP (Batch 43)",
     date: "2026-08-16",
     added: [
       "Générateur d'impression de reçus thermiques de caisse ESC/POS 58mm/80mm (src/lib/thermal-receipt.ts) avec QR code de suivi scannable direct",
@@ -304,7 +323,8 @@ const ENTRIES: ChangelogEntry[] = [
     ],
   },
   {
-    version: "2026.08.16 — Signature Électronique, Mode PWA Hors-Ligne & Tableau Analytique SLA (Batch 42)",
+    version:
+      "2026.08.16 — Signature Électronique, Mode PWA Hors-Ligne & Tableau Analytique SLA (Batch 42)",
     date: "2026-08-16",
     added: [
       "Composant de signature électronique tactile (src/components/ui/SignaturePad.tsx) pour validation au doigt ou à la souris sur mobile et tablette",

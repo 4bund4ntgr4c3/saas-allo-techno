@@ -7,7 +7,9 @@ import {
 } from "@/lib/board-vision-ai.functions";
 
 export function BoardVisionInspector() {
-  const [boardType, setBoardType] = React.useState<"macbook_820_00850" | "dell_la_k011p">("macbook_820_00850");
+  const [boardType, setBoardType] = React.useState<"macbook_820_00850" | "dell_la_k011p">(
+    "macbook_820_00850",
+  );
   const [analyzing, setAnalyzing] = React.useState(false);
   const [result, setResult] = React.useState<BoardAnalysisResult | null>(null);
 
@@ -35,7 +37,8 @@ export function BoardVisionInspector() {
               IA Vision &amp; Copilote Schématique de Micro-Soudure
             </h3>
             <p className="text-xs text-muted-foreground">
-              Détection automatique des CMS brûlés, identification de carte mère et rails d'alimentation
+              Détection automatique des CMS brûlés, identification de carte mère et rails
+              d'alimentation
             </p>
           </div>
         </div>
@@ -80,7 +83,10 @@ export function BoardVisionInspector() {
                 Réf Analyse : {result.analysisId} · Base Schématique Allô Techno Labs
               </span>
             </div>
-            <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+            >
               Schéma Vectoriel Synchronisé
             </Badge>
           </div>
@@ -88,7 +94,8 @@ export function BoardVisionInspector() {
           {/* ─── Detected Defects Section ─── */}
           <div className="space-y-3">
             <span className="font-bold text-xs text-foreground uppercase tracking-wide flex items-center gap-1.5">
-              <Scan className="size-4 text-destructive" /> Composants Défaillants Détectés par IA Vision :
+              <Scan className="size-4 text-destructive" /> Composants Défaillants Détectés par IA
+              Vision :
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -98,14 +105,22 @@ export function BoardVisionInspector() {
                   className="p-4 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="font-mono font-bold text-xs text-destructive">{defect.componentId}</span>
-                    <Badge variant="outline" className="text-[10px] text-destructive border-destructive/30 font-mono">
+                    <span className="font-mono font-bold text-xs text-destructive">
+                      {defect.componentId}
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] text-destructive border-destructive/30 font-mono"
+                    >
                       Confiance : {defect.confidenceScore}%
                     </Badge>
                   </div>
                   <p className="text-xs text-foreground font-semibold">{defect.suspectedFault}</p>
                   <div className="text-[10px] text-muted-foreground flex items-center gap-1">
-                    <span>Coordonnées Pad Carte : X={defect.testPadCoordinates.x}, Y={defect.testPadCoordinates.y}</span>
+                    <span>
+                      Coordonnées Pad Carte : X={defect.testPadCoordinates.x}, Y=
+                      {defect.testPadCoordinates.y}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -115,7 +130,8 @@ export function BoardVisionInspector() {
           {/* ─── Critical Power Rails Reference Table ─── */}
           <div className="space-y-3">
             <span className="font-bold text-xs text-foreground uppercase tracking-wide flex items-center gap-1.5">
-              <Zap className="size-4 text-amber-500" /> Rails d'Alimentation Principaux &amp; Impédances Normales :
+              <Zap className="size-4 text-amber-500" /> Rails d'Alimentation Principaux &amp;
+              Impédances Normales :
             </span>
 
             <div className="border border-border rounded-xl overflow-hidden text-xs">
@@ -132,8 +148,12 @@ export function BoardVisionInspector() {
                   className="grid grid-cols-12 p-3 border-b border-border/60 items-center last:border-0 hover:bg-surface/30 transition-all"
                 >
                   <div className="col-span-3 font-mono font-bold text-primary">{rail.railName}</div>
-                  <div className="col-span-2 font-mono font-semibold text-foreground">{rail.nominalVoltage}</div>
-                  <div className="col-span-3 font-mono text-muted-foreground">{rail.normalResistanceToGround}</div>
+                  <div className="col-span-2 font-mono font-semibold text-foreground">
+                    {rail.nominalVoltage}
+                  </div>
+                  <div className="col-span-3 font-mono text-muted-foreground">
+                    {rail.normalResistanceToGround}
+                  </div>
                   <div className="col-span-4 text-[11px] text-muted-foreground leading-relaxed">
                     {rail.troubleshootingTip}
                   </div>

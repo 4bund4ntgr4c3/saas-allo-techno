@@ -8,8 +8,16 @@ import { createServerFn } from "@tanstack/react-start";
 export interface SharedSparePart {
   partId: string;
   componentRef: string;
-  category: "Puce PMIC / IC Charge" | "Écran OLED Rétroéclairé" | "Contrôleur Thunderbolt" | "Clavier Rétroéclairé OEM";
-  holdingWorkshopCity: "Cotonou (Hub Central)" | "Lomé (Togo Tech)" | "Abidjan (Plateau Labs)" | "Dakar (Sénégal Micro)";
+  category:
+    | "Puce PMIC / IC Charge"
+    | "Écran OLED Rétroéclairé"
+    | "Contrôleur Thunderbolt"
+    | "Clavier Rétroéclairé OEM";
+  holdingWorkshopCity:
+    | "Cotonou (Hub Central)"
+    | "Lomé (Togo Tech)"
+    | "Abidjan (Plateau Labs)"
+    | "Dakar (Sénégal Micro)";
   quantityAvailable: number;
   unitPriceFcfa: number;
   expressDeliveryHours: number; // ex: 24h via Asky / Air Côte d'Ivoire

@@ -2,10 +2,7 @@ import * as React from "react";
 import { CreditCard, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  getB2bSubscriptionsFn,
-  type RecurringSubscription,
-} from "@/lib/recurring-billing-engine";
+import { getB2bSubscriptionsFn, type RecurringSubscription } from "@/lib/recurring-billing-engine";
 
 export function RecurringBillingDashboard() {
   const [subscriptions, setSubscriptions] = React.useState<RecurringSubscription[]>([]);
@@ -13,11 +10,13 @@ export function RecurringBillingDashboard() {
   const [collectionRate, setCollectionRate] = React.useState(100);
 
   React.useEffect(() => {
-    getB2bSubscriptionsFn().then((res) => {
-      setSubscriptions(res.subscriptions);
-      setTotalMrr(res.totalMrrFcfa);
-      setCollectionRate(res.collectionRatePercent);
-    }).catch(() => {});
+    getB2bSubscriptionsFn()
+      .then((res) => {
+        setSubscriptions(res.subscriptions);
+        setTotalMrr(res.totalMrrFcfa);
+        setCollectionRate(res.collectionRatePercent);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -36,10 +35,16 @@ export function RecurringBillingDashboard() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+          >
             Recouvrement : {collectionRate}%
           </Badge>
-          <Badge variant="outline" className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10"
+          >
             MRR : {formatFcfa(totalMrr)} / mois
           </Badge>
         </div>
@@ -63,11 +68,19 @@ export function RecurringBillingDashboard() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                <span>Formule : <strong className="text-foreground">{sub.planName}</strong></span>
+                <span>
+                  Formule : <strong className="text-foreground">{sub.planName}</strong>
+                </span>
                 <span>·</span>
-                <span>Dernière e-MECeF : <strong className="font-mono text-foreground">{sub.lastInvoiceMecefCode}</strong></span>
+                <span>
+                  Dernière e-MECeF :{" "}
+                  <strong className="font-mono text-foreground">{sub.lastInvoiceMecefCode}</strong>
+                </span>
                 <span>·</span>
-                <span>Prochain prélèvement : <strong className="text-foreground">{sub.nextBillingDate}</strong></span>
+                <span>
+                  Prochain prélèvement :{" "}
+                  <strong className="text-foreground">{sub.nextBillingDate}</strong>
+                </span>
               </div>
             </div>
 
@@ -76,10 +89,15 @@ export function RecurringBillingDashboard() {
                 <strong className="text-sm font-mono font-bold text-primary block">
                   {formatFcfa(sub.monthlyAmountFcfa)}
                 </strong>
-                <span className="text-[10px] text-muted-foreground capitalize">{sub.billingCycle}</span>
+                <span className="text-[10px] text-muted-foreground capitalize">
+                  {sub.billingCycle}
+                </span>
               </div>
 
-              <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs">
+              <Badge
+                variant="outline"
+                className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs"
+              >
                 <CheckCircle2 className="size-3 mr-1" /> Prélèvement Actif
               </Badge>
             </div>

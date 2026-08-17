@@ -18,17 +18,14 @@ export interface FleetDeviceExportItem {
   estimatedValueFcfa: number;
 }
 
-export function exportFleetInventoryToExcel(
-  companyName: string,
-  devices: FleetDeviceExportItem[],
-) {
+export function exportFleetInventoryToExcel(companyName: string, devices: FleetDeviceExportItem[]) {
   const rows = devices.map((d) => ({
     "ID Actif": d.id,
-    "Marque": d.brand,
-    "Modèle": d.model,
+    Marque: d.brand,
+    Modèle: d.model,
     "N° de Série (S/N)": d.serialNumber,
     "Utilisateur / Poste": d.assignedUser,
-    "Département": d.department,
+    Département: d.department,
     "Date Acquisition": d.acquisitionDate,
     "Score Santé (%)": `${d.healthScorePercent}%`,
     "Statut SLA": d.slaStatus,

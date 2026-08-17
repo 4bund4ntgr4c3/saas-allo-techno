@@ -51,15 +51,17 @@ export const MOCK_LOST_ITEMS: LostItem[] = [
   },
 ];
 
-export const getLostItemsFn = createServerFn({ method: "POST" }).handler(async (): Promise<{
-  items: LostItem[];
-  pendingCount: number;
-}> => {
-  return {
-    items: MOCK_LOST_ITEMS,
-    pendingCount: MOCK_LOST_ITEMS.filter((i) => i.status !== "restitue").length,
-  };
-});
+export const getLostItemsFn = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    items: LostItem[];
+    pendingCount: number;
+  }> => {
+    return {
+      items: MOCK_LOST_ITEMS,
+      pendingCount: MOCK_LOST_ITEMS.filter((i) => i.status !== "restitue").length,
+    };
+  },
+);
 
 export const notifyOwnerLostItemFn = createServerFn({ method: "POST" })
   .validator(

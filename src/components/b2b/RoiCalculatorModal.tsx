@@ -23,14 +23,18 @@ export function RoiCalculatorModal() {
 
   const prolongedLifeYears = 5; // Avec maintenance préventive Allô Techno : 5 ans au lieu de 3 ans
   const totalSavingsOver5Years = React.useMemo(() => {
-    const costIfRenewedTwice = (fleetSize * newLaptopCostFcfa * (prolongedLifeYears / renewalCycleYears));
-    const costWithMaintenanceAndUpgrade = (fleetSize * newLaptopCostFcfa) + (annualMaintenanceCost * prolongedLifeYears);
+    const costIfRenewedTwice =
+      fleetSize * newLaptopCostFcfa * (prolongedLifeYears / renewalCycleYears);
+    const costWithMaintenanceAndUpgrade =
+      fleetSize * newLaptopCostFcfa + annualMaintenanceCost * prolongedLifeYears;
     return Math.max(0, Math.round(costIfRenewedTwice - costWithMaintenanceAndUpgrade));
   }, [fleetSize, newLaptopCostFcfa, renewalCycleYears, annualMaintenanceCost, prolongedLifeYears]);
 
   const roiPercent = React.useMemo(() => {
     if (annualMaintenanceCost === 0) return 0;
-    return Math.round((totalSavingsOver5Years / (annualMaintenanceCost * prolongedLifeYears)) * 100);
+    return Math.round(
+      (totalSavingsOver5Years / (annualMaintenanceCost * prolongedLifeYears)) * 100,
+    );
   }, [totalSavingsOver5Years, annualMaintenanceCost, prolongedLifeYears]);
 
   return (
@@ -43,11 +47,15 @@ export function RoiCalculatorModal() {
               Simulateur ROI &amp; Amortissement Flotte DSI
             </h3>
             <p className="text-xs text-muted-foreground">
-              Mesurez l'impact financier de la maintenance préventive Allô Techno sur votre trésorerie
+              Mesurez l'impact financier de la maintenance préventive Allô Techno sur votre
+              trésorerie
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs border-emerald-600/40 text-emerald-600 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs border-emerald-600/40 text-emerald-600 bg-emerald-600/10"
+        >
           ROI Moyen Constaté : +{roiPercent}%
         </Badge>
       </div>
@@ -56,7 +64,9 @@ export function RoiCalculatorModal() {
         {/* Paramètres Flotte */}
         <div className="lg:col-span-6 space-y-4">
           <div>
-            <Label className="text-xs">Taille de votre parc informatique (Postes / PC / Mac) :</Label>
+            <Label className="text-xs">
+              Taille de votre parc informatique (Postes / PC / Mac) :
+            </Label>
             <div className="mt-1.5 flex items-center gap-3">
               <Input
                 type="number"
@@ -112,17 +122,22 @@ export function RoiCalculatorModal() {
               {formatFcfa(totalSavingsOver5Years)}
             </strong>
             <p className="text-xs text-muted-foreground mt-1">
-              En prolongeant la durée de vie de 3 à 5 ans grâce aux révisions trimestrielles et repasting.
+              En prolongeant la durée de vie de 3 à 5 ans grâce aux révisions trimestrielles et
+              repasting.
             </p>
 
             <div className="mt-4 space-y-2 border-t border-border/60 pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Budget rachat neuf systématique :</span>
-                <span className="font-mono text-destructive font-bold">{formatFcfa(renewalCostWithoutMaintenance)}</span>
+                <span className="font-mono text-destructive font-bold">
+                  {formatFcfa(renewalCostWithoutMaintenance)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Contrat annuel Allô Techno Pro :</span>
-                <span className="font-mono text-foreground font-bold">{formatFcfa(annualMaintenanceCost)} / an</span>
+                <span className="font-mono text-foreground font-bold">
+                  {formatFcfa(annualMaintenanceCost)} / an
+                </span>
               </div>
               <div className="flex justify-between font-bold text-emerald-600 pt-1 border-t border-border/40">
                 <span>Gain de Trésorerie Net :</span>

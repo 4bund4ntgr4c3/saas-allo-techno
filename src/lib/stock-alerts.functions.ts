@@ -65,23 +65,27 @@ export const MOCK_STOCK_ALERTS: StockItemAlert[] = [
   },
 ];
 
-export const getLowStockAlertsFn = createServerFn({ method: "POST" }).handler(async (): Promise<{
-  alerts: StockItemAlert[];
-  urgentCount: number;
-  totalRestockBudgetFcfa: number;
-}> => {
-  const urgentCount = MOCK_STOCK_ALERTS.filter((item) => item.currentStock <= item.minThreshold / 2).length;
-  const totalRestockBudgetFcfa = MOCK_STOCK_ALERTS.reduce(
-    (sum, item) => sum + (item.minThreshold * 2 - item.currentStock) * item.unitCostFcfa,
-    0,
-  );
+export const getLowStockAlertsFn = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    alerts: StockItemAlert[];
+    urgentCount: number;
+    totalRestockBudgetFcfa: number;
+  }> => {
+    const urgentCount = MOCK_STOCK_ALERTS.filter(
+      (item) => item.currentStock <= item.minThreshold / 2,
+    ).length;
+    const totalRestockBudgetFcfa = MOCK_STOCK_ALERTS.reduce(
+      (sum, item) => sum + (item.minThreshold * 2 - item.currentStock) * item.unitCostFcfa,
+      0,
+    );
 
-  return {
-    alerts: MOCK_STOCK_ALERTS,
-    urgentCount,
-    totalRestockBudgetFcfa,
-  };
-});
+    return {
+      alerts: MOCK_STOCK_ALERTS,
+      urgentCount,
+      totalRestockBudgetFcfa,
+    };
+  },
+);
 
 export const triggerSupplierRestockOrderFn = createServerFn({ method: "POST" })
   .validator(
@@ -90,10 +94,14 @@ export const triggerSupplierRestockOrderFn = createServerFn({ method: "POST" })
       quantityToOrder: z.number().min(1),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; purchaseOrderId: string; message: string }> => {
-    return {
-      success: true,
-      purchaseOrderId: `PO-SUPPLIER-${Date.now().toString().slice(-6)}`,
-      message: `Bon de commande de réapprovisionnement (${input.quantityToOrder} unités) généré et transmis au hub logistique.`,
-    };
-  });
+  .handler(
+    async ({
+      data: input,
+    }): Promise<{ success: boolean; purchaseOrderId: string; message: string }> => {
+      return {
+        success: true,
+        purchaseOrderId: `PO-SUPPLIER-${Date.now().toString().slice(-6)}`,
+        message: `Bon de commande de réapprovisionnement (${input.quantityToOrder} unités) généré et transmis au hub logistique.`,
+      };
+    },
+  );

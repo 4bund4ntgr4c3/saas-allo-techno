@@ -301,7 +301,8 @@ const PAGES: Omit<Item, "icon">[] = [
     id: "page-premiers-secours",
     label: "Premiers Secours & Gestes d'Urgence",
     hint: "Liquide renversé, surtension orage, surchauffe",
-    keywords: "urgence premiers secours eau liquide cafe renverse foudre orage surchauffe sauvetage",
+    keywords:
+      "urgence premiers secours eau liquide cafe renverse foudre orage surchauffe sauvetage",
     target: { to: "/premiers-secours" },
   },
   {

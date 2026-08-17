@@ -118,12 +118,27 @@ export function Footer() {
             </h2>
             <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/reparations", label: isEn ? "All Repairs" : "Toutes les Réparations" },
+                {
+                  to: "/$locale/reparations",
+                  label: isEn ? "All Repairs" : "Toutes les Réparations",
+                },
                 { to: "/$locale/devis", label: isEn ? "Instant Quote" : "Devis Express en Ligne" },
-                { to: "/$locale/reservation", label: isEn ? "Book Workshop Visit" : "Prendre Rendez-vous" },
-                { to: "/$locale/depannage-domicile", label: isEn ? "VIP Home Repair" : "Dépannage à Domicile" },
-                { to: "/$locale/suivi", label: isEn ? "Track Repair Status" : "Suivre ma Réparation" },
-                { to: "/$locale/premiers-secours", label: isEn ? "First Aid & Spills" : "Premiers Secours SAV" },
+                {
+                  to: "/$locale/reservation",
+                  label: isEn ? "Book Workshop Visit" : "Prendre Rendez-vous",
+                },
+                {
+                  to: "/$locale/depannage-domicile",
+                  label: isEn ? "VIP Home Repair" : "Dépannage à Domicile",
+                },
+                {
+                  to: "/$locale/suivi",
+                  label: isEn ? "Track Repair Status" : "Suivre ma Réparation",
+                },
+                {
+                  to: "/$locale/premiers-secours",
+                  label: isEn ? "First Aid & Spills" : "Premiers Secours SAV",
+                },
                 { to: "/$locale/tarifs", label: isEn ? "Price Catalog" : "Grille Tarifaire" },
               ].map((link) => (
                 <li key={link.to}>
@@ -131,7 +146,9 @@ export function Footer() {
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -149,19 +166,36 @@ export function Footer() {
             <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
                 { to: "/$locale/boutique", label: isEn ? "Online Store" : "Boutique & Pièces" },
-                { to: "/$locale/reconditionnes", label: isEn ? "Refurbished PC & Mac" : "PC & Mac Reconditionnés" },
-                { to: "/$locale/marketplace-sequestre", label: isEn ? "Escrow Certified Marketplace" : "Marketplace Séquestre" },
+                {
+                  to: "/$locale/reconditionnes",
+                  label: isEn ? "Refurbished PC & Mac" : "PC & Mac Reconditionnés",
+                },
+                {
+                  to: "/$locale/marketplace-sequestre",
+                  label: isEn ? "Escrow Certified Marketplace" : "Marketplace Séquestre",
+                },
                 { to: "/$locale/reprise", label: isEn ? "Trade-in Cash" : "Rachat & Reprise Cash" },
-                { to: "/$locale/abonnements", label: isEn ? "Serenity Subscriptions" : "Abonnements Sérénité" },
-                { to: "/$locale/parrainage", label: isEn ? "Referral & Earn MoMo" : "Parrainage Mobile Money" },
-                { to: "/$locale/promotions", label: isEn ? "Current Deals" : "Bons Plans & Promos" },
+                {
+                  to: "/$locale/abonnements",
+                  label: isEn ? "Serenity Subscriptions" : "Abonnements Sérénité",
+                },
+                {
+                  to: "/$locale/parrainage",
+                  label: isEn ? "Referral & Earn MoMo" : "Parrainage Mobile Money",
+                },
+                {
+                  to: "/$locale/promotions",
+                  label: isEn ? "Current Deals" : "Bons Plans & Promos",
+                },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -178,20 +212,43 @@ export function Footer() {
             </h2>
             <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/entreprises", label: isEn ? "B2B Maintenance SLA" : "Maintenance de Flotte SLA" },
-                { to: "/$locale/catalogue", label: isEn ? "Parts Catalog" : "Catalogue Pièces Détachées" },
-                { to: "/$locale/outils", label: isEn ? "Toolbox & Drivers" : "Boîte à Outils & Pilotes" },
-                { to: "/$locale/guide-esd", label: isEn ? "ESD Safety Guide" : "Guide Sécurité ESD" },
-                { to: "/$locale/guides", label: isEn ? "Self-Repair Guides" : "Tutoriels & Guides" },
-                { to: "/$locale/engagements", label: isEn ? "CSR & Commitments" : "Engagements & Écologie" },
-                { to: "/$locale/garantie", label: isEn ? "Warranty Terms" : "Conditions de Garantie" },
+                {
+                  to: "/$locale/entreprises",
+                  label: isEn ? "B2B Maintenance SLA" : "Maintenance de Flotte SLA",
+                },
+                {
+                  to: "/$locale/catalogue",
+                  label: isEn ? "Parts Catalog" : "Catalogue Pièces Détachées",
+                },
+                {
+                  to: "/$locale/outils",
+                  label: isEn ? "Toolbox & Drivers" : "Boîte à Outils & Pilotes",
+                },
+                {
+                  to: "/$locale/guide-esd",
+                  label: isEn ? "ESD Safety Guide" : "Guide Sécurité ESD",
+                },
+                {
+                  to: "/$locale/guides",
+                  label: isEn ? "Self-Repair Guides" : "Tutoriels & Guides",
+                },
+                {
+                  to: "/$locale/engagements",
+                  label: isEn ? "CSR & Commitments" : "Engagements & Écologie",
+                },
+                {
+                  to: "/$locale/garantie",
+                  label: isEn ? "Warranty Terms" : "Conditions de Garantie",
+                },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -210,20 +267,34 @@ export function Footer() {
               {[
                 { to: "/$locale/about", label: isEn ? "About Us" : "Notre Histoire & Atelier" },
                 { to: "/$locale/magasins", label: isEn ? "Our Workshops" : "Nos Points d'Atelier" },
-                { to: "/$locale/quartiers", label: isEn ? "Coverage Areas" : "Zones Desservies Cotonou" },
+                {
+                  to: "/$locale/quartiers",
+                  label: isEn ? "Coverage Areas" : "Zones Desservies Cotonou",
+                },
                 { to: "/$locale/contact", label: isEn ? "Contact Support" : "Nous Contacter" },
                 { to: "/$locale/avis", label: isEn ? "Customer Reviews" : "Avis Clients Vérifiés" },
-                { to: "/$locale/work-at", label: isEn ? "Careers / Work At" : "Recrutement & Carrières" },
+                {
+                  to: "/$locale/work-at",
+                  label: isEn ? "Careers / Work At" : "Recrutement & Carrières",
+                },
                 { to: "/$locale/blog", label: isEn ? "Tech Blog" : "Blog & Actualités Tech" },
-                { to: "/$locale/changelog", label: isEn ? "Changelog & Updates" : "Changelog & Mises à Jour" },
-                { to: "/$locale/mentions-legales", label: isEn ? "Legal Notice" : "Mentions Légales & RGPD" },
+                {
+                  to: "/$locale/changelog",
+                  label: isEn ? "Changelog & Updates" : "Changelog & Mises à Jour",
+                },
+                {
+                  to: "/$locale/mentions-legales",
+                  label: isEn ? "Legal Notice" : "Mentions Légales & RGPD",
+                },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
+                    onMouseEnter={() =>
+                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
+                    }
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}

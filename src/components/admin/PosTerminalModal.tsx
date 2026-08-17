@@ -11,15 +11,45 @@ import {
 } from "@/lib/pos-cashier.functions";
 
 const PRESET_CATALOG_ITEMS: PosLineItem[] = [
-  { id: "REP-01", label: "Forfait Repâtage Thermique Arctic MX-4", unitPriceFcfa: 15000, quantity: 1, category: "reparation" },
-  { id: "REP-02", label: "Remplacement Écran FHD 15.6'' Slim 30 Pin", unitPriceFcfa: 45000, quantity: 1, category: "reparation" },
-  { id: "ACC-01", label: "Chargeur Universel USB-C GaN 65W PD", unitPriceFcfa: 18000, quantity: 1, category: "accessoire" },
-  { id: "PIE-01", label: "SSD NVMe 512 Go PCIe 4.0", unitPriceFcfa: 28000, quantity: 1, category: "piece_detachee" },
+  {
+    id: "REP-01",
+    label: "Forfait Repâtage Thermique Arctic MX-4",
+    unitPriceFcfa: 15000,
+    quantity: 1,
+    category: "reparation",
+  },
+  {
+    id: "REP-02",
+    label: "Remplacement Écran FHD 15.6'' Slim 30 Pin",
+    unitPriceFcfa: 45000,
+    quantity: 1,
+    category: "reparation",
+  },
+  {
+    id: "ACC-01",
+    label: "Chargeur Universel USB-C GaN 65W PD",
+    unitPriceFcfa: 18000,
+    quantity: 1,
+    category: "accessoire",
+  },
+  {
+    id: "PIE-01",
+    label: "SSD NVMe 512 Go PCIe 4.0",
+    unitPriceFcfa: 28000,
+    quantity: 1,
+    category: "piece_detachee",
+  },
 ];
 
 export function PosTerminalModal() {
   const [cart, setCart] = React.useState<PosLineItem[]>([
-    { id: "REP-01", label: "Forfait Repâtage Thermique Arctic MX-4", unitPriceFcfa: 15000, quantity: 1, category: "reparation" },
+    {
+      id: "REP-01",
+      label: "Forfait Repâtage Thermique Arctic MX-4",
+      unitPriceFcfa: 15000,
+      quantity: 1,
+      category: "reparation",
+    },
   ]);
   const [cashierName] = React.useState("Gervais Dossou (Caisse Comptoir Haie Vive)");
   const [cashPaid, setCashPaid] = React.useState<number>(15000);
@@ -74,11 +104,15 @@ export function PosTerminalModal() {
               Terminal de Caisse Tactile POS &amp; Impression Thermique
             </h3>
             <p className="text-xs text-muted-foreground">
-              Encaissement express au comptoir atelier avec émission du ticket fiscal normalisé e-MECeF
+              Encaissement express au comptoir atelier avec émission du ticket fiscal normalisé
+              e-MECeF
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Imprimante ESC/POS Prête
         </Badge>
       </div>
@@ -96,7 +130,9 @@ export function PosTerminalModal() {
             <div className="border-t border-b border-border/60 py-2 space-y-1 text-left text-[11px]">
               {cart.map((i) => (
                 <div key={i.id} className="flex justify-between">
-                  <span>{i.quantity}x {i.label}</span>
+                  <span>
+                    {i.quantity}x {i.label}
+                  </span>
                   <span className="font-bold">{formatFcfa(i.unitPriceFcfa * i.quantity)}</span>
                 </div>
               ))}
@@ -121,11 +157,7 @@ export function PosTerminalModal() {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setReceipt(null)}
-              className="w-1/2 text-xs"
-            >
+            <Button variant="outline" onClick={() => setReceipt(null)} className="w-1/2 text-xs">
               Nouvelle Vente
             </Button>
             <Button
@@ -171,7 +203,10 @@ export function PosTerminalModal() {
 
             <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
               {cart.map((item) => (
-                <div key={item.id} className="flex items-center justify-between bg-card p-2 rounded-lg border border-border">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between bg-card p-2 rounded-lg border border-border"
+                >
                   <div className="truncate pr-2">
                     <span className="font-medium text-foreground block truncate">{item.label}</span>
                     <span className="text-[10px] text-muted-foreground font-mono">

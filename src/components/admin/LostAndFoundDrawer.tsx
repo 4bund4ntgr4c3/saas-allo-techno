@@ -15,10 +15,12 @@ export function LostAndFoundDrawer() {
   const [notifiedMap, setNotifiedMap] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
-    getLostItemsFn().then((res) => {
-      setItems(res.items);
-      setPendingCount(res.pendingCount);
-    }).catch(() => {});
+    getLostItemsFn()
+      .then((res) => {
+        setItems(res.items);
+        setPendingCount(res.pendingCount);
+      })
+      .catch(() => {});
   }, []);
 
   const handleNotify = async (itemId: string) => {
@@ -47,7 +49,10 @@ export function LostAndFoundDrawer() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-amber-600 border-amber-600/40 bg-amber-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-amber-600 border-amber-600/40 bg-amber-600/10"
+        >
           {pendingCount} Objets en Garde Atelier
         </Badge>
       </div>
@@ -75,12 +80,17 @@ export function LostAndFoundDrawer() {
 
                 <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <MapPin className="size-3 text-primary" /> {item.locationFound} ({item.foundDate})
+                    <MapPin className="size-3 text-primary" /> {item.locationFound} (
+                    {item.foundDate})
                   </span>
                   {item.ownerName && (
                     <>
                       <span>·</span>
-                      <span>Propriétaire présumé : <strong className="text-foreground">{item.ownerName}</strong> ({item.linkedTicketRef})</span>
+                      <span>
+                        Propriétaire présumé :{" "}
+                        <strong className="text-foreground">{item.ownerName}</strong> (
+                        {item.linkedTicketRef})
+                      </span>
                     </>
                   )}
                 </div>
@@ -88,11 +98,17 @@ export function LostAndFoundDrawer() {
 
               <div className="shrink-0 flex items-center gap-2">
                 {item.status === "restitue" ? (
-                  <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs"
+                  >
                     <CheckCircle2 className="size-3 mr-1" /> Restitué
                   </Badge>
                 ) : isNotified ? (
-                  <Badge variant="outline" className="text-amber-600 border-amber-600/40 bg-amber-600/10 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="text-amber-600 border-amber-600/40 bg-amber-600/10 text-xs"
+                  >
                     <Bell className="size-3 mr-1" /> Client Notifié
                   </Badge>
                 ) : (
@@ -103,7 +119,11 @@ export function LostAndFoundDrawer() {
                     onClick={() => handleNotify(item.id)}
                     className="text-xs font-bold uppercase tracking-wider h-8"
                   >
-                    {loadingId === item.id ? <Loader2 className="size-3 mr-1 animate-spin" /> : <Bell className="size-3 mr-1" />}
+                    {loadingId === item.id ? (
+                      <Loader2 className="size-3 mr-1 animate-spin" />
+                    ) : (
+                      <Bell className="size-3 mr-1" />
+                    )}
                     Alerter par SMS
                   </Button>
                 )}

@@ -64,13 +64,17 @@ export function StolenDeviceLookupModal() {
             Registre Anti-Recel &amp; Matériel Volé
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Base Nationale Sécurisée
         </Badge>
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Vérifiez avant achat ou dépôt si un numéro de série fait l'objet d'un signalement de vol ou d'une plainte en cours.
+        Vérifiez avant achat ou dépôt si un numéro de série fait l'objet d'un signalement de vol ou
+        d'une plainte en cours.
       </p>
 
       {!isDeclaring ? (
@@ -89,7 +93,11 @@ export function StolenDeviceLookupModal() {
               disabled={loading || !serial.trim()}
               className="text-xs font-bold shrink-0 uppercase tracking-wider"
             >
-              {loading ? <Loader2 className="size-3.5 animate-spin" /> : <Search className="size-3.5 mr-1" />}
+              {loading ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Search className="size-3.5 mr-1" />
+              )}
               Vérifier
             </Button>
           </div>
@@ -110,7 +118,8 @@ export function StolenDeviceLookupModal() {
                     </>
                   ) : (
                     <>
-                      <ShieldCheck className="size-4 text-emerald-600" /> APPAREIL INTÈGRE &amp; NON FICHÉ
+                      <ShieldCheck className="size-4 text-emerald-600" /> APPAREIL INTÈGRE &amp; NON
+                      FICHÉ
                     </>
                   )}
                 </span>
@@ -121,9 +130,17 @@ export function StolenDeviceLookupModal() {
 
               {result.isFlaggedStolen && (
                 <div className="border-t border-destructive/30 pt-2 text-[11px] space-y-1 text-muted-foreground">
-                  <div>Modèle : <strong className="text-foreground">{result.deviceModel}</strong></div>
-                  <div>Plainte N° : <strong className="text-foreground">{result.policeReportNumber}</strong></div>
-                  <div>Déclarant : <strong className="text-foreground">{result.declarantName}</strong> ({result.declarationDate})</div>
+                  <div>
+                    Modèle : <strong className="text-foreground">{result.deviceModel}</strong>
+                  </div>
+                  <div>
+                    Plainte N° :{" "}
+                    <strong className="text-foreground">{result.policeReportNumber}</strong>
+                  </div>
+                  <div>
+                    Déclarant : <strong className="text-foreground">{result.declarantName}</strong>{" "}
+                    ({result.declarationDate})
+                  </div>
                 </div>
               )}
             </div>

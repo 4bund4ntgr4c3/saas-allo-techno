@@ -26,7 +26,11 @@ export const DEFAULT_TECH_PROFILE: TechnicianProfile = {
   rating: 4.9,
 };
 
-export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: TechnicianProfile }) {
+export function TechnicianBadgeModal({
+  tech = DEFAULT_TECH_PROFILE,
+}: {
+  tech?: TechnicianProfile;
+}) {
   const [qrDataUrl, setQrDataUrl] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -44,7 +48,9 @@ export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: T
       <div className="bg-foreground text-background p-4 -m-6 mb-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ShieldCheck className="size-5 text-primary" />
-          <span className="font-extrabold text-xs tracking-wider uppercase">Accréditation Officielle</span>
+          <span className="font-extrabold text-xs tracking-wider uppercase">
+            Accréditation Officielle
+          </span>
         </div>
         <span className="font-mono text-[10px] text-primary bg-primary/20 px-2 py-0.5 rounded font-bold">
           ACTIF
@@ -54,7 +60,10 @@ export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: T
       {/* ─── Tech Profile Info ─── */}
       <div className="text-center space-y-2">
         <div className="size-20 mx-auto rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center text-primary font-bold text-2xl shadow-inner">
-          {tech.fullName.split(" ").map((n) => n[0]).join("")}
+          {tech.fullName
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}
         </div>
         <div>
           <h3 className="font-extrabold text-base text-foreground">{tech.fullName}</h3>
@@ -69,7 +78,9 @@ export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: T
       <div className="grid grid-cols-2 gap-2 text-center bg-surface p-2.5 rounded-lg text-xs">
         <div>
           <span className="text-[10px] text-muted-foreground block">Interventions</span>
-          <strong className="font-mono font-bold text-foreground">{tech.interventionsCompleted}+</strong>
+          <strong className="font-mono font-bold text-foreground">
+            {tech.interventionsCompleted}+
+          </strong>
         </div>
         <div>
           <span className="text-[10px] text-muted-foreground block">Score Qualité</span>
@@ -79,7 +90,9 @@ export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: T
 
       {/* ─── Certifications List ─── */}
       <div className="space-y-1.5">
-        <span className="at-eyebrow text-muted-foreground text-[10px] block">Habilitations &amp; Certifications :</span>
+        <span className="at-eyebrow text-muted-foreground text-[10px] block">
+          Habilitations &amp; Certifications :
+        </span>
         <ul className="space-y-1 text-xs text-foreground">
           {tech.certifications.map((cert, i) => (
             <li key={i} className="flex items-start gap-1.5 text-[11px]">
@@ -93,7 +106,11 @@ export function TechnicianBadgeModal({ tech = DEFAULT_TECH_PROFILE }: { tech?: T
       {/* ─── QR Code Verification ─── */}
       {qrDataUrl && (
         <div className="border-t border-border pt-4 text-center space-y-2">
-          <img src={qrDataUrl} alt="QR Accréditation" className="size-24 mx-auto rounded-md border border-border" />
+          <img
+            src={qrDataUrl}
+            alt="QR Accréditation"
+            className="size-24 mx-auto rounded-md border border-border"
+          />
           <p className="text-[10px] text-muted-foreground">
             Scannez ce QR Code pour authentifier l'agent Allô Techno sur le registre officiel.
           </p>

@@ -1,16 +1,15 @@
 import * as React from "react";
 import { Lock, CheckCircle2, Hash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  getPrivacyRecordsFn,
-  type PrivacyRecord,
-} from "@/lib/privacy-compliance-vault";
+import { getPrivacyRecordsFn, type PrivacyRecord } from "@/lib/privacy-compliance-vault";
 
 export function PrivacyVaultDrawer() {
   const [records, setRecords] = React.useState<PrivacyRecord[]>([]);
 
   React.useEffect(() => {
-    getPrivacyRecordsFn().then((res) => setRecords(res.records)).catch(() => {});
+    getPrivacyRecordsFn()
+      .then((res) => setRecords(res.records))
+      .catch(() => {});
   }, []);
 
   return (
@@ -23,11 +22,15 @@ export function PrivacyVaultDrawer() {
               Coffre-Fort Cryptographique &amp; Conformité APDP Bénin
             </h3>
             <p className="text-xs text-muted-foreground">
-              Registre immuable des consentements et procès-verbaux de destruction de données (SHA-256)
+              Registre immuable des consentements et procès-verbaux de destruction de données
+              (SHA-256)
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Scellé NIST SP 800-88 Conforme
         </Badge>
       </div>
@@ -49,13 +52,18 @@ export function PrivacyVaultDrawer() {
                 </Badge>
               </div>
 
-              <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs font-bold">
+              <Badge
+                variant="outline"
+                className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs font-bold"
+              >
                 <CheckCircle2 className="size-3 mr-1" /> Scellé Inaltérable
               </Badge>
             </div>
 
             <div className="text-xs text-muted-foreground">
-              Action Certifiée : <strong className="text-foreground">{rec.actionType.replace(/_/g, " ")}</strong> · {rec.timestamp}
+              Action Certifiée :{" "}
+              <strong className="text-foreground">{rec.actionType.replace(/_/g, " ")}</strong> ·{" "}
+              {rec.timestamp}
             </div>
 
             <div className="bg-background p-2.5 rounded-lg border border-border flex items-center gap-2 text-[11px] font-mono text-muted-foreground overflow-x-auto">

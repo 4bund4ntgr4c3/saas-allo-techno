@@ -25,7 +25,8 @@ export const Route = createFileRoute("/$locale/diagnostic-auto")({
         { title: "Banc de Diagnostic Matériel Automatique — Allô Techno" },
         {
           name: "description",
-          content: "Testez votre écran, clavier, micro, haut-parleurs et webcam en direct sur notre banc de test matériel interactif.",
+          content:
+            "Testez votre écran, clavier, micro, haut-parleurs et webcam en direct sur notre banc de test matériel interactif.",
         },
         ...seo.meta,
       ],
@@ -102,7 +103,10 @@ function AutoDiagnosticPage() {
   };
 
   const playTestSound = () => {
-    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const ctx = new (
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    )();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
@@ -152,7 +156,8 @@ function AutoDiagnosticPage() {
             Banc de Test Matériel Interactif
           </h1>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl">
-            Vérifiez l'état de votre écran, touches clavier, microphone, haut-parleurs et webcam directement dans votre navigateur avant votre passage en atelier.
+            Vérifiez l'état de votre écran, touches clavier, microphone, haut-parleurs et webcam
+            directement dans votre navigateur avant votre passage en atelier.
           </p>
         </div>
       </section>
@@ -191,9 +196,12 @@ function AutoDiagnosticPage() {
           <div className="mt-6 border border-border bg-card p-6 rounded-xl space-y-6 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-foreground">Testeur de Clavier Interactif</h3>
+                <h3 className="text-base font-bold text-foreground">
+                  Testeur de Clavier Interactif
+                </h3>
                 <p className="text-xs text-muted-foreground">
-                  Pressez n'importe quelle touche de votre clavier physique : elle s'allumera en vert si elle répond parfaitement.
+                  Pressez n'importe quelle touche de votre clavier physique : elle s'allumera en
+                  vert si elle répond parfaitement.
                 </p>
               </div>
               <Button
@@ -208,10 +216,54 @@ function AutoDiagnosticPage() {
 
             <div className="grid grid-cols-10 sm:grid-cols-12 gap-1.5 p-4 rounded-lg bg-surface border border-border font-mono text-[10px] sm:text-xs text-center select-none">
               {[
-                "Escape", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11",
-                "Backquote", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0", "Backspace",
-                "Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "Enter",
-                "CapsLock", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Space", "ShiftLeft",
+                "Escape",
+                "F1",
+                "F2",
+                "F3",
+                "F4",
+                "F5",
+                "F6",
+                "F7",
+                "F8",
+                "F9",
+                "F10",
+                "F11",
+                "Backquote",
+                "Digit1",
+                "Digit2",
+                "Digit3",
+                "Digit4",
+                "Digit5",
+                "Digit6",
+                "Digit7",
+                "Digit8",
+                "Digit9",
+                "Digit0",
+                "Backspace",
+                "Tab",
+                "KeyQ",
+                "KeyW",
+                "KeyE",
+                "KeyR",
+                "KeyT",
+                "KeyY",
+                "KeyU",
+                "KeyI",
+                "KeyO",
+                "KeyP",
+                "Enter",
+                "CapsLock",
+                "KeyA",
+                "KeyS",
+                "KeyD",
+                "KeyF",
+                "KeyG",
+                "KeyH",
+                "KeyJ",
+                "KeyK",
+                "KeyL",
+                "Space",
+                "ShiftLeft",
               ].map((key) => {
                 const isPressed = pressedKeys.has(key);
                 return (
@@ -230,7 +282,9 @@ function AutoDiagnosticPage() {
             </div>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground bg-primary/5 p-3 rounded-lg border border-primary/20">
-              <span>Touches testées et fonctionnelles : <strong>{pressedKeys.size}</strong></span>
+              <span>
+                Touches testées et fonctionnelles : <strong>{pressedKeys.size}</strong>
+              </span>
               <span className="text-emerald-600 font-semibold flex items-center gap-1">
                 <CheckCircle2 className="size-3.5" /> Aucune touche bloquée détectée
               </span>
@@ -242,9 +296,12 @@ function AutoDiagnosticPage() {
         {activeTab === "screen" && (
           <div className="mt-6 border border-border bg-card p-6 rounded-xl space-y-6 animate-in fade-in duration-200">
             <div>
-              <h3 className="text-base font-bold text-foreground">Détecteur de Pixels Morts &amp; Uniformité Dalle</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Détecteur de Pixels Morts &amp; Uniformité Dalle
+              </h3>
               <p className="text-xs text-muted-foreground">
-                Affichez des couleurs unies pures pour inspecter la présence de lignes anormales, de taches ou de pixels défectueux.
+                Affichez des couleurs unies pures pour inspecter la présence de lignes anormales, de
+                taches ou de pixels défectueux.
               </p>
             </div>
 
@@ -268,7 +325,8 @@ function AutoDiagnosticPage() {
               onClick={() => setScreenColorIndex((prev) => (prev + 1) % screenColors.length)}
             >
               <span className="bg-black/70 text-white text-xs px-3 py-1.5 rounded-full font-mono backdrop-blur-md">
-                Cliquez pour changer la couleur de test (Couleur actuelle : {screenColors[screenColorIndex]})
+                Cliquez pour changer la couleur de test (Couleur actuelle :{" "}
+                {screenColors[screenColorIndex]})
               </span>
             </div>
           </div>
@@ -278,9 +336,12 @@ function AutoDiagnosticPage() {
         {activeTab === "audio" && (
           <div className="mt-6 border border-border bg-card p-6 rounded-xl space-y-6 animate-in fade-in duration-200">
             <div>
-              <h3 className="text-base font-bold text-foreground">Test Microphone &amp; Haut-Parleurs Stéréo</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Test Microphone &amp; Haut-Parleurs Stéréo
+              </h3>
               <p className="text-xs text-muted-foreground">
-                Enregistrez un court extrait vocal pour valider la clarté du micro et jouez la fréquence de test pour les haut-parleurs.
+                Enregistrez un court extrait vocal pour valider la clarté du micro et jouez la
+                fréquence de test pour les haut-parleurs.
               </p>
             </div>
 
@@ -344,7 +405,9 @@ function AutoDiagnosticPage() {
               {!cameraActive && (
                 <div className="text-center p-4">
                   <Camera className="size-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">La webcam est actuellement désactivée</p>
+                  <p className="text-xs text-muted-foreground">
+                    La webcam est actuellement désactivée
+                  </p>
                 </div>
               )}
             </div>
@@ -361,12 +424,19 @@ function AutoDiagnosticPage() {
         {/* ─── Diagnostic Action Footer ─── */}
         <div className="mt-8 border border-primary/40 bg-primary/5 p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="font-bold text-sm text-foreground">Votre matériel présente un dysfonctionnement ?</h4>
+            <h4 className="font-bold text-sm text-foreground">
+              Votre matériel présente un dysfonctionnement ?
+            </h4>
             <p className="text-xs text-muted-foreground">
-              Nos experts certifiés prennent en charge votre équipement sous 24h avec pièces certifiées.
+              Nos experts certifiés prennent en charge votre équipement sous 24h avec pièces
+              certifiées.
             </p>
           </div>
-          <Button asChild variant="technical" className="shrink-0 font-bold uppercase tracking-wider text-xs">
+          <Button
+            asChild
+            variant="technical"
+            className="shrink-0 font-bold uppercase tracking-wider text-xs"
+          >
             <Link to="/$locale/reparations" params={{ locale }}>
               Prendre Rendez-vous en Atelier &rarr;
             </Link>

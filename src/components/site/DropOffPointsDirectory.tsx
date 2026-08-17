@@ -24,7 +24,8 @@ export function DropOffPointsDirectory() {
               Points Relais &amp; Dépôt Express Partenaires
             </h3>
             <p className="text-xs text-muted-foreground">
-              Déposez votre ordinateur dans l'un de nos espaces partenaires agréés avec navette quotidienne
+              Déposez votre ordinateur dans l'un de nos espaces partenaires agréés avec navette
+              quotidienne
             </p>
           </div>
         </div>
@@ -48,7 +49,10 @@ export function DropOffPointsDirectory() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredPoints.map((point) => (
-          <div key={point.id} className="border border-border bg-surface/50 p-4 rounded-xl space-y-3 shadow-xs">
+          <div
+            key={point.id}
+            className="border border-border bg-surface/50 p-4 rounded-xl space-y-3 shadow-xs"
+          >
             <div className="flex items-start justify-between gap-2">
               <div>
                 <span className="font-mono text-[10px] text-primary uppercase font-bold tracking-wider block">
@@ -57,7 +61,10 @@ export function DropOffPointsDirectory() {
                 <h4 className="font-bold text-sm text-foreground">{point.name}</h4>
               </div>
               {point.hasFreeWifi && (
-                <Badge variant="outline" className="text-emerald-600 border-emerald-600/30 text-[10px] py-0.5">
+                <Badge
+                  variant="outline"
+                  className="text-emerald-600 border-emerald-600/30 text-[10px] py-0.5"
+                >
                   <Wifi className="size-3 mr-1" /> Wifi Gratuit
                 </Badge>
               )}
@@ -72,7 +79,10 @@ export function DropOffPointsDirectory() {
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Bus className="size-3.5 text-emerald-600 shrink-0" />
-                <span>Navette Allô Techno : <strong className="text-foreground">{point.shuttlePickupTime}</strong></span>
+                <span>
+                  Navette Allô Techno :{" "}
+                  <strong className="text-foreground">{point.shuttlePickupTime}</strong>
+                </span>
               </div>
             </div>
 

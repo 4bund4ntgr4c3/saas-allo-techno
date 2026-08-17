@@ -6,9 +6,12 @@ import { formatFcfa } from "@/data/catalog/company";
 import { CARE_PLUS_PLANS } from "@/lib/extended-warranty-engine";
 
 export function CarePlusWarrantyModal() {
-  const [selectedPlanId, setSelectedPlanId] = React.useState<"care_plus_12m" | "care_plus_24m">("care_plus_12m");
+  const [selectedPlanId, setSelectedPlanId] = React.useState<"care_plus_12m" | "care_plus_24m">(
+    "care_plus_12m",
+  );
 
-  const selectedPlan = CARE_PLUS_PLANS.find((p) => p.planId === selectedPlanId) || CARE_PLUS_PLANS[0];
+  const selectedPlan =
+    CARE_PLUS_PLANS.find((p) => p.planId === selectedPlanId) || CARE_PLUS_PLANS[0];
 
   return (
     <div className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
@@ -24,7 +27,10 @@ export function CarePlusWarrantyModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold"
+        >
           0 FCFA de Franchise
         </Badge>
       </div>
@@ -45,13 +51,17 @@ export function CarePlusWarrantyModal() {
             <div className="flex justify-between items-center">
               <span className="font-bold text-foreground">Care+ {plan.durationMonths} Mois</span>
               {plan.durationMonths === 24 && (
-                <Badge className="bg-amber-500 text-white text-[9px] font-bold border-0">Conseillé</Badge>
+                <Badge className="bg-amber-500 text-white text-[9px] font-bold border-0">
+                  Conseillé
+                </Badge>
               )}
             </div>
             <strong className="text-lg font-mono font-extrabold text-primary block mt-1">
               {formatFcfa(plan.pricePerYearFcfa)}
             </strong>
-            <span className="text-[10px] text-muted-foreground">Pour toute la durée de couverture</span>
+            <span className="text-[10px] text-muted-foreground">
+              Pour toute la durée de couverture
+            </span>
           </button>
         ))}
       </div>

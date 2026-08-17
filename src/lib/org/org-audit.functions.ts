@@ -60,7 +60,11 @@ export const getOrgSecurityAuditLogsFn = createServerFn({ method: "POST" })
           action_type: "EQUIPMENT_STATUS_CHANGE",
           resource_type: "equipment",
           resource_id: "eq-laptop-01",
-          details: JSON.stringify({ old_status: "en_panne", new_status: "actif", note: "Remplacement dalle & RAM" }),
+          details: JSON.stringify({
+            old_status: "en_panne",
+            new_status: "actif",
+            note: "Remplacement dalle & RAM",
+          }),
           created_at: new Date(Date.now() - 86400 * 1000).toISOString(),
         },
         {
@@ -85,7 +89,10 @@ export const getOrgSecurityAuditLogsFn = createServerFn({ method: "POST" })
       action_type: String(row["action_type"] ?? ""),
       resource_type: String(row["resource_type"] ?? ""),
       resource_id: row["resource_id"] ? String(row["resource_id"]) : null,
-      details: typeof row["details"] === "object" ? JSON.stringify(row["details"]) : String(row["details"] ?? "{}"),
+      details:
+        typeof row["details"] === "object"
+          ? JSON.stringify(row["details"])
+          : String(row["details"] ?? "{}"),
       created_at: String(row["created_at"] ?? new Date().toISOString()),
     }));
   });

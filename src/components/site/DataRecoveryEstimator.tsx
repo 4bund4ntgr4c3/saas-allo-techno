@@ -3,11 +3,7 @@ import { Database, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  estimateDataRecovery,
-  type StorageMedium,
-  type DamageSeverity,
-} from "@/lib/data-recovery";
+import { estimateDataRecovery, type StorageMedium, type DamageSeverity } from "@/lib/data-recovery";
 
 export function DataRecoveryEstimator() {
   const [medium, setMedium] = React.useState<StorageMedium>("hdd_externe");
@@ -27,11 +23,15 @@ export function DataRecoveryEstimator() {
               Laboratoire de Récupération de Données &amp; Salle Blanche
             </h3>
             <p className="text-xs text-muted-foreground">
-              Estimez le coût et les délais de sauvetage de vos fichiers (photos, comptabilité, thèses)
+              Estimez le coût et les délais de sauvetage de vos fichiers (photos, comptabilité,
+              thèses)
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Taux de Réussite : {estimate.successRatePercent}%
         </Badge>
       </div>
@@ -40,7 +40,9 @@ export function DataRecoveryEstimator() {
         {/* Controls */}
         <div className="lg:col-span-6 space-y-4">
           <div>
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">1. Type de Support de Stockage</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">
+              1. Type de Support de Stockage
+            </span>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: "hdd_externe", label: "Disque Dur Externe USB" },
@@ -65,7 +67,9 @@ export function DataRecoveryEstimator() {
           </div>
 
           <div>
-            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">2. Type de Panne Constatée</span>
+            <span className="at-eyebrow text-[10px] text-muted-foreground block mb-2">
+              2. Type de Panne Constatée
+            </span>
             <div className="space-y-2">
               {[
                 {
@@ -109,7 +113,8 @@ export function DataRecoveryEstimator() {
               Estimation Forfaitaire de Sauvetage
             </span>
             <strong className="text-2xl sm:text-3xl font-mono font-extrabold text-primary block mt-1">
-              {formatFcfa(estimate.estimatedPriceFcfa.min)} — {formatFcfa(estimate.estimatedPriceFcfa.max)}
+              {formatFcfa(estimate.estimatedPriceFcfa.min)} —{" "}
+              {formatFcfa(estimate.estimatedPriceFcfa.max)}
             </strong>
             <p className="text-xs text-muted-foreground mt-1">
               Garantie « Zéro Donnée Récupérée = Zéro Franc Facturé ».
@@ -118,11 +123,15 @@ export function DataRecoveryEstimator() {
             <div className="mt-4 space-y-2.5 border-t border-border pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Procédé technique :</span>
-                <span className="font-semibold text-foreground text-right max-w-[200px]">{estimate.laboratoryTechnique}</span>
+                <span className="font-semibold text-foreground text-right max-w-[200px]">
+                  {estimate.laboratoryTechnique}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Délai moyen d'extraction :</span>
-                <span className="font-mono font-bold text-foreground">{estimate.turnaroundDays}</span>
+                <span className="font-mono font-bold text-foreground">
+                  {estimate.turnaroundDays}
+                </span>
               </div>
               <div className="flex justify-between text-emerald-600 font-bold">
                 <span className="flex items-center gap-1">

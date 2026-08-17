@@ -46,7 +46,9 @@ export const getClientInteractionsFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<ClientInteractionEntry[]> => {
-    return MOCK_INTERACTIONS.filter((i) => i.reference === input.reference || input.reference === "ALL");
+    return MOCK_INTERACTIONS.filter(
+      (i) => i.reference === input.reference || input.reference === "ALL",
+    );
   });
 
 export const addClientInteractionFn = createServerFn({ method: "POST" })
@@ -59,16 +61,18 @@ export const addClientInteractionFn = createServerFn({ method: "POST" })
       nextAction: z.string().optional(),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; entry: ClientInteractionEntry }> => {
-    const entry: ClientInteractionEntry = {
-      id: `int-${Date.now()}`,
-      reference: input.reference,
-      channel: input.channel,
-      authorName: input.authorName,
-      summary: input.summary,
-      nextAction: input.nextAction ?? null,
-      createdAt: new Date().toISOString(),
-    };
-    MOCK_INTERACTIONS.unshift(entry);
-    return { success: true, entry };
-  });
+  .handler(
+    async ({ data: input }): Promise<{ success: boolean; entry: ClientInteractionEntry }> => {
+      const entry: ClientInteractionEntry = {
+        id: `int-${Date.now()}`,
+        reference: input.reference,
+        channel: input.channel,
+        authorName: input.authorName,
+        summary: input.summary,
+        nextAction: input.nextAction ?? null,
+        createdAt: new Date().toISOString(),
+      };
+      MOCK_INTERACTIONS.unshift(entry);
+      return { success: true, entry };
+    },
+  );

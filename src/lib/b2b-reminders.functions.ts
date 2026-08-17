@@ -30,7 +30,9 @@ function normalizePhone(raw: string): string {
 
 async function sendWhatsApp(to: string, body: string): Promise<void> {
   if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-    logger.warn("WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID non configuré, notification simulée en log");
+    logger.warn(
+      "WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID non configuré, notification simulée en log",
+    );
     return;
   }
   try {
@@ -145,7 +147,8 @@ export async function runB2BReminders(): Promise<B2BRemindersResult> {
   try {
     const { data: schedules, error: schedErr } = await supabaseAdmin
       .from("equipment_maintenance_schedules" as never)
-      .select(`
+      .select(
+        `
         id,
         org_id,
         equipment_id,
@@ -154,7 +157,8 @@ export async function runB2BReminders(): Promise<B2BRemindersResult> {
         status,
         equipment:equipment_id(name, brand, model, asset_tag, serial_number),
         organizations:org_id(name, email, phone)
-      `)
+      `,
+      )
       .lte("next_due_at", targetDateStr)
       .in("status", ["scheduled", "overdue"])
       .limit(50);
@@ -168,7 +172,12 @@ export async function runB2BReminders(): Promise<B2BRemindersResult> {
         equipment_id: string;
         task_title: string;
         next_due_at: string;
-        equipment?: { name: string; brand: string | null; model: string | null; asset_tag: string | null };
+        equipment?: {
+          name: string;
+          brand: string | null;
+          model: string | null;
+          asset_tag: string | null;
+        };
         organizations?: { name: string; email: string | null; phone: string | null };
       }[]) {
         const orgName = s.organizations?.name ?? "votre entreprise";

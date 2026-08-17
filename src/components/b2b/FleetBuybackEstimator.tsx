@@ -7,7 +7,9 @@ import { formatFcfa } from "@/data/catalog/company";
 export function FleetBuybackEstimator() {
   const [deviceCount, setDeviceCount] = React.useState<number>(20);
   const [tier, setTier] = React.useState<"i3_entry" | "i5_pro" | "macbook_i7">("i5_pro");
-  const [condition, setCondition] = React.useState<"fonctionnel" | "batterie_usée" | "pour_pieces">("fonctionnel");
+  const [condition, setCondition] = React.useState<"fonctionnel" | "batterie_usée" | "pour_pieces">(
+    "fonctionnel",
+  );
 
   const calculation = React.useMemo(() => {
     let baseUnitVal = 65000;
@@ -43,7 +45,10 @@ export function FleetBuybackEstimator() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Paiement Cash ou Avoir +15%
         </Badge>
       </div>
@@ -112,7 +117,9 @@ export function FleetBuybackEstimator() {
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => setCondition(c.id as "fonctionnel" | "batterie_usée" | "pour_pieces")}
+                  onClick={() =>
+                    setCondition(c.id as "fonctionnel" | "batterie_usée" | "pour_pieces")
+                  }
                   className={`p-2 rounded-lg border text-center text-xs font-semibold transition-all ${
                     condition === c.id
                       ? "border-primary bg-primary text-primary-foreground font-bold shadow-xs"
@@ -134,27 +141,41 @@ export function FleetBuybackEstimator() {
             </span>
             <div className="mt-2 space-y-3">
               <div className="p-3.5 rounded-xl bg-card border border-border">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wide block">Option 1 : Paiement Virement / Chèque Direct</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wide block">
+                  Option 1 : Paiement Virement / Chèque Direct
+                </span>
                 <strong className="text-2xl font-mono font-extrabold text-foreground block mt-0.5">
                   {formatFcfa(calculation.totalCash)}
                 </strong>
-                <span className="text-[11px] text-muted-foreground">Soit ~{formatFcfa(calculation.unitPrice)} par poste enlevé</span>
+                <span className="text-[11px] text-muted-foreground">
+                  Soit ~{formatFcfa(calculation.unitPrice)} par poste enlevé
+                </span>
               </div>
 
               <div className="p-3.5 rounded-xl bg-emerald-600/10 border border-emerald-600/30">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wide">Option 2 : Avoir Flotte Reconditionnée (+15%)</span>
-                  <Badge variant="outline" className="text-[10px] bg-emerald-600 text-white font-bold border-0">+15% Offert</Badge>
+                  <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wide">
+                    Option 2 : Avoir Flotte Reconditionnée (+15%)
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] bg-emerald-600 text-white font-bold border-0"
+                  >
+                    +15% Offert
+                  </Badge>
                 </div>
                 <strong className="text-2xl font-mono font-extrabold text-emerald-700 block mt-0.5">
                   {formatFcfa(calculation.totalStoreCredit)}
                 </strong>
-                <span className="text-[11px] text-emerald-800/80">Déductible immédiatement sur l'achat de PC portables neufs/garantis</span>
+                <span className="text-[11px] text-emerald-800/80">
+                  Déductible immédiatement sur l'achat de PC portables neufs/garantis
+                </span>
               </div>
             </div>
 
             <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed">
-              Enlèvement sur site à Cotonou/Calavi inclus + Certificat d'effacement sécurisé des disques durs (NIST 800-88).
+              Enlèvement sur site à Cotonou/Calavi inclus + Certificat d'effacement sécurisé des
+              disques durs (NIST 800-88).
             </p>
           </div>
 

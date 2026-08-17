@@ -18,7 +18,10 @@ export function SecurityAdvisoryFeed() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-destructive border-destructive/40 bg-destructive/10 uppercase font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-destructive border-destructive/40 bg-destructive/10 uppercase font-bold"
+        >
           Veille SIEM Active
         </Badge>
       </div>
@@ -37,7 +40,10 @@ export function SecurityAdvisoryFeed() {
                 <h4 className="text-xs font-bold text-foreground">{advisory.title}</h4>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="font-mono text-[10px] text-destructive border-destructive/30">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-[10px] text-destructive border-destructive/30"
+                >
                   {advisory.severity}
                 </Badge>
                 <span className="text-[10px] text-muted-foreground">{advisory.publishDate}</span>
@@ -45,11 +51,14 @@ export function SecurityAdvisoryFeed() {
             </div>
 
             <div className="text-xs text-muted-foreground">
-              Matériel affecté : <strong className="text-foreground">{advisory.affectedHardware}</strong>
+              Matériel affecté :{" "}
+              <strong className="text-foreground">{advisory.affectedHardware}</strong>
             </div>
 
             <div className="bg-background p-3 rounded-lg border border-border text-xs space-y-1">
-              <span className="font-bold text-foreground block text-[11px]">Action de remédiation préconisée :</span>
+              <span className="font-bold text-foreground block text-[11px]">
+                Action de remédiation préconisée :
+              </span>
               <p className="text-muted-foreground">{advisory.mitigationAction}</p>
             </div>
           </div>
@@ -58,7 +67,8 @@ export function SecurityAdvisoryFeed() {
 
       <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border">
         <p className="text-[11px] text-muted-foreground">
-          Nos techniciens appliquent les correctifs de micro-code et firmwares lors des visites préventives mensuelles.
+          Nos techniciens appliquent les correctifs de micro-code et firmwares lors des visites
+          préventives mensuelles.
         </p>
         <Button asChild variant="outline" size="sm" className="text-xs font-bold shrink-0">
           <a

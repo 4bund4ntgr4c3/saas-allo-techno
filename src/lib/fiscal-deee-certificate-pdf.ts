@@ -134,7 +134,9 @@ export async function downloadFiscalDeeeCertificatePdf(data: FiscalDeeeCertifica
   if (qrDataUrl) {
     try {
       doc.addImage(qrDataUrl, "PNG", 18, y + 3, 30, 30);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }
 
   doc.setFont("helvetica", "bold");

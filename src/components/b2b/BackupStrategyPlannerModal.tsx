@@ -8,9 +8,9 @@ export function BackupStrategyPlannerModal() {
   const [dataVolumeTb, setDataVolumeTb] = React.useState<number>(2);
 
   const estimate = React.useMemo(() => {
-    let nasHardwareCost = dataVolumeTb <= 2 ? 380000 : dataVolumeTb <= 8 ? 650000 : 1200000;
-    let monthlyCloudCost = dataVolumeTb * 9500; // ~9 500 FCFA/To/mois chiffré
-    let setupFee = 150000;
+    const nasHardwareCost = dataVolumeTb <= 2 ? 380000 : dataVolumeTb <= 8 ? 650000 : 1200000;
+    const monthlyCloudCost = dataVolumeTb * 9500; // ~9 500 FCFA/To/mois chiffré
+    const setupFee = 150000;
 
     return {
       nasHardwareCost,
@@ -34,7 +34,10 @@ export function BackupStrategyPlannerModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Règle d'Or 3-2-1
         </Badge>
       </div>
@@ -77,21 +80,24 @@ export function BackupStrategyPlannerModal() {
           <div className="flex items-start gap-2 text-foreground">
             <Server className="size-4 text-primary shrink-0 mt-0.5" />
             <div>
-              <strong>1. NAS Synology RAID Local :</strong> Serveur de stockage local 2 ou 4 baies avec disques IronWolf Pro.
+              <strong>1. NAS Synology RAID Local :</strong> Serveur de stockage local 2 ou 4 baies
+              avec disques IronWolf Pro.
             </div>
           </div>
 
           <div className="flex items-start gap-2 text-foreground">
             <Lock className="size-4 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <strong>2. Snapshots Immuables (WORM) :</strong> Verrouillage Btrfs empêchant tout rançongiciel d'effacer les historiques.
+              <strong>2. Snapshots Immuables (WORM) :</strong> Verrouillage Btrfs empêchant tout
+              rançongiciel d'effacer les historiques.
             </div>
           </div>
 
           <div className="flex items-start gap-2 text-foreground">
             <Cloud className="size-4 text-blue-600 shrink-0 mt-0.5" />
             <div>
-              <strong>3. Réplication Cloud Chiffrée AES-256 :</strong> Sauvegarde nocturne externalisée hors du Bénin.
+              <strong>3. Réplication Cloud Chiffrée AES-256 :</strong> Sauvegarde nocturne
+              externalisée hors du Bénin.
             </div>
           </div>
         </div>
@@ -101,11 +107,17 @@ export function BackupStrategyPlannerModal() {
       <div className="border border-border bg-surface/80 p-4 rounded-xl space-y-2 text-xs">
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">Investissement Matériel &amp; Déploiement :</span>
-          <strong className="font-mono text-primary text-sm font-bold">{formatFcfa(estimate.totalInitial)}</strong>
+          <strong className="font-mono text-primary text-sm font-bold">
+            {formatFcfa(estimate.totalInitial)}
+          </strong>
         </div>
         <div className="flex justify-between items-center border-t border-border/60 pt-2">
-          <span className="text-muted-foreground">Abonnement Cloud Chiffré ({dataVolumeTb} To) :</span>
-          <strong className="font-mono text-emerald-600 font-bold">{formatFcfa(estimate.monthlyCloudCost)} / mois</strong>
+          <span className="text-muted-foreground">
+            Abonnement Cloud Chiffré ({dataVolumeTb} To) :
+          </span>
+          <strong className="font-mono text-emerald-600 font-bold">
+            {formatFcfa(estimate.monthlyCloudCost)} / mois
+          </strong>
         </div>
       </div>
 

@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Check,
-} from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
@@ -18,7 +16,8 @@ export const Route = createFileRoute("/$locale/abonnements")({
         { title: "Abonnements & Packs Sérénité Maintenance — Allô Techno" },
         {
           name: "description",
-          content: "Abonnements d'entretien préventif annuel, dépoussiérages illimités et prêt de PC de courtoisie pour particuliers et professionnels.",
+          content:
+            "Abonnements d'entretien préventif annuel, dépoussiérages illimités et prêt de PC de courtoisie pour particuliers et professionnels.",
         },
         ...seo.meta,
       ],
@@ -90,7 +89,9 @@ function SubscriptionsPage() {
             Abonnements de Maintenance Préventive
           </h1>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl">
-            Préservez la durée de vie de vos ordinateurs face à la chaleur et à la poussière. Bénéficiez d'entretiens illimités, d'un ordinateur de secours et d'une priorité absolue en atelier.
+            Préservez la durée de vie de vos ordinateurs face à la chaleur et à la poussière.
+            Bénéficiez d'entretiens illimités, d'un ordinateur de secours et d'une priorité absolue
+            en atelier.
           </p>
         </div>
       </section>
@@ -110,7 +111,10 @@ function SubscriptionsPage() {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-muted-foreground">{plan.target}</span>
                 {plan.popular && (
-                  <Badge variant="outline" className="text-primary border-primary/40 bg-primary/10 text-[10px] uppercase font-bold">
+                  <Badge
+                    variant="outline"
+                    className="text-primary border-primary/40 bg-primary/10 text-[10px] uppercase font-bold"
+                  >
                     Recommandé
                   </Badge>
                 )}

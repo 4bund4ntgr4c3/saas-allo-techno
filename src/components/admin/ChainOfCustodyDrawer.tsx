@@ -10,7 +10,9 @@ export function ChainOfCustodyDrawer() {
   const [records, setRecords] = React.useState<EvidenceTransferEvent[]>([]);
 
   React.useEffect(() => {
-    getChainOfCustodyLogsFn().then((res) => setRecords(res.records)).catch(() => {});
+    getChainOfCustodyLogsFn()
+      .then((res) => setRecords(res.records))
+      .catch(() => {});
   }, []);
 
   return (
@@ -23,11 +25,15 @@ export function ChainOfCustodyDrawer() {
               Chaîne de Garde Médicolégale &amp; Scellés Judiciaires
             </h3>
             <p className="text-xs text-muted-foreground">
-              Traçabilité certifiée des pièces à conviction, transferts de main à main et hachage forensique
+              Traçabilité certifiée des pièces à conviction, transferts de main à main et hachage
+              forensique
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-destructive border-destructive/40 bg-destructive/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-destructive border-destructive/40 bg-destructive/10"
+        >
           Norme ISO/IEC 27037 Forensics
         </Badge>
       </div>
@@ -56,19 +62,25 @@ export function ChainOfCustodyDrawer() {
                 <strong className="text-foreground">{rec.sourceCustodian}</strong>
               </div>
               <div>
-                <span className="block text-[10px] text-muted-foreground">Dépositaire Actuel :</span>
+                <span className="block text-[10px] text-muted-foreground">
+                  Dépositaire Actuel :
+                </span>
                 <strong className="text-foreground">{rec.targetCustodian}</strong>
               </div>
             </div>
 
             <div className="text-[11px] text-muted-foreground">
-              <span>Motif : <strong className="text-foreground">{rec.reasonForTransfer}</strong></span>
+              <span>
+                Motif : <strong className="text-foreground">{rec.reasonForTransfer}</strong>
+              </span>
               <span> · {rec.timestamp}</span>
             </div>
 
             <div className="bg-background p-2.5 rounded-lg border border-border flex items-center gap-2 text-[10px] font-mono text-muted-foreground overflow-x-auto">
               <Hash className="size-3 text-destructive shrink-0" />
-              <span className="text-foreground font-bold shrink-0">Scellé : {rec.securityBagSealNumber}</span>
+              <span className="text-foreground font-bold shrink-0">
+                Scellé : {rec.securityBagSealNumber}
+              </span>
               <span className="truncate text-muted-foreground">({rec.sha256SealHash})</span>
             </div>
           </div>

@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  calculateFleetTco,
-  submitB2bRfpConsultationFn,
-} from "@/lib/rfp-procurement.functions";
+import { calculateFleetTco, submitB2bRfpConsultationFn } from "@/lib/rfp-procurement.functions";
 
 export function RfpProcurementModal() {
   const formTopRef = React.useRef<HTMLDivElement>(null);
@@ -57,7 +54,10 @@ export function RfpProcurementModal() {
   };
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Building2 className="size-5 text-primary shrink-0" />
@@ -66,11 +66,15 @@ export function RfpProcurementModal() {
               Portail E-Procurement &amp; Appels d'Offres B2B
             </h3>
             <p className="text-xs text-muted-foreground">
-              Simulateur d'achat de flotte informatique et calcul du TCO sur 3 ans (SBEE + Maintenance)
+              Simulateur d'achat de flotte informatique et calcul du TCO sur 3 ans (SBEE +
+              Maintenance)
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Matrice TCO Conforme DSI
         </Badge>
       </div>
@@ -80,12 +84,15 @@ export function RfpProcurementModal() {
           <div className="size-12 rounded-full bg-emerald-600/10 text-emerald-600 flex items-center justify-center mx-auto">
             <CheckCircle2 className="size-7" />
           </div>
-          <h4 className="text-lg font-bold text-foreground">Dossier d'Appel d'Offres Transmis avec Succès</h4>
+          <h4 className="text-lg font-bold text-foreground">
+            Dossier d'Appel d'Offres Transmis avec Succès
+          </h4>
           <Badge variant="outline" className="font-mono text-sm text-primary font-bold">
             Consultation Réf : {submittedRfpId}
           </Badge>
           <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Notre direction grands comptes prépare l'offre technique et financière consolidée avec engagement de reprise à 3 ans.
+            Notre direction grands comptes prépare l'offre technique et financière consolidée avec
+            engagement de reprise à 3 ans.
           </p>
           <div className="pt-2">
             <Button asChild variant="technical" className="text-xs font-bold uppercase">
@@ -107,7 +114,9 @@ export function RfpProcurementModal() {
             <div className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-muted-foreground block mb-1">Raison Sociale de l'Entreprise :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Raison Sociale de l'Entreprise :
+                  </label>
                   <Input
                     required
                     value={clientCompanyName}
@@ -115,7 +124,9 @@ export function RfpProcurementModal() {
                   />
                 </div>
                 <div>
-                  <label className="text-muted-foreground block mb-1">Nombre d'ordinateurs à acquérir :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Nombre d'ordinateurs à acquérir :
+                  </label>
                   <Input
                     type="number"
                     min={5}
@@ -130,7 +141,9 @@ export function RfpProcurementModal() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-muted-foreground block mb-1">Budget d'acquisition global prévisionnel (FCFA) :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Budget d'acquisition global prévisionnel (FCFA) :
+                  </label>
                   <Input
                     type="number"
                     min={1000000}
@@ -142,7 +155,9 @@ export function RfpProcurementModal() {
                   />
                 </div>
                 <div>
-                  <label className="text-muted-foreground block mb-1">Gamme de matériel préconisée :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Gamme de matériel préconisée :
+                  </label>
                   <div className="grid grid-cols-3 gap-1.5">
                     {["Dell Latitude", "ThinkPad T14", "MacBook Air"].map((b) => (
                       <button
@@ -182,26 +197,42 @@ export function RfpProcurementModal() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
                   <div className="p-2.5 rounded-lg bg-card border border-border">
                     <span className="text-muted-foreground block text-[10px]">Achat Flotte</span>
-                    <strong className="text-foreground font-mono">{formatFcfa(tco.acquisitionCost)}</strong>
+                    <strong className="text-foreground font-mono">
+                      {formatFcfa(tco.acquisitionCost)}
+                    </strong>
                   </div>
                   <div className="p-2.5 rounded-lg bg-card border border-border">
-                    <span className="text-muted-foreground block text-[10px]">Énergie SBEE (3 ans)</span>
-                    <strong className="text-amber-600 font-mono">{formatFcfa(tco.energyCost3Years)}</strong>
+                    <span className="text-muted-foreground block text-[10px]">
+                      Énergie SBEE (3 ans)
+                    </span>
+                    <strong className="text-amber-600 font-mono">
+                      {formatFcfa(tco.energyCost3Years)}
+                    </strong>
                   </div>
                   <div className="p-2.5 rounded-lg bg-card border border-border">
-                    <span className="text-muted-foreground block text-[10px]">Support SLA Allô Techno</span>
-                    <strong className="text-primary font-mono">{formatFcfa(tco.maintenanceSupportCost)}</strong>
+                    <span className="text-muted-foreground block text-[10px]">
+                      Support SLA Allô Techno
+                    </span>
+                    <strong className="text-primary font-mono">
+                      {formatFcfa(tco.maintenanceSupportCost)}
+                    </strong>
                   </div>
                   <div className="p-2.5 rounded-lg bg-emerald-600/10 border border-emerald-600/30">
-                    <span className="text-emerald-800 block text-[10px]">Reprise Garantie (30%)</span>
-                    <strong className="text-emerald-700 font-mono">-{formatFcfa(tco.residualResaleValue)}</strong>
+                    <span className="text-emerald-800 block text-[10px]">
+                      Reprise Garantie (30%)
+                    </span>
+                    <strong className="text-emerald-700 font-mono">
+                      -{formatFcfa(tco.residualResaleValue)}
+                    </strong>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center border-t border-border pt-2 text-xs">
                   <div>
                     <span className="text-muted-foreground">TCO Net Réel sur 3 Ans :</span>
-                    <strong className="font-mono text-primary text-base font-extrabold block">{formatFcfa(tco.netTco)}</strong>
+                    <strong className="font-mono text-primary text-base font-extrabold block">
+                      {formatFcfa(tco.netTco)}
+                    </strong>
                   </div>
                   <div className="text-right text-[11px] text-emerald-600 font-bold">
                     <span>🌱 {tco.co2SavedKg.toLocaleString()} kg CO2 évités</span>

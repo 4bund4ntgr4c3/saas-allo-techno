@@ -47,7 +47,9 @@ export function OfflineBanner() {
       {!isOnline ? (
         <>
           <WifiOff className="size-4 shrink-0 animate-pulse" />
-          <span>Mode Hors-Ligne actif · Vos actions locales seront synchronisées dès reconnexion.</span>
+          <span>
+            Mode Hors-Ligne actif · Vos actions locales seront synchronisées dès reconnexion.
+          </span>
         </>
       ) : (
         <>

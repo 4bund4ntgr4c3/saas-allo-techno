@@ -60,13 +60,15 @@ export const COURTESY_FLEET: CourtesyDevice[] = [
   },
 ];
 
-export const getAvailableCourtesyDevicesFn = createServerFn({ method: "POST" }).handler(async (): Promise<{
-  devices: CourtesyDevice[];
-}> => {
-  return {
-    devices: COURTESY_FLEET,
-  };
-});
+export const getAvailableCourtesyDevicesFn = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{
+    devices: CourtesyDevice[];
+  }> => {
+    return {
+      devices: COURTESY_FLEET,
+    };
+  },
+);
 
 export const bookCourtesyDeviceFn = createServerFn({ method: "POST" })
   .validator(
@@ -77,11 +79,15 @@ export const bookCourtesyDeviceFn = createServerFn({ method: "POST" })
       estimatedDays: z.number().min(1).max(30),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; loanContractRef: string; message: string }> => {
-    const loanRef = `LOAN-${Date.now().toString().slice(-6)}`;
-    return {
-      success: true,
-      loanContractRef: loanRef,
-      message: `Votre ordinateur de secours a été réservé pour le dossier ${input.repairTicketRef} (Contrat N° ${loanRef}). Vous pouvez le retirer immédiatement à l'atelier lors du dépôt de votre appareil en panne.`,
-    };
-  });
+  .handler(
+    async ({
+      data: input,
+    }): Promise<{ success: boolean; loanContractRef: string; message: string }> => {
+      const loanRef = `LOAN-${Date.now().toString().slice(-6)}`;
+      return {
+        success: true,
+        loanContractRef: loanRef,
+        message: `Votre ordinateur de secours a été réservé pour le dossier ${input.repairTicketRef} (Contrat N° ${loanRef}). Vous pouvez le retirer immédiatement à l'atelier lors du dépôt de votre appareil en panne.`,
+      };
+    },
+  );

@@ -23,7 +23,9 @@ export function ClientInteractionDrawer({ reference }: ClientInteractionDrawerPr
   const [isOpenForm, setIsOpenForm] = React.useState(false);
 
   React.useEffect(() => {
-    getClientInteractionsFn({ data: { reference } }).then(setItems).catch(() => {});
+    getClientInteractionsFn({ data: { reference } })
+      .then(setItems)
+      .catch(() => {});
   }, [reference]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +87,10 @@ export function ClientInteractionDrawer({ reference }: ClientInteractionDrawerPr
       </div>
 
       {isOpenForm && (
-        <form onSubmit={handleSubmit} className="border border-primary/30 bg-primary/5 p-3 rounded-lg space-y-2.5 animate-in fade-in duration-150">
+        <form
+          onSubmit={handleSubmit}
+          className="border border-primary/30 bg-primary/5 p-3 rounded-lg space-y-2.5 animate-in fade-in duration-150"
+        >
           <div className="flex gap-1.5">
             {[
               { id: "phone_call", label: "Appel Tél" },
@@ -145,13 +150,21 @@ export function ClientInteractionDrawer({ reference }: ClientInteractionDrawerPr
           </p>
         ) : (
           items.map((item) => (
-            <div key={item.id} className="border border-border/80 bg-surface/50 p-2.5 rounded text-xs space-y-1">
+            <div
+              key={item.id}
+              className="border border-border/80 bg-surface/50 p-2.5 rounded text-xs space-y-1"
+            >
               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                 <span className="flex items-center gap-1 font-semibold text-foreground">
                   {getChannelIcon(item.channel)}
                   {item.authorName}
                 </span>
-                <span>{new Date(item.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                <span>
+                  {new Date(item.createdAt).toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </div>
               <p className="text-foreground text-[11px]">{item.summary}</p>
               {item.nextAction && (

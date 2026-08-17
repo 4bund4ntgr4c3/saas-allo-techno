@@ -6,10 +6,7 @@
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
 
 export type SmsNotificationType =
-  | "deposit_confirmed"
-  | "quote_ready"
-  | "ready_for_pickup"
-  | "warranty_reminder";
+  "deposit_confirmed" | "quote_ready" | "ready_for_pickup" | "warranty_reminder";
 
 export interface SmsPayload {
   recipientPhone: string;
@@ -45,7 +42,9 @@ export function formatSmsMessage(payload: SmsPayload): string {
 /**
  * Envoie un SMS transactionnel via la passerelle configurée
  */
-export async function sendTransactionalSms(payload: SmsPayload): Promise<{ success: boolean; messageId: string }> {
+export async function sendTransactionalSms(
+  payload: SmsPayload,
+): Promise<{ success: boolean; messageId: string }> {
   const messageText = formatSmsMessage(payload);
 
   // En production, appel à la passerelle SMS béninoise (Termii ou provider local)
@@ -64,7 +63,9 @@ export async function sendTransactionalSms(payload: SmsPayload): Promise<{ succe
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: payload.recipientPhone.startsWith("229") ? payload.recipientPhone : `229${payload.recipientPhone}`,
+        to: payload.recipientPhone.startsWith("229")
+          ? payload.recipientPhone
+          : `229${payload.recipientPhone}`,
         from: "ALLOTECHNO",
         sms: messageText,
         type: "plain",

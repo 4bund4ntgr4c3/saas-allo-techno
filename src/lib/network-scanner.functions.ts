@@ -45,8 +45,10 @@ export const runNetworkSecurityScanFn = createServerFn({ method: "POST" })
           openPort: 445,
           protocol: "SMBv1 / NetBIOS",
           severity: "critique",
-          vulnerabilityName: "Protocole SMBv1 activé (Vulnérabilité critique EternalBlue / WannaCry)",
-          remediationAction: "Désactiver SMBv1 immédiatement via PowerShell et forcer SMBv3 chiffré.",
+          vulnerabilityName:
+            "Protocole SMBv1 activé (Vulnérabilité critique EternalBlue / WannaCry)",
+          remediationAction:
+            "Désactiver SMBv1 immédiatement via PowerShell et forcer SMBv3 chiffré.",
         },
         {
           hostIp: "192.168.1.40",
@@ -54,8 +56,10 @@ export const runNetworkSecurityScanFn = createServerFn({ method: "POST" })
           openPort: 80,
           protocol: "HTTP Web Admin",
           severity: "eleve",
-          vulnerabilityName: "Interface d'administration avec identifiants d'usine par défaut (admin/admin)",
-          remediationAction: "Définir un mot de passe complexe de 16 caractères et désactiver l'accès WAN.",
+          vulnerabilityName:
+            "Interface d'administration avec identifiants d'usine par défaut (admin/admin)",
+          remediationAction:
+            "Définir un mot de passe complexe de 16 caractères et désactiver l'accès WAN.",
         },
         {
           hostIp: "192.168.1.102",
@@ -64,7 +68,8 @@ export const runNetworkSecurityScanFn = createServerFn({ method: "POST" })
           protocol: "RDP",
           severity: "eleve",
           vulnerabilityName: "Port Bureau à Distance RDP exposé sans authentification NLA",
-          remediationAction: "Activer NLA (Network Level Authentication) ou restreindre via VPN WireGuard.",
+          remediationAction:
+            "Activer NLA (Network Level Authentication) ou restreindre via VPN WireGuard.",
         },
       ],
       complianceChecklist: [

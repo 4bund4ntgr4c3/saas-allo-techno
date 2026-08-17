@@ -156,7 +156,9 @@ export async function downloadRseAnnualReportPdf(data: RseReportData) {
   if (qrDataUrl) {
     try {
       doc.addImage(qrDataUrl, "PNG", 18, y + 3, 30, 30);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }
 
   doc.setFont("helvetica", "bold");

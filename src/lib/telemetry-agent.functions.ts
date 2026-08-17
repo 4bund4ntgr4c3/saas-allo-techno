@@ -42,7 +42,8 @@ export const MOCK_TELEMETRY_DATA: TelemetryEndpoint[] = [
     predictedFailure: {
       component: "SSD NVMe Kioxia 512 Go",
       estimatedDaysRemaining: 9,
-      recommendedAction: "Remplacement préventif par SSD Samsung 980 Pro et clonage avant corruption.",
+      recommendedAction:
+        "Remplacement préventif par SSD Samsung 980 Pro et clonage avant corruption.",
     },
   },
   {

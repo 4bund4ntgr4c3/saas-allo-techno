@@ -86,7 +86,8 @@ export function computeEquipmentHealthScore(data: EquipmentHealthData): Equipmen
       bgClass: "bg-emerald-500/10",
       textClass: "text-emerald-600 dark:text-emerald-400",
       borderClass: "border-emerald-500/30",
-      recommendation: "Équipement en parfait état de marche. Maintenir les révisions trimestrielles.",
+      recommendation:
+        "Équipement en parfait état de marche. Maintenir les révisions trimestrielles.",
     };
   }
 
@@ -110,7 +111,8 @@ export function computeEquipmentHealthScore(data: EquipmentHealthData): Equipmen
       bgClass: "bg-amber-500/10",
       textClass: "text-amber-600 dark:text-amber-400",
       borderClass: "border-amber-500/30",
-      recommendation: "Signes d'usure ou révisions requises. Prévoir un diagnostic technique complet.",
+      recommendation:
+        "Signes d'usure ou révisions requises. Prévoir un diagnostic technique complet.",
     };
   }
 
@@ -122,7 +124,8 @@ export function computeEquipmentHealthScore(data: EquipmentHealthData): Equipmen
       bgClass: "bg-destructive/10",
       textClass: "text-destructive",
       borderClass: "border-destructive/30",
-      recommendation: "Matériel immobilisé ou en panne bloquante. Demande d'intervention urgente requise.",
+      recommendation:
+        "Matériel immobilisé ou en panne bloquante. Demande d'intervention urgente requise.",
     };
   }
 
@@ -133,6 +136,7 @@ export function computeEquipmentHealthScore(data: EquipmentHealthData): Equipmen
     bgClass: "bg-muted",
     textClass: "text-muted-foreground",
     borderClass: "border-border",
-    recommendation: "Matériel obsolète ou réformé. Reconditionnement ou recyclage DEEE certifié Allô Techno.",
+    recommendation:
+      "Matériel obsolète ou réformé. Reconditionnement ou recyclage DEEE certifié Allô Techno.",
   };
 }

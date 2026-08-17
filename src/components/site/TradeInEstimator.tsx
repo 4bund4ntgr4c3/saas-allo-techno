@@ -54,7 +54,10 @@ export function TradeInEstimator() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10"
+        >
           +10% en Bon d'Achat Réparation
         </Badge>
       </div>
@@ -109,7 +112,9 @@ export function TradeInEstimator() {
 
           {/* Cosmetic Condition */}
           <div>
-            <Label className="text-xs text-muted-foreground block mb-1.5">3. État Esthétique :</Label>
+            <Label className="text-xs text-muted-foreground block mb-1.5">
+              3. État Esthétique :
+            </Label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {[
                 { id: "comme_neuf", label: "Comme neuf" },
@@ -135,7 +140,9 @@ export function TradeInEstimator() {
 
           {/* Functional Condition */}
           <div>
-            <Label className="text-xs text-muted-foreground block mb-1.5">4. État Fonctionnel :</Label>
+            <Label className="text-xs text-muted-foreground block mb-1.5">
+              4. État Fonctionnel :
+            </Label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {[
                 { id: "parfait", label: "100% Fonctionnel" },
@@ -176,7 +183,9 @@ export function TradeInEstimator() {
             <div className="mt-4 p-3 rounded-lg bg-background border border-border space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Valeur brute :</span>
-                <span className="font-mono font-bold">{formatFcfa(valuation.estimatedValueFcfa)}</span>
+                <span className="font-mono font-bold">
+                  {formatFcfa(valuation.estimatedValueFcfa)}
+                </span>
               </div>
               <div className="flex items-center justify-between text-xs text-emerald-600 font-semibold">
                 <span className="flex items-center gap-1">

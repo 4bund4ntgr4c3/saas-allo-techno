@@ -17,11 +17,13 @@ export function StockAlertBadge() {
   const [successOrders, setSuccessOrders] = React.useState<Record<string, string>>({});
 
   React.useEffect(() => {
-    getLowStockAlertsFn().then((res) => {
-      setAlerts(res.alerts);
-      setUrgentCount(res.urgentCount);
-      setTotalBudget(res.totalRestockBudgetFcfa);
-    }).catch(() => {});
+    getLowStockAlertsFn()
+      .then((res) => {
+        setAlerts(res.alerts);
+        setUrgentCount(res.urgentCount);
+        setTotalBudget(res.totalRestockBudgetFcfa);
+      })
+      .catch(() => {});
   }, []);
 
   const handleOrder = async (item: StockItemAlert) => {
@@ -93,18 +95,30 @@ export function StockAlertBadge() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                   <span>
-                    Stock actuel : <strong className="text-foreground">{item.currentStock}</strong> / {item.minThreshold} (min)
+                    Stock actuel : <strong className="text-foreground">{item.currentStock}</strong>{" "}
+                    / {item.minThreshold} (min)
                   </span>
                   <span>·</span>
-                  <span>Fournisseur : <strong className="text-foreground">{item.preferredSupplier}</strong></span>
+                  <span>
+                    Fournisseur :{" "}
+                    <strong className="text-foreground">{item.preferredSupplier}</strong>
+                  </span>
                   <span>·</span>
-                  <span>Coût unitaire : <strong className="font-mono text-foreground">{formatFcfa(item.unitCostFcfa)}</strong></span>
+                  <span>
+                    Coût unitaire :{" "}
+                    <strong className="font-mono text-foreground">
+                      {formatFcfa(item.unitCostFcfa)}
+                    </strong>
+                  </span>
                 </div>
               </div>
 
               <div className="shrink-0">
                 {isOrdered ? (
-                  <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs py-1">
+                  <Badge
+                    variant="outline"
+                    className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-xs py-1"
+                  >
                     <CheckCircle2 className="size-3.5 mr-1" />
                     Cde {successOrders[item.id]} émise
                   </Badge>

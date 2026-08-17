@@ -6,7 +6,9 @@ import { formatFcfa } from "@/data/catalog/company";
 
 export function ThermalPasteRefreshEstimator() {
   const [deviceAgeMonths, setDeviceAgeMonths] = React.useState<number>(18);
-  const [environment, setEnvironment] = React.useState<"climatise" | "ventile" | "poussiereux">("ventile");
+  const [environment, setEnvironment] = React.useState<"climatise" | "ventile" | "poussiereux">(
+    "ventile",
+  );
 
   const thermalStatus = React.useMemo(() => {
     let tempRise = 10;
@@ -36,7 +38,8 @@ export function ThermalPasteRefreshEstimator() {
       estimatedTemp,
       performanceLoss,
       pasteDried: deviceAgeMonths >= 18,
-      recommendedPaste: "Pâte Haute Conductivité Arctic MX-4 (8.5 W/mK) + Nettoyage Ultrasons Ventilateur",
+      recommendedPaste:
+        "Pâte Haute Conductivité Arctic MX-4 (8.5 W/mK) + Nettoyage Ultrasons Ventilateur",
       priceFcfa: 15000,
     };
   }, [deviceAgeMonths, environment]);
@@ -51,11 +54,15 @@ export function ThermalPasteRefreshEstimator() {
               Simulateur d'Usure Thermique &amp; Pâte Conductrice
             </h3>
             <p className="text-xs text-muted-foreground">
-              Évaluez la surchauffe causée par l'Harmattan et le dessèchement thermique de votre PC/Mac
+              Évaluez la surchauffe causée par l'Harmattan et le dessèchement thermique de votre
+              PC/Mac
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10"
+        >
           Arctic MX-4 &amp; Grizzly
         </Badge>
       </div>
@@ -127,7 +134,10 @@ export function ThermalPasteRefreshEstimator() {
               <strong className="text-3xl font-mono font-extrabold text-destructive">
                 {thermalStatus.estimatedTemp}°C
               </strong>
-              <Badge variant="outline" className="font-mono text-xs text-destructive border-destructive/30 bg-destructive/10">
+              <Badge
+                variant="outline"
+                className="font-mono text-xs text-destructive border-destructive/30 bg-destructive/10"
+              >
                 Perte de Vitesse : -{thermalStatus.performanceLoss}%
               </Badge>
             </div>
@@ -140,10 +150,13 @@ export function ThermalPasteRefreshEstimator() {
             <div className="mt-4 space-y-2 border-t border-border pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Forfait repâtage complet :</span>
-                <strong className="font-mono text-primary font-bold">{formatFcfa(thermalStatus.priceFcfa)}</strong>
+                <strong className="font-mono text-primary font-bold">
+                  {formatFcfa(thermalStatus.priceFcfa)}
+                </strong>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                Inclus : Démontage soigné, nettoyage solvant Isopropanol 99%, application Arctic MX-4 et test OCCT.
+                Inclus : Démontage soigné, nettoyage solvant Isopropanol 99%, application Arctic
+                MX-4 et test OCCT.
               </div>
             </div>
           </div>

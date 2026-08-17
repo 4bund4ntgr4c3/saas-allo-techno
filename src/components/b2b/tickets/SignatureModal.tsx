@@ -63,7 +63,9 @@ export function SignatureModal({
 
         <div className="space-y-4">
           <div>
-            <Label className="text-xs">Nom &amp; Prénom du Signataire (Client / Responsable IT)</Label>
+            <Label className="text-xs">
+              Nom &amp; Prénom du Signataire (Client / Responsable IT)
+            </Label>
             <Input
               className="mt-1"
               placeholder="Ex: Jean DOSSOU"

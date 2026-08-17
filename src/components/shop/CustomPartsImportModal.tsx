@@ -7,7 +7,9 @@ import { formatFcfa } from "@/data/catalog/company";
 
 export function CustomPartsImportModal() {
   const [hub, setHub] = React.useState<"paris" | "dubai" | "shenzhen">("paris");
-  const [partCategory, setPartCategory] = React.useState<"dalle_oled" | "gpu_bga" | "carte_mere_oem" | "clavier_tactile">("dalle_oled");
+  const [partCategory, setPartCategory] = React.useState<
+    "dalle_oled" | "gpu_bga" | "carte_mere_oem" | "clavier_tactile"
+  >("dalle_oled");
   const [partReference, setPartReference] = React.useState("LP140WF7-SPB1");
 
   const importEstimate = React.useMemo(() => {
@@ -16,8 +18,13 @@ export function CustomPartsImportModal() {
     else if (partCategory === "gpu_bga") partBaseCost = 68000;
     else if (partCategory === "clavier_tactile") partBaseCost = 35000;
 
-    let airFreight = hub === "paris" ? 22000 : hub === "dubai" ? 18000 : 28000;
-    let delayDays = hub === "paris" ? "3 à 5 jours ouvrés" : hub === "dubai" ? "4 à 6 jours ouvrés" : "6 à 8 jours ouvrés";
+    const airFreight = hub === "paris" ? 22000 : hub === "dubai" ? 18000 : 28000;
+    const delayDays =
+      hub === "paris"
+        ? "3 à 5 jours ouvrés"
+        : hub === "dubai"
+          ? "4 à 6 jours ouvrés"
+          : "6 à 8 jours ouvrés";
 
     const total = partBaseCost + airFreight + 10000; // 10k pose atelier & test
 
@@ -43,7 +50,10 @@ export function CustomPartsImportModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Fret Aérien Sécurisé
         </Badge>
       </div>
@@ -51,7 +61,9 @@ export function CustomPartsImportModal() {
       <div className="space-y-4 text-xs">
         {/* Hub Selection */}
         <div>
-          <label className="text-muted-foreground block mb-1.5 font-bold">1. Hub Logistique d'Origine :</label>
+          <label className="text-muted-foreground block mb-1.5 font-bold">
+            1. Hub Logistique d'Origine :
+          </label>
           <div className="grid grid-cols-3 gap-2">
             {[
               { id: "paris", label: "Paris Roissy (DHL 3-5j)" },
@@ -76,7 +88,9 @@ export function CustomPartsImportModal() {
 
         {/* Part Type */}
         <div>
-          <label className="text-muted-foreground block mb-1.5 font-bold">2. Type de Composant Spécifique :</label>
+          <label className="text-muted-foreground block mb-1.5 font-bold">
+            2. Type de Composant Spécifique :
+          </label>
           <div className="grid grid-cols-2 gap-2">
             {[
               { id: "dalle_oled", label: "Dalle Écran OLED / 4K Tactile" },
@@ -87,7 +101,11 @@ export function CustomPartsImportModal() {
               <button
                 key={p.id}
                 type="button"
-                onClick={() => setPartCategory(p.id as "dalle_oled" | "gpu_bga" | "carte_mere_oem" | "clavier_tactile")}
+                onClick={() =>
+                  setPartCategory(
+                    p.id as "dalle_oled" | "gpu_bga" | "carte_mere_oem" | "clavier_tactile",
+                  )
+                }
                 className={`p-2.5 rounded-lg border text-left font-semibold transition-all ${
                   partCategory === p.id
                     ? "border-primary bg-primary/10 border-primary text-foreground font-bold shadow-xs"
@@ -102,7 +120,9 @@ export function CustomPartsImportModal() {
 
         {/* Part Reference Input */}
         <div>
-          <label className="text-muted-foreground block mb-1">3. Référence inscrite au dos de la pièce :</label>
+          <label className="text-muted-foreground block mb-1">
+            3. Référence inscrite au dos de la pièce :
+          </label>
           <Input
             value={partReference}
             onChange={(e) => setPartReference(e.target.value)}
@@ -115,8 +135,12 @@ export function CustomPartsImportModal() {
       {/* ─── Breakdown Box ─── */}
       <div className="border border-border bg-surface/60 p-4 rounded-xl space-y-2.5 text-xs">
         <div className="flex justify-between items-center">
-          <span className="text-muted-foreground">Coût total estimé (Pièce + Vol DHL + Pose atelier) :</span>
-          <strong className="font-mono text-primary text-base font-bold">{formatFcfa(importEstimate.total)}</strong>
+          <span className="text-muted-foreground">
+            Coût total estimé (Pièce + Vol DHL + Pose atelier) :
+          </span>
+          <strong className="font-mono text-primary text-base font-bold">
+            {formatFcfa(importEstimate.total)}
+          </strong>
         </div>
 
         <div className="flex justify-between items-center text-[11px] text-muted-foreground border-t border-border/60 pt-2">

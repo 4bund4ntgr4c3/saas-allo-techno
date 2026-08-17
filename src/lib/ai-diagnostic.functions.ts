@@ -27,7 +27,12 @@ export const analyzeDeviceSymptomFn = createServerFn({ method: "POST" })
     const text = input.symptomDescription.toLowerCase();
 
     // 1. Détection de liquide / eau
-    if (text.includes("eau") || text.includes("liquide") || text.includes("café") || text.includes("mouillé")) {
+    if (
+      text.includes("eau") ||
+      text.includes("liquide") ||
+      text.includes("café") ||
+      text.includes("mouillé")
+    ) {
       return {
         detectedIssue: "Oxydation de la carte mère & courts-circuits de lignes d'alimentation",
         probabilityScore: 94,
@@ -40,7 +45,13 @@ export const analyzeDeviceSymptomFn = createServerFn({ method: "POST" })
     }
 
     // 2. Détection de panne d'affichage / écran
-    if (text.includes("écran") || text.includes("noir") || text.includes("ligne") || text.includes("fissur") || text.includes("cassé")) {
+    if (
+      text.includes("écran") ||
+      text.includes("noir") ||
+      text.includes("ligne") ||
+      text.includes("fissur") ||
+      text.includes("cassé")
+    ) {
       return {
         detectedIssue: "Dalle LCD/OLED endommagée ou coupure de la nappe eDP / Backlight",
         probabilityScore: 92,
@@ -53,9 +64,16 @@ export const analyzeDeviceSymptomFn = createServerFn({ method: "POST" })
     }
 
     // 3. Détection de batterie / autonomie / extinction
-    if (text.includes("batterie") || text.includes("charge") || text.includes("autonomie") || text.includes("éteint") || text.includes("gonfl")) {
+    if (
+      text.includes("batterie") ||
+      text.includes("charge") ||
+      text.includes("autonomie") ||
+      text.includes("éteint") ||
+      text.includes("gonfl")
+    ) {
       return {
-        detectedIssue: "Dégradation chimique de la batterie lithium ou défaillance du circuit de charge (IC Tristar/ISL)",
+        detectedIssue:
+          "Dégradation chimique de la batterie lithium ou défaillance du circuit de charge (IC Tristar/ISL)",
         probabilityScore: 89,
         criticalComponent: "Cellules de batterie OEM ou Contrôleur de charge",
         recommendedIntervention: "Changement de batterie certifiée neuve + test de cycles",
@@ -66,12 +84,20 @@ export const analyzeDeviceSymptomFn = createServerFn({ method: "POST" })
     }
 
     // 4. Détection de surchauffe / lenteur / bruit
-    if (text.includes("chauffe") || text.includes("bruit") || text.includes("lent") || text.includes("rame") || text.includes("ventilateur")) {
+    if (
+      text.includes("chauffe") ||
+      text.includes("bruit") ||
+      text.includes("lent") ||
+      text.includes("rame") ||
+      text.includes("ventilateur")
+    ) {
       return {
-        detectedIssue: "Encrassement du dissipateur thermique & pâte thermique asséchée (Harmattan)",
+        detectedIssue:
+          "Encrassement du dissipateur thermique & pâte thermique asséchée (Harmattan)",
         probabilityScore: 91,
         criticalComponent: "Ventilateur PWM, radiateur cuivre et pâte thermique CPU/GPU",
-        recommendedIntervention: "Nettoyage intégral sous air comprimé & repasting haute conductivité",
+        recommendedIntervention:
+          "Nettoyage intégral sous air comprimé & repasting haute conductivité",
         estimatedDuration: "1h",
         priceRangeFcfa: { min: 10000, max: 20000 },
         emergencyLevel: "faible",

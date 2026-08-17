@@ -131,7 +131,9 @@ export async function downloadDataDestructionCertificatePdf(data: DataDestructio
   if (qrDataUrl) {
     try {
       doc.addImage(qrDataUrl, "PNG", 20, y + 4, 34, 34);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }
 
   doc.setFont("helvetica", "bold");

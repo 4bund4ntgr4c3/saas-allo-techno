@@ -38,7 +38,12 @@ export function ZeroTouchDeploymentModal() {
           osTarget,
           mdmProvider,
           encryptionPolicy,
-          preinstalledApps: ["Microsoft 365 ProPlus", "Adobe Acrobat Pro", "Client VPN WireGuard", "Antivirus SentinelOne"],
+          preinstalledApps: [
+            "Microsoft 365 ProPlus",
+            "Adobe Acrobat Pro",
+            "Client VPN WireGuard",
+            "Antivirus SentinelOne",
+          ],
           vpnCorporateConfig,
         },
       });
@@ -51,7 +56,10 @@ export function ZeroTouchDeploymentModal() {
   };
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Layers className="size-5 text-primary shrink-0" />
@@ -60,11 +68,15 @@ export function ZeroTouchDeploymentModal() {
               Allô AutoDeploy — Masterisation &amp; Déploiement Zero-Touch
             </h3>
             <p className="text-xs text-muted-foreground">
-              Préparation industrielle et personnalisation de flottes avant livraison aux collaborateurs
+              Préparation industrielle et personnalisation de flottes avant livraison aux
+              collaborateurs
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Enrôlement MDM Prêt
         </Badge>
       </div>
@@ -79,7 +91,8 @@ export function ZeroTouchDeploymentModal() {
             Batch Déploiement : {submittedBatchId}
           </Badge>
           <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Les {deviceCount} ordinateurs sont flashés simultanément sur notre banc Gigabit PXE avec chiffrement BitLocker et vos règles de sécurité d'entreprise.
+            Les {deviceCount} ordinateurs sont flashés simultanément sur notre banc Gigabit PXE avec
+            chiffrement BitLocker et vos règles de sécurité d'entreprise.
           </p>
           <div className="pt-2">
             <Button asChild variant="technical" className="text-xs font-bold uppercase">
@@ -101,7 +114,9 @@ export function ZeroTouchDeploymentModal() {
             <div className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-muted-foreground block mb-1">Raison Sociale de l'Entreprise :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Raison Sociale de l'Entreprise :
+                  </label>
                   <Input
                     required
                     value={clientCompanyName}
@@ -109,7 +124,9 @@ export function ZeroTouchDeploymentModal() {
                   />
                 </div>
                 <div>
-                  <label className="text-muted-foreground block mb-1">Nombre de postes à masteriser :</label>
+                  <label className="text-muted-foreground block mb-1">
+                    Nombre de postes à masteriser :
+                  </label>
                   <Input
                     type="number"
                     min={1}
@@ -123,7 +140,9 @@ export function ZeroTouchDeploymentModal() {
               </div>
 
               <div>
-                <label className="text-muted-foreground block mb-1">Système d'Exploitation Cible :</label>
+                <label className="text-muted-foreground block mb-1">
+                  Système d'Exploitation Cible :
+                </label>
                 <div className="grid grid-cols-3 gap-2">
                   {["Windows 11 Pro", "macOS Sequoia", "Ubuntu Pro LTS"].map((os) => (
                     <button
@@ -143,7 +162,9 @@ export function ZeroTouchDeploymentModal() {
               </div>
 
               <div>
-                <label className="text-muted-foreground block mb-1">Gestionnaire de Parc MDM :</label>
+                <label className="text-muted-foreground block mb-1">
+                  Gestionnaire de Parc MDM :
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     "Microsoft Intune",
@@ -185,7 +206,10 @@ export function ZeroTouchDeploymentModal() {
                 <div className="space-y-1.5 text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Lock className="size-3.5 text-emerald-600" />
-                    <span>Chiffrement matériel : <strong className="text-foreground">{encryptionPolicy}</strong></span>
+                    <span>
+                      Chiffrement matériel :{" "}
+                      <strong className="text-foreground">{encryptionPolicy}</strong>
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="size-3.5 text-primary" />

@@ -29,7 +29,7 @@ export function calculateSolarItSetup(
   // Sizing with 20% safety margin and 85% battery DoD (Depth of Discharge)
   const batteryKwh = Math.ceil((autonomyKwh / 0.85) * 1.1);
   const batteryPackCount = Math.ceil((batteryKwh * 1000) / (48 * 100)); // packs 48V 100Ah = 4.8kWh
-  const solarPanelsKwc = Math.round(((dailyKwh / 4.5) * 1.25) * 10) / 10; // 4.5h peak sun hours Bénin
+  const solarPanelsKwc = Math.round((dailyKwh / 4.5) * 1.25 * 10) / 10; // 4.5h peak sun hours Bénin
   const panelsCount = Math.ceil((solarPanelsKwc * 1000) / 450);
   const inverterKva = totalWatts > 3000 ? 10 : 5;
 

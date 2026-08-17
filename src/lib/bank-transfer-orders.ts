@@ -75,7 +75,11 @@ export function generateBankTransferOrderPdf(data: BankTransferOrderData) {
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text(`Réf Ordre : ${data.orderReference} — Émis le ${new Date().toLocaleDateString("fr-FR")}`, 15, 32);
+  doc.text(
+    `Réf Ordre : ${data.orderReference} — Émis le ${new Date().toLocaleDateString("fr-FR")}`,
+    15,
+    32,
+  );
 
   doc.setDrawColor(203, 213, 225);
   doc.line(15, 36, 195, 36);
@@ -124,7 +128,11 @@ export function generateBankTransferOrderPdf(data: BankTransferOrderData) {
   y += 7;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.text(`Montant à Transférer : ${formatFcfa(data.amountFcfa)} (Net de frais de virement)`, 20, y);
+  doc.text(
+    `Montant à Transférer : ${formatFcfa(data.amountFcfa)} (Net de frais de virement)`,
+    20,
+    y,
+  );
   y += 6;
   doc.text(`Motif / Réf Facture : Règlement Facture SAV / SLA N° ${data.invoiceReference}`, 20, y);
   y += 6;

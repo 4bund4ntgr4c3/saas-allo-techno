@@ -35,11 +35,15 @@ export function UpsHealthCalculator() {
               Simulateur d'Autonomie Onduleur (UPS) &amp; Relais SBEE
             </h3>
             <p className="text-xs text-muted-foreground">
-              Calculez le temps de sauvegarde de vos ordinateurs et serveurs en cas de coupure de courant
+              Calculez le temps de sauvegarde de vos ordinateurs et serveurs en cas de coupure de
+              courant
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold"
+        >
           Protection Surtensions
         </Badge>
       </div>
@@ -61,7 +65,8 @@ export function UpsHealthCalculator() {
               className="font-mono font-bold text-sm"
             />
             <span className="text-[10px] text-muted-foreground mt-1 block">
-              Repères : 1 PC Portable (45W) · 1 Tour Bureau (200W) · 1 Écran (35W) · 1 Serveur (300W)
+              Repères : 1 PC Portable (45W) · 1 Tour Bureau (200W) · 1 Écran (35W) · 1 Serveur
+              (300W)
             </span>
           </div>
 
@@ -99,9 +104,11 @@ export function UpsHealthCalculator() {
             <span className="at-eyebrow text-muted-foreground text-[10px] block">
               Autonomie Estimée en Cas de Coupure Totale
             </span>
-            <strong className={`text-3xl font-mono font-extrabold block mt-1 ${
-              isOverloaded ? "text-destructive" : "text-emerald-600"
-            }`}>
+            <strong
+              className={`text-3xl font-mono font-extrabold block mt-1 ${
+                isOverloaded ? "text-destructive" : "text-emerald-600"
+              }`}
+            >
               {isOverloaded ? "SURCHARGE DÉTECTÉE" : `~${runtimeMinutes} Minutes`}
             </strong>
             <p className="text-xs text-muted-foreground mt-1">
@@ -113,7 +120,9 @@ export function UpsHealthCalculator() {
             <div className="mt-4 space-y-2 border-t border-border pt-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Charge de l'onduleur :</span>
-                <span className="font-mono font-bold text-foreground">{Math.round((loadWatts / maxPowerWatts) * 100)}% de capacité</span>
+                <span className="font-mono font-bold text-foreground">
+                  {Math.round((loadWatts / maxPowerWatts) * 100)}% de capacité
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Remplacement des batteries internes :</span>

@@ -8,7 +8,11 @@ import { createServerFn } from "@tanstack/react-start";
 export interface TechnicianWorkload {
   technicianId: string;
   name: string;
-  specialty: "Micro-Soudure & Carte Mère" | "Sauvetage Données Salle Blanche" | "Remplacement Écran & Clavier Rapide" | "Réseau & Onduleurs";
+  specialty:
+    | "Micro-Soudure & Carte Mère"
+    | "Sauvetage Données Salle Blanche"
+    | "Remplacement Écran & Clavier Rapide"
+    | "Réseau & Onduleurs";
   currentActiveTickets: number;
   maxCapacity: number;
   slaSuccessRatePercent: number;

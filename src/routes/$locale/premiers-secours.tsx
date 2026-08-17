@@ -1,13 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Droplets,
-  Zap,
-  Flame,
-  CheckCircle2,
-  XCircle,
-  PhoneCall,
-  ShieldAlert,
-} from "lucide-react";
+import { Droplets, Zap, Flame, CheckCircle2, XCircle, PhoneCall, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
@@ -24,7 +16,8 @@ export const Route = createFileRoute("/$locale/premiers-secours")({
         { title: "Guide de Premiers Secours Informatiques — Allô Techno" },
         {
           name: "description",
-          content: "Gestes d'urgence pas-à-pas en cas de liquide renversé, surtension orage ou surchauffe pour sauver votre PC ou Mac.",
+          content:
+            "Gestes d'urgence pas-à-pas en cas de liquide renversé, surtension orage ou surchauffe pour sauver votre PC ou Mac.",
         },
         ...seo.meta,
       ],
@@ -35,7 +28,6 @@ export const Route = createFileRoute("/$locale/premiers-secours")({
 });
 
 function EmergencyGuidePage() {
-
   const emergencyScenarios = [
     {
       id: "liquid",
@@ -104,7 +96,8 @@ function EmergencyGuidePage() {
             Premiers Secours &amp; Urgences Informatiques
           </h1>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl">
-            Un accident vient d'arriver à votre ordinateur ? Adoptez les bons réflexes pour éviter d'endommager irréversiblement votre carte mère et vos données personnelles.
+            Un accident vient d'arriver à votre ordinateur ? Adoptez les bons réflexes pour éviter
+            d'endommager irréversiblement votre carte mère et vos données personnelles.
           </p>
         </div>
       </section>
@@ -115,8 +108,12 @@ function EmergencyGuidePage() {
           <div className="flex items-center gap-3">
             <PhoneCall className="size-6 text-destructive shrink-0" />
             <div>
-              <strong className="text-sm font-bold text-foreground">Urgence Désoxydation &amp; Dépannage Immédiat ?</strong>
-              <p className="text-xs text-muted-foreground">Notre équipe d'astreinte technique vous répond directement au {COMPANY.phone}.</p>
+              <strong className="text-sm font-bold text-foreground">
+                Urgence Désoxydation &amp; Dépannage Immédiat ?
+              </strong>
+              <p className="text-xs text-muted-foreground">
+                Notre équipe d'astreinte technique vous répond directement au {COMPANY.phone}.
+              </p>
             </div>
           </div>
           <Button asChild variant="destructive" size="sm" className="font-bold shrink-0">
@@ -132,13 +129,19 @@ function EmergencyGuidePage() {
         {emergencyScenarios.map((scenario) => {
           const Icon = scenario.icon;
           return (
-            <div key={scenario.id} className={`border p-6 rounded-2xl space-y-5 shadow-xs ${scenario.color}`}>
+            <div
+              key={scenario.id}
+              className={`border p-6 rounded-2xl space-y-5 shadow-xs ${scenario.color}`}
+            >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/50 pb-3">
                 <div className="flex items-center gap-2.5">
                   <Icon className="size-5 text-primary shrink-0" />
                   <h2 className="text-base font-bold text-foreground">{scenario.title}</h2>
                 </div>
-                <Badge variant="outline" className="font-mono text-[10px] uppercase font-bold text-destructive border-destructive/30">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-[10px] uppercase font-bold text-destructive border-destructive/30"
+                >
                   {scenario.urgency}
                 </Badge>
               </div>

@@ -17,14 +17,18 @@ export function CourtesyDeviceBookingModal({ repairRef = "SAV-8492" }: { repairR
   const [days, setDays] = React.useState(3);
   const [phone, setPhone] = React.useState("97000000");
   const [loading, setLoading] = React.useState(false);
-  const [successResult, setSuccessResult] = React.useState<{ ref: string; message: string } | null>(null);
+  const [successResult, setSuccessResult] = React.useState<{ ref: string; message: string } | null>(
+    null,
+  );
 
   React.useEffect(() => {
-    getAvailableCourtesyDevicesFn().then((res) => {
-      setDevices(res.devices);
-      const firstAvail = res.devices.find((d) => d.isAvailable);
-      if (firstAvail) setSelectedDeviceId(firstAvail.id);
-    }).catch(() => {});
+    getAvailableCourtesyDevicesFn()
+      .then((res) => {
+        setDevices(res.devices);
+        const firstAvail = res.devices.find((d) => d.isAvailable);
+        if (firstAvail) setSelectedDeviceId(firstAvail.id);
+      })
+      .catch(() => {});
   }, []);
 
   const selectedDevice = devices.find((d) => d.id === selectedDeviceId);
@@ -59,13 +63,17 @@ export function CourtesyDeviceBookingModal({ repairRef = "SAV-8492" }: { repairR
             Ordinateur de Courtoisie &amp; Secours
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Continuité d'Activité
         </Badge>
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Ne restez pas bloqué pendant la réparation de votre machine. Empruntez un ordinateur prêt à l'emploi directement à l'atelier.
+        Ne restez pas bloqué pendant la réparation de votre machine. Empruntez un ordinateur prêt à
+        l'emploi directement à l'atelier.
       </p>
 
       {/* ─── Device Selection Grid ─── */}
@@ -94,8 +102,12 @@ export function CourtesyDeviceBookingModal({ repairRef = "SAV-8492" }: { repairR
               <p className="text-[11px] text-muted-foreground mt-0.5">{device.specs}</p>
 
               <div className="mt-2.5 pt-2 border-t border-border/60 flex items-center justify-between text-xs">
-                <strong className="text-foreground">{formatFcfa(device.dailyRateFcfa)} / jour</strong>
-                <span className="text-[10px] text-muted-foreground">Caution : {formatFcfa(device.depositFcfa)}</span>
+                <strong className="text-foreground">
+                  {formatFcfa(device.dailyRateFcfa)} / jour
+                </strong>
+                <span className="text-[10px] text-muted-foreground">
+                  Caution : {formatFcfa(device.depositFcfa)}
+                </span>
               </div>
             </button>
           );
@@ -132,14 +144,20 @@ export function CourtesyDeviceBookingModal({ repairRef = "SAV-8492" }: { repairR
 
           <div className="bg-surface p-3.5 rounded-xl border border-border flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] text-muted-foreground block">Total Location ({days} jours) :</span>
+              <span className="text-[10px] text-muted-foreground block">
+                Total Location ({days} jours) :
+              </span>
               <strong className="font-mono text-foreground text-sm font-bold">
                 {formatFcfa(selectedDevice.dailyRateFcfa * days)}
               </strong>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-muted-foreground block">Caution remboursable :</span>
-              <span className="font-mono text-xs text-muted-foreground">{formatFcfa(selectedDevice.depositFcfa)}</span>
+              <span className="text-[10px] text-muted-foreground block">
+                Caution remboursable :
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {formatFcfa(selectedDevice.depositFcfa)}
+              </span>
             </div>
           </div>
 

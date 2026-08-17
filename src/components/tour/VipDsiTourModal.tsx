@@ -49,7 +49,10 @@ export function VipDsiTourModal() {
             Visite Démo VIP — Plateforme Entreprises
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Étape {currentStep + 1} / {steps.length}
         </Badge>
       </div>
@@ -57,7 +60,10 @@ export function VipDsiTourModal() {
       {/* ─── Step Content ─── */}
       <div className="space-y-3 bg-surface p-5 rounded-xl border border-border">
         <div className="flex items-center justify-between">
-          <Badge variant="outline" className="text-xs font-mono font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+          <Badge
+            variant="outline"
+            className="text-xs font-mono font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+          >
             {current.badge}
           </Badge>
           <strong className="text-xs font-mono text-primary font-bold">{current.metric}</strong>

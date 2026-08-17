@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  analyzeDeviceSymptomFn,
-  type AiDiagnosticResult,
-} from "@/lib/ai-diagnostic.functions";
+import { analyzeDeviceSymptomFn, type AiDiagnosticResult } from "@/lib/ai-diagnostic.functions";
 
 export function AiDiagnosticAssistant() {
   const [deviceType, setDeviceType] = React.useState("MacBook / Laptop");
@@ -48,7 +45,10 @@ export function AiDiagnosticAssistant() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10"
+        >
           IA Diagnostic v2.4
         </Badge>
       </div>
@@ -88,7 +88,11 @@ export function AiDiagnosticAssistant() {
             disabled={loading || !symptom.trim()}
             className="font-bold uppercase tracking-wider text-xs"
           >
-            {loading ? <Loader2 className="size-3.5 mr-1.5 animate-spin" /> : <Sparkles className="size-3.5 mr-1.5" />}
+            {loading ? (
+              <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Sparkles className="size-3.5 mr-1.5" />
+            )}
             Analyser avec l'IA Allô Techno &rarr;
           </Button>
         </div>

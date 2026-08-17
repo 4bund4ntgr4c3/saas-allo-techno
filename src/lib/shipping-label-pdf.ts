@@ -76,7 +76,11 @@ export async function downloadShippingLabelPdf(data: ShippingLabelData) {
   doc.setTextColor(185, 28, 28);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8.5);
-  doc.text(data.isFragile ? "ATTENTION : MATÉRIEL ÉLECTRONIQUE FRAGILE" : "COLIS SÉCURISÉ", 8, y + 6);
+  doc.text(
+    data.isFragile ? "ATTENTION : MATÉRIEL ÉLECTRONIQUE FRAGILE" : "COLIS SÉCURISÉ",
+    8,
+    y + 6,
+  );
 
   doc.setTextColor(15, 23, 42);
   doc.setFont("helvetica", "normal");
@@ -93,7 +97,9 @@ export async function downloadShippingLabelPdf(data: ShippingLabelData) {
   if (qrDataUrl) {
     try {
       doc.addImage(qrDataUrl, "PNG", 8, y + 4, 28, 28);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }
 
   doc.setFont("helvetica", "bold");

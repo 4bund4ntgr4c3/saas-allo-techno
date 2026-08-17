@@ -30,10 +30,7 @@ export const Route = createFileRoute("/api/cron-reminders")({
         const { runReminders } = await import("@/lib/reminders.functions");
         const { runB2BReminders } = await import("@/lib/b2b-reminders.functions");
         try {
-          const [b2cResult, b2bResult] = await Promise.all([
-            runReminders(),
-            runB2BReminders(),
-          ]);
+          const [b2cResult, b2bResult] = await Promise.all([runReminders(), runB2BReminders()]);
           return new Response(
             JSON.stringify({
               b2c: b2cResult,

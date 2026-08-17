@@ -22,15 +22,38 @@ export function SupplierPartsTracker() {
   const getStatusBadge = (status: PartTransitStatus) => {
     switch (status) {
       case "commande_validee":
-        return <Badge variant="outline" className="text-muted-foreground border-border">Commande Validée</Badge>;
+        return (
+          <Badge variant="outline" className="text-muted-foreground border-border">
+            Commande Validée
+          </Badge>
+        );
       case "en_transit_aerien":
-        return <Badge variant="outline" className="text-blue-500 border-blue-500/40 bg-blue-500/10">En Vol Aérien</Badge>;
+        return (
+          <Badge variant="outline" className="text-blue-500 border-blue-500/40 bg-blue-500/10">
+            En Vol Aérien
+          </Badge>
+        );
       case "en_douane_cotonou":
-        return <Badge variant="outline" className="text-amber-500 border-amber-500/40 bg-amber-500/10">Douane Cadjèhoun</Badge>;
+        return (
+          <Badge variant="outline" className="text-amber-500 border-amber-500/40 bg-amber-500/10">
+            Douane Cadjèhoun
+          </Badge>
+        );
       case "arrive_atelier":
-        return <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10">Reçu en Atelier</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+          >
+            Reçu en Atelier
+          </Badge>
+        );
       case "installe":
-        return <Badge variant="outline" className="text-primary border-primary/40 bg-primary/10">Installé &amp; Testé</Badge>;
+        return (
+          <Badge variant="outline" className="text-primary border-primary/40 bg-primary/10">
+            Installé &amp; Testé
+          </Badge>
+        );
     }
   };
 
@@ -89,7 +112,9 @@ export function SupplierPartsTracker() {
               </div>
               <div>
                 <span>Suivi : </span>
-                <span className="font-mono text-foreground font-semibold">{part.trackingNumber}</span>
+                <span className="font-mono text-foreground font-semibold">
+                  {part.trackingNumber}
+                </span>
               </div>
               <div className="flex items-center gap-1 text-primary font-bold">
                 <Clock className="size-3" />

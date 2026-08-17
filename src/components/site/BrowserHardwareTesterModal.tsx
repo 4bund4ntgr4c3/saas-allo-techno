@@ -23,7 +23,10 @@ export function BrowserHardwareTesterModal() {
   // Stereo Audio test
   const playStereoTest = (channel: "left" | "right") => {
     try {
-      const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      const audioCtx = new (
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      )();
       const osc = audioCtx.createOscillator();
       const panNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
 
@@ -40,7 +43,9 @@ export function BrowserHardwareTesterModal() {
 
       osc.start();
       osc.stop(audioCtx.currentTime + 0.8);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -52,7 +57,10 @@ export function BrowserHardwareTesterModal() {
             Suite d'Auto-Diagnostic Matériel Navigateur
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-primary border-primary/40 bg-primary/10"
+        >
           Zéro Logiciel à Installer
         </Badge>
       </div>
@@ -152,12 +160,15 @@ export function BrowserHardwareTesterModal() {
       {activeTab === "keyboard" && (
         <div className="space-y-4 text-xs">
           <p className="text-muted-foreground">
-            Appuyez sur n'importe quelle touche de votre clavier pour vérifier qu'elle répond instantanément :
+            Appuyez sur n'importe quelle touche de votre clavier pour vérifier qu'elle répond
+            instantanément :
           </p>
 
           <div className="bg-surface p-4 rounded-xl border border-border min-h-[90px] flex flex-wrap gap-1.5 items-center">
             {pressedKeys.size === 0 ? (
-              <span className="text-muted-foreground italic text-xs">Tapez sur votre clavier physique...</span>
+              <span className="text-muted-foreground italic text-xs">
+                Tapez sur votre clavier physique...
+              </span>
             ) : (
               Array.from(pressedKeys).map((k) => (
                 <span

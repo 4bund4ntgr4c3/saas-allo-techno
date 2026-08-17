@@ -13,9 +13,7 @@ export function CoverageZoneEstimator() {
     const q = search.toLowerCase().trim();
     if (!q) return COVERAGE_ZONES.slice(0, 6);
     return COVERAGE_ZONES.filter(
-      (z) =>
-        z.quartier.toLowerCase().includes(q) ||
-        z.commune.toLowerCase().includes(q),
+      (z) => z.quartier.toLowerCase().includes(q) || z.commune.toLowerCase().includes(q),
     );
   }, [search]);
 
@@ -33,7 +31,10 @@ export function CoverageZoneEstimator() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] uppercase border-primary/40 text-primary bg-primary/10"
+        >
           Coursier Express &lt; 45min
         </Badge>
       </div>
@@ -52,7 +53,9 @@ export function CoverageZoneEstimator() {
       <div className="border border-primary/30 bg-primary/5 p-4 rounded-md space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <span className="text-[10px] at-eyebrow text-muted-foreground block">Zone Sélectionnée</span>
+            <span className="text-[10px] at-eyebrow text-muted-foreground block">
+              Zone Sélectionnée
+            </span>
             <strong className="text-sm font-bold text-foreground">
               {selectedZone.quartier} ({selectedZone.commune})
             </strong>
@@ -90,7 +93,9 @@ export function CoverageZoneEstimator() {
                 }`}
               >
                 <span>{z.quartier}</span>
-                <span className={`text-[10px] font-mono ${isSelected ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-[10px] font-mono ${isSelected ? "text-primary-foreground/90" : "text-muted-foreground"}`}
+                >
                   ~{z.estimatedArrivalMinutes}m
                 </span>
                 {z.expressAvailable && (

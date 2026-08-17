@@ -16,7 +16,9 @@ export function B2bCreditLineModal() {
   // Default first selections
   const [companyName, setCompanyName] = React.useState("Groupement Bolloré Logistics Bénin");
   const [ifuNumber, setIfuNumber] = React.useState("3201948201948");
-  const [annualRevenueBracket, setAnnualRevenueBracket] = React.useState<"moins_50m" | "50m_a_200m" | "plus_200m">("plus_200m");
+  const [annualRevenueBracket, setAnnualRevenueBracket] = React.useState<
+    "moins_50m" | "50m_a_200m" | "plus_200m"
+  >("plus_200m");
   const [requestedCreditFcfa, setRequestedCreditFcfa] = React.useState<number>(3000000);
 
   const [loading, setLoading] = React.useState(false);
@@ -48,7 +50,10 @@ export function B2bCreditLineModal() {
   };
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <CreditCard className="size-5 text-primary shrink-0" />
@@ -61,7 +66,10 @@ export function B2bCreditLineModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           0 FCFA d'Intérêts
         </Badge>
       </div>
@@ -70,7 +78,9 @@ export function B2bCreditLineModal() {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-muted-foreground block mb-1">Raison Sociale Entreprise :</label>
+              <label className="text-muted-foreground block mb-1">
+                Raison Sociale Entreprise :
+              </label>
               <Input
                 required
                 value={companyName}
@@ -89,7 +99,9 @@ export function B2bCreditLineModal() {
           </div>
 
           <div>
-            <label className="text-muted-foreground block mb-1">Tranche de Chiffre d'Affaires Annuel :</label>
+            <label className="text-muted-foreground block mb-1">
+              Tranche de Chiffre d'Affaires Annuel :
+            </label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: "moins_50m", label: "< 50M FCFA" },
@@ -99,7 +111,9 @@ export function B2bCreditLineModal() {
                 <button
                   key={b.id}
                   type="button"
-                  onClick={() => setAnnualRevenueBracket(b.id as "moins_50m" | "50m_a_200m" | "plus_200m")}
+                  onClick={() =>
+                    setAnnualRevenueBracket(b.id as "moins_50m" | "50m_a_200m" | "plus_200m")
+                  }
                   className={`p-2.5 rounded-lg border text-center font-semibold transition-all ${
                     annualRevenueBracket === b.id
                       ? "border-primary bg-primary text-primary-foreground font-bold shadow-xs"
@@ -113,7 +127,9 @@ export function B2bCreditLineModal() {
           </div>
 
           <div>
-            <label className="text-muted-foreground block mb-1">Ligne de crédit souhaitée (FCFA) :</label>
+            <label className="text-muted-foreground block mb-1">
+              Ligne de crédit souhaitée (FCFA) :
+            </label>
             <Input
               type="number"
               min={500000}
@@ -140,7 +156,9 @@ export function B2bCreditLineModal() {
           <div className="p-5 rounded-2xl bg-surface border border-border space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
               <div>
-                <span className="text-[11px] text-muted-foreground block">Note de Solvabilité Attribuée :</span>
+                <span className="text-[11px] text-muted-foreground block">
+                  Note de Solvabilité Attribuée :
+                </span>
                 <strong className="text-xl font-bold text-emerald-600 flex items-center gap-1.5">
                   <Award className="size-5" /> {result.scoreRating}
                 </strong>
@@ -158,7 +176,9 @@ export function B2bCreditLineModal() {
                 </strong>
               </div>
               <div className="p-3 rounded-xl bg-card border border-border">
-                <span className="text-muted-foreground block text-[10px]">Indice de Confiance DGI</span>
+                <span className="text-muted-foreground block text-[10px]">
+                  Indice de Confiance DGI
+                </span>
                 <strong className="font-mono text-base font-extrabold text-emerald-600 block">
                   {result.riskScorePercent}% Conforme
                 </strong>
@@ -171,18 +191,10 @@ export function B2bCreditLineModal() {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setStep(1)}
-              className="w-1/3 text-xs"
-            >
+            <Button variant="outline" onClick={() => setStep(1)} className="w-1/3 text-xs">
               Modifier
             </Button>
-            <Button
-              asChild
-              variant="technical"
-              className="w-2/3 text-xs font-bold uppercase"
-            >
+            <Button asChild variant="technical" className="w-2/3 text-xs font-bold uppercase">
               <a
                 href={`https://wa.me/22960000000?text=${encodeURIComponent(
                   `Bonjour Allô Techno B2B, nous souhaitons activer notre ligne de crédit de ${formatFcfa(

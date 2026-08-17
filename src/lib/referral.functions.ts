@@ -75,10 +75,12 @@ export const requestPayoutMomoFn = createServerFn({ method: "POST" })
       provider: z.enum(["mtn", "moov", "celtiis"]),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; payoutId: string; message: string }> => {
-    return {
-      success: true,
-      payoutId: `PAYOUT-MOMO-${Date.now().toString().slice(-6)}`,
-      message: `Votre demande de virement de ${input.amountFcfa} FCFA vers le numéro ${input.phoneMomo} a été enregistrée et sera traitée sous 2h ouvrées.`,
-    };
-  });
+  .handler(
+    async ({ data: input }): Promise<{ success: boolean; payoutId: string; message: string }> => {
+      return {
+        success: true,
+        payoutId: `PAYOUT-MOMO-${Date.now().toString().slice(-6)}`,
+        message: `Votre demande de virement de ${input.amountFcfa} FCFA vers le numéro ${input.phoneMomo} a été enregistrée et sera traitée sous 2h ouvrées.`,
+      };
+    },
+  );

@@ -49,7 +49,11 @@ const DEFAULT_ANALYTICS_DATA: SlaAnalyticsData = {
   ],
 };
 
-export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?: SlaAnalyticsData }) {
+export function SlaAnalyticsDashboard({
+  data = DEFAULT_ANALYTICS_DATA,
+}: {
+  data?: SlaAnalyticsData;
+}) {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* ─── Top SLA KPI Cards ─── */}
@@ -63,7 +67,10 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
             <span className="font-mono text-2xl font-extrabold text-foreground">
               {data.uptimePercent}%
             </span>
-            <Badge variant="outline" className="border-emerald-600/40 text-emerald-600 bg-emerald-500/10 text-[10px]">
+            <Badge
+              variant="outline"
+              className="border-emerald-600/40 text-emerald-600 bg-emerald-500/10 text-[10px]"
+            >
               SLA 99.5% Garanti
             </Badge>
           </div>
@@ -72,7 +79,9 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
 
         <div className="border border-border bg-card p-4 rounded-lg shadow-xs">
           <div className="flex items-center justify-between pb-2">
-            <span className="at-eyebrow text-muted-foreground text-[10px]">MTTR (Temps de Résolution)</span>
+            <span className="at-eyebrow text-muted-foreground text-[10px]">
+              MTTR (Temps de Résolution)
+            </span>
             <Clock className="size-4 text-primary" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -86,7 +95,9 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
 
         <div className="border border-border bg-card p-4 rounded-lg shadow-xs">
           <div className="flex items-center justify-between pb-2">
-            <span className="at-eyebrow text-muted-foreground text-[10px]">Respect des Engagements</span>
+            <span className="at-eyebrow text-muted-foreground text-[10px]">
+              Respect des Engagements
+            </span>
             <Activity className="size-4 text-blue-600" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -95,12 +106,16 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
             </span>
             <span className="text-[10px] text-muted-foreground">0 pénalité</span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">Interventions traitées dans les délais</p>
+          <p className="text-[10px] text-muted-foreground mt-1">
+            Interventions traitées dans les délais
+          </p>
         </div>
 
         <div className="border border-border bg-card p-4 rounded-lg shadow-xs">
           <div className="flex items-center justify-between pb-2">
-            <span className="at-eyebrow text-muted-foreground text-[10px]">Tickets Traités (2026)</span>
+            <span className="at-eyebrow text-muted-foreground text-[10px]">
+              Tickets Traités (2026)
+            </span>
             <TrendingUp className="size-4 text-emerald-600" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -121,7 +136,9 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
               <h4 className="font-bold text-sm uppercase tracking-wider text-foreground">
                 Évolution des Interventions &amp; Maintenances
               </h4>
-              <p className="text-xs text-muted-foreground">Historique mensuel sur les 6 derniers mois</p>
+              <p className="text-xs text-muted-foreground">
+                Historique mensuel sur les 6 derniers mois
+              </p>
             </div>
             <Badge variant="outline" className="font-mono text-[10px]">
               Données Live
@@ -130,7 +147,10 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
 
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data.monthlyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart
+                data={data.monthlyTrend}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="colorPreventive" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#16a34a" stopOpacity={0.4} />
@@ -141,7 +161,12 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
                     <stop offset="95%" stopColor="#d83100" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} opacity={0.5} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#e2e8f0"
+                  vertical={false}
+                  opacity={0.5}
+                />
                 <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} allowDecimals={false} />
                 <Tooltip
@@ -186,10 +211,27 @@ export function SlaAnalyticsDashboard({ data = DEFAULT_ANALYTICS_DATA }: { data?
 
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.breakdownByType} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+              <BarChart
+                data={data.breakdownByType}
+                layout="vertical"
+                margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} opacity={0.3} />
-                <XAxis type="number" stroke="#94a3b8" fontSize={10} tickLine={false} allowDecimals={false} />
-                <YAxis type="category" dataKey="type" stroke="#94a3b8" fontSize={10} tickLine={false} width={85} />
+                <XAxis
+                  type="number"
+                  stroke="#94a3b8"
+                  fontSize={10}
+                  tickLine={false}
+                  allowDecimals={false}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="type"
+                  stroke="#94a3b8"
+                  fontSize={10}
+                  tickLine={false}
+                  width={85}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#0f172a",

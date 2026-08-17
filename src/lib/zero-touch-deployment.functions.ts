@@ -11,7 +11,8 @@ export interface AutoDeployProfile {
   clientCompanyName: string;
   deviceCount: number;
   osTarget: "Windows 11 Pro" | "macOS Sequoia" | "Ubuntu Pro LTS";
-  mdmProvider: "Microsoft Intune" | "Jamf Pro" | "Google Workspace Endpoint" | "Aucun (Image Locale)";
+  mdmProvider:
+    "Microsoft Intune" | "Jamf Pro" | "Google Workspace Endpoint" | "Aucun (Image Locale)";
   encryptionPolicy: "BitLocker XTS-AES-256 + Séquestre Clé" | "FileVault 2 + Clé Institutionnelle";
   preinstalledApps: string[];
   vpnCorporateConfig: boolean;
@@ -30,11 +31,13 @@ export const submitAutoDeployBatchFn = createServerFn({ method: "POST" })
       vpnCorporateConfig: z.boolean(),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; batchId: string; message: string }> => {
-    const batchId = `DEPLOY-${Date.now().toString().slice(-6)}`;
-    return {
-      success: true,
-      batchId,
-      message: `Batch de déploiement Zero-Touch N° ${batchId} initié pour ${input.deviceCount} postes de travail (${input.clientCompanyName}). Les postes seront livrés prêts à l'emploi.`,
-    };
-  });
+  .handler(
+    async ({ data: input }): Promise<{ success: boolean; batchId: string; message: string }> => {
+      const batchId = `DEPLOY-${Date.now().toString().slice(-6)}`;
+      return {
+        success: true,
+        batchId,
+        message: `Batch de déploiement Zero-Touch N° ${batchId} initié pour ${input.deviceCount} postes de travail (${input.clientCompanyName}). Les postes seront livrés prêts à l'emploi.`,
+      };
+    },
+  );

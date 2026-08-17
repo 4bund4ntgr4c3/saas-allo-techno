@@ -157,7 +157,16 @@
   }
 
   /* Protection générale contre les débordements de texte sur petits écrans */
-  h1, h2, h3, h4, h5, h6, p, span, a, button {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  button {
     overflow-wrap: break-word;
   }
 

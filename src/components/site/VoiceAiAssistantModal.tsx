@@ -1,10 +1,7 @@
 import * as React from "react";
 import { Mic, MicOff, Volume2, Sparkles, Loader2 } from "lucide-react";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  processVoiceQueryFn,
-  type VoiceAiResponse,
-} from "@/lib/voice-ai-agent.functions";
+import { processVoiceQueryFn, type VoiceAiResponse } from "@/lib/voice-ai-agent.functions";
 
 export function VoiceAiAssistantModal() {
   const [isListening, setIsListening] = React.useState(false);
@@ -84,16 +81,10 @@ export function VoiceAiAssistantModal() {
             onClick={toggleListen}
             disabled={loading}
             className={`size-16 rounded-full flex items-center justify-center text-white transition-all shadow-lg ${
-              isListening
-                ? "bg-destructive scale-110"
-                : "bg-primary hover:bg-primary/90"
+              isListening ? "bg-destructive scale-110" : "bg-primary hover:bg-primary/90"
             }`}
           >
-            {isListening ? (
-              <MicOff className="size-7 animate-pulse" />
-            ) : (
-              <Mic className="size-7" />
-            )}
+            {isListening ? <MicOff className="size-7 animate-pulse" /> : <Mic className="size-7" />}
           </button>
         </div>
 

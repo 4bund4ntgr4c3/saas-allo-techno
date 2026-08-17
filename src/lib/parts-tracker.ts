@@ -4,11 +4,7 @@
 // ============================================================================
 
 export type PartTransitStatus =
-  | "commande_validee"
-  | "en_transit_aerien"
-  | "en_douane_cotonou"
-  | "arrive_atelier"
-  | "installe";
+  "commande_validee" | "en_transit_aerien" | "en_douane_cotonou" | "arrive_atelier" | "installe";
 
 export interface TrackedPart {
   id: string;
@@ -27,7 +23,7 @@ export const MOCK_TRACKED_PARTS: TrackedPart[] = [
   {
     id: "part-001",
     ticketReference: "SAV-8492",
-    partName: "Dalle Écran Retina Liquid 14.2\" (A2442)",
+    partName: 'Dalle Écran Retina Liquid 14.2" (A2442)',
     deviceTarget: "MacBook Pro 14 M1 Pro",
     originHub: "Dubaï",
     carrier: "DHL Express",

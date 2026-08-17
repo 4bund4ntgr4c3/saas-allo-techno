@@ -11,10 +11,12 @@ export function MetrologyCalibrationDrawer() {
   const [complianceRate, setComplianceRate] = React.useState(100);
 
   React.useEffect(() => {
-    getMetrologyRecordsFn().then((res) => {
-      setRecords(res.records);
-      setComplianceRate(res.overallCompliancePercent);
-    }).catch(() => {});
+    getMetrologyRecordsFn()
+      .then((res) => {
+        setRecords(res.records);
+        setComplianceRate(res.overallCompliancePercent);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -31,7 +33,10 @@ export function MetrologyCalibrationDrawer() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           Conformité Parc : {complianceRate}%
         </Badge>
       </div>
@@ -49,13 +54,17 @@ export function MetrologyCalibrationDrawer() {
                 </span>
                 <strong className="text-foreground">{item.instrumentName}</strong>
               </div>
-              <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px] font-bold">
+              <Badge
+                variant="outline"
+                className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px] font-bold"
+              >
                 <CheckCircle2 className="size-3 mr-1" /> Étalonné Conforme
               </Badge>
             </div>
 
             <div className="text-[11px] text-muted-foreground">
-              Modèle : <strong className="text-foreground">{item.brandModel}</strong> · {item.measuredTolerance}
+              Modèle : <strong className="text-foreground">{item.brandModel}</strong> ·{" "}
+              {item.measuredTolerance}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-muted-foreground pt-1">

@@ -57,7 +57,11 @@ export function generateEsgReportPdf(org: Organization, metrics: EsgMetrics) {
   doc.setTextColor(71, 85, 105);
   const trade = org.trade_name ? ` · ${org.trade_name}` : "";
   const reg = org.registration_number ? ` · RCCM : ${org.registration_number}` : "";
-  doc.text(`${org.sector ?? "Entreprise"} · ${org.address ?? "Cotonou, Bénin"}${trade}${reg}`, margin, y);
+  doc.text(
+    `${org.sector ?? "Entreprise"} · ${org.address ?? "Cotonou, Bénin"}${trade}${reg}`,
+    margin,
+    y,
+  );
 
   // ── Tableau des Métriques ESG ──
   y += 12;

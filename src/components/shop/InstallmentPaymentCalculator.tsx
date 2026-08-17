@@ -5,7 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
 
-export function InstallmentPaymentCalculator({ initialAmount = 120000 }: { initialAmount?: number }) {
+export function InstallmentPaymentCalculator({
+  initialAmount = 120000,
+}: {
+  initialAmount?: number;
+}) {
   const [totalAmount, setTotalAmount] = React.useState(initialAmount);
   const [installments, setInstallments] = React.useState<3 | 4>(3);
 
@@ -42,14 +46,19 @@ export function InstallmentPaymentCalculator({ initialAmount = 120000 }: { initi
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           0% d'Intérêts
         </Badge>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
         <div>
-          <label className="text-muted-foreground block mb-1">Montant de la réparation (FCFA) :</label>
+          <label className="text-muted-foreground block mb-1">
+            Montant de la réparation (FCFA) :
+          </label>
           <Input
             type="number"
             min={30000}
@@ -89,12 +98,19 @@ export function InstallmentPaymentCalculator({ initialAmount = 120000 }: { initi
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
           {schedule.map((item) => (
-            <div key={item.step} className="bg-background p-3 rounded-lg border border-border space-y-1">
+            <div
+              key={item.step}
+              className="bg-background p-3 rounded-lg border border-border space-y-1"
+            >
               <div className="flex justify-between items-center">
-                <span className="font-mono text-[10px] text-primary font-bold">Versement 0{item.step}</span>
+                <span className="font-mono text-[10px] text-primary font-bold">
+                  Versement 0{item.step}
+                </span>
                 <span className="text-[10px] text-muted-foreground">{item.date}</span>
               </div>
-              <strong className="font-mono text-foreground block text-sm font-bold">{formatFcfa(item.amount)}</strong>
+              <strong className="font-mono text-foreground block text-sm font-bold">
+                {formatFcfa(item.amount)}
+              </strong>
               <span className="text-[10px] text-muted-foreground block">{item.label}</span>
             </div>
           ))}
@@ -104,7 +120,9 @@ export function InstallmentPaymentCalculator({ initialAmount = 120000 }: { initi
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
-          <span>Prélèvement automatique sécurisé MTN MoMo / Moov Money avec rappel SMS 48h avant</span>
+          <span>
+            Prélèvement automatique sécurisé MTN MoMo / Moov Money avec rappel SMS 48h avant
+          </span>
         </div>
         <Button
           asChild

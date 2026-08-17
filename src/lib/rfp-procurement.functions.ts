@@ -71,15 +71,24 @@ export const submitB2bRfpConsultationFn = createServerFn({ method: "POST" })
       includeEnergyEfficiency: z.boolean(),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; rfpId: string; tco: ReturnType<typeof calculateFleetTco>; message: string }> => {
-    const rfpId = `RFP-${Date.now().toString().slice(-6)}`;
-    const unitCost = Math.round(input.targetBudgetFcfa / input.laptopCount);
-    const tco = calculateFleetTco(input.laptopCount, unitCost, input.includeEnergyEfficiency);
+  .handler(
+    async ({
+      data: input,
+    }): Promise<{
+      success: boolean;
+      rfpId: string;
+      tco: ReturnType<typeof calculateFleetTco>;
+      message: string;
+    }> => {
+      const rfpId = `RFP-${Date.now().toString().slice(-6)}`;
+      const unitCost = Math.round(input.targetBudgetFcfa / input.laptopCount);
+      const tco = calculateFleetTco(input.laptopCount, unitCost, input.includeEnergyEfficiency);
 
-    return {
-      success: true,
-      rfpId,
-      tco,
-      message: `Appel d'offres N° ${rfpId} généré pour ${input.clientCompanyName}. Analyse comparative TCO prête pour le comité de direction.`,
-    };
-  });
+      return {
+        success: true,
+        rfpId,
+        tco,
+        message: `Appel d'offres N° ${rfpId} généré pour ${input.clientCompanyName}. Analyse comparative TCO prête pour le comité de direction.`,
+      };
+    },
+  );

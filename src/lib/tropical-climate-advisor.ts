@@ -17,7 +17,9 @@ export interface ClimateAdvisory {
   suggestedService: string;
 }
 
-export function getCurrentTropicalClimateAdvisory(currentMonth = new Date().getMonth() + 1): ClimateAdvisory {
+export function getCurrentTropicalClimateAdvisory(
+  currentMonth = new Date().getMonth() + 1,
+): ClimateAdvisory {
   // Mois 11, 12, 1, 2 : Harmattan (Poussière fine & Air sec)
   if ([11, 12, 1, 2].includes(currentMonth)) {
     return {

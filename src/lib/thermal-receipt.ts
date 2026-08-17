@@ -31,7 +31,10 @@ export interface ThermalReceiptData {
 /**
  * Génère et lance l'impression d'un ticket de caisse thermique (format 80mm/58mm).
  */
-export async function printThermalReceipt(data: ThermalReceiptData, format: "80mm" | "58mm" = "80mm") {
+export async function printThermalReceipt(
+  data: ThermalReceiptData,
+  format: "80mm" | "58mm" = "80mm",
+) {
   const qrDataUrl = await QRCode.toDataURL(
     `https://allotechno.africa/fr/suivi?ref=${encodeURIComponent(data.reference)}`,
     { width: 140, margin: 1 },
@@ -105,22 +108,34 @@ export async function printThermalReceipt(data: ThermalReceiptData, format: "80m
           ${data.cashierName ? `<div><strong>CAISSIER :</strong> ${data.cashierName}</div>` : ""}
         </div>
 
-        ${data.device ? `
+        ${
+          data.device
+            ? `
           <div class="divider"></div>
           <div><strong>APPAREIL :</strong> ${data.device}</div>
           ${data.issue ? `<div><strong>PANNE :</strong> ${data.issue}</div>` : ""}
-        ` : ""}
+        `
+            : ""
+        }
 
-        ${data.items && data.items.length > 0 ? `
+        ${
+          data.items && data.items.length > 0
+            ? `
           <div class="divider"></div>
           <div class="font-bold">DÉSIGNATION / QTÉ / TOTAL</div>
-          ${data.items.map(item => `
+          ${data.items
+            .map(
+              (item) => `
             <div class="item-row">
               <span style="max-width: 60%;">${item.name} (x${item.qty})</span>
               <span>${formatFcfa(item.total)}</span>
             </div>
-          `).join("")}
-        ` : ""}
+          `,
+            )
+            .join("")}
+        `
+            : ""
+        }
 
         <div class="double-divider"></div>
 
@@ -134,23 +149,31 @@ export async function printThermalReceipt(data: ThermalReceiptData, format: "80m
           <span>${formatFcfa(data.paidAmount)}</span>
         </div>
 
-        ${data.totalAmount - data.paidAmount > 0 ? `
+        ${
+          data.totalAmount - data.paidAmount > 0
+            ? `
           <div class="item-row font-bold">
             <span>RESTE À PAYER :</span>
             <span>${formatFcfa(data.totalAmount - data.paidAmount)}</span>
           </div>
-        ` : ""}
+        `
+            : ""
+        }
 
         ${data.paymentMethod ? `<div><strong>MODE :</strong> ${data.paymentMethod.toUpperCase()}</div>` : ""}
 
         <div class="divider"></div>
 
-        ${qrDataUrl ? `
+        ${
+          qrDataUrl
+            ? `
           <div class="qr-container">
             <img src="${qrDataUrl}" alt="QR Suivi" />
             <div style="font-size: 9px;">Scannez pour suivre votre dossier en direct</div>
           </div>
-        ` : ""}
+        `
+            : ""
+        }
 
         <div class="text-center" style="font-size: 9px; margin-top: 6px;">
           <div>${data.warrantyInfo || "Garantie 6 mois pièces & main-d'œuvre."}</div>

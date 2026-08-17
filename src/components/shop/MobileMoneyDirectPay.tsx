@@ -21,7 +21,9 @@ export function detectMomoProvider(phoneRaw: string): MoMoProvider {
   const prefix2 = num.slice(0, 2);
 
   // MTN Bénin : 61, 62, 66, 67, 69, 96, 97, 51, 52, 53, 54
-  if (["61", "62", "66", "67", "69", "96", "97", "51", "52", "53", "54", "44", "45"].includes(prefix2)) {
+  if (
+    ["61", "62", "66", "67", "69", "96", "97", "51", "52", "53", "54", "44", "45"].includes(prefix2)
+  ) {
     return "mtn";
   }
   // Moov Money Bénin : 94, 95, 60, 63, 64, 65, 68
@@ -116,7 +118,9 @@ export function MobileMoneyDirectPay({
 
       <div className="bg-surface p-3.5 rounded-lg flex items-center justify-between">
         <div>
-          <span className="text-[10px] at-eyebrow text-muted-foreground block">Montant à Régler</span>
+          <span className="text-[10px] at-eyebrow text-muted-foreground block">
+            Montant à Régler
+          </span>
           <strong className="text-xl font-mono font-extrabold text-foreground">
             {formatFcfa(amountFcfa)}
           </strong>
@@ -188,8 +192,8 @@ export function MobileMoneyDirectPay({
               Demande envoyée sur votre téléphone (+229 {phone})
             </h4>
             <p className="text-xs text-muted-foreground mt-1">
-              Veuillez confirmer la transaction en saisissant votre code secret Mobile Money ou tapez{" "}
-              <strong className="font-mono text-primary">{cfg.ussdCode}</strong>.
+              Veuillez confirmer la transaction en saisissant votre code secret Mobile Money ou
+              tapez <strong className="font-mono text-primary">{cfg.ussdCode}</strong>.
             </p>
           </div>
 

@@ -4,7 +4,8 @@
 // ============================================================================
 
 export type StorageMedium = "hdd_interne" | "hdd_externe" | "ssd_nvme" | "cle_usb" | "serveur_raid";
-export type DamageSeverity = "logique_simple" | "electronique_pcb" | "mecanique_salle_blanche" | "chip_off_nand";
+export type DamageSeverity =
+  "logique_simple" | "electronique_pcb" | "mecanique_salle_blanche" | "chip_off_nand";
 
 export interface DataRecoveryEstimate {
   medium: StorageMedium;
@@ -15,7 +16,10 @@ export interface DataRecoveryEstimate {
   laboratoryTechnique: string;
 }
 
-export function estimateDataRecovery(medium: StorageMedium, severity: DamageSeverity): DataRecoveryEstimate {
+export function estimateDataRecovery(
+  medium: StorageMedium,
+  severity: DamageSeverity,
+): DataRecoveryEstimate {
   switch (severity) {
     case "logique_simple":
       return {
@@ -34,7 +38,8 @@ export function estimateDataRecovery(medium: StorageMedium, severity: DamageSeve
         estimatedPriceFcfa: { min: 40000, max: 75000 },
         turnaroundDays: "2 à 4 jours",
         successRatePercent: 91,
-        laboratoryTechnique: "Transplantation de puce ROM BIOS & remplacement carte électronique PCB",
+        laboratoryTechnique:
+          "Transplantation de puce ROM BIOS & remplacement carte électronique PCB",
       };
 
     case "chip_off_nand":
@@ -44,7 +49,8 @@ export function estimateDataRecovery(medium: StorageMedium, severity: DamageSeve
         estimatedPriceFcfa: { min: 50000, max: 95000 },
         turnaroundDays: "3 à 5 jours",
         successRatePercent: 88,
-        laboratoryTechnique: "Dessoudage direct de puce NAND Flash BGA & reconstruction contrôleur ECC",
+        laboratoryTechnique:
+          "Dessoudage direct de puce NAND Flash BGA & reconstruction contrôleur ECC",
       };
 
     case "mecanique_salle_blanche":

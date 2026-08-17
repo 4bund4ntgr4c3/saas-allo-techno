@@ -3,20 +3,19 @@ import { Globe, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatFcfa } from "@/data/catalog/company";
-import {
-  getSharedSparesCatalogFn,
-  type SharedSparePart,
-} from "@/lib/spares-exchange.functions";
+import { getSharedSparesCatalogFn, type SharedSparePart } from "@/lib/spares-exchange.functions";
 
 export function SparesExchangeBoard() {
   const [spares, setSpares] = React.useState<SharedSparePart[]>([]);
   const [totalUnits, setTotalUnits] = React.useState(0);
 
   React.useEffect(() => {
-    getSharedSparesCatalogFn().then((res) => {
-      setSpares(res.spares);
-      setTotalUnits(res.totalStockUnits);
-    }).catch(() => {});
+    getSharedSparesCatalogFn()
+      .then((res) => {
+        setSpares(res.spares);
+        setTotalUnits(res.totalStockUnits);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -29,11 +28,15 @@ export function SparesExchangeBoard() {
               Bourse de Pièces Rares &amp; Mutualisation UEMOA
             </h3>
             <p className="text-xs text-muted-foreground">
-              Réseau d'approvisionnement express reliant les laboratoires de Cotonou, Lomé, Abidjan et Dakar
+              Réseau d'approvisionnement express reliant les laboratoires de Cotonou, Lomé, Abidjan
+              et Dakar
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10"
+        >
           {totalUnits} Pièces Critiques Disponibles
         </Badge>
       </div>
@@ -72,7 +75,12 @@ export function SparesExchangeBoard() {
                 {formatFcfa(part.unitPriceFcfa)}
               </strong>
 
-              <Button asChild variant="technical" size="sm" className="text-[10px] font-bold uppercase h-7 px-3">
+              <Button
+                asChild
+                variant="technical"
+                size="sm"
+                className="text-[10px] font-bold uppercase h-7 px-3"
+              >
                 <a
                   href={`https://wa.me/22960000000?text=${encodeURIComponent(
                     `Bonjour Allô Techno Bourse UEMOA, je souhaite réserver la pièce "${part.componentRef}" (${part.partId}) située à ${part.holdingWorkshopCity}.`,

@@ -48,7 +48,13 @@ export function QrCameraScanner({ onScan, onClose }: QrCameraScannerProps) {
     async function startQrDetection() {
       if (typeof window !== "undefined" && "BarcodeDetector" in window) {
         try {
-          const detector = new (window as unknown as { BarcodeDetector: new (opts: { formats: string[] }) => { detect: (v: HTMLVideoElement) => Promise<{ rawValue: string }[]> } }).BarcodeDetector({ formats: ["qr_code"] });
+          const detector = new (
+            window as unknown as {
+              BarcodeDetector: new (opts: { formats: string[] }) => {
+                detect: (v: HTMLVideoElement) => Promise<{ rawValue: string }[]>;
+              };
+            }
+          ).BarcodeDetector({ formats: ["qr_code"] });
           const scanLoop = async () => {
             if (isCancelled || !videoRef.current) return;
             if (videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
@@ -59,18 +65,24 @@ export function QrCameraScanner({ onScan, onClose }: QrCameraScannerProps) {
                   if ("vibrate" in navigator) {
                     try {
                       navigator.vibrate(50);
-                    } catch {}
+                    } catch {
+                      /* ignore */
+                    }
                   }
                   onScan(raw);
                   return;
                 }
-              } catch {}
+              } catch {
+                /* ignore */
+              }
             }
             animationFrameId = requestAnimationFrame(scanLoop);
           };
           scanLoop();
           return;
-        } catch {}
+        } catch {
+          /* ignore */
+        }
       }
     }
 
@@ -93,12 +105,7 @@ export function QrCameraScanner({ onScan, onClose }: QrCameraScannerProps) {
     <div className="relative overflow-hidden rounded-xl border border-border bg-black text-white shadow-2xl">
       {/* ─── Video Preview ─── */}
       <div className="relative aspect-square w-full max-w-md mx-auto overflow-hidden bg-black">
-        <video
-          ref={videoRef}
-          playsInline
-          muted
-          className="h-full w-full object-cover"
-        />
+        <video ref={videoRef} playsInline muted className="h-full w-full object-cover" />
 
         {/* ─── Laser Target Frame Overlay ─── */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-8">

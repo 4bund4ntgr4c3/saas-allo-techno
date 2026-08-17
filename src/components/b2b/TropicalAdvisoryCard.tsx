@@ -29,7 +29,9 @@ export function TropicalAdvisoryCard() {
   };
 
   return (
-    <div className={`border p-5 rounded-lg space-y-4 shadow-xs animate-in fade-in duration-200 ${getBorderColor()}`}>
+    <div
+      className={`border p-5 rounded-lg space-y-4 shadow-xs animate-in fade-in duration-200 ${getBorderColor()}`}
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/50 pb-3">
         <div className="flex items-center gap-2.5">
           {getIcon()}

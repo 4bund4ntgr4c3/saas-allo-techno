@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
-import {
-  Download,
-  ExternalLink,
-  ShieldCheck,
-  Search,
-} from "lucide-react";
+import { Download, ExternalLink, ShieldCheck, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +18,8 @@ export const Route = createFileRoute("/$locale/outils")({
         { title: "Boîte à Outils & Pilotes Utilitaires — Allô Techno Toolbox" },
         {
           name: "description",
-          content: "Téléchargez gratuitement nos outils officiels et certifiés pour tester la santé de vos disques, batteries et assainir votre PC/Mac.",
+          content:
+            "Téléchargez gratuitement nos outils officiels et certifiés pour tester la santé de vos disques, batteries et assainir votre PC/Mac.",
         },
         ...seo.meta,
       ],
@@ -68,7 +64,8 @@ function ToolsPage() {
             Boîte à Outils &amp; Pilotes Utilitaires
           </h1>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-2xl">
-            Retrouvez les logiciels de diagnostic et pilotes indispensables recommandés par nos techniciens atelier. Liens vérifiés, sécurisés et sans publicités indésirables.
+            Retrouvez les logiciels de diagnostic et pilotes indispensables recommandés par nos
+            techniciens atelier. Liens vérifiés, sécurisés et sans publicités indésirables.
           </p>
         </div>
       </section>
@@ -120,7 +117,10 @@ function ToolsPage() {
                     </span>
                   </div>
                   {tool.isOfficial && (
-                    <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px]">
+                    <Badge
+                      variant="outline"
+                      className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px]"
+                    >
                       <ShieldCheck className="size-3 mr-1" /> Certifié Propre
                     </Badge>
                   )}
@@ -130,10 +130,13 @@ function ToolsPage() {
               </div>
 
               <div className="pt-2 border-t border-border/60 flex items-center justify-between">
-                <span className="text-[11px] text-muted-foreground">Téléchargement direct éditeur</span>
+                <span className="text-[11px] text-muted-foreground">
+                  Téléchargement direct éditeur
+                </span>
                 <Button asChild variant="technical" size="sm" className="text-xs font-bold h-8">
                   <a href={tool.downloadUrl} target="_blank" rel="noopener noreferrer">
-                    <Download className="size-3.5 mr-1" /> Télécharger <ExternalLink className="size-3 ml-1 opacity-70" />
+                    <Download className="size-3.5 mr-1" /> Télécharger{" "}
+                    <ExternalLink className="size-3 ml-1 opacity-70" />
                   </a>
                 </Button>
               </div>

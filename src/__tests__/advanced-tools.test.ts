@@ -14,7 +14,9 @@ describe("Allô Techno — Tests des Outils Avancés (Batches 44-48)", () => {
       });
 
       expect(result.estimatedValueFcfa).toBeGreaterThan(200000);
-      expect(result.bonusVoucherFcfa).toBe(Math.round((result.estimatedValueFcfa * 0.1) / 500) * 500);
+      expect(result.bonusVoucherFcfa).toBe(
+        Math.round((result.estimatedValueFcfa * 0.1) / 500) * 500,
+      );
       expect(result.totalVoucherFcfa).toBe(result.estimatedValueFcfa + result.bonusVoucherFcfa);
     });
 

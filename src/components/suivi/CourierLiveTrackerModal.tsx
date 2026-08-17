@@ -29,7 +29,11 @@ export const MOCK_COURIER_MISSION: CourierMission = {
   progressPercent: 65,
 };
 
-export function CourierLiveTrackerModal({ mission = MOCK_COURIER_MISSION }: { mission?: CourierMission }) {
+export function CourierLiveTrackerModal({
+  mission = MOCK_COURIER_MISSION,
+}: {
+  mission?: CourierMission;
+}) {
   const [progress, setProgress] = React.useState(mission.progressPercent);
 
   React.useEffect(() => {
@@ -61,7 +65,10 @@ export function CourierLiveTrackerModal({ mission = MOCK_COURIER_MISSION }: { mi
             Suivi Coursier Express en Direct
           </h3>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-[10px] text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           GPS Actif · 100% Sécurisé
         </Badge>
       </div>
@@ -70,7 +77,10 @@ export function CourierLiveTrackerModal({ mission = MOCK_COURIER_MISSION }: { mi
       <div className="flex items-center justify-between bg-surface p-3.5 rounded-xl border border-border">
         <div className="flex items-center gap-3">
           <div className="size-11 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center font-bold text-primary text-sm">
-            {mission.courierName.split(" ").map((n) => n[0]).join("")}
+            {mission.courierName
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
           </div>
           <div>
             <h4 className="font-bold text-xs text-foreground">{mission.courierName}</h4>
@@ -88,7 +98,9 @@ export function CourierLiveTrackerModal({ mission = MOCK_COURIER_MISSION }: { mi
       <div className="space-y-2">
         <div className="flex justify-between text-xs font-semibold">
           <span className="text-primary">{getStatusLabel()}</span>
-          <span className="font-mono text-foreground">Arrivée estimée : ~{mission.etaMinutes} min</span>
+          <span className="font-mono text-foreground">
+            Arrivée estimée : ~{mission.etaMinutes} min
+          </span>
         </div>
 
         {/* Barre de progression avec icône coursier */}
@@ -105,7 +117,9 @@ export function CourierLiveTrackerModal({ mission = MOCK_COURIER_MISSION }: { mi
         <div className="flex items-start gap-2.5">
           <MapPin className="size-4 text-emerald-600 shrink-0 mt-0.5" />
           <div>
-            <span className="text-[10px] text-muted-foreground block">Point de Collecte Client :</span>
+            <span className="text-[10px] text-muted-foreground block">
+              Point de Collecte Client :
+            </span>
             <strong className="text-foreground">{mission.pickupAddress}</strong>
           </div>
         </div>

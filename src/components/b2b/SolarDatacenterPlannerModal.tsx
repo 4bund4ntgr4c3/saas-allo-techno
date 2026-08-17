@@ -16,7 +16,10 @@ export function SolarDatacenterPlannerModal() {
   }, [rackCount, autonomyHours]);
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-3xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-3xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Sun className="size-5 text-amber-500 shrink-0" />
@@ -29,7 +32,10 @@ export function SolarDatacenterPlannerModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Zéro Coupure SBEE
         </Badge>
       </div>
@@ -37,7 +43,9 @@ export function SolarDatacenterPlannerModal() {
       {/* Inputs Configuration */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
         <div>
-          <label className="text-muted-foreground block mb-1">Nombre de baies serveurs / réseau :</label>
+          <label className="text-muted-foreground block mb-1">
+            Nombre de baies serveurs / réseau :
+          </label>
           <Input
             type="number"
             min={1}
@@ -49,7 +57,9 @@ export function SolarDatacenterPlannerModal() {
         </div>
 
         <div>
-          <label className="text-muted-foreground block mb-1">Autonomie sur batterie souhaitée (heures) :</label>
+          <label className="text-muted-foreground block mb-1">
+            Autonomie sur batterie souhaitée (heures) :
+          </label>
           <Input
             type="number"
             min={4}
@@ -69,7 +79,9 @@ export function SolarDatacenterPlannerModal() {
             <strong className="font-mono text-base font-extrabold text-foreground block">
               {plan.solarPanelsKwc} kWc
             </strong>
-            <span className="text-[10px] text-muted-foreground">({plan.solarPanelsCount450w} x 450W Mono-PERC)</span>
+            <span className="text-[10px] text-muted-foreground">
+              ({plan.solarPanelsCount450w} x 450W Mono-PERC)
+            </span>
           </div>
 
           <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
@@ -77,7 +89,9 @@ export function SolarDatacenterPlannerModal() {
             <strong className="font-mono text-base font-extrabold text-foreground block">
               {plan.batteryCapacityKwh} kWh
             </strong>
-            <span className="text-[10px] text-muted-foreground">({plan.lifepo4PackCount48v100ah} packs 48V 100Ah)</span>
+            <span className="text-[10px] text-muted-foreground">
+              ({plan.lifepo4PackCount48v100ah} packs 48V 100Ah)
+            </span>
           </div>
 
           <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
@@ -89,7 +103,9 @@ export function SolarDatacenterPlannerModal() {
           </div>
 
           <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
-            <span className="text-[10px] text-muted-foreground block">Retour sur Investissement</span>
+            <span className="text-[10px] text-muted-foreground block">
+              Retour sur Investissement
+            </span>
             <strong className="font-mono text-base font-extrabold text-emerald-600 block">
               {plan.roiPaybackYears} ans
             </strong>
@@ -100,13 +116,20 @@ export function SolarDatacenterPlannerModal() {
         {/* Total Cost & Action */}
         <div className="p-4 rounded-xl bg-surface/80 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="text-muted-foreground block">Budget Clé en Main Estimé (Matériel + Pose) :</span>
+            <span className="text-muted-foreground block">
+              Budget Clé en Main Estimé (Matériel + Pose) :
+            </span>
             <strong className="text-lg font-mono font-black text-primary">
               {formatFcfa(plan.estimatedInvestmentFcfa)}
             </strong>
           </div>
 
-          <Button asChild variant="technical" size="sm" className="font-bold uppercase tracking-wider text-xs h-9">
+          <Button
+            asChild
+            variant="technical"
+            size="sm"
+            className="font-bold uppercase tracking-wider text-xs h-9"
+          >
             <a
               href={`https://wa.me/22960000000?text=${encodeURIComponent(
                 `Bonjour Allô Techno Solaire, nous souhaitons une étude pour solariser ${rackCount} baies serveurs (${plan.batteryCapacityKwh} kWh LiFePO4, budget estimé ${formatFcfa(

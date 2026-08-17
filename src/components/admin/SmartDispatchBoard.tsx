@@ -12,10 +12,12 @@ export function SmartDispatchBoard() {
   const [dispatches, setDispatches] = React.useState<DispatchedTicket[]>([]);
 
   React.useEffect(() => {
-    getSmartDispatchQueueFn().then((res) => {
-      setTechnicians(res.technicians);
-      setDispatches(res.activeDispatches);
-    }).catch(() => {});
+    getSmartDispatchQueueFn()
+      .then((res) => {
+        setTechnicians(res.technicians);
+        setDispatches(res.activeDispatches);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -28,11 +30,15 @@ export function SmartDispatchBoard() {
               Moteur IA de Dispatching &amp; Routage Atelier
             </h3>
             <p className="text-xs text-muted-foreground">
-              Allocation prédictive des dossiers selon les spécialités fines et le respect strict des SLA
+              Allocation prédictive des dossiers selon les spécialités fines et le respect strict
+              des SLA
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+        >
           SLA Global : 98.4%
         </Badge>
       </div>
@@ -53,7 +59,10 @@ export function SmartDispatchBoard() {
                   <strong className="text-foreground block">{t.name}</strong>
                   <span className="text-[10px] text-primary font-semibold">{t.specialty}</span>
                 </div>
-                <Badge variant="outline" className="text-[10px] font-mono text-emerald-600 border-emerald-600/30">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] font-mono text-emerald-600 border-emerald-600/30"
+                >
                   {t.slaSuccessRatePercent}% SLA
                 </Badge>
               </div>
@@ -97,17 +106,27 @@ export function SmartDispatchBoard() {
                 </div>
                 <p className="text-muted-foreground text-[11px]">{d.faultSummary}</p>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground pt-1">
-                  <span>Assigné à : <strong className="text-foreground">{d.assignedTechnicianName}</strong></span>
+                  <span>
+                    Assigné à :{" "}
+                    <strong className="text-foreground">{d.assignedTechnicianName}</strong>
+                  </span>
                   <span>·</span>
-                  <span>Emplacement : <strong className="text-foreground">{d.benchNumber}</strong></span>
+                  <span>
+                    Emplacement : <strong className="text-foreground">{d.benchNumber}</strong>
+                  </span>
                 </div>
               </div>
 
               <div className="flex sm:flex-col items-center sm:items-end justify-between gap-1 shrink-0">
-                <Badge variant="outline" className="text-primary border-primary/30 font-mono text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="text-primary border-primary/30 font-mono text-[10px]"
+                >
                   <Clock className="size-3 mr-1" /> Reste {d.estimatedCompletionTime}
                 </Badge>
-                <span className="text-[10px] text-muted-foreground">Objectif SLA : {d.slaTargetHours}h</span>
+                <span className="text-[10px] text-muted-foreground">
+                  Objectif SLA : {d.slaTargetHours}h
+                </span>
               </div>
             </div>
           ))}
