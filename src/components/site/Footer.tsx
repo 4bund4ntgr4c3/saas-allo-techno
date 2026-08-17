@@ -65,17 +65,25 @@ function OpenNow() {
 
 export function Footer() {
   const { t, locale } = useI18n();
+
+  const isEn = locale === "en";
+
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div className="grid gap-12 md:grid-cols-6">
-          {/* Brand + Contact (merged) */}
-          <div className="md:col-span-2">
-            <span className="at-display text-2xl">Allô Techno</span>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+        <div className="grid gap-10 md:grid-cols-12">
+          {/* Brand + Contact (Col 1-4) */}
+          <div className="md:col-span-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="at-display text-2xl font-black tracking-tight">Allô Techno</span>
+              <span className="text-[10px] font-mono font-bold uppercase bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded">
+                Africa Hub
+              </span>
+            </div>
+            <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
               {t("footer.description")}
             </p>
-            <ul className="mt-6 space-y-2.5 text-xs font-medium text-muted-foreground">
+            <ul className="space-y-2.5 text-xs font-medium text-muted-foreground pt-1">
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />
                 <span>{COMPANY.address}</span>
@@ -89,13 +97,13 @@ export function Footer() {
                 <span className="font-mono text-muted-foreground">{COMPANY.email}</span>
               </li>
             </ul>
-            <div className="mt-6 flex gap-3">
+            <div className="flex gap-2.5 pt-2">
               {["FB", "IG", "WA"].map((s) => (
                 <a
                   key={s}
                   href={s === "WA" ? `https://wa.me/${COMPANY.whatsapp.replace(/\D/g, "")}` : "#"}
                   aria-label={s === "WA" ? "WhatsApp" : s === "FB" ? "Facebook" : "Instagram"}
-                  className="grid size-10 place-items-center border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                  className="grid size-9 place-items-center border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground rounded-lg"
                 >
                   {s}
                 </a>
@@ -103,30 +111,27 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Réparations & Devis */}
-          <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.repairs")}</h2>
-            <ul
-              aria-label={t("footer.repairs")}
-              className="space-y-2.5 text-xs font-medium text-muted-foreground"
-            >
+          {/* 1. Réparations & Dépannage (Col 5-6) */}
+          <div className="md:col-span-2">
+            <h2 className="at-eyebrow mb-4 text-foreground font-bold">
+              {isEn ? "Repairs & SAV" : "Réparations & SAV"}
+            </h2>
+            <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/reparations", label: t("footer.nos-reparations") },
-                { to: "/$locale/catalogue", label: t("nav.catalogue") },
-                { to: "/$locale/tarifs", label: t("footer.grille-tarifaire") },
-                { to: "/$locale/devis", label: t("nav.devis") },
-                { to: "/$locale/reservation", label: t("footer.prendre-rendez-vous") },
-                { to: "/$locale/suivi", label: t("footer.suivre-reparation") },
-                { to: "/$locale/guides", label: t("nav.guides") },
+                { to: "/$locale/reparations", label: isEn ? "All Repairs" : "Toutes les Réparations" },
+                { to: "/$locale/devis", label: isEn ? "Instant Quote" : "Devis Express en Ligne" },
+                { to: "/$locale/reservation", label: isEn ? "Book Workshop Visit" : "Prendre Rendez-vous" },
+                { to: "/$locale/depannage-domicile", label: isEn ? "VIP Home Repair" : "Dépannage à Domicile" },
+                { to: "/$locale/suivi", label: isEn ? "Track Repair Status" : "Suivre ma Réparation" },
+                { to: "/$locale/premiers-secours", label: isEn ? "First Aid & Spills" : "Premiers Secours SAV" },
+                { to: "/$locale/tarifs", label: isEn ? "Price Catalog" : "Grille Tarifaire" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() =>
-                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
-                    }
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -136,31 +141,27 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Services & Accessoires */}
-          <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.services")}</h2>
-            <ul
-              aria-label={t("footer.services")}
-              className="space-y-2.5 text-xs font-medium text-muted-foreground"
-            >
+          {/* 2. Boutique, Vente & Offres (Col 7-8) */}
+          <div className="md:col-span-2">
+            <h2 className="at-eyebrow mb-4 text-foreground font-bold">
+              {isEn ? "Shop & Circular Economy" : "Boutique & Reconditionné"}
+            </h2>
+            <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/services", label: t("nav.services") },
-                { to: "/$locale/boutique", label: t("nav.boutique") },
-                { to: "/$locale/tarifs", label: t("nav.tarifs") },
-                { to: "/$locale/reconditionnes", label: t("nav.reconditionnes") },
-                { to: "/$locale/reprise", label: t("footer.reprise-appareils") },
-                { to: "/$locale/promotions", label: t("nav.promotions") },
-                { to: "/$locale/garantie", label: t("footer.garanties") },
-                { to: "/$locale/reclamation", label: t("nav.reclamation") },
+                { to: "/$locale/boutique", label: isEn ? "Online Store" : "Boutique & Pièces" },
+                { to: "/$locale/reconditionnes", label: isEn ? "Refurbished PC & Mac" : "PC & Mac Reconditionnés" },
+                { to: "/$locale/marketplace-sequestre", label: isEn ? "Escrow Certified Marketplace" : "Marketplace Séquestre" },
+                { to: "/$locale/reprise", label: isEn ? "Trade-in Cash" : "Rachat & Reprise Cash" },
+                { to: "/$locale/abonnements", label: isEn ? "Serenity Subscriptions" : "Abonnements Sérénité" },
+                { to: "/$locale/parrainage", label: isEn ? "Referral & Earn MoMo" : "Parrainage Mobile Money" },
+                { to: "/$locale/promotions", label: isEn ? "Current Deals" : "Bons Plans & Promos" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() =>
-                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
-                    }
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -170,31 +171,27 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Entreprises & Info */}
-          <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.entreprises")}</h2>
-            <ul
-              aria-label={t("footer.entreprises")}
-              className="space-y-2.5 text-xs font-medium text-muted-foreground"
-            >
+          {/* 3. Entreprises & Solutions B2B (Col 9-10) */}
+          <div className="md:col-span-2">
+            <h2 className="at-eyebrow mb-4 text-foreground font-bold">
+              {isEn ? "B2B & IT Teams" : "Solutions Entreprises"}
+            </h2>
+            <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/entreprises", label: t("footer.solutions-b2b") },
-                { to: "/$locale/avis", label: t("nav.avis") },
-                { to: "/$locale/faq", label: t("nav.faq") },
-                { to: "/$locale/blog", label: t("nav.blog") },
-                { to: "/$locale/changelog", label: t("nav.changelog") },
-                { to: "/$locale/about", label: t("nav.about") },
-                { to: "/$locale/work-at", label: t("nav.work-at") },
-                { to: "/$locale/engagements", label: t("nav.engagements") },
+                { to: "/$locale/entreprises", label: isEn ? "B2B Maintenance SLA" : "Maintenance de Flotte SLA" },
+                { to: "/$locale/catalogue", label: isEn ? "Parts Catalog" : "Catalogue Pièces Détachées" },
+                { to: "/$locale/outils", label: isEn ? "Toolbox & Drivers" : "Boîte à Outils & Pilotes" },
+                { to: "/$locale/guide-esd", label: isEn ? "ESD Safety Guide" : "Guide Sécurité ESD" },
+                { to: "/$locale/guides", label: isEn ? "Self-Repair Guides" : "Tutoriels & Guides" },
+                { to: "/$locale/engagements", label: isEn ? "CSR & Commitments" : "Engagements & Écologie" },
+                { to: "/$locale/garantie", label: isEn ? "Warranty Terms" : "Conditions de Garantie" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() =>
-                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
-                    }
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -204,28 +201,29 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Localisation & Contact */}
-          <div>
-            <h2 className="at-eyebrow mb-5 text-foreground">{t("footer.localisation")}</h2>
-            <ul
-              aria-label={t("footer.localisation")}
-              className="space-y-2.5 text-xs font-medium text-muted-foreground"
-            >
+          {/* 4. Société & Contact (Col 11-12) */}
+          <div className="md:col-span-2">
+            <h2 className="at-eyebrow mb-4 text-foreground font-bold">
+              {isEn ? "About & Connect" : "Allô Techno Hub"}
+            </h2>
+            <ul className="space-y-2 text-xs font-medium text-muted-foreground">
               {[
-                { to: "/$locale/magasins", label: t("nav.magasins") },
-                { to: "/$locale/quartiers", label: t("nav.quartiers") },
-                { to: "/$locale/contact", label: t("nav.contact") },
-                { to: "/$locale/panier", label: t("nav.panier") },
-                { to: "/$locale/mentions-legales", label: t("footer.mentions-legales") },
+                { to: "/$locale/about", label: isEn ? "About Us" : "Notre Histoire & Atelier" },
+                { to: "/$locale/magasins", label: isEn ? "Our Workshops" : "Nos Points d'Atelier" },
+                { to: "/$locale/quartiers", label: isEn ? "Coverage Areas" : "Zones Desservies Cotonou" },
+                { to: "/$locale/contact", label: isEn ? "Contact Support" : "Nous Contacter" },
+                { to: "/$locale/avis", label: isEn ? "Customer Reviews" : "Avis Clients Vérifiés" },
+                { to: "/$locale/work-at", label: isEn ? "Careers / Work At" : "Recrutement & Carrières" },
+                { to: "/$locale/blog", label: isEn ? "Tech Blog" : "Blog & Actualités Tech" },
+                { to: "/$locale/changelog", label: isEn ? "Changelog & Updates" : "Changelog & Mises à Jour" },
+                { to: "/$locale/mentions-legales", label: isEn ? "Legal Notice" : "Mentions Légales & RGPD" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     params={{ locale }}
                     className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-primary"
-                    onMouseEnter={() =>
-                      prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)
-                    }
+                    onMouseEnter={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                     onFocus={() => prefetchRoute(`/${locale}${link.to.replace("/$locale", "")}`)}
                   >
                     {link.label}
@@ -273,7 +271,7 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row">
           <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            © {new Date().getFullYear()} {t("footer.rights")}
+            © {new Date().getFullYear()} Allô Techno Africa. {t("footer.rights")}
           </span>
           <OpenNow />
           <div className="flex flex-wrap items-center justify-center gap-3 text-center sm:gap-4">
