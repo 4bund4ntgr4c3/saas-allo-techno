@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — E-Procurement B2B, Télémétrie Pulse, Facturation e-MECeF & Séquestre Escrow (Batch 57)",
+    date: "2026-08-17",
+    added: [
+      "Portail e-procurement B2B et appels d'offres (rfp-procurement.functions.ts, RfpProcurementModal.tsx) avec calcul de TCO sur 3 ans (énergie SBEE + SLA)",
+      "Studio de télémétrie matérielle en direct et IA prédictive de pannes (telemetry-agent.functions.ts, LiveTelemetryDashboard.tsx) avec alertes avant crash SSD/CPU",
+      "Moteur d'abonnements récurrents et facturation normalisée e-MECeF DGI (recurring-billing-engine.ts, RecurringBillingDashboard.tsx) avec prélèvements MoMo B2B",
+      "Marketplace d'occasion certifiée avec tiers de confiance et compte séquestre escrow (escrow-marketplace.functions.ts, src/routes/$locale/marketplace-sequestre.tsx)",
+    ],
+    fixed: [
+      "Calcul des économies d'énergie SBEE et Scope 3 RSE sur l'achat de parcs informatiques neufs vs reconditionnés",
+      "Sécurisation des transactions d'occasion avec contrôle technique 45 points et garantie atelier 6 mois",
+    ],
+  },
+  {
     version: "2026.08.17 — Dépannage VIP Domicile, Export Inventaire Excel, Rachat Flotte & Import Pièces (Batch 56)",
     date: "2026-08-17",
     added: [

@@ -35,6 +35,7 @@ import { Route as LocaleGuideEsdRouteImport } from './routes/$locale/guide-esd'
 import { Route as LocaleGuidesRouteImport } from './routes/$locale/guides'
 import { Route as LocaleHistoriqueRouteImport } from './routes/$locale/historique'
 import { Route as LocaleMagasinsRouteImport } from './routes/$locale/magasins'
+import { Route as LocaleMarketplaceSequestreRouteImport } from './routes/$locale/marketplace-sequestre'
 import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
 import { Route as LocaleOutilsRouteImport } from './routes/$locale/outils'
 import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
@@ -247,6 +248,12 @@ const LocaleMagasinsRoute = LocaleMagasinsRouteImport.update({
   path: '/magasins',
   getParentRoute: () => LocaleRoute,
 } as any)
+const LocaleMarketplaceSequestreRoute =
+  LocaleMarketplaceSequestreRouteImport.update({
+    id: '/marketplace-sequestre',
+    path: '/marketplace-sequestre',
+    getParentRoute: () => LocaleRoute,
+  } as any)
 const LocaleMentionsLegalesRoute = LocaleMentionsLegalesRouteImport.update({
   id: '/mentions-legales',
   path: '/mentions-legales',
@@ -716,6 +723,7 @@ export interface FileRoutesByFullPath {
   '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
+  '/$locale/marketplace-sequestre': typeof LocaleMarketplaceSequestreRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -823,6 +831,7 @@ export interface FileRoutesByTo {
   '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
+  '/$locale/marketplace-sequestre': typeof LocaleMarketplaceSequestreRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -933,6 +942,7 @@ export interface FileRoutesById {
   '/$locale/guides': typeof LocaleGuidesRoute
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
+  '/$locale/marketplace-sequestre': typeof LocaleMarketplaceSequestreRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
   '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
@@ -1044,6 +1054,7 @@ export interface FileRouteTypes {
     | '/$locale/guides'
     | '/$locale/historique'
     | '/$locale/magasins'
+    | '/$locale/marketplace-sequestre'
     | '/$locale/mentions-legales'
     | '/$locale/outils'
     | '/$locale/panier'
@@ -1151,6 +1162,7 @@ export interface FileRouteTypes {
     | '/$locale/guides'
     | '/$locale/historique'
     | '/$locale/magasins'
+    | '/$locale/marketplace-sequestre'
     | '/$locale/mentions-legales'
     | '/$locale/outils'
     | '/$locale/panier'
@@ -1260,6 +1272,7 @@ export interface FileRouteTypes {
     | '/$locale/guides'
     | '/$locale/historique'
     | '/$locale/magasins'
+    | '/$locale/marketplace-sequestre'
     | '/$locale/mentions-legales'
     | '/$locale/outils'
     | '/$locale/panier'
@@ -1548,6 +1561,13 @@ declare module '@tanstack/react-router' {
       path: '/magasins'
       fullPath: '/$locale/magasins'
       preLoaderRoute: typeof LocaleMagasinsRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/marketplace-sequestre': {
+      id: '/$locale/marketplace-sequestre'
+      path: '/marketplace-sequestre'
+      fullPath: '/$locale/marketplace-sequestre'
+      preLoaderRoute: typeof LocaleMarketplaceSequestreRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/mentions-legales': {
@@ -2247,6 +2267,7 @@ interface LocaleRouteChildren {
   LocaleGuidesRoute: typeof LocaleGuidesRoute
   LocaleHistoriqueRoute: typeof LocaleHistoriqueRoute
   LocaleMagasinsRoute: typeof LocaleMagasinsRoute
+  LocaleMarketplaceSequestreRoute: typeof LocaleMarketplaceSequestreRoute
   LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
   LocaleOutilsRoute: typeof LocaleOutilsRoute
   LocalePanierRoute: typeof LocalePanierRoute
@@ -2293,6 +2314,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleGuidesRoute: LocaleGuidesRoute,
   LocaleHistoriqueRoute: LocaleHistoriqueRoute,
   LocaleMagasinsRoute: LocaleMagasinsRoute,
+  LocaleMarketplaceSequestreRoute: LocaleMarketplaceSequestreRoute,
   LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
   LocaleOutilsRoute: LocaleOutilsRoute,
   LocalePanierRoute: LocalePanierRoute,
