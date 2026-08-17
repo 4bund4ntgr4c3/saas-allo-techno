@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
+import { sendWhatsAppCloud } from "@/lib/whatsapp-cloud";
 
 export type SmsNotificationType =
   "deposit_confirmed" | "quote_ready" | "ready_for_pickup" | "warranty_reminder";
@@ -40,14 +41,29 @@ export function formatSmsMessage(payload: SmsPayload): string {
 }
 
 /**
- * Envoie un SMS transactionnel via la passerelle configurée
+ * Envoie une notification transactionnelle via la passerelle configurée :
+ * 1) WhatsApp Cloud API (Meta) — service conversations gratuites (freemium)
+ * 2) SMS Termii — si WHATSAPP non configuré
+ * 3) Simulation (log) — si aucune passerelle n'est configurée
  */
 export async function sendTransactionalSms(
   payload: SmsPayload,
 ): Promise<{ success: boolean; messageId: string }> {
   const messageText = formatSmsMessage(payload);
 
-  // En production, appel à la passerelle SMS béninoise (Termii ou provider local)
+  // 1) WhatsApp Cloud API (gratuit pour les messages de service)
+  const wa = await sendWhatsAppCloud(payload);
+  if (wa.success) {
+    return {
+      success: true,
+      messageId: wa.messageId || `WA-${Date.now().toString().slice(-6)}`,
+    };
+  }
+  if (wa.reason === "api_error") {
+    console.warn("[SMS] WhatsApp Cloud en échec — repli sur la passerelle SMS");
+  }
+
+  // 2) SMS Termii (ou provider local)
   const apiKey = process.env["TERMII_API_KEY"] || process.env["SMS_GATEWAY_KEY"];
 
   if (!apiKey) {

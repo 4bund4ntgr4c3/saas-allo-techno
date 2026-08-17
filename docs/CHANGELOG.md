@@ -18,6 +18,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Stepper B2B à icônes** avec récap sticky (`B2BRequestForm`), `DeviceSearch`, auto-scroll multi-étapes du checkout, héros des pages entreprises/réparations avec badges SLA.
 - **PDFs contractuels** : contrat B2B (`b2b-contract-pdf.ts`), PV de restitution (`pv-restitution-pdf.ts`), certificat de garantie (`warranty-certificate-pdf.ts`).
 - **Financement & conformité** : scoring crédit B2B BNPL, bourse pièces UEMOA, générateur PSSI, métrologie ISO 9001.
+- **Notifications transactionnelles WhatsApp Cloud API** : nouvelle passerelle freemium prioritaire (`src/lib/whatsapp-cloud.ts`) — messages de service GRATUITS via Meta (service conversations, nov. 2024) ; mapping des 4 types de notification vers des templates français (`dossier_enregistre`, `devis_prest`, `appareil_prest`, `rappel_garantie`) ; chaîne de repli dans `sendTransactionalSms` : WhatsApp Cloud → Termii → simulation ; normalisation E.164 (+229) ; secrets `WHATSAPP_ACCESS_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` documentés dans `wrangler.jsonc` ; 4 tests unitaires (payload Graph API, mapping templates, repli simulation).
 
 ### Changed
 
