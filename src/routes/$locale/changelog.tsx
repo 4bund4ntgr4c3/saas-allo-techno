@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Auto-Diagnostic Navigateur, Certificat Fiscal DEEE, Usure Harmattan & Plan 3-2-1 (Batch 55)",
+    date: "2026-08-17",
+    added: [
+      "Suite d'auto-diagnostic matériel exécutée directement dans le navigateur (BrowserHardwareTesterModal.tsx) : test mires pixels morts, balance audio stéréo et heatmap clavier",
+      "Attestation fiscale officielle de sortie d'actif et destruction DEEE (fiscal-deee-certificate-pdf.ts) pour dépréciation comptable DAF et commissaires aux comptes",
+      "Simulateur de vieillissement thermique et dessèchement de pâte thermique face à l'Harmattan (ThermalPasteRefreshEstimator.tsx) avec chiffrage Arctic MX-4",
+      "Planificateur d'architecture de sauvegarde 3-2-1 anti-ransomware (BackupStrategyPlannerModal.tsx) combinant NAS Synology Btrfs WORM et Cloud chiffré",
+    ],
+    fixed: [
+      "Tests d'oscillateur Web Audio API sans aucun plugin externe",
+      "Conformité fiscale des motifs de réforme d'équipements informatiques pour la DGI Bénin",
+    ],
+  },
+  {
     version: "2026.08.17 — Optimiseur Wi-Fi, Bordereaux Expédition Intervilles, Calculateur Onduleur & Guide ESD (Batch 54)",
     date: "2026-08-17",
     added: [
