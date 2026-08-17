@@ -2,7 +2,16 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.15-b44 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.17-b45 — [Changelog](./CHANGELOG.md)
+
+## Sécurité, Push Serveur & Dépannage Pro (Batch 45)
+
+- **Notifications Web Push serveur** : module complet (`src/lib/push-sender.ts`) — JWT VAPID ES256, chiffrement aes128gcm (RFC 8188/8291), envoi par utilisateur ou broadcast, purge des endpoints 404/410 ; endpoint staff `POST /api/push-send` (rateLimit, Bearer + `is_staff`) ; handlers `push`/`notificationclick` dans le service worker ; clés VAPID générées et déployées en production (le TODO « push server-side » est clos).
+- **Rate limiting total** : les 97 server fns des modules feat portent désormais un `rateLimit` (lectures 60/min, écritures 20/min, sensibles 10/min) — couverture complète alignée sur b44, ids kebab-case corrigés.
+- **Fiche d'intervention PDF** : génération jsPDF avec QR vérifiable.
+- **Protocoles de maintenance** : 6 catégories d'équipement × 6-8 tâches prédéfinies, checklists admin/maintenance refondues.
+- **Wizard dépannage-domicile** : zones tarifées + presets de prestations ; stepper B2B à icônes avec récap sticky ; PDFs contrat B2B, PV de restitution et certificat de garantie.
+- **Financement & conformité** : scoring crédit B2B BNPL, bourse pièces UEMOA, générateur PSSI, métrologie ISO 9001.
 
 ## Audit & Durcissement Sécurité (Batch 42)
 

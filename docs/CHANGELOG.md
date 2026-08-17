@@ -7,6 +7,30 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.17-b45] - 2026-08-17 (Sécurité, Push Serveur & Dépannage Pro — Batch 45)
+
+### Added
+
+- **Notifications Web Push côté serveur** : le TODO historique « server-side push must be implemented » est clos — nouveau module `src/lib/push-sender.ts` (JWT VAPID ES256 via WebCrypto, chiffrement aes128gcm RFC 8188/8291 avec HKDF/ECDH P-256, dérivation DER→r||s, purge des endpoints 404/410) exposant `sendPushToUser` / `sendPushToAll` / `isPushEnabled` ; endpoint staff `POST /api/push-send` (rateLimit `push-send` 20/min, Bearer + RPC `is_staff`, schéma zod, 503 si VAPID absent) ; handlers `push` + `notificationclick` ajoutés au service worker (`public/sw.js`) ; paire VAPID générée (`.env`, gitignoré) et déployée en production ; validé par 3 tests de chiffrement de bout en bout (`src/__tests__/push-encryption.test.ts` — déchiffrement côté abonné avec sa clé privée) et par un appel réel au endpoint en prod (`{status:"ok",sent:0}` avec token staff).
+- **Fiche d'intervention PDF** : génération jsPDF avec QR vérifiable (`src/lib/fiche-intervention-pdf.ts`, thème `pdf-theme.ts`).
+- **Protocoles de maintenance par catégorie d'équipement** : 6 catégories × 6-8 tâches prédéfinies (`preset-tasks.ts`, refonte `AdminChecklistModal` / `MaintenanceChecklistModal`).
+- **Wizard dépannage-domicile refondu** : zones tarifées + presets de prestations (`depannage-domicile` +1 147 lignes).
+- **Stepper B2B à icônes** avec récap sticky (`B2BRequestForm`), `DeviceSearch`, auto-scroll multi-étapes du checkout, héros des pages entreprises/réparations avec badges SLA.
+- **PDFs contractuels** : contrat B2B (`b2b-contract-pdf.ts`), PV de restitution (`pv-restitution-pdf.ts`), certificat de garantie (`warranty-certificate-pdf.ts`).
+- **Financement & conformité** : scoring crédit B2B BNPL, bourse pièces UEMOA, générateur PSSI, métrologie ISO 9001.
+
+### Changed
+
+- **Rate limiting total** : les 97 server fns des modules feat portent désormais un `rateLimit` (lectures 60/min, écritures 20/min, sensibles 10/min) dans les 42 fichiers `src/lib` concernés — la couverture b44 (188 fns) est étendue à l'ensemble des `createServerFn` du dépôt, sans exception.
+- **Documentation déploiement** (`wrangler.jsonc`) : procédure complète des secrets VAPID (`wrangler secret put VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`, var build `VITE_VAPID_PUBLIC_KEY`) et `TERMII_API_KEY` pour l'activation des SMS réels (sinon mode simulation).
+
+### Fixed
+
+- **Ids de rateLimit cassés** : kebab-case corrompus (`b-oo-kh-om-er-ep-ai-r`) et suffixes `-fn` résiduels sur 10 fichiers de b44 (accounting, b2b-audit, b2b-payments, contracts, demo, esg, maintenance-plans, quote, sla-metrics, whatsapp) — ids normalisés et uniques (41 fichiers).
+- **Tests de chiffrement push** : comparaison `Uint8Array` via `Array.from` (piège vitest), typage `BufferSource`/`noUncheckedIndexedAccess` dans le module push.
+
+---
+
 ## [2026.08.15-b44] - 2026-08-15 (Audit Scurit & Perf - Batch 44)
 
 ### Changed
