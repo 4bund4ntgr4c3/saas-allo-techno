@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Allô Voice IA 24/7, Solaire Datacenter DSI, Chaîne de Garde Forensique & Primes MoMo (Batch 60)",
+    date: "2026-08-17",
+    added: [
+      "Agent vocal IA conversationnel 24/7 en français et fon (voice-ai-agent.functions.ts, VoiceAiAssistantModal.tsx) avec devis vocal immédiat et réservation",
+      "Simulateur de dimensionnement solaire pour baies serveurs et datacenters DSI (solar-datacenter-planner.ts, SolarDatacenterPlannerModal.tsx) avec batteries LiFePO4",
+      "Registre médicolégal de chaîne de garde et scellés judiciaires forensiques (chain-of-custody.functions.ts, ChainOfCustodyDrawer.tsx) conforme ISO/IEC 27037",
+      "Moteur de gamification et calcul automatique des primes de performance techniciens en Mobile Money (tech-incentives.functions.ts, TechIncentivesLeaderboard.tsx)",
+    ],
+    fixed: [
+      "Calcul précis de la profondeur de décharge DoD des packs LiFePO4 pour un dimensionnement 100% autonome",
+      "Horodatage forensique cryptographique SHA-256 pour les pièces à conviction numériques saisies",
+    ],
+  },
+  {
     version: "2026.08.17 — Terminal POS Caisse & ESC/POS, NetScan Vulnérabilités DSI, Dispatch IA & Multi-Filiales (Batch 59)",
     date: "2026-08-17",
     added: [
