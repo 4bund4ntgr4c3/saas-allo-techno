@@ -3,9 +3,10 @@
 // Conforme droit commercial OHADA & Code du Numérique Bénin.
 // ============================================================================
 
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
+import { drawEyeCatchingHeader, drawEyeCatchingFooter } from "./pdf-theme";
 
 export interface B2BContractData {
   contractNumber: string;
@@ -28,147 +29,216 @@ export async function downloadB2BContractPdf(data: B2BContractData) {
     format: "a4",
   });
 
+  const pw = doc.internal.pageSize.getWidth();
+  const ph = doc.internal.pageSize.getHeight();
+  const margin = 14;
+  const contentWidth = pw - margin * 2;
+
   const verifyUrl = `https://allotechno.africa/fr/entreprises?contract=${data.contractNumber}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 150, margin: 1 }).catch(() => "");
 
-  // ─── En-tête officiel Contrat B2B ───
-  doc.setFillColor(15, 23, 42); // Slate-900
-  doc.rect(0, 0, 210, 40, "F");
+  // 1. En-tête Eye-Catching avec Logo Vectoriel
+  let y = drawEyeCatchingHeader(doc, {
+    title: "ALLÔ TECHNO AFRICA",
+    subTitle: "SERVICES INFORMATIQUES B2B & INFOGÉRANCE D'ENTREPRISE",
+    docRef: data.contractNumber,
+    dateStr: data.startDate,
+    extraMeta: "Statut : Convention B2B Scellée",
+    accentColor: [59, 130, 246], // Bleu Contractuel
+  });
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("CONVENTION DE MAINTENANCE INFORMATIQUE & SLA", 15, 18);
+  // 2. Titre de la convention
+  doc.setFillColor(239, 246, 255);
+  doc.rect(margin, y, contentWidth, 13, "F");
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.35);
+  doc.rect(margin, y, contentWidth, 13, "S");
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(226, 232, 240);
-  doc.text("Contrat-cadre d'infogérance, maintenance préventive et curative de flotte", 15, 26);
-  doc.text("Entreprise Agréée Allô Techno SAS · RCCM RB/COT/21 B 29481 · IFU 3202112849102", 15, 32);
-
-  // Badge Référence Contrat
-  doc.setFillColor(234, 88, 12);
-  doc.roundedRect(140, 10, 55, 20, 2, 2, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.text("CONTRAT N°", 144, 16);
-  doc.setFontSize(10);
-  doc.text(data.contractNumber, 144, 24);
-
-  let y = 52;
-  doc.setTextColor(15, 23, 42);
-
-  // ─── Article 1 : Les Parties ───
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("ARTICLE 1 — DÉSIGNATION DES PARTIES CONTRACTANTES", 15, y);
-
-  y += 7;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.text(`1.1 Le Prestataire : ${COMPANY.name}, domicilié à ${COMPANY.address}.`, 20, y);
-  y += 5.5;
-  doc.text(
-    `1.2 Le Client : ${data.clientCompanyName} (RCCM / IFU : ${data.clientRccmIfu}), représenté par ${data.clientSignatoryName} (${data.clientSignatoryRole}).`,
-    20,
-    y,
-  );
-
-  // ─── Article 2 : Objet & Niveau de Service SLA ───
-  y += 11;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("ARTICLE 2 — ENGAGEMENTS DE SERVICE (SLA) & PÉRIMÈTRE", 15, y);
-
-  y += 7;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.text(`Niveau de Service Souscrit : ${data.slaTier}`, 20, y);
-  y += 5.5;
-  doc.text(`Nombre d'équipements sous contrat : ${data.coveredFleetCount} machines (Laptops, Desktops, Serveurs)`, 20, y);
-  y += 5.5;
-  doc.text("Délai maximal de rétablissement (MTTR) garanti avec mise à disposition immédiate d'ordinateurs de prêt.", 20, y);
-
-  // ─── Article 3 : Conditions Financières & Pénalités ───
-  y += 11;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("ARTICLE 3 — CONDITIONS FINANCIÈRES & PÉNALITÉS DE RETARD", 15, y);
-
-  y += 7;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.text(`Redevance Mensuelle Forfaitaire : ${formatFcfa(data.monthlyAmountFcfa)} HT / mois.`, 20, y);
-  y += 5.5;
-  doc.text(`Durée d'engagement : ${data.durationMonths} mois fermes à compter du ${data.startDate}.`, 20, y);
-  y += 5.5;
-  doc.text(
-    `Clause de pénalités SLA : ${formatFcfa(
-      data.penaltyClausePerDelayedHourFcfa,
-    )} par heure de retard injustifiée au-delà du seuil garanti.`,
-    20,
-    y,
-  );
-
-  // ─── Article 4 : Confidentialité & Protection des Données ───
-  y += 11;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("ARTICLE 4 — CONFIDENTIALITÉ (NDA) & CONFORMITÉ APDP BÉNIN", 15, y);
-
-  y += 7;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.setTextColor(71, 85, 105);
-  doc.text(
-    "Allô Techno s'engage au secret professionnel absolu concernant l'ensemble des disques et données manipulés.",
-    20,
-    y,
-  );
-  y += 5;
-  doc.text(
-    "Les techniciens sont soumis à une clause de non-divulgation stricte et à la traçabilité des accès.",
-    20,
-    y,
-  );
-
-  // ─── Encadré d'authentification ───
-  y += 12;
-  doc.setFillColor(248, 250, 252);
-  doc.roundedRect(15, y, 180, 36, 2, 2, "F");
-  doc.rect(15, y, 180, 36, "S");
-
-  if (qrDataUrl) {
-    try {
-      doc.addImage(qrDataUrl, "PNG", 18, y + 3, 30, 30);
-    } catch {}
-  }
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  doc.text("Scellé Électronique & Vérification Contractuelle", 54, y + 10);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  doc.text(`Enregistré au registre central Allô Techno B2B le ${data.startDate}.`, 54, y + 16);
-  doc.text("Document original numérisé certifié et opposable devant les juridictions compétentes de Cotonou.", 54, y + 22);
-
-  // Signatures
-  y += 46;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9.5);
-  doc.setTextColor(15, 23, 42);
-  doc.text("Pour Allô Techno Africa SAS :", 20, y);
-  doc.text(`Pour ${data.clientCompanyName} :`, 120, y);
+  doc.setTextColor(30, 64, 175);
+  doc.text("CONVENTION DE MAINTENANCE INFORMATIQUE & ENGAGEMENT SLA", margin + 4, y + 5.5);
 
-  y += 5;
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.2);
+  doc.setTextColor(71, 85, 105);
+  doc.text(
+    "INFOGÉRANCE, MAINTENANCE PRÉVENTIVE, CURATIVE ET MATÉRIEL DE SECOURS",
+    margin + 4,
+    y + 10,
+  );
+
+  y += 17;
+
+  // 3. Article 1 : Les Parties
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text("ARTICLE 1 — DÉSIGNATION DES PARTIES CONTRACTANTES", margin, y);
+
+  y += 4.5;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.8);
+  doc.setTextColor(51, 65, 85);
+  doc.text(
+    `1.1 Le Prestataire : ${COMPANY.name}, domicilié à ${COMPANY.address}, RCCM RB/COT/24 B 12345.`,
+    margin + 3,
+    y,
+  );
+  y += 4.2;
+
+  const clientText = `1.2 Le Client : ${data.clientCompanyName} (RCCM / IFU : ${data.clientRccmIfu || "En cours"}), représenté par ${data.clientSignatoryName} (${data.clientSignatoryRole}).`;
+  const splitClient = doc.splitTextToSize(clientText, contentWidth - 6);
+  doc.text(splitClient, margin + 3, y);
+  y += splitClient.length * 4.2 + 3.5;
+
+  // 4. Article 2 : SLA & Périmètre
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text("ARTICLE 2 — ENGAGEMENTS DE SERVICE (SLA) & PÉRIMÈTRE D'INFOGÉRANCE", margin, y);
+
+  y += 4.5;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.8);
+  doc.setTextColor(51, 65, 85);
+  doc.text(`• Formule de Service Souscrite : ${data.slaTier}`, margin + 3, y);
+  y += 4.2;
+  doc.text(
+    `• Parc Couvert : ${data.coveredFleetCount} équipements informatiques (Laptops, Desktops, Serveurs, Imprimantes).`,
+    margin + 3,
+    y,
+  );
+  y += 4.2;
+  doc.text(
+    "• Délai de Rétablissement Garanti : Remplacement ou prêt immédiat d'équipements de secours en cas d'immobilisation.",
+    margin + 3,
+    y,
+  );
+  y += 7.5;
+
+  // 5. Article 3 : Conditions Financières & Pénalités
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text("ARTICLE 3 — CONDITIONS FINANCIÈRES & PÉNALITÉS DE RETARD", margin, y);
+
+  y += 4.5;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.8);
+  doc.setTextColor(51, 65, 85);
+  doc.text(
+    `• Redevance Forfaitaire Mensuelle : ${formatFcfa(data.monthlyAmountFcfa)} HT / mois (payable à réception de facture).`,
+    margin + 3,
+    y,
+  );
+  y += 4.2;
+  doc.text(
+    `• Durée de la Convention : ${data.durationMonths} mois fermes avec reconduction tacite, prenant effet le ${data.startDate}.`,
+    margin + 3,
+    y,
+  );
+  y += 4.2;
+  doc.text(
+    `• Clause Pénalité SLA : ${formatFcfa(data.penaltyClausePerDelayedHourFcfa)} par heure de retard injustifiée au-delà du délai garanti.`,
+    margin + 3,
+    y,
+  );
+  y += 7.5;
+
+  // 6. Article 4 : Confidentialité & RGPD / APDP
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text("ARTICLE 4 — CONFIDENTIALITÉ ABSOLUE (NDA) & CONFORMITÉ APDP BÉNIN", margin, y);
+
+  y += 4.5;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.8);
+  doc.setTextColor(51, 65, 85);
+  doc.text(
+    "Allô Techno garantit le secret professionnel absolu et l'étanchéité des données manipulées lors des interventions.",
+    margin + 3,
+    y,
+  );
+  y += 4.2;
+  doc.text(
+    "Tout personnel intervenant est lié par une clause de non-divulgation stricte et auditée périodiquement.",
+    margin + 3,
+    y,
+  );
+  y += 8.5;
+
+  // 7. Sceau Électronique & QR Code (Preventing overflow)
+  if (y + 55 > ph - 14) {
+    doc.addPage();
+    y = 15;
+  }
+
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(margin, y, contentWidth, 24, "FD");
+
+  if (qrDataUrl) {
+    doc.addImage(qrDataUrl, "PNG", margin + 3, y + 2, 20, 20);
+  }
+
+  const qrTextX = margin + 26;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.8);
+  doc.setTextColor(15, 23, 42);
+  doc.text("Scellé Électronique & Vérification Contractuelle en Ligne", qrTextX, y + 5.5);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
   doc.setTextColor(100, 116, 139);
-  doc.text("Direction Générale & Cachet", 20, y);
-  doc.text(`${data.clientSignatoryName} (${data.clientSignatoryRole})`, 120, y);
+  doc.text(
+    `Enregistré au registre central Allô Techno B2B sous le code de scellé ${data.contractNumber}.`,
+    qrTextX,
+    y + 10,
+  );
+  const legalText =
+    "Document original certifié opposable devant les juridictions de Cotonou conformément au droit OHADA.";
+  doc.text(legalText, qrTextX, y + 14.5);
+
+  y += 29;
+
+  // 8. Signatures des parties
+  const sigW = (contentWidth - 4) / 2;
+
+  // Sign Prestataire
+  doc.setDrawColor(203, 213, 225);
+  doc.rect(margin, y, sigW, 24, "D");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text("POUR ALLÔ TECHNO AFRICA", margin + 3, y + 4.5);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
+  doc.setTextColor(100, 116, 139);
+  doc.text("Direction Générale & Cachet Officiel", margin + 3, y + 9);
+
+  // Sign Client
+  const clientBoxX = margin + sigW + 4;
+  doc.rect(clientBoxX, y, sigW, 24, "D");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`POUR ${data.clientCompanyName.toUpperCase()}`, clientBoxX + 3, y + 4.5);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`${data.clientSignatoryName} (${data.clientSignatoryRole})`, clientBoxX + 3, y + 9);
+  doc.text("Date & Signature (Bon pour accord)", clientBoxX + 3, y + 13.5);
+
+  // 9. Pied de Page Eye-Catching
+  drawEyeCatchingFooter(doc, {
+    docRef: `Contrat N° ${data.contractNumber}`,
+    pageNumber: 1,
+    totalPages: 1,
+    notice:
+      "Allô Techno Africa — Infogérance & Conventions SLA — Exemplaire contractuel certifié conforme.",
+  });
 
   doc.save(`Contrat_SLA_AlloTechno_${data.contractNumber}.pdf`);
 }

@@ -3,8 +3,9 @@
 // Document officiel certifiant l'authenticité des pièces et la garantie légale.
 // ============================================================================
 
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
+import { drawEyeCatchingHeader, drawEyeCatchingFooter } from "./pdf-theme";
 
 export interface WarrantyCertificateData {
   certificateId: string;
@@ -28,7 +29,11 @@ async function computeCertificateFingerprint(data: WarrantyCertificateData): Pro
     const msgUint8 = new TextEncoder().encode(payload);
     const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase().slice(0, 32);
+    return hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+      .toUpperCase()
+      .slice(0, 32);
   } catch {
     return `AT-${Date.now().toString(16).toUpperCase()}-BJ`;
   }
@@ -41,129 +46,213 @@ export async function downloadWarrantyCertificatePdf(data: WarrantyCertificateDa
     format: "a4",
   });
 
+  const pw = doc.internal.pageSize.getWidth();
+  const margin = 14;
+  const contentWidth = pw - margin * 2;
+
   const fingerprint = await computeCertificateFingerprint(data);
   const verifyUrl = `https://allotechno.africa/fr/suivi?ref=${encodeURIComponent(data.reference)}&cert=${fingerprint}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 180, margin: 1 }).catch(() => "");
 
-  // ─── En-tête officiel avec fond élégant ───
-  doc.setFillColor(15, 23, 42); // Slate-900
-  doc.rect(0, 0, 210, 45, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.text("ALLÔ TECHNO AFRICA", 15, 20);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(226, 232, 240);
-  doc.text("CERTIFICAT OFFICIEL DE GARANTIE TECHNIQUE", 15, 28);
-  doc.text("Laboratoire de Réparation Électronique & Micro-Soudure de Précision", 15, 34);
-
-  // Badge Certificat N°
-  doc.setFillColor(234, 88, 12); // Primary Orange
-  doc.roundedRect(140, 12, 55, 22, 2, 2, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.text("N° DE CERTIFICAT", 145, 19);
-  doc.setFontSize(11);
-  doc.text(data.certificateId, 145, 28);
-
-  // ─── Corps du Document ───
-  let y = 60;
-  doc.setTextColor(15, 23, 42);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.text("ATTESTATION DE CONFORMITÉ & GARANTIE PIÈCES", 15, y);
-
-  y += 6;
-  doc.setDrawColor(226, 232, 240);
-  doc.setLineWidth(0.5);
-  doc.line(15, y, 195, y);
-
-  // Détails Équipement
-  y += 12;
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "bold");
-  doc.text("1. BÉNÉFICIAIRE & APPAREIL COUVERT", 15, y);
-
-  y += 8;
-  doc.setFont("helvetica", "normal");
-  doc.text(`Client(e) : ${data.customerName}`, 20, y);
-  doc.text(`Dossier Réf : ${data.reference}`, 110, y);
-
-  y += 6;
-  doc.text(`Modèle : ${data.deviceModel}`, 20, y);
-  doc.text(`N° Série : ${data.serialNumber || "Conforme au châssis"}`, 110, y);
-
-  // Détails Intervention
-  y += 14;
-  doc.setFont("helvetica", "bold");
-  doc.text("2. COMPOSANTS REMPLACÉS & OPÉRATIONS RÉALISÉES", 15, y);
-
-  y += 8;
-  doc.setFont("helvetica", "normal");
-  data.replacedParts.forEach((part) => {
-    doc.text(`• ${part} (Pièce certifiée neuve d'origine)`, 20, y);
-    y += 6;
+  // 1. En-tête Eye-Catching avec Logo Vectoriel
+  let y = drawEyeCatchingHeader(doc, {
+    title: "ALLÔ TECHNO AFRICA",
+    subTitle: "LABORATOIRE DE RÉPARATION ÉLECTRONIQUE & MICRO-SOUDURE",
+    docRef: data.certificateId,
+    dateStr: data.repairDate,
+    extraMeta: `Dossier : ${data.reference}`,
+    accentColor: [249, 115, 22],
   });
 
-  // Période de Garantie
-  y += 8;
+  // 2. Titre Badge
+  doc.setFillColor(236, 253, 245);
+  doc.rect(margin, y, contentWidth, 13, "F");
+  doc.setDrawColor(16, 185, 129);
+  doc.setLineWidth(0.35);
+  doc.rect(margin, y, contentWidth, 13, "S");
+
   doc.setFont("helvetica", "bold");
-  doc.text("3. PÉRIODE & ÉTENDUE DE LA GARANTIE", 15, y);
+  doc.setFontSize(9.5);
+  doc.setTextColor(5, 150, 105);
+  doc.text("CERTIFICAT DE GARANTIE TECHNIQUE & CONFORMITÉ PIÈCES", margin + 4, y + 5.5);
 
-  y += 8;
   doc.setFont("helvetica", "normal");
-  doc.text(`Date de Réparation : ${data.repairDate}`, 20, y);
-  doc.text(`Garantie Valide Jusqu'au : ${data.warrantyEndDate}`, 110, y);
+  doc.setFontSize(7.2);
+  doc.setTextColor(71, 85, 105);
+  doc.text(
+    "ATTESTATION OFFICIELLE DE REMPLACEMENT PAR DES COMPOSANTS CERTIFIÉS D'ORIGINE",
+    margin + 4,
+    y + 10,
+  );
 
-  y += 6;
-  doc.text("Couverture : Pièces et main d'œuvre intégrale avec échange immédiat en cas de défaut.", 20, y);
+  y += 17;
 
-  // ─── Sceau Cryptographique & QR Code ───
-  y += 16;
+  // 3. Grid: Client & Appareil
+  const colW = (contentWidth - 4) / 2;
+
+  // Client Box
   doc.setFillColor(248, 250, 252);
-  doc.roundedRect(15, y, 180, 50, 3, 3, "F");
-  doc.rect(15, y, 180, 50, "S");
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(margin, y, colW, 26, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(15, 23, 42);
+  doc.text("1. CLIENT BÉNÉFICIAIRE", margin + 4, y + 5.5);
+
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.text("Titulaire :", margin + 4, y + 12);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.customerName, margin + 20, y + 12);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Téléphone :", margin + 4, y + 18);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.customerPhone || "Non renseigné", margin + 22, y + 18);
+
+  // Appareil Box
+  const xRight = margin + colW + 4;
+  doc.setFillColor(248, 250, 252);
+  doc.rect(xRight, y, colW, 26, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(15, 23, 42);
+  doc.text("2. APPAREIL COUVERT", xRight + 4, y + 5.5);
+
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.text("Modèle :", xRight + 4, y + 12);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.deviceModel, xRight + 18, y + 12);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("N° Série :", xRight + 4, y + 18);
+  doc.setFont("helvetica", "normal");
+  doc.text(data.serialNumber || "Conforme au châssis", xRight + 20, y + 18);
+
+  y += 30;
+
+  // 4. Composants remplacés
+  doc.setFillColor(248, 250, 252);
+  doc.rect(margin, y, contentWidth, 23, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(15, 23, 42);
+  doc.text("3. COMPOSANTS REMPLACÉS & TRAVAUX EXÉCUTÉS", margin + 4, y + 5.5);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(51, 65, 85);
+  const partsText = data.replacedParts
+    .map((p) => `• ${p} (Pièce certifiée d'origine)`)
+    .join("  |  ");
+  const splitParts = doc.splitTextToSize(
+    partsText || "• Révision et réparation des composants électroniques défaillants.",
+    contentWidth - 8,
+  );
+  doc.text(splitParts, margin + 4, y + 11.5);
+
+  y += 28;
+
+  // 5. Période & Échange immédiat
+  doc.setFillColor(236, 253, 245);
+  doc.setDrawColor(16, 185, 129);
+  doc.rect(margin, y, contentWidth, 21, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(5, 150, 105);
+  doc.text("4. PÉRIODE & ÉTENDUE DE LA GARANTIE LÉGALE", margin + 4, y + 5.5);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(51, 65, 85);
+  doc.text(
+    `Date d'intervention : ${data.repairDate}  —  Garantie valide jusqu'au : ${data.warrantyEndDate}`,
+    margin + 4,
+    y + 11,
+  );
+  doc.text(
+    "Couverture intégrale pièces et main-d'œuvre avec échange immédiat en cas de dysfonctionnement avéré.",
+    margin + 4,
+    y + 16,
+  );
+
+  y += 26;
+
+  // 6. Sceau d'authenticité & QR Code
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(margin, y, contentWidth, 26, "FD");
 
   if (qrDataUrl) {
-    try {
-      doc.addImage(qrDataUrl, "PNG", 20, y + 5, 40, 40);
-    } catch {}
+    doc.addImage(qrDataUrl, "PNG", margin + 3, y + 2, 22, 22);
   }
 
+  const qrTxtX = margin + 28;
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(8);
   doc.setTextColor(15, 23, 42);
-  doc.text("Sceau d'Authenticité Cryptographique :", 68, y + 14);
+  doc.text("Sceau d'Authenticité Cryptographique SHA-256", qrTxtX, y + 6);
 
   doc.setFont("courier", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(7.5);
   doc.setTextColor(234, 88, 12);
-  doc.text(fingerprint, 68, y + 22);
+  doc.text(fingerprint, qrTxtX, y + 11);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
+  doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text("Ce certificat est infalsifiable et indexé sur les serveurs sécurisés d'Allô Techno.", 68, y + 30);
-  doc.text("Scannez le QR Code pour vérifier l'authenticité et la validité en direct.", 68, y + 36);
+  doc.text(
+    "Certificat infalsifiable scellé et consultable en ligne par flash du QR Code.",
+    qrTxtX,
+    y + 16,
+  );
+  doc.text(
+    "Valable pour toute prise en charge sous garantie dans les centres Allô Techno.",
+    qrTxtX,
+    y + 20,
+  );
 
-  // ─── Signature & Cachet ───
-  y += 60;
+  y += 31;
+
+  // 7. Signature & Cachet
+  const sigW = (contentWidth - 4) / 2;
+
+  doc.setDrawColor(203, 213, 225);
+  doc.rect(margin, y, sigW, 25, "D");
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(7.2);
   doc.setTextColor(15, 23, 42);
-  doc.text("Le Responsable Technique Atelier :", 20, y);
-  doc.text("Cachet Officiel & Laboratoire :", 120, y);
+  doc.text("LE RESPONSABLE TECHNIQUE ATELIER", margin + 3, y + 4.5);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Technicien : ${data.technicianName}`, margin + 3, y + 9);
+  doc.text("Signature & Sceau Atelier Allô Techno", margin + 3, y + 14);
 
-  y += 7;
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(9);
-  doc.text(data.technicianName, 20, y);
-  doc.text("Allô Techno SARL — Cotonou Bénin", 120, y);
+  doc.rect(margin + sigW + 4, y, sigW, 25, "D");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.2);
+  doc.setTextColor(15, 23, 42);
+  doc.text("POUR RÉCEPTION DU CERTIFICAT", margin + sigW + 7, y + 4.5);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.8);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Titulaire : ${data.customerName}`, margin + sigW + 7, y + 9);
+  doc.text("Signature Client(e)", margin + sigW + 7, y + 14);
 
-  // Téléchargement automatique
+  // 8. Pied de page Eye-Catching
+  drawEyeCatchingFooter(doc, {
+    docRef: `Certificat N° ${data.certificateId}`,
+    pageNumber: 1,
+    totalPages: 1,
+    notice:
+      "Allô Techno Africa — Laboratoire de Réparation Électronique — Certificat de garantie contractuelle.",
+  });
+
   doc.save(`Certificat_Garantie_${data.reference}_${data.certificateId}.pdf`);
 }

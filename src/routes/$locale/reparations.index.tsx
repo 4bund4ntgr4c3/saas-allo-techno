@@ -87,27 +87,49 @@ function Reparations() {
   const { locale, t } = useI18n();
   return (
     <>
-      <section className="border-b border-border py-14">
+      {/* ─── Hero Header ─── */}
+      <section className="border-b border-border py-10 bg-surface/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="max-w-3xl">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <span className="at-eyebrow">{t("reparations.index.eyebrow")}</span>
-              <PageBreadcrumb items={[{ label: t("nav.reparations") }]} />
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-block size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="at-eyebrow text-primary font-bold">
+                {t("reparations.index.eyebrow")}
+              </span>
             </div>
-            <h1 className="at-display text-4xl md:text-5xl">{t("reparations.index.title")}</h1>
-            <p className="mt-6 max-w-xl text-muted-foreground">
-              {t("reparations.index.hero", [DEVICES.length, BRANDS.length])}
-            </p>
+            <PageBreadcrumb items={[{ label: t("nav.reparations") }]} />
           </div>
-          <div className="mt-10">
-            <DeviceSearch
-              initialCategory={categorie ?? null}
-              initialDevice={device ?? null}
-              initialPanne={panne ?? null}
-              initialDate={date ?? null}
-              initialHeure={heure ?? null}
-            />
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div className="max-w-2xl">
+              <h1 className="at-display text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+                {t("reparations.index.title")}
+              </h1>
+              <p className="mt-2.5 text-sm sm:text-base text-muted-foreground">
+                {t("reparations.index.hero", [DEVICES.length, BRANDS.length])}
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-card border border-border px-4 py-2.5 shrink-0 self-start md:self-auto">
+              <ShieldCheck className="size-5 text-emerald-600" />
+              <div className="text-xs">
+                <span className="font-bold block text-foreground">Garantie 90 Jours</span>
+                <span className="text-muted-foreground text-[11px]">
+                  Diagnostic Gratuit &amp; Pièces Certifiées
+                </span>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
+
+      <section className="py-8 sm:py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <DeviceSearch
+            initialCategory={categorie ?? null}
+            initialDevice={device ?? null}
+            initialPanne={panne ?? null}
+            initialDate={date ?? null}
+            initialHeure={heure ?? null}
+          />
           <ul className="mt-10 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {[
               {

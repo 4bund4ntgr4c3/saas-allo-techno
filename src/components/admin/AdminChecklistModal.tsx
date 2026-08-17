@@ -4,7 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { saveChecklist } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ClipboardCheck, CheckCircle2, XCircle, HelpCircle, Save, X } from "lucide-react";
+import { ClipboardCheck, CheckCircle2, XCircle, HelpCircle, Save, X, Download } from "lucide-react";
+import { generateFicheInterventionPdf } from "@/lib/fiche-intervention-pdf";
 
 type CheckStatus = "ok" | "ko" | "na";
 
@@ -226,10 +227,65 @@ export function AdminChecklistModal({
         </div>
 
         {/* Footer actions */}
-        <div className="flex items-center justify-between border-t border-border pt-3 shrink-0">
-          <p className="text-[11px] text-muted-foreground">
-            L'inspection sera archivée et consultable sur la fiche dossier.
-          </p>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3 shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const checkpoints = CHECKPOINTS.map((cp) => {
+                const item = items[cp.id];
+                return {
+                  task: cp.label,
+                  status:
+                    item?.status === "ok"
+                      ? ("conforme" as const)
+                      : item?.status === "ko"
+                        ? ("a_surveiller" as const)
+                        : ("na" as const),
+                  ...(item?.notes ? { note: item.notes } : {}),
+                };
+              });
+
+              void generateFicheInterventionPdf({
+                ficheNumber: `FICH-${reference}`,
+                maintenanceType: type === "intake" ? "curative" : "preventive",
+                orgName: "Client Particulier / Entreprise",
+                clientContact: {
+                  name: "Client Référent",
+                  phone: "",
+                },
+                siteLocation: "Atelier Allô Techno (Calavi)",
+                equipment: {
+                  name: device,
+                  serialNumber: reference,
+                },
+                interventionDate: new Date().toLocaleDateString("fr-FR"),
+                durationMinutes: 45,
+                technicianName: "Technicien Atelier Allô Techno",
+                initialObservations:
+                  type === "intake"
+                    ? "Contrôle technique d'admission à l'atelier."
+                    : "Contrôle qualité final (QA) avant restitution au client.",
+                workPerformed:
+                  type === "intake"
+                    ? "Inspection méthodique des 10 points matériels et électroniques."
+                    : "Validation des réparations effectuées et tests de fonctionnement.",
+                checkpoints,
+                finalStatus: koCount > 0 ? "observation" : "operationnel",
+                recommendations:
+                  koCount > 0
+                    ? `${koCount} anomalie(s) détectée(s). Réparations recommandées.`
+                    : "Équipement 100% conforme et certifié fonctionnel.",
+                warrantyMonths: 3,
+              });
+            }}
+            className="text-xs"
+          >
+            <Download className="size-3.5 mr-1.5 text-primary" />
+            Fiche d'Intervention (PDF)
+          </Button>
+
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={onClose}>
               Annuler

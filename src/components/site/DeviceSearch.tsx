@@ -5,12 +5,15 @@ import {
   ArrowRight,
   CalendarClock,
   Check,
+  CheckCircle2,
   ChevronLeft,
   Clock,
   ImagePlus,
   Loader2,
+  Pencil,
   Search,
   Truck,
+  Wrench,
   Zap,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -18,10 +21,9 @@ import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useSlotAvailability } from "@/hooks/useSlotAvailability";
 import { DEVICES, deviceBySlug, type Device } from "@/data/catalog/devices";
 import { BRANDS, brandName, familyOf } from "@/data/catalog";
-import { formatFcfa } from "@/data/catalog/company";
+import { COMPANY, formatFcfa } from "@/data/catalog/company";
 import { fullTextSearch, type SearchResult } from "@/lib/search-fulltext";
 import { categoryMedia } from "@/data/device-media";
-import { EstimateBreakdown } from "@/components/site/EstimateBreakdown";
 import { ContactForm } from "@/components/site/ContactForm";
 import { ProcessSteps, SectionHeader } from "@/components/site/Blocks";
 import { QrCode } from "@/components/site/QrCode";
@@ -131,9 +133,9 @@ import { CategoryPicker } from "./CategoryPicker";
 export { CategoryPicker };
 
 /**
- * Carte flottante de suivi : une seule ligne qui se met à jour au fil des
- * étapes — chemin de sélection (type · marque · série · famille) puis nom
- * complet de l'appareil une fois le modèle choisi.
+ * Carte dynamique de suivi & récapitulatif en direct :
+ * Aperçu de l'appareil sélectionné, pannes déclarées, mode de prise en charge,
+ * estimation financière transparente et garanties de l'atelier.
  */
 function SelectionSummary({
   category,
@@ -141,12 +143,26 @@ function SelectionSummary({
   series,
   family,
   device,
+  faults,
+  mode,
+  date,
+  hour,
+  comeNow,
+  total,
+  onResetDevice,
 }: {
   category: string | null;
   brand: string | null;
   series: string | null;
   family: string | null;
   device: Device | null;
+  faults: string[];
+  mode: DepositMode;
+  date: string | null;
+  hour: string | null;
+  comeNow: boolean;
+  total: number;
+  onResetDevice?: () => void;
 }) {
   const crumbs = [category, brand ? brandName(brand) : null, series, family].filter(
     Boolean,
@@ -159,11 +175,146 @@ function SelectionSummary({
       : t("wizard.select.device");
 
   return (
-    <div className="border border-border bg-surface px-5 py-4">
-      <span className="at-eyebrow block">{t("wizard.selection")}</span>
-      <p aria-live="polite" className="mt-2 truncate text-sm font-bold tracking-tight">
-        {line}
-      </p>
+    <div className="border border-border bg-card p-6 shadow-sm space-y-5">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border pb-4">
+        <div>
+          <span className="at-eyebrow text-primary block">Récapitulatif en Direct</span>
+          <h3 className="font-bold text-base text-foreground">Ordre de Réparation</h3>
+        </div>
+        <span className="font-mono text-[10px] font-bold px-2 py-0.5 border border-emerald-600/40 text-emerald-600 bg-emerald-600/5">
+          Atelier Agréé
+        </span>
+      </div>
+
+      {/* Selected Device Snapshot */}
+      <div className="p-3 bg-surface border border-border space-y-2 text-xs">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground font-mono text-[10px] uppercase">
+            Appareil Sélectionné
+          </span>
+          {onResetDevice && (
+            <button
+              type="button"
+              onClick={onResetDevice}
+              className="inline-flex items-center text-[10px] text-primary hover:underline cursor-pointer font-mono"
+            >
+              <Pencil className="size-2.5 mr-1" /> Changer
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 bg-primary/10 text-primary shrink-0">
+            <Wrench className="size-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-bold text-foreground block truncate">{line}</span>
+            <span className="text-[11px] text-muted-foreground block truncate">
+              {device ? `${brandName(device.brand)} · ${device.year}` : "Sélection en cours..."}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mode & Slot Snapshot */}
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="p-3 bg-surface border border-border space-y-1">
+          <span className="text-muted-foreground font-mono text-[10px] uppercase block">
+            Mode de Prise
+          </span>
+          <span className="font-bold text-foreground block truncate">
+            {mode === "boutique" ? "Dépôt Atelier" : "À Domicile"}
+          </span>
+          <span className="text-[10px] text-emerald-600 font-mono block">
+            {mode === "boutique" ? "Calavi Zogbadjè" : "Sur site"}
+          </span>
+        </div>
+        <div className="p-3 bg-surface border border-border space-y-1">
+          <span className="text-muted-foreground font-mono text-[10px] uppercase block">
+            Créneau
+          </span>
+          <span className="font-bold text-foreground block truncate">
+            {comeNow ? "Immédiat" : date ? date : "À planifier"}
+          </span>
+          <span className="text-[10px] text-muted-foreground block truncate">
+            {comeNow ? "Sans RDV" : hour ? hour : "—"}
+          </span>
+        </div>
+      </div>
+
+      {/* Faults Snapshot if any */}
+      {faults.length > 0 && (
+        <div className="p-3 bg-surface border border-border space-y-1 text-xs">
+          <span className="text-muted-foreground font-mono text-[10px] uppercase block">
+            Pannes Déclarées ({faults.length})
+          </span>
+          <ul className="space-y-1 text-[11px] text-foreground">
+            {faults.slice(0, 3).map((f) => (
+              <li key={f} className="flex items-center gap-1.5 truncate">
+                <Check className="size-3 text-primary shrink-0" />
+                <span className="truncate">{f}</span>
+              </li>
+            ))}
+            {faults.length > 3 && (
+              <li className="text-[10px] text-muted-foreground font-mono">
+                +{faults.length - 3} autre(s) panne(s)...
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+
+      {/* Pricing Breakdown */}
+      <div className="space-y-2 border-t border-border pt-4 text-xs font-mono">
+        <div className="flex items-center justify-between text-muted-foreground">
+          <span>Diagnostic initial en atelier</span>
+          <span className="text-emerald-600 font-bold">Inclus (0 FCFA)</span>
+        </div>
+        <div className="flex items-center justify-between text-muted-foreground">
+          <span>Estimation pièces &amp; main-d'œuvre</span>
+          <span>{total > 0 ? formatFcfa(total) : "Sur devis gratuit"}</span>
+        </div>
+
+        {/* Total Bar */}
+        <div className="flex items-center justify-between border-t border-border pt-3 text-sm">
+          <span className="font-bold text-foreground uppercase tracking-tight">
+            Total Estimé TTC
+          </span>
+          <span className="font-extrabold text-base text-primary">
+            {total > 0 ? formatFcfa(total) : "0 FCFA (Diag. Offert)"}
+          </span>
+        </div>
+        <p className="text-[10px] text-muted-foreground font-sans leading-tight pt-1">
+          * Devis gratuit établi avant toute réparation. Aucun frais engagé sans accord client.
+        </p>
+      </div>
+
+      {/* Trust Guarantees */}
+      <div className="space-y-2 border-t border-border pt-4 text-[11px]">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+          <span>Garantie 90 jours pièces et main-d'œuvre</span>
+        </div>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+          <span>Techniciens certifiés Allô Techno</span>
+        </div>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+          <span>Pièces d'origine &amp; outillage antistatique ESD</span>
+        </div>
+      </div>
+
+      {/* Hotline assistance */}
+      <div className="bg-surface p-3 border border-border flex items-center justify-between text-xs">
+        <div>
+          <span className="text-muted-foreground text-[10px] block">Besoin d'aide immédiate ?</span>
+          <span className="font-bold text-foreground">{COMPANY.phone}</span>
+        </div>
+        <Button asChild variant="outline" size="sm" className="text-[11px] h-7 px-2.5">
+          <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}>Appeler</a>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -356,15 +507,18 @@ export function DeviceSearch({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialDevice, initialPanne, initialDate, initialHeure]);
 
-  // Gestion du focus : à chaque changement d'étape, le focus est déplacé sur
-  // le contenu de l'étape courante (l'étape précédente disparaît du DOM).
+  // Gestion du focus & auto-scroll : à chaque changement d'étape, retour fluide en haut du formulaire
   const stepContentRef = useRef<HTMLDivElement | null>(null);
+  const formTopRef = useRef<HTMLDivElement | null>(null);
   const prevStepRef = useRef(step);
 
   useEffect(() => {
     if (prevStepRef.current === step) return;
     prevStepRef.current = step;
     stepContentRef.current?.focus({ preventScroll: true });
+    if (formTopRef.current) {
+      formTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     trackWizardEvent({
       event: "step_viewed",
       step,
@@ -687,7 +841,7 @@ export function DeviceSearch({
   };
 
   return (
-    <div className="at-in [animation-delay:150ms]">
+    <div ref={formTopRef} className="at-in [animation-delay:150ms] scroll-mt-24">
       {/* Recherche directe */}
       <div className="relative mb-4">
         <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -767,36 +921,58 @@ export function DeviceSearch({
         )}
       </div>
 
-      {/* Fil d'étapes */}
-      <nav aria-label={t("wizard.nav.aria")} className="mb-4">
-        <ol className="flex flex-wrap items-center gap-2">
-          {STEPS.map((label, i) => {
-            const done = i < step;
-            const active = i === step;
-            return (
-              <li key={label}>
-                <button
-                  type="button"
-                  disabled={i > step || (i === 3 && !familiesUseful)}
-                  aria-current={active ? "step" : undefined}
-                  onClick={() => setStep(i)}
-                  className={`flex items-center gap-2 border px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors disabled:opacity-40 ${
-                    active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : done
-                        ? "border-foreground text-foreground"
-                        : "border-border text-muted-foreground"
-                  }`}
-                >
-                  <span>0{i + 1}</span>
-                  {t(label)}
-                  {done && <Check className="size-3" />}
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-      </nav>
+      {/* Stepper Progress Bar */}
+      <div className="border border-border bg-card p-4 sm:p-5 mb-6 shadow-xs">
+        <div className="flex items-center justify-between mb-3 text-xs">
+          <span className="font-mono font-bold uppercase tracking-wider text-muted-foreground">
+            Étape {step + 1} sur {STEPS.length}
+          </span>
+          <span className="font-mono text-primary font-bold text-[11px]">
+            {t(STEPS[step] ?? "")}
+          </span>
+        </div>
+
+        <nav aria-label={t("wizard.nav.aria")}>
+          <ol className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-1.5">
+            {STEPS.map((label, i) => {
+              const done = i < step;
+              const active = i === step;
+              return (
+                <li key={label} className="min-w-0">
+                  <button
+                    type="button"
+                    disabled={i > step || (i === 3 && !familiesUseful)}
+                    aria-current={active ? "step" : undefined}
+                    onClick={() => setStep(i)}
+                    className={`w-full flex items-center justify-center gap-1.5 py-2 px-1 text-center border transition-all text-xs ${
+                      active
+                        ? "border-primary bg-primary/10 text-primary font-bold"
+                        : done
+                          ? "border-emerald-600/40 bg-emerald-600/5 text-emerald-600 cursor-pointer hover:border-emerald-600 font-medium"
+                          : "border-border bg-surface text-muted-foreground/50 opacity-60 cursor-not-allowed"
+                    }`}
+                  >
+                    <span
+                      className={`size-4 rounded-full flex items-center justify-center text-[9px] font-mono shrink-0 ${
+                        active
+                          ? "bg-primary text-primary-foreground font-bold"
+                          : done
+                            ? "bg-emerald-600 text-white font-bold"
+                            : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {done ? <Check className="size-2.5" /> : i + 1}
+                    </span>
+                    <span className="hidden md:inline text-[10px] uppercase font-mono truncate">
+                      {t(label).split(" ")[0]}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      </div>
 
       {showDraftPrompt && step === 0 && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border border-primary/30 bg-primary/5 p-4">
@@ -1660,12 +1836,18 @@ export function DeviceSearch({
             series={series}
             family={family}
             device={device}
+            faults={faults}
+            mode={mode}
+            date={date}
+            hour={hour}
+            comeNow={comeNow}
+            total={total}
+            onResetDevice={() => {
+              setDevice(null);
+              setFaults([]);
+              setStep(0);
+            }}
           />
-          {device && (
-            <div className="mt-4">
-              <EstimateBreakdown estimate={estimate} />
-            </div>
-          )}
         </aside>
       </div>
     </div>

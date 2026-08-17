@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Building2, FileText, Truck, Users } from "lucide-react";
+import { Building2, FileText, Truck, Users, ShieldCheck } from "lucide-react";
 import { CtaBand, SectionHeader, TrustStats } from "@/components/site/Blocks";
 import { Button } from "@/components/ui/button";
+import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 import { B2BRequestForm } from "@/components/site/B2BRequestForm";
 import type { SlaFormulaType } from "@/components/site/B2BRequestForm";
 import { CoverageZoneEstimator } from "@/components/site/CoverageZoneEstimator";
@@ -97,27 +98,52 @@ function Entreprises() {
   const [selectedFormula, setSelectedFormula] = useState<SlaFormulaType | undefined>(undefined);
   return (
     <div className="w-full max-w-full overflow-x-clip">
-      <section className="border-b border-border py-10 sm:py-16">
+      {/* ─── Hero Header ─── */}
+      <section className="border-b border-border py-10 bg-surface/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <span className="at-eyebrow mb-3 block">{t("entreprises.eyebrow")}</span>
-          <h1 className="at-display text-2xl sm:text-4xl md:text-6xl font-extrabold tracking-tight break-words">
-            {t("entreprises.title")}
-          </h1>
-          <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base text-muted-foreground">
-            {t("entreprises.intro", [COMPANY.city])}
-          </p>
-          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-block size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="at-eyebrow text-primary font-bold">
+                Support Informatique Dédié aux Entreprises
+              </span>
+            </div>
+            <PageBreadcrumb items={[{ label: "Offres B2B & SLA" }]} />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div className="max-w-2xl">
+              <h1 className="at-display text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+                {t("entreprises.title")}
+              </h1>
+              <p className="mt-2.5 text-sm sm:text-base text-muted-foreground">
+                {t("entreprises.intro", [COMPANY.city])}
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-card border border-border px-4 py-2.5 shrink-0 self-start md:self-auto">
+              <ShieldCheck className="size-5 text-emerald-600" />
+              <div className="text-xs">
+                <span className="font-bold block text-foreground">SLA Garanti &lt; 2h</span>
+                <span className="text-muted-foreground text-[11px]">Prêt de Matériel Inclus</span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <Button
               variant="technical"
               size="lg"
-              className="w-full sm:w-auto text-center"
+              className="w-full sm:w-auto text-center font-bold uppercase tracking-wider text-xs"
               onClick={() => {
                 document.getElementById("b2b-form")?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               {t("entreprises.cta.request")} &rarr;
             </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-center">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto text-center font-bold uppercase tracking-wider text-xs"
+            >
               <Link to="/$locale/tarifs" params={{ locale }}>
                 {t("entreprises.cta.pricing")}
               </Link>

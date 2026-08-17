@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Building2,
   CheckCircle2,
@@ -218,10 +218,23 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
   const [companyName, setCompanyName] = useState("");
   const [contactName, setContactName] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("Cotonou / Abomey-Calavi");
+  const [email, setEmail] = useState("");
+  const [city, setCity] = useState("Cotonou");
   const [notes, setNotes] = useState("");
+
+  const formTopRef = useRef<HTMLDivElement>(null);
+  const prevStepRef = useRef(step);
+
+  // Auto-scroll to top of form when step changes
+  useEffect(() => {
+    if (prevStepRef.current !== step) {
+      prevStepRef.current = step;
+      if (formTopRef.current) {
+        formTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [step]);
 
   const [busy, setBusy] = useState(false);
   const [successCode, setSuccessCode] = useState<string | null>(null);
@@ -310,115 +323,170 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
 
   const generatePDF = async () => {
     if (!successCode) return;
-    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
-      import("jspdf"),
-      import("jspdf-autotable"),
-    ]);
-    const doc = new jsPDF();
+    const [
+      { default: jsPDF },
+      { default: autoTable },
+      { drawEyeCatchingHeader, drawEyeCatchingFooter },
+    ] = await Promise.all([import("jspdf"), import("jspdf-autotable"), import("@/lib/pdf-theme")]);
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    const margin = 14;
+    const contentWidth = pw - margin * 2;
 
-    // Top Header Banner
-    doc.setFillColor(20, 20, 20);
-    doc.rect(0, 0, 210, 32, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
+    // 1. En-tête Eye-Catching avec Logo Vectoriel
+    let y = drawEyeCatchingHeader(doc, {
+      title: "ALLÔ TECHNO AFRICA",
+      subTitle: "SERVICES INFORMATIQUES B2B & INFOGÉRANCE D'ENTREPRISE",
+      docRef: successCode,
+      dateStr: new Date().toLocaleDateString("fr-FR"),
+      extraMeta: "Statut : Demande Validée",
+      accentColor: [249, 115, 22],
+    });
+
+    // 2. Document Title Badge
+    doc.setFillColor(239, 246, 255);
+    doc.rect(margin, y, contentWidth, 13, "F");
+    doc.setDrawColor(59, 130, 246);
+    doc.setLineWidth(0.35);
+    doc.rect(margin, y, contentWidth, 13, "S");
+
     doc.setFont("helvetica", "bold");
-    doc.text("ALLÔ TECHNO AFRICA", 14, 18);
-    doc.setFontSize(9);
+    doc.setFontSize(9.5);
+    doc.setTextColor(30, 64, 175);
+    doc.text("PROPOSITION COMMERCIALE & FICHE TECHNIQUE B2B", margin + 4, y + 5.5);
+
     doc.setFont("helvetica", "normal");
-    doc.text("Services Informatiques B2B & Maintenance Spécialisée", 14, 25);
-
-    // Ref Badge
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "bold");
-    doc.text(`REF: ${successCode}`, 145, 18);
-
-    // Document Title
-    doc.setTextColor(220, 38, 38);
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("PROPOSITION & FICHE TECHNIQUE B2B", 14, 44);
-
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.2);
+    doc.setTextColor(71, 85, 105);
     doc.text(
-      `Date de génération : ${new Date().toLocaleDateString("fr-FR")} - Statut : Demande Validée & Compte Client Activé`,
-      14,
-      50,
+      "CONVENTION DE MAINTENANCE, COUVERTURE DU PARC & ENGAGEMENTS DE SERVICE SLA",
+      margin + 4,
+      y + 10,
     );
 
+    y += 17;
+
     const bodyRows = [
-      ["Référence Dossier B2B", successCode],
+      ["Référence Dossier", successCode],
+      ["Prestation Retenue", NEED_TYPES.find((n) => n.id === needType)?.title || needType],
       [
-        "Type d'Intervention / Service",
-        NEED_TYPES.find((n) => n.id === needType)?.title || needType,
-      ],
-      [
-        "Formule Contrat SLA",
+        "Formule SLA",
         slaFormula === "essentiel"
-          ? "Formule ESSENTIEL SLA"
+          ? "Formule ESSENTIEL SLA (Interventions & Maintenance)"
           : slaFormula === "business"
-            ? "Formule BUSINESS SLA"
+            ? "Formule BUSINESS SLA (Astreinte 24/7 & Matériel de Prêt)"
             : "Sur-Mesure / Multi-sites",
       ],
-      ["Estimation Tarifaire Mensuelle", slaEstimate],
-      ["Taille Estimée du Parc", fleetSize],
-      ["Types d'Équipements Concernés", selectedEqTypes.join(", ") || "Non spécifié"],
-      ["Niveau d'Urgence & Délai", URGENCY_LEVELS.find((u) => u.id === urgency)?.label || urgency],
-      ["Nom de l'Entreprise / Institution", companyName],
-      ["Responsable / Contact IT", contactName],
-      ["Téléphone / WhatsApp Direct", phone],
+      ["Tarification Estimée", slaEstimate],
+      ["Taille du Parc Informatique", fleetSize],
+      [
+        "Équipements Pris en Charge",
+        selectedEqTypes.join(", ") || "Postes fixes, portables, imprimantes",
+      ],
+      ["Délai & Niveau d'Urgence", URGENCY_LEVELS.find((u) => u.id === urgency)?.label || urgency],
+      ["Entreprise / Institution", companyName],
+      ["Responsable IT / Contact", contactName],
+      ["Téléphone / WhatsApp", phone],
       ["E-mail Professionnel", accountDetails?.email || email || "Non spécifié"],
-      ["Ville & Agence Principale", city],
-      ["Précisions & Notes Spécifiques", notes || "Aucune précision complémentaire"],
+      ["Site & Ville d'Exploitation", city],
+      ["Observations Complémentaires", notes || "Aucune note spécifique renseignée"],
     ];
 
     if (accountDetails?.accountCreated) {
       bodyRows.push([
-        "Compte Client B2B",
-        `E-mail: ${accountDetails.email} — confirmez-le pour activer l'accès au portail.`,
+        "Accès Portail Entreprise",
+        `Compte activé avec l'identifiant ${accountDetails.email}.`,
       ]);
     }
 
-    // Breakdown Table using autoTable
+    // Breakdown Table using autoTable with precise styling
     autoTable(doc, {
-      startY: 55,
-      head: [["Caractéristique / Élément", "Spécification retenue"]],
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [["Élément / Caractéristique", "Spécification retenue"]],
       body: bodyRows,
+      theme: "grid",
       headStyles: {
-        fillColor: [20, 20, 20],
+        fillColor: [15, 23, 42],
         textColor: [255, 255, 255],
         fontStyle: "bold",
-        fontSize: 10,
+        fontSize: 7.5,
+        cellPadding: 2,
       },
-      styles: { fontSize: 9, cellPadding: 3.5 },
-      theme: "grid",
+      bodyStyles: {
+        fontSize: 7,
+        cellPadding: 1.8,
+        textColor: [30, 41, 59],
+      },
+      columnStyles: {
+        0: { cellWidth: 65, fontStyle: "bold" },
+        1: { cellWidth: "auto" },
+      },
     });
 
-    const finalY =
-      (doc as unknown as { lastAutoTable?: { previous?: { finalY?: number } } }).lastAutoTable
-        ?.previous?.finalY || 180;
+    const finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
+    y = finalY + 4;
 
-    // Guarantees Section
-    doc.setFillColor(245, 245, 245);
-    doc.rect(14, finalY + 8, 125, 38, "F");
-    doc.setTextColor(20, 20, 20);
-    doc.setFontSize(10);
+    // Check if bottom section fits on current page
+    if (y + 40 > ph - 14) {
+      doc.addPage();
+      y = 15;
+    }
+
+    // Guarantees & Inclusions Section
+    const qrWidth = 30;
+    const guaranteeWidth = qrCodeUrl ? contentWidth - qrWidth - 4 : contentWidth;
+
+    doc.setFillColor(236, 253, 245);
+    doc.setDrawColor(16, 185, 129);
+    doc.rect(margin, y, guaranteeWidth, 29, "FD");
+
+    doc.setTextColor(5, 150, 105);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
-    doc.text("Engagements & Inclusions Allô Techno B2B :", 18, finalY + 16);
-    doc.setFontSize(8.5);
+    doc.text("ENGAGEMENTS & INCLUSIONS ALLÔ TECHNO B2B :", margin + 4, y + 5.5);
+
+    doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
-    doc.text("• Diagnostic gratuit & Prise en charge urgente sur site (< 2h).", 18, finalY + 23);
-    doc.text("• Matériel de prêt de secours garanti durant les opérations.", 18, finalY + 29);
-    doc.text("• Facturation certifiée conformité B2B & Paiement sur facture.", 18, finalY + 35);
+    doc.setTextColor(51, 65, 85);
+    doc.text(
+      "• Diagnostic initial gratuit & Prise en charge d'astreinte sur site (< 2h).",
+      margin + 4,
+      y + 10.5,
+    );
+    doc.text(
+      "• Matériel de prêt de secours garanti durant les opérations de maintenance.",
+      margin + 4,
+      y + 15,
+    );
+    doc.text(
+      "• Facturation certifiée conformité B2B (RCCM / IFU) & Paiement sur facture.",
+      margin + 4,
+      y + 19.5,
+    );
+    doc.text("• Assistance hotline dédiée et gestionnaire de compte attribué.", margin + 4, y + 24);
 
     // Embed QR Code Image
     if (qrCodeUrl) {
-      doc.addImage(qrCodeUrl, "PNG", 148, finalY + 8, 38, 38);
-      doc.setFontSize(7.5);
-      doc.setTextColor(100, 100, 100);
-      doc.text("Scannez pour vérifier", 151, finalY + 49);
+      const qrX = margin + guaranteeWidth + 4;
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(226, 232, 240);
+      doc.rect(qrX, y, qrWidth, 29, "FD");
+      doc.addImage(qrCodeUrl, "PNG", qrX + (qrWidth - 22) / 2, y + 1.5, 22, 22);
+      doc.setFontSize(5.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Authenticité QR", qrX + qrWidth / 2, y + 26.5, { align: "center" });
     }
+
+    // Pied de page Eye-Catching
+    drawEyeCatchingFooter(doc, {
+      docRef: `Demande N° ${successCode}`,
+      pageNumber: 1,
+      totalPages: 1,
+      notice:
+        "Allô Techno Africa — Infogérance & Maintenance Informatique Pro — Document contractuel préliminaire.",
+    });
 
     doc.save(`Fiche-B2B-${successCode}-${companyName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`);
   };
@@ -613,276 +681,184 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
   }
 
   return (
-    <div id="b2b-form" className="space-y-6 w-full max-w-full overflow-hidden">
-      {/* Top Header Banner */}
-      <div className="border border-border bg-card p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span className="at-eyebrow mb-1 block">Sans création de compte préalable</span>
-          <h2 className="at-display text-xl sm:text-2xl md:text-3xl font-bold break-words">
-            Demande de Service &amp; Maintenance B2B
-          </h2>
-        </div>
-      </div>
-
+    <div
+      id="b2b-form"
+      ref={formTopRef}
+      className="space-y-6 w-full max-w-full overflow-hidden scroll-mt-24"
+    >
       {/* 2-Column Grid: Form Steps Space (Left) + Live Recap Card (Right) */}
-      <div className="grid gap-6 lg:grid-cols-12 items-start w-full max-w-full">
+      <div className="grid gap-8 lg:grid-cols-12 items-start w-full max-w-full">
         {/* Left Column: B2B Form Space (7 cols) */}
-        <div className="lg:col-span-7 border border-border bg-card p-3 sm:p-6 md:p-8 space-y-6 min-w-0 max-w-full overflow-hidden">
-          {/* Segmented 4-Step Navigation Bar Inside Form Space */}
-          <div className="border border-border bg-surface p-1 grid grid-cols-2 sm:grid-cols-4 w-full gap-1 text-center font-mono text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider">
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
-                step === 1
-                  ? "bg-foreground text-background border-foreground"
-                  : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              1. SERVICE
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(2)}
-              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
-                step === 2
-                  ? "bg-foreground text-background border-foreground"
-                  : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              2. PARC
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(3)}
-              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
-                step === 3
-                  ? "bg-foreground text-background border-foreground"
-                  : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              3. CONTACT
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(4)}
-              className={`h-10 sm:h-12 flex items-center justify-center px-1 border transition-all truncate min-w-0 ${
-                step === 4
-                  ? "bg-foreground text-background border-foreground"
-                  : "border-transparent bg-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              4. REVUE
-            </button>
-          </div>
+        <div className="lg:col-span-7 space-y-6 min-w-0 max-w-full overflow-hidden">
+          {/* Stepper Progress Bar */}
+          <div className="border border-border bg-card p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between mb-3 text-xs">
+              <span className="font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                Étape {step} sur 4
+              </span>
+              <span className="font-mono text-primary font-bold text-[11px]">
+                {step === 1 && "1. Prestation & Formule"}
+                {step === 2 && "2. Parc & Périodicité"}
+                {step === 3 && "3. Contact & Localisation"}
+                {step === 4 && "4. Revue & Validation"}
+              </span>
+            </div>
 
-          {/* Step 1: Need Selection ONLY */}
-          {step === 1 && (
-            <div className="space-y-6 at-in">
-              <div>
-                <h3 className="text-base font-bold uppercase tracking-wider mb-1">
-                  Étape 1 : Choisissez votre type d'intervention B2B
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Sélectionnez la prestation principale recherchée pour votre entreprise.
-                </p>
-              </div>
-
-              {/* Need Type Selection */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                {NEED_TYPES.map((item) => {
-                  const Icon = item.icon;
-                  const isSelected = needType === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setNeedType(item.id)}
-                      className={`flex flex-col justify-between p-4 text-left border transition-all ${
-                        isSelected
-                          ? "border-primary bg-primary/10 text-foreground font-semibold"
-                          : "border-border bg-surface text-muted-foreground hover:border-border hover:bg-card hover:text-foreground"
+            {/* Progress Indicators */}
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { s: 1, label: "Service", icon: Wrench },
+                { s: 2, label: "Parc", icon: Building2 },
+                { s: 3, label: "Contact", icon: UserCheck },
+                { s: 4, label: "Validation", icon: FileCheck },
+              ].map((item) => {
+                const isCompleted = step > item.s;
+                const isCurrent = step === item.s;
+                return (
+                  <button
+                    key={item.s}
+                    type="button"
+                    onClick={() => {
+                      if (item.s < step) setStep(item.s as 1 | 2 | 3 | 4);
+                    }}
+                    disabled={item.s > step}
+                    className={`flex items-center gap-2 p-2 text-left border transition-all ${
+                      isCurrent
+                        ? "border-primary bg-primary/10 text-primary font-bold"
+                        : isCompleted
+                          ? "border-emerald-600/40 bg-emerald-600/5 text-emerald-600 cursor-pointer hover:border-emerald-600"
+                          : "border-border bg-surface text-muted-foreground/50 opacity-70 cursor-not-allowed"
+                    }`}
+                  >
+                    <div
+                      className={`size-6 rounded-full flex items-center justify-center text-[10px] font-mono shrink-0 ${
+                        isCurrent
+                          ? "bg-primary text-primary-foreground font-bold"
+                          : isCompleted
+                            ? "bg-emerald-600 text-white font-bold"
+                            : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      <div className="flex items-center justify-between w-full mb-3">
-                        <div
-                          className={`flex size-10 items-center justify-center border ${isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
-                        >
-                          <Icon className="size-5" />
-                        </div>
-                        <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 border border-border bg-card text-foreground">
-                          {item.tag}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-foreground text-sm mb-1">{item.title}</h4>
-                        <p className="text-xs text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex justify-end pt-4 border-t border-border w-full">
-                <Button
-                  variant="technical"
-                  size="lg"
-                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
-                  onClick={() => {
-                    if (!needType) {
-                      toast.error("Veuillez sélectionner un type d'intervention.");
-                      return;
-                    }
-                    setStep(2);
-                  }}
-                >
-                  <span className="hidden sm:inline">
-                    Continuer vers les détails du parc &rarr;
-                  </span>
-                  <span className="sm:hidden">Détails du parc &rarr;</span>
-                </Button>
-              </div>
+                      {isCompleted ? <CheckCircle2 className="size-3.5" /> : item.s}
+                    </div>
+                    <span className="hidden sm:inline text-xs font-semibold truncate">
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
 
-          {/* Step 2: Fleet & Formulas & Periodicity & Urgency */}
-          {step === 2 && (
-            <div className="space-y-6 at-in">
-              <div>
-                <h3 className="text-base font-bold uppercase tracking-wider mb-1">
-                  Étape 2 : Détails du parc, Offres &amp; Niveau d'urgence
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Aidez-nous à calibrer les tarifs et techniciens nécessaires.
-                </p>
-              </div>
+          {/* Form Container */}
+          <div className="border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
+            {/* Step 1: Need Selection ONLY */}
+            {step === 1 && (
+              <div className="space-y-6 at-in">
+                <div>
+                  <h3 className="text-base font-bold uppercase tracking-wider mb-1">
+                    Étape 1 : Choisissez votre type d'intervention B2B
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Sélectionnez la prestation principale recherchée pour votre entreprise.
+                  </p>
+                </div>
 
-              {/* Fleet Size */}
-              <div>
-                <label className="at-eyebrow mb-2 block">
-                  1. Taille estimée du parc matériel :
-                </label>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {FLEET_SIZES.map((size) => {
-                    const hasDiscount = size === "6-15 équipements" || size === "16-50 équipements";
+                {/* Need Type Selection */}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {NEED_TYPES.map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = needType === item.id;
                     return (
                       <button
-                        key={size}
+                        key={item.id}
                         type="button"
-                        onClick={() => setFleetSize(size)}
-                        className={`h-12 flex flex-col items-center justify-center font-mono text-[11px] uppercase border text-center transition-all ${
-                          fleetSize === size
-                            ? "border-primary bg-primary text-primary-foreground font-bold"
-                            : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                        onClick={() => setNeedType(item.id)}
+                        className={`flex flex-col justify-between p-4 text-left border transition-all ${
+                          isSelected
+                            ? "border-primary bg-primary/10 text-foreground font-semibold"
+                            : "border-border bg-surface text-muted-foreground hover:border-border hover:bg-card hover:text-foreground"
                         }`}
                       >
-                        <span>{size}</span>
-                        {hasDiscount && (
-                          <span
-                            className={`text-[8px] font-bold uppercase ${fleetSize === size ? "text-primary-foreground opacity-90" : "text-success"}`}
+                        <div className="flex items-center justify-between w-full mb-3">
+                          <div
+                            className={`flex size-10 items-center justify-center border ${isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
                           >
-                            -10% Dégressif
+                            <Icon className="size-5" />
+                          </div>
+                          <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 border border-border bg-card text-foreground">
+                            {item.tag}
                           </span>
-                        )}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-foreground text-sm mb-1">{item.title}</h4>
+                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                        </div>
                       </button>
                     );
                   })}
                 </div>
-              </div>
 
-              {/* SLA Formulas Selection - ONLY for SLA contract in Step 2 */}
-              {needType === "contract" && (
-                <div className="border-t border-border pt-4 space-y-3">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
-                    <label className="at-eyebrow text-primary block">
-                      2. Choisissez votre Formule Contrat SLA :
-                    </label>
-                    <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                      1-15 app: 5 000 F/app | &gt;15 app: 4 500 F/app
-                    </span>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {SLA_FORMULAS.map((formula) => (
-                      <button
-                        key={formula.id}
-                        type="button"
-                        onClick={() => {
-                          setSlaFormula(formula.id);
-                          if (formula.id === "essentiel") setUrgency("48h");
-                          if (formula.id === "business") setUrgency("urgent");
-                        }}
-                        className={`p-3 text-left border transition-all ${
-                          slaFormula === formula.id
-                            ? "border-primary bg-primary text-primary-foreground font-bold"
-                            : "border-border bg-surface text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-mono text-xs uppercase font-extrabold">
-                            {formula.name}
-                          </span>
-                        </div>
-                        <p className="text-[11px] opacity-80">{formula.desc}</p>
-                        <div className="mt-2 font-mono text-[10px] font-bold uppercase underline">
-                          {calculateEstimate("contract", formula.id, fleetSize, preventivePeriod)}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Maintenance Préventive Periodicity Selector - ONLY for Maintenance Préventive in Step 2 */}
-              {needType === "preventive" && (
-                <div className="border-t border-border pt-4 space-y-3">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
-                    <label className="at-eyebrow text-primary block">
-                      2. Choisissez la Périodicité d'Entretien :
-                    </label>
-                    <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                      Tarification par équipement / passe
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {PREVENTIVE_PERIODS.map((period) => {
-                      let count = 5;
-                      let discount = 0;
-                      if (fleetSize === "6-15 équipements") {
-                        count = 10;
-                        discount = 0.1;
-                      } else if (fleetSize === "16-50 équipements") {
-                        count = 25;
-                        discount = 0.1;
+                <div className="flex justify-end pt-4 border-t border-border w-full">
+                  <Button
+                    variant="technical"
+                    size="lg"
+                    className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
+                    onClick={() => {
+                      if (!needType) {
+                        toast.error("Veuillez sélectionner un type d'intervention.");
+                        return;
                       }
+                      setStep(2);
+                    }}
+                  >
+                    <span className="hidden sm:inline">
+                      Continuer vers les détails du parc &rarr;
+                    </span>
+                    <span className="sm:hidden">Détails du parc &rarr;</span>
+                  </Button>
+                </div>
+              </div>
+            )}
 
-                      const unitRate = Math.round(period.ratePerDevice * (1 - discount));
-                      const totalPrice =
-                        fleetSize && fleetSize !== "50+ équipements" ? count * unitRate : null;
+            {/* Step 2: Fleet & Formulas & Periodicity & Urgency */}
+            {step === 2 && (
+              <div className="space-y-6 at-in">
+                <div>
+                  <h3 className="text-base font-bold uppercase tracking-wider mb-1">
+                    Étape 2 : Détails du parc, Offres &amp; Niveau d'urgence
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Aidez-nous à calibrer les tarifs et techniciens nécessaires.
+                  </p>
+                </div>
 
+                {/* Fleet Size */}
+                <div>
+                  <label className="at-eyebrow mb-2 block">
+                    1. Taille estimée du parc matériel :
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {FLEET_SIZES.map((size) => {
+                      const hasDiscount =
+                        size === "6-15 équipements" || size === "16-50 équipements";
                       return (
                         <button
-                          key={period.id}
+                          key={size}
                           type="button"
-                          onClick={() => setPreventivePeriod(period.id)}
-                          className={`p-2.5 text-center border transition-all ${
-                            preventivePeriod === period.id
+                          onClick={() => setFleetSize(size)}
+                          className={`h-12 flex flex-col items-center justify-center font-mono text-[11px] uppercase border text-center transition-all ${
+                            fleetSize === size
                               ? "border-primary bg-primary text-primary-foreground font-bold"
                               : "border-border bg-surface text-muted-foreground hover:text-foreground"
                           }`}
                         >
-                          <span className="font-mono text-xs font-extrabold uppercase block">
-                            {period.shortLabel}
-                          </span>
-                          <span className="text-[11px] font-bold font-mono block opacity-95 mt-0.5">
-                            {totalPrice
-                              ? formatFcfa(totalPrice)
-                              : `${formatFcfa(period.ratePerDevice)}/app`}
-                          </span>
-                          {totalPrice && (
+                          <span>{size}</span>
+                          {hasDiscount && (
                             <span
-                              className={`text-[9px] block font-mono ${preventivePeriod === period.id ? "opacity-85 text-primary-foreground" : "text-muted-foreground"}`}
+                              className={`text-[8px] font-bold uppercase ${fleetSize === size ? "text-primary-foreground opacity-90" : "text-success"}`}
                             >
-                              ({formatFcfa(unitRate)}/app)
+                              -10% Dégressif
                             </span>
                           )}
                         </button>
@@ -890,484 +866,617 @@ export function B2BRequestForm({ initialFormula, initialNeedType }: B2BRequestFo
                     })}
                   </div>
                 </div>
-              )}
 
-              {/* Equipment types */}
-              <div className="border-t border-border pt-4">
-                <label className="at-eyebrow mb-2 block">
-                  3. Matériels concernés (choix multiples) :
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {EQUIPMENT_TYPES.map((type) => {
-                    const active = selectedEqTypes.includes(type);
-                    return (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => toggleEqType(type)}
-                        className={`h-10 inline-flex items-center justify-center px-3.5 text-xs font-semibold uppercase border transition-all ${
-                          active
-                            ? "border-primary bg-primary/10 text-primary font-bold"
-                            : "border-border bg-surface text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {active ? "✓ " : "+ "}
-                        {type}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Urgency */}
-              <div className="border-t border-border pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="at-eyebrow block">4. Délai d'intervention souhaité :</label>
-                  {needType === "contract" && slaFormula !== "custom" && (
-                    <span className="font-mono text-[10px] text-primary uppercase font-bold">
-                      ✓ Délai SLA inclus dans cette formule
-                    </span>
-                  )}
-                </div>
-                <div className="grid gap-2 sm:grid-cols-3">
-                  {URGENCY_LEVELS.map((u) => {
-                    const isLocked = needType === "contract" && slaFormula !== "custom";
-                    const isSelected = urgency === u.id;
-                    return (
-                      <button
-                        key={u.id}
-                        type="button"
-                        disabled={isLocked}
-                        onClick={() => setUrgency(u.id)}
-                        className={`h-12 flex items-center justify-center px-3 text-xs font-medium border text-center transition-all ${
-                          isSelected
-                            ? "border-primary bg-primary text-primary-foreground font-bold"
-                            : isLocked
-                              ? "border-border bg-surface/50 text-muted-foreground opacity-50 cursor-not-allowed"
-                              : "border-border bg-surface text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {u.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
-                  onClick={() => setStep(1)}
-                >
-                  &larr; Retour
-                </Button>
-                <Button
-                  variant="technical"
-                  size="lg"
-                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
-                  onClick={() => {
-                    if (!fleetSize) {
-                      toast.error("Veuillez sélectionner la taille de votre parc.");
-                      return;
-                    }
-                    if (needType === "contract" && !slaFormula) {
-                      toast.error("Veuillez choisir une formule SLA.");
-                      return;
-                    }
-                    if (needType === "preventive" && !preventivePeriod) {
-                      toast.error("Veuillez choisir la périodicité d'entretien.");
-                      return;
-                    }
-                    if (selectedEqTypes.length === 0) {
-                      toast.error("Veuillez choisir au moins un type d'équipement.");
-                      return;
-                    }
-                    if (!urgency) {
-                      toast.error("Veuillez choisir un délai d'intervention.");
-                      return;
-                    }
-                    setStep(3);
-                  }}
-                >
-                  <span className="hidden sm:inline">Continuer vers le contact &rarr;</span>
-                  <span className="sm:hidden">Coordonnées contact &rarr;</span>
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Contact Details */}
-          {step === 3 && (
-            <div className="space-y-6 at-in">
-              <div>
-                <h3 className="text-base font-bold uppercase tracking-wider mb-1">
-                  Étape 3 : Coordonnées de l'Entreprise
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Renseignez vos coordonnées pour la génération de la proposition officielle.
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="at-eyebrow mb-1 block">
-                    Nom de l'Entreprise / Institution *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="ex: TechnoHub Africa S.A."
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="at-eyebrow mb-1 block">Nom du Responsable / Contact *</label>
-                  <input
-                    type="text"
-                    required
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    placeholder="ex: M. Sylvain KPOHOU"
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="at-eyebrow mb-1 block">Téléphone / WhatsApp *</label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="ex: +229 01 97 00 00 00"
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="at-eyebrow mb-1 block">E-mail professionnel</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="contact@entreprise.bj"
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="at-eyebrow mb-1 block">Localisation / Agence principale</label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="ex: Cotonou, Haie Vive / Parakou"
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="at-eyebrow mb-1 block">Notes / Précisions sur le besoin</label>
-                  <input
-                    type="text"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="ex: 5 laptops HP avec soucis d'écran et surchauffe"
-                    className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  type="button"
-                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
-                  onClick={() => setStep(2)}
-                >
-                  &larr; Retour
-                </Button>
-                <Button
-                  variant="technical"
-                  size="lg"
-                  type="button"
-                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
-                  onClick={() => {
-                    if (!companyName.trim() || !contactName.trim() || !phone.trim()) {
-                      toast.error(
-                        "Veuillez renseigner le nom de l'entreprise, du contact et le téléphone.",
-                      );
-                      return;
-                    }
-                    setStep(4);
-                  }}
-                >
-                  Passer à la revue &rarr;
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Pre-Validation Review & Confirmation */}
-          {step === 4 && (
-            <div className="space-y-6 at-in">
-              <div>
-                <h3 className="text-base font-bold uppercase tracking-wider mb-1">
-                  Étape 4 : Revue &amp; Validation de la demande B2B
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Vérifiez vos choix avant d'envoyer la demande et générer votre fiche B2B.
-                </p>
-              </div>
-
-              {/* Section 1: Service */}
-              <div className="border border-border bg-surface p-4 space-y-2">
-                <div className="flex justify-between items-center border-b border-border pb-2">
-                  <span className="at-eyebrow text-foreground">1. Prestation &amp; Offre</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setStep(1)}
-                    className="h-7 text-xs font-mono"
-                  >
-                    <Edit3 className="mr-1 size-3" /> Modifier
-                  </Button>
-                </div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Besoin principal :</span>
-                    <span className="font-bold">
-                      {NEED_TYPES.find((n) => n.id === needType)?.title}
-                    </span>
-                  </div>
-                  {needType === "contract" && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Formule SLA :</span>
-                      <span className="font-mono font-bold text-primary">
-                        {SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}
+                {/* SLA Formulas Selection - ONLY for SLA contract in Step 2 */}
+                {needType === "contract" && (
+                  <div className="border-t border-border pt-4 space-y-3">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
+                      <label className="at-eyebrow text-primary block">
+                        2. Choisissez votre Formule Contrat SLA :
+                      </label>
+                      <span className="font-mono text-[10px] text-muted-foreground uppercase">
+                        1-15 app: 5 000 F/app | &gt;15 app: 4 500 F/app
                       </span>
                     </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Estimation Tarifaire :</span>
-                    <span className="font-mono font-bold text-foreground">{slaEstimate}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Parc */}
-              <div className="border border-border bg-surface p-4 space-y-2">
-                <div className="flex justify-between items-center border-b border-border pb-2">
-                  <span className="at-eyebrow text-foreground">2. Parc &amp; Urgence</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setStep(2)}
-                    className="h-7 text-xs font-mono"
-                  >
-                    <Edit3 className="mr-1 size-3" /> Modifier
-                  </Button>
-                </div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Taille du parc :</span>
-                    <span className="font-mono font-bold">{fleetSize}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Matériels :</span>
-                    <span className="font-medium">{selectedEqTypes.join(", ")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Niveau d'urgence :</span>
-                    <span className="font-mono font-bold text-primary">
-                      {URGENCY_LEVELS.find((u) => u.id === urgency)?.label}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 3: Contact */}
-              <div className="border border-border bg-surface p-4 space-y-2">
-                <div className="flex justify-between items-center border-b border-border pb-2">
-                  <span className="at-eyebrow text-foreground">3. Coordonnées Entreprise</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setStep(3)}
-                    className="h-7 text-xs font-mono"
-                  >
-                    <Edit3 className="mr-1 size-3" /> Modifier
-                  </Button>
-                </div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Entreprise :</span>
-                    <span className="font-bold">{companyName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Contact IT :</span>
-                    <span className="font-medium">{contactName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Téléphone :</span>
-                    <span className="font-mono">{phone}</span>
-                  </div>
-                  {email && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">E-mail :</span>
-                      <span className="font-mono">{email}</span>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {SLA_FORMULAS.map((formula) => (
+                        <button
+                          key={formula.id}
+                          type="button"
+                          onClick={() => {
+                            setSlaFormula(formula.id);
+                            if (formula.id === "essentiel") setUrgency("48h");
+                            if (formula.id === "business") setUrgency("urgent");
+                          }}
+                          className={`p-3 text-left border transition-all ${
+                            slaFormula === formula.id
+                              ? "border-primary bg-primary text-primary-foreground font-bold"
+                              : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-mono text-xs uppercase font-extrabold">
+                              {formula.name}
+                            </span>
+                          </div>
+                          <p className="text-[11px] opacity-80">{formula.desc}</p>
+                          <div className="mt-2 font-mono text-[10px] font-bold uppercase underline">
+                            {calculateEstimate("contract", formula.id, fleetSize, preventivePeriod)}
+                          </div>
+                        </button>
+                      ))}
                     </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Localisation :</span>
-                    <span className="font-medium">{city}</span>
+                  </div>
+                )}
+
+                {/* Maintenance Préventive Periodicity Selector - ONLY for Maintenance Préventive in Step 2 */}
+                {needType === "preventive" && (
+                  <div className="border-t border-border pt-4 space-y-3">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
+                      <label className="at-eyebrow text-primary block">
+                        2. Choisissez la Périodicité d'Entretien :
+                      </label>
+                      <span className="font-mono text-[10px] text-muted-foreground uppercase">
+                        Tarification par équipement / passe
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      {PREVENTIVE_PERIODS.map((period) => {
+                        let count = 5;
+                        let discount = 0;
+                        if (fleetSize === "6-15 équipements") {
+                          count = 10;
+                          discount = 0.1;
+                        } else if (fleetSize === "16-50 équipements") {
+                          count = 25;
+                          discount = 0.1;
+                        }
+
+                        const unitRate = Math.round(period.ratePerDevice * (1 - discount));
+                        const totalPrice =
+                          fleetSize && fleetSize !== "50+ équipements" ? count * unitRate : null;
+
+                        return (
+                          <button
+                            key={period.id}
+                            type="button"
+                            onClick={() => setPreventivePeriod(period.id)}
+                            className={`p-2.5 text-center border transition-all ${
+                              preventivePeriod === period.id
+                                ? "border-primary bg-primary text-primary-foreground font-bold"
+                                : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <span className="font-mono text-xs font-extrabold uppercase block">
+                              {period.shortLabel}
+                            </span>
+                            <span className="text-[11px] font-bold font-mono block opacity-95 mt-0.5">
+                              {totalPrice
+                                ? formatFcfa(totalPrice)
+                                : `${formatFcfa(period.ratePerDevice)}/app`}
+                            </span>
+                            {totalPrice && (
+                              <span
+                                className={`text-[9px] block font-mono ${preventivePeriod === period.id ? "opacity-85 text-primary-foreground" : "text-muted-foreground"}`}
+                              >
+                                ({formatFcfa(unitRate)}/app)
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Equipment types */}
+                <div className="border-t border-border pt-4">
+                  <label className="at-eyebrow mb-2 block">
+                    3. Matériels concernés (choix multiples) :
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {EQUIPMENT_TYPES.map((type) => {
+                      const active = selectedEqTypes.includes(type);
+                      return (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => toggleEqType(type)}
+                          className={`h-10 inline-flex items-center justify-center px-3.5 text-xs font-semibold uppercase border transition-all ${
+                            active
+                              ? "border-primary bg-primary/10 text-primary font-bold"
+                              : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {active ? "✓ " : "+ "}
+                          {type}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-              </div>
 
-              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  type="button"
-                  className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
-                  onClick={() => setStep(3)}
-                >
-                  &larr; Retour aux coordonnées
-                </Button>
-                <Button
-                  variant="technical"
-                  size="lg"
-                  type="button"
-                  className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
-                  onClick={onSubmitFinal}
-                  disabled={busy}
-                >
-                  {busy ? (
-                    <Loader2 className="mr-2 size-4 animate-spin shrink-0" />
-                  ) : (
-                    <Sparkles className="mr-2 size-4 shrink-0" />
-                  )}
-                  <span>{busy ? "Traitement..." : "Valider & Générer la Proposition B2B"}</span>
-                </Button>
+                {/* Urgency */}
+                <div className="border-t border-border pt-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="at-eyebrow block">4. Délai d'intervention souhaité :</label>
+                    {needType === "contract" && slaFormula !== "custom" && (
+                      <span className="font-mono text-[10px] text-primary uppercase font-bold">
+                        ✓ Délai SLA inclus dans cette formule
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    {URGENCY_LEVELS.map((u) => {
+                      const isLocked = needType === "contract" && slaFormula !== "custom";
+                      const isSelected = urgency === u.id;
+                      return (
+                        <button
+                          key={u.id}
+                          type="button"
+                          disabled={isLocked}
+                          onClick={() => setUrgency(u.id)}
+                          className={`h-12 flex items-center justify-center px-3 text-xs font-medium border text-center transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary text-primary-foreground font-bold"
+                              : isLocked
+                                ? "border-border bg-surface/50 text-muted-foreground opacity-50 cursor-not-allowed"
+                                : "border-border bg-surface text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {u.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                    onClick={() => setStep(1)}
+                  >
+                    &larr; Retour
+                  </Button>
+                  <Button
+                    variant="technical"
+                    size="lg"
+                    className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
+                    onClick={() => {
+                      if (!fleetSize) {
+                        toast.error("Veuillez sélectionner la taille de votre parc.");
+                        return;
+                      }
+                      if (needType === "contract" && !slaFormula) {
+                        toast.error("Veuillez choisir une formule SLA.");
+                        return;
+                      }
+                      if (needType === "preventive" && !preventivePeriod) {
+                        toast.error("Veuillez choisir la périodicité d'entretien.");
+                        return;
+                      }
+                      if (selectedEqTypes.length === 0) {
+                        toast.error("Veuillez choisir au moins un type d'équipement.");
+                        return;
+                      }
+                      if (!urgency) {
+                        toast.error("Veuillez choisir un délai d'intervention.");
+                        return;
+                      }
+                      setStep(3);
+                    }}
+                  >
+                    <span className="hidden sm:inline">Continuer vers le contact &rarr;</span>
+                    <span className="sm:hidden">Coordonnées contact &rarr;</span>
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Step 3: Contact Details */}
+            {step === 3 && (
+              <div className="space-y-6 at-in">
+                <div>
+                  <h3 className="text-base font-bold uppercase tracking-wider mb-1">
+                    Étape 3 : Coordonnées de l'Entreprise
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Renseignez vos coordonnées pour la génération de la proposition officielle.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="at-eyebrow mb-1 block">
+                      Nom de l'Entreprise / Institution *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      placeholder="ex: TechnoHub Africa S.A."
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="at-eyebrow mb-1 block">Nom du Responsable / Contact *</label>
+                    <input
+                      type="text"
+                      required
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="ex: M. Sylvain KPOHOU"
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="at-eyebrow mb-1 block">Téléphone / WhatsApp *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="ex: +229 01 97 00 00 00"
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="at-eyebrow mb-1 block">E-mail professionnel</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="contact@entreprise.bj"
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="at-eyebrow mb-1 block">
+                      Localisation / Agence principale
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="ex: Cotonou, Haie Vive / Parakou"
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="at-eyebrow mb-1 block">
+                      Notes / Précisions sur le besoin
+                    </label>
+                    <input
+                      type="text"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="ex: 5 laptops HP avec soucis d'écran et surchauffe"
+                      className="h-11 w-full border border-border bg-card px-3 text-sm focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    type="button"
+                    className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                    onClick={() => setStep(2)}
+                  >
+                    &larr; Retour
+                  </Button>
+                  <Button
+                    variant="technical"
+                    size="lg"
+                    type="button"
+                    className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
+                    onClick={() => {
+                      if (!companyName.trim() || !contactName.trim() || !phone.trim()) {
+                        toast.error(
+                          "Veuillez renseigner le nom de l'entreprise, du contact et le téléphone.",
+                        );
+                        return;
+                      }
+                      setStep(4);
+                    }}
+                  >
+                    Passer à la revue &rarr;
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Pre-Validation Review & Confirmation */}
+            {step === 4 && (
+              <div className="space-y-6 at-in">
+                <div>
+                  <h3 className="text-base font-bold uppercase tracking-wider mb-1">
+                    Étape 4 : Revue &amp; Validation de la demande B2B
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Vérifiez vos choix avant d'envoyer la demande et générer votre fiche B2B.
+                  </p>
+                </div>
+
+                {/* Section 1: Service */}
+                <div className="border border-border bg-surface p-4 space-y-2">
+                  <div className="flex justify-between items-center border-b border-border pb-2">
+                    <span className="at-eyebrow text-foreground">1. Prestation &amp; Offre</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setStep(1)}
+                      className="h-7 text-xs font-mono"
+                    >
+                      <Edit3 className="mr-1 size-3" /> Modifier
+                    </Button>
+                  </div>
+                  <div className="text-xs space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Besoin principal :</span>
+                      <span className="font-bold">
+                        {NEED_TYPES.find((n) => n.id === needType)?.title}
+                      </span>
+                    </div>
+                    {needType === "contract" && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Formule SLA :</span>
+                        <span className="font-mono font-bold text-primary">
+                          {SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Estimation Tarifaire :</span>
+                      <span className="font-mono font-bold text-foreground">{slaEstimate}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Parc */}
+                <div className="border border-border bg-surface p-4 space-y-2">
+                  <div className="flex justify-between items-center border-b border-border pb-2">
+                    <span className="at-eyebrow text-foreground">2. Parc &amp; Urgence</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setStep(2)}
+                      className="h-7 text-xs font-mono"
+                    >
+                      <Edit3 className="mr-1 size-3" /> Modifier
+                    </Button>
+                  </div>
+                  <div className="text-xs space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Taille du parc :</span>
+                      <span className="font-mono font-bold">{fleetSize}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Matériels :</span>
+                      <span className="font-medium">{selectedEqTypes.join(", ")}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Niveau d'urgence :</span>
+                      <span className="font-mono font-bold text-primary">
+                        {URGENCY_LEVELS.find((u) => u.id === urgency)?.label}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 3: Contact */}
+                <div className="border border-border bg-surface p-4 space-y-2">
+                  <div className="flex justify-between items-center border-b border-border pb-2">
+                    <span className="at-eyebrow text-foreground">3. Coordonnées Entreprise</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setStep(3)}
+                      className="h-7 text-xs font-mono"
+                    >
+                      <Edit3 className="mr-1 size-3" /> Modifier
+                    </Button>
+                  </div>
+                  <div className="text-xs space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Entreprise :</span>
+                      <span className="font-bold">{companyName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Contact IT :</span>
+                      <span className="font-medium">{contactName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Téléphone :</span>
+                      <span className="font-mono">{phone}</span>
+                    </div>
+                    {email && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">E-mail :</span>
+                        <span className="font-mono">{email}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Localisation :</span>
+                      <span className="font-medium">{city}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col-reverse sm:flex-row gap-3 sm:items-center sm:justify-between pt-4 border-t border-border w-full">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    type="button"
+                    className="w-full sm:w-auto text-center h-auto min-h-12 py-3 px-4 sm:px-6 text-xs sm:text-sm font-bold uppercase tracking-wider"
+                    onClick={() => setStep(3)}
+                  >
+                    &larr; Retour aux coordonnées
+                  </Button>
+                  <Button
+                    variant="technical"
+                    size="lg"
+                    type="button"
+                    className="w-full sm:w-auto text-center whitespace-normal h-auto min-h-12 py-3 px-4 sm:px-8 text-xs sm:text-sm font-bold uppercase tracking-wider max-w-full"
+                    onClick={onSubmitFinal}
+                    disabled={busy}
+                  >
+                    {busy ? (
+                      <Loader2 className="mr-2 size-4 animate-spin shrink-0" />
+                    ) : (
+                      <Sparkles className="mr-2 size-4 shrink-0" />
+                    )}
+                    <span>{busy ? "Traitement..." : "Valider & Générer la Proposition B2B"}</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Pure Live Summary Card (5 cols) */}
-        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
-          <div className="border border-border bg-card p-4 sm:p-6 space-y-5">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <div className="flex items-center gap-2">
-                <span className="size-2 bg-primary animate-pulse inline-block" />
-                <h3 className="at-eyebrow text-primary">Récapitulatif en temps réel</h3>
+        <aside className="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
+          <div className="border border-border bg-card p-6 shadow-sm space-y-5">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div>
+                <span className="at-eyebrow text-primary block">Récapitulatif en Direct</span>
+                <h3 className="font-bold text-base text-foreground">Votre Proposition B2B</h3>
               </div>
-              <span className="font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-border bg-surface">
-                Étape {step}/4
+              <span className="font-mono text-[10px] font-bold px-2 py-0.5 border border-primary/40 text-primary bg-primary/5">
+                Contrat Pro SLA
               </span>
             </div>
 
-            {/* Selected Prestation */}
-            <div className="space-y-1">
-              <span className="text-xs text-muted-foreground uppercase font-mono">
-                Prestation :
-              </span>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-bold text-sm text-foreground">
-                  {NEED_TYPES.find((n) => n.id === needType)?.title}
+            {/* Selected Prestation Snapshot */}
+            <div className="p-3 bg-surface border border-border space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground font-mono text-[10px] uppercase">
+                  Service B2B Sélectionné
                 </span>
-                <span className="text-[11px] font-mono font-bold text-primary px-2 py-0.5 border border-primary/30 bg-primary/10">
-                  {NEED_TYPES.find((n) => n.id === needType)?.tag}
-                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setStep(1)}
+                  className="h-5 px-1 text-[10px] text-primary hover:bg-transparent"
+                >
+                  <Edit3 className="size-2.5 mr-1" /> Changer
+                </Button>
               </div>
-              {needType === "contract" && (
-                <div className="mt-1 pt-1 border-t border-border flex flex-wrap justify-between items-center gap-2">
-                  <span className="text-xs text-muted-foreground font-mono">Formule SLA :</span>
-                  <span className="text-xs font-mono font-extrabold text-primary uppercase">
-                    {SLA_FORMULAS.find((f) => f.id === slaFormula)?.name}
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-primary/10 text-primary shrink-0">
+                  <Building2 className="size-4" />
+                </div>
+                <div className="min-w-0">
+                  <span className="font-bold text-foreground block truncate">
+                    {NEED_TYPES.find((n) => n.id === needType)?.title}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground block truncate">
+                    {needType === "contract"
+                      ? SLA_FORMULAS.find((f) => f.id === slaFormula)?.name
+                      : NEED_TYPES.find((n) => n.id === needType)?.desc}
                   </span>
                 </div>
-              )}
-            </div>
-
-            {/* Dynamic SLA Price Estimation */}
-            <div className="border-t border-border pt-3 space-y-1">
-              <span className="text-xs text-muted-foreground uppercase font-mono">
-                Estimation Tarifaire :
-              </span>
-              <div className="font-mono text-base font-extrabold text-foreground">
-                {slaEstimate}
               </div>
             </div>
 
-            {/* Fleet & Equipment */}
-            <div className="border-t border-border pt-3 space-y-2">
-              <div className="flex justify-between text-xs gap-2">
-                <span className="text-muted-foreground">Taille du parc :</span>
-                <span className="font-mono font-bold">{fleetSize}</span>
-              </div>
-              <div className="flex justify-between text-xs gap-2">
-                <span className="text-muted-foreground shrink-0">Équipements :</span>
-                <span className="font-medium text-right break-words text-foreground font-semibold">
-                  {selectedEqTypes.length > 0 ? selectedEqTypes.join(", ") : "Aucun sélectionné"}
+            {/* Fleet & Location Snapshot */}
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-3 bg-surface border border-border space-y-1">
+                <span className="text-muted-foreground font-mono text-[10px] uppercase block">
+                  Taille du Parc
+                </span>
+                <span className="font-bold text-foreground block truncate">{fleetSize}</span>
+                <span className="text-[10px] font-mono text-primary truncate block">
+                  {selectedEqTypes.length > 0
+                    ? selectedEqTypes.slice(0, 2).join(", ")
+                    : "Non spécifié"}
                 </span>
               </div>
-              <div className="flex justify-between text-xs gap-2">
-                <span className="text-muted-foreground">Délai souhaité :</span>
-                <span className="font-mono text-primary font-bold">
-                  {URGENCY_LEVELS.find((u) => u.id === urgency)?.label}
+              <div className="p-3 bg-surface border border-border space-y-1">
+                <span className="text-muted-foreground font-mono text-[10px] uppercase block">
+                  Délai d'Intervention
+                </span>
+                <span className="font-bold text-foreground block truncate">
+                  {URGENCY_LEVELS.find((u) => u.id === urgency)?.label.split(" ")[0] || "48h"}
+                </span>
+                <span className="text-[10px] text-emerald-600 font-mono block">Priorité IT</span>
+              </div>
+            </div>
+
+            {/* Pricing Breakdown */}
+            <div className="space-y-2 border-t border-border pt-4 text-xs font-mono">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Diagnostic &amp; Audit initial</span>
+                <span className="text-emerald-600 font-bold">Inclus (0 FCFA)</span>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Enlèvement &amp; Retour sur site</span>
+                <span className="text-emerald-600 font-bold">Inclus (0 FCFA)</span>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Matériel de prêt garanti</span>
+                <span className="text-emerald-600 font-bold">Inclus (0 FCFA)</span>
+              </div>
+
+              {/* Total Bar */}
+              <div className="flex items-center justify-between border-t border-border pt-3 text-sm">
+                <span className="font-bold text-foreground uppercase tracking-tight">
+                  Tarification Estimée
+                </span>
+                <span className="font-extrabold text-base text-primary text-right">
+                  {slaEstimate}
                 </span>
               </div>
+              <p className="text-[10px] text-muted-foreground font-sans leading-tight pt-1">
+                * Tarification dégressive selon volume. Facturation mensuelle ou par intervention.
+              </p>
             </div>
 
-            {/* Company & Contact (Live as typed) */}
-            <div className="border-t border-border pt-3 space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Entreprise :</span>
-                <span className="font-bold">{companyName || "Non spécifiée"}</span>
+            {/* Trust Guarantees */}
+            <div className="space-y-2 border-t border-border pt-4 text-[11px]">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                <span>Intervention d'astreinte &lt; 2h à Cotonou et Calavi</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Contact IT :</span>
-                <span className="font-medium">{contactName || "Non spécifié"}</span>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                <span>Matériel de prêt de secours garanti durant les opérations</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Téléphone :</span>
-                <span className="font-mono">{phone || "Non spécifié"}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ville / Agence :</span>
-                <span className="font-medium">{city}</span>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                <span>Facturation certifiée B2B avec NPI / RCCM</span>
               </div>
             </div>
 
-            {/* Guarantees & Inclusions */}
-            <div className="border-t border-border pt-4 bg-surface p-3 space-y-2 text-[11px] text-muted-foreground">
-              <div className="flex items-center gap-2 text-foreground font-semibold">
-                <CheckCircle2 className="size-3.5 text-primary" />
-                Devis B2B 100% Gratuit &amp; Sans Engagement
+            {/* Hotline assistance */}
+            <div className="bg-surface p-3 border border-border flex items-center justify-between text-xs">
+              <div>
+                <span className="text-muted-foreground text-[10px] block">
+                  Service Entreprises Direct
+                </span>
+                <span className="font-bold text-foreground">{COMPANY.phone}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 text-success" />
-                Intervention &amp; Enlèvement sur site à Cotonou / Calavi
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 text-success" />
-                Facturation certifiée B2B &amp; Paiement sur facture
-              </div>
+              <Button asChild variant="outline" size="sm" className="text-[11px] h-7 px-2.5">
+                <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}>Appeler</a>
+              </Button>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

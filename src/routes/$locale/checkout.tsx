@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, CheckCircle2, Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -138,6 +138,18 @@ function Checkout() {
     }
     setPaymentState("pending");
   }, [search.ref, search.status, checkPayment, t]);
+
+  const formTopRef = useRef<HTMLDivElement>(null);
+  const prevStepRef = useRef(step);
+
+  useEffect(() => {
+    if (prevStepRef.current !== step) {
+      prevStepRef.current = step;
+      if (formTopRef.current) {
+        formTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [step]);
 
   useEffect(() => {
     void restoreFromSearch();
@@ -404,7 +416,7 @@ function Checkout() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section ref={formTopRef} className="py-16 scroll-mt-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid items-start gap-8 lg:grid-cols-[1.6fr_1fr]">
             {step === "address" ? (
