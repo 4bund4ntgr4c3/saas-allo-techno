@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — IA Vision Schémas Micro-Soudure, AutoDeploy MDM, Coffre APDP & Garantie Care+ (Batch 58)",
+    date: "2026-08-17",
+    added: [
+      "Copilote schématique de micro-soudure et IA vision de cartes mères (board-vision-ai.functions.ts, BoardVisionInspector.tsx) avec détection de CMS défaillants",
+      "Plateforme industrielle de déploiement Zero-Touch et masterisation MDM de flottes (zero-touch-deployment.functions.ts, ZeroTouchDeploymentModal.tsx)",
+      "Coffre-fort cryptographique de conformité APDP et destruction de données NIST 800-88 scellé SHA-256 (privacy-compliance-vault.ts, PrivacyVaultDrawer.tsx)",
+      "Programme d'extension de garantie et assurance tout-inclus casse/liquide/surtension Allô Care+ (extended-warranty-engine.ts, CarePlusWarrantyModal.tsx)",
+    ],
+    fixed: [
+      "Projection en temps réel des impédances de masse pour les rails PPBUS et PMIC",
+      "Intégration d'enrôlement Intune et Jamf avec séquestre des clés de chiffrement BitLocker",
+    ],
+  },
+  {
     version: "2026.08.17 — E-Procurement B2B, Télémétrie Pulse, Facturation e-MECeF & Séquestre Escrow (Batch 57)",
     date: "2026-08-17",
     added: [
