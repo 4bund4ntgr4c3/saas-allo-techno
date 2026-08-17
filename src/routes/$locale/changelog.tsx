@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Optimiseur Wi-Fi, Bordereaux Expédition Intervilles, Calculateur Onduleur & Guide ESD (Batch 54)",
+    date: "2026-08-17",
+    added: [
+      "Testeur de débit et optimiseur de réseau local Wi-Fi 5GHz / Mesh (WifiOptimizerModal.tsx) mesurant la latence vers Cotonou/Lagos et préconisant des réglages",
+      "Générateur officiel de bordereaux d'expédition de colis intervilles au format A6 (shipping-label-pdf.ts) avec QR de suivi pour Parakou, Bohicon et Natitingou",
+      "Simulateur d'autonomie et de dimensionnement d'onduleurs UPS d'entreprise (UpsHealthCalculator.tsx) face aux coupures de courant SBEE",
+      "Guide interactif de prévention et de sécurité électrostatique ESD (src/routes/$locale/guide-esd.tsx) conforme à la norme IEC 61340-5-1",
+    ],
+    fixed: [
+      "Détection des surcharges de puissance sur les onduleurs en amont de la commande",
+      "Formatage compact A6 avec consignes de fragilité pour les transporteurs régionaux",
+    ],
+  },
+  {
     version: "2026.08.17 — Hub Utilitaires Toolbox, Bilan RSE Carbone Annuel, Objets Oubliés & Paiement 3x/4x (Batch 53)",
     date: "2026-08-17",
     added: [
