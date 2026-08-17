@@ -144,8 +144,14 @@ export function Header() {
       {/* Main nav bar */}
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-8">
-          <Link to="/" className="at-display text-xl">
-            Allô Techno
+          <Link to="/" className="flex flex-col group">
+            <span className="at-display text-xl leading-tight">
+              All<span className="text-primary">ô</span> Techn
+              <span className="text-primary">o</span>
+            </span>
+            <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded w-fit mt-0.5 self-end">
+              Africa
+            </span>
           </Link>
           <nav
             aria-label={t("header.desktop-nav")}
@@ -222,7 +228,15 @@ export function Header() {
             >
               <div className="p-6 space-y-6">
                 <div className="flex items-center justify-between border-b border-border pb-4">
-                  <SheetTitle className="at-display text-xl font-bold">Allô Techno</SheetTitle>
+                  <div className="flex flex-col">
+                    <SheetTitle className="at-display text-xl font-bold leading-tight">
+                      All<span className="text-primary">ô</span> Techn
+                      <span className="text-primary">o</span>
+                    </SheetTitle>
+                    <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded w-fit mt-0.5 self-end">
+                      Africa
+                    </span>
+                  </div>
                 </div>
 
                 {/* Primary Action Buttons for Mobile */}

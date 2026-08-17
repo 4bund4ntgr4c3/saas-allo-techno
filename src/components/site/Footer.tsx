@@ -75,7 +75,10 @@ export function Footer() {
           {/* Brand + Contact (Col 1-4) */}
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="at-display text-2xl font-black tracking-tight">Allô Techno</span>
+              <span className="at-display text-2xl font-black tracking-tight">
+                All<span className="text-primary">ô</span> Techn
+                <span className="text-primary">o</span>
+              </span>
               <span className="text-[10px] font-mono font-bold uppercase bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded">
                 Africa Hub
               </span>

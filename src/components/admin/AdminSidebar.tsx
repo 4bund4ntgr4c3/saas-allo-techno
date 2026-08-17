@@ -165,7 +165,10 @@ export function AdminSidebar({ user }: { user: { email?: string; id: string } })
             <span className="at-display text-sm">AT</span>
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="at-display truncate text-base">Allô Techno</span>
+            <span className="at-display truncate text-base">
+              All<span className="text-primary">ô</span> Techn
+              <span className="text-primary">o</span>
+            </span>
             <span className="at-eyebrow mt-0.5">Backoffice</span>
           </div>
         </div>

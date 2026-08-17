@@ -149,6 +149,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+      {
+        rel: "icon",
+        href: "/icons/icon-light-32.png",
+        media: "(prefers-color-scheme: light)",
+        type: "image/png",
+      },
+      {
+        rel: "icon",
+        href: "/icons/icon-dark-32.png",
+        media: "(prefers-color-scheme: dark)",
+        type: "image/png",
+      },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/icons/icon-192.png" },

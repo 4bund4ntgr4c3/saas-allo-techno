@@ -24,6 +24,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 - **Rate limiting total** : les 97 server fns des modules feat portent désormais un `rateLimit` (lectures 60/min, écritures 20/min, sensibles 10/min) dans les 42 fichiers `src/lib` concernés — la couverture b44 (188 fns) est étendue à l'ensemble des `createServerFn` du dépôt, sans exception.
 - **Documentation déploiement** (`wrangler.jsonc`) : procédure complète des secrets VAPID (`wrangler secret put VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`, var build `VITE_VAPID_PUBLIC_KEY`).
+- **Branding** : logo « Allô Techno » avec accents accentués en `text-primary` dans le header, le footer et la sidebar admin, badge « Africa » sous le logo du header ; favicon + icônes PWA refaits avec variantes clair/sombre (`prefers-color-scheme`) déclarées dans `__root.tsx`.
 
 ### Fixed
 
