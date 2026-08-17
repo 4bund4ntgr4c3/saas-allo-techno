@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Terminal POS Caisse & ESC/POS, NetScan Vulnérabilités DSI, Dispatch IA & Multi-Filiales (Batch 59)",
+    date: "2026-08-17",
+    added: [
+      "Terminal de caisse tactile POS et impression de tickets thermiques 80mm ESC/POS (pos-cashier.functions.ts, PosTerminalModal.tsx) avec split MoMo/Espèces et e-MECeF",
+      "Scanner de vulnérabilités et audit de cyber-résilience réseau DSI (network-scanner.functions.ts, NetworkVulnerabilityScannerModal.tsx) avec détection SMBv1/RDP",
+      "Moteur IA de dispatching intelligent et allocation de bancs atelier (smart-dispatch.functions.ts, SmartDispatchBoard.tsx) avec suivi du respect SLA 98.4%",
+      "Portail multi-filiales pour grands comptes (enterprise-branches.functions.ts, src/routes/$locale/app.organizations.$orgId.branches.tsx) avec budgets agences",
+    ],
+    fixed: [
+      "Calcul immédiat de la monnaie rendue lors des encaissements mixtes au comptoir",
+      "Attribution automatisée des dossiers critiques selon les spécialités fines des techniciens",
+    ],
+  },
+  {
     version: "2026.08.17 — IA Vision Schémas Micro-Soudure, AutoDeploy MDM, Coffre APDP & Garantie Care+ (Batch 58)",
     date: "2026-08-17",
     added: [

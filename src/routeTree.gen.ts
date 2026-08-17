@@ -116,6 +116,7 @@ import { Route as AppOrganizationsOrgIdEquipmentRouteImport } from './routes/app
 import { Route as AppOrganizationsOrgIdMaintenanceRouteImport } from './routes/app.organizations.$orgId.maintenance'
 import { Route as AppOrganizationsOrgIdSitesRouteImport } from './routes/app.organizations.$orgId.sites'
 import { Route as AppOrganizationsOrgIdTicketsRouteImport } from './routes/app.organizations.$orgId.tickets'
+import { Route as LocaleAppOrganizationsOrgIdBranchesRouteImport } from './routes/$locale/app.organizations.$orgId.branches'
 import { Route as AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport } from './routes/app.organizations.$orgId.equipment.$equipmentId'
 import { Route as AppOrganizationsOrgIdTicketsTicketIdRouteImport } from './routes/app.organizations.$orgId.tickets.$ticketId'
 
@@ -685,6 +686,12 @@ const AppOrganizationsOrgIdTicketsRoute =
     path: '/tickets',
     getParentRoute: () => AppOrganizationsOrgIdRoute,
   } as any)
+const LocaleAppOrganizationsOrgIdBranchesRoute =
+  LocaleAppOrganizationsOrgIdBranchesRouteImport.update({
+    id: '/app/organizations/$orgId/branches',
+    path: '/app/organizations/$orgId/branches',
+    getParentRoute: () => LocaleRoute,
+  } as any)
 const AppOrganizationsOrgIdEquipmentEquipmentIdRoute =
   AppOrganizationsOrgIdEquipmentEquipmentIdRouteImport.update({
     id: '/$equipmentId',
@@ -805,6 +812,7 @@ export interface FileRoutesByFullPath {
   '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/$locale/app/organizations/$orgId/branches': typeof LocaleAppOrganizationsOrgIdBranchesRoute
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
   '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
@@ -912,6 +920,7 @@ export interface FileRoutesByTo {
   '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/$locale/app/organizations/$orgId/branches': typeof LocaleAppOrganizationsOrgIdBranchesRoute
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
   '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
@@ -1024,6 +1033,7 @@ export interface FileRoutesById {
   '/app/organizations/$orgId/maintenance': typeof AppOrganizationsOrgIdMaintenanceRoute
   '/app/organizations/$orgId/sites': typeof AppOrganizationsOrgIdSitesRoute
   '/app/organizations/$orgId/tickets': typeof AppOrganizationsOrgIdTicketsRouteWithChildren
+  '/$locale/app/organizations/$orgId/branches': typeof LocaleAppOrganizationsOrgIdBranchesRoute
   '/app/organizations/$orgId/equipment/$equipmentId': typeof AppOrganizationsOrgIdEquipmentEquipmentIdRoute
   '/app/organizations/$orgId/tickets/$ticketId': typeof AppOrganizationsOrgIdTicketsTicketIdRoute
 }
@@ -1136,6 +1146,7 @@ export interface FileRouteTypes {
     | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
+    | '/$locale/app/organizations/$orgId/branches'
     | '/app/organizations/$orgId/equipment/$equipmentId'
     | '/app/organizations/$orgId/tickets/$ticketId'
   fileRoutesByTo: FileRoutesByTo
@@ -1243,6 +1254,7 @@ export interface FileRouteTypes {
     | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
+    | '/$locale/app/organizations/$orgId/branches'
     | '/app/organizations/$orgId/equipment/$equipmentId'
     | '/app/organizations/$orgId/tickets/$ticketId'
   id:
@@ -1354,6 +1366,7 @@ export interface FileRouteTypes {
     | '/app/organizations/$orgId/maintenance'
     | '/app/organizations/$orgId/sites'
     | '/app/organizations/$orgId/tickets'
+    | '/$locale/app/organizations/$orgId/branches'
     | '/app/organizations/$orgId/equipment/$equipmentId'
     | '/app/organizations/$orgId/tickets/$ticketId'
   fileRoutesById: FileRoutesById
@@ -2130,6 +2143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrganizationsOrgIdTicketsRouteImport
       parentRoute: typeof AppOrganizationsOrgIdRoute
     }
+    '/$locale/app/organizations/$orgId/branches': {
+      id: '/$locale/app/organizations/$orgId/branches'
+      path: '/app/organizations/$orgId/branches'
+      fullPath: '/$locale/app/organizations/$orgId/branches'
+      preLoaderRoute: typeof LocaleAppOrganizationsOrgIdBranchesRouteImport
+      parentRoute: typeof LocaleRoute
+    }
     '/app/organizations/$orgId/equipment/$equipmentId': {
       id: '/app/organizations/$orgId/equipment/$equipmentId'
       path: '/$equipmentId'
@@ -2293,6 +2313,7 @@ interface LocaleRouteChildren {
   LocaleBoutiqueIndexRoute: typeof LocaleBoutiqueIndexRoute
   LocaleQuartiersIndexRoute: typeof LocaleQuartiersIndexRoute
   LocaleReparationsIndexRoute: typeof LocaleReparationsIndexRoute
+  LocaleAppOrganizationsOrgIdBranchesRoute: typeof LocaleAppOrganizationsOrgIdBranchesRoute
 }
 
 const LocaleRouteChildren: LocaleRouteChildren = {
@@ -2340,6 +2361,8 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleBoutiqueIndexRoute: LocaleBoutiqueIndexRoute,
   LocaleQuartiersIndexRoute: LocaleQuartiersIndexRoute,
   LocaleReparationsIndexRoute: LocaleReparationsIndexRoute,
+  LocaleAppOrganizationsOrgIdBranchesRoute:
+    LocaleAppOrganizationsOrgIdBranchesRoute,
 }
 
 const LocaleRouteWithChildren =
