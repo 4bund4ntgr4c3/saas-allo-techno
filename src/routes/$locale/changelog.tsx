@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Prêt PC Courtoisie, Sauvetage Données Salle Blanche, Abonnements Sérénité & Points Relais (Batch 50)",
+    date: "2026-08-17",
+    added: [
+      "Service de réservation de PC et Mac portables de courtoisie (courtesy-devices.functions.ts, CourtesyDeviceBookingModal.tsx) avec caution et contrat numérique",
+      "Simulateur de laboratoire de récupération de données (data-recovery.ts, DataRecoveryEstimator.tsx) pour pannes logiques, PCB et interventions en salle blanche ISO 5",
+      "Page des abonnements de maintenance préventive Sérénité (src/routes/$locale/abonnements.tsx) pour particuliers, créateurs de contenu et flottes PME",
+      "Annuaire interactif des points relais et dépôts partenaires (drop-off-points.ts, DropOffPointsDirectory.tsx) avec horaires de navettes quotidiennes à Cotonou, Calavi et Porto-Novo",
+    ],
+    fixed: [
+      "Prise en compte des tarifs préférentiels d'abonnements annuels avec 2 mois offerts",
+      "Filtrage dynamique des points de collecte par ville",
+    ],
+  },
+  {
     version: "2026.08.17 — Alertes de Stock Atelier, Commande Fournisseur Automatique & Sitemap XML (Batch 49)",
     date: "2026-08-17",
     added: [

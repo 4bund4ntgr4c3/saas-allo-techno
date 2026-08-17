@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAbonnementsRouteImport } from './routes/$locale/abonnements'
 import { Route as LocaleAboutRouteImport } from './routes/$locale/about'
 import { Route as LocaleAvisRouteImport } from './routes/$locale/avis'
 import { Route as LocaleCatalogueRouteImport } from './routes/$locale/catalogue'
@@ -151,6 +152,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const LocaleIndexRoute = LocaleIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleAbonnementsRoute = LocaleAbonnementsRouteImport.update({
+  id: '/abonnements',
+  path: '/abonnements',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocaleAboutRoute = LocaleAboutRouteImport.update({
@@ -674,6 +680,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/abonnements': typeof LocaleAbonnementsRoute
   '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
@@ -777,6 +784,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/abonnements': typeof LocaleAbonnementsRoute
   '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
@@ -883,6 +891,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/abonnements': typeof LocaleAbonnementsRoute
   '/$locale/about': typeof LocaleAboutRoute
   '/$locale/avis': typeof LocaleAvisRoute
   '/$locale/catalogue': typeof LocaleCatalogueRoute
@@ -990,6 +999,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/demo'
     | '/sitemap.xml'
+    | '/$locale/abonnements'
     | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
@@ -1093,6 +1103,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/demo'
     | '/sitemap.xml'
+    | '/$locale/abonnements'
     | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
@@ -1198,6 +1209,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/demo'
     | '/sitemap.xml'
+    | '/$locale/abonnements'
     | '/$locale/about'
     | '/$locale/avis'
     | '/$locale/catalogue'
@@ -1374,6 +1386,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/$locale/'
       preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/abonnements': {
+      id: '/$locale/abonnements'
+      path: '/abonnements'
+      fullPath: '/$locale/abonnements'
+      preLoaderRoute: typeof LocaleAbonnementsRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/about': {
@@ -2153,6 +2172,7 @@ const LocaleWorkAtRouteWithChildren = LocaleWorkAtRoute._addFileChildren(
 )
 
 interface LocaleRouteChildren {
+  LocaleAbonnementsRoute: typeof LocaleAbonnementsRoute
   LocaleAboutRoute: typeof LocaleAboutRoute
   LocaleAvisRoute: typeof LocaleAvisRoute
   LocaleCatalogueRoute: typeof LocaleCatalogueRoute
@@ -2195,6 +2215,7 @@ interface LocaleRouteChildren {
 }
 
 const LocaleRouteChildren: LocaleRouteChildren = {
+  LocaleAbonnementsRoute: LocaleAbonnementsRoute,
   LocaleAboutRoute: LocaleAboutRoute,
   LocaleAvisRoute: LocaleAvisRoute,
   LocaleCatalogueRoute: LocaleCatalogueRoute,
