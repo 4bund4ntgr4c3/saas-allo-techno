@@ -34,6 +34,7 @@ import { Route as LocaleGuidesRouteImport } from './routes/$locale/guides'
 import { Route as LocaleHistoriqueRouteImport } from './routes/$locale/historique'
 import { Route as LocaleMagasinsRouteImport } from './routes/$locale/magasins'
 import { Route as LocaleMentionsLegalesRouteImport } from './routes/$locale/mentions-legales'
+import { Route as LocaleOutilsRouteImport } from './routes/$locale/outils'
 import { Route as LocalePanierRouteImport } from './routes/$locale/panier'
 import { Route as LocaleParrainageRouteImport } from './routes/$locale/parrainage'
 import { Route as LocalePremiersSecoursRouteImport } from './routes/$locale/premiers-secours'
@@ -237,6 +238,11 @@ const LocaleMagasinsRoute = LocaleMagasinsRouteImport.update({
 const LocaleMentionsLegalesRoute = LocaleMentionsLegalesRouteImport.update({
   id: '/mentions-legales',
   path: '/mentions-legales',
+  getParentRoute: () => LocaleRoute,
+} as any)
+const LocaleOutilsRoute = LocaleOutilsRouteImport.update({
+  id: '/outils',
+  path: '/outils',
   getParentRoute: () => LocaleRoute,
 } as any)
 const LocalePanierRoute = LocalePanierRouteImport.update({
@@ -697,6 +703,7 @@ export interface FileRoutesByFullPath {
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/parrainage': typeof LocaleParrainageRoute
   '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
@@ -801,6 +808,7 @@ export interface FileRoutesByTo {
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/parrainage': typeof LocaleParrainageRoute
   '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
@@ -908,6 +916,7 @@ export interface FileRoutesById {
   '/$locale/historique': typeof LocaleHistoriqueRoute
   '/$locale/magasins': typeof LocaleMagasinsRoute
   '/$locale/mentions-legales': typeof LocaleMentionsLegalesRoute
+  '/$locale/outils': typeof LocaleOutilsRoute
   '/$locale/panier': typeof LocalePanierRoute
   '/$locale/parrainage': typeof LocaleParrainageRoute
   '/$locale/premiers-secours': typeof LocalePremiersSecoursRoute
@@ -1016,6 +1025,7 @@ export interface FileRouteTypes {
     | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
+    | '/$locale/outils'
     | '/$locale/panier'
     | '/$locale/parrainage'
     | '/$locale/premiers-secours'
@@ -1120,6 +1130,7 @@ export interface FileRouteTypes {
     | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
+    | '/$locale/outils'
     | '/$locale/panier'
     | '/$locale/parrainage'
     | '/$locale/premiers-secours'
@@ -1226,6 +1237,7 @@ export interface FileRouteTypes {
     | '/$locale/historique'
     | '/$locale/magasins'
     | '/$locale/mentions-legales'
+    | '/$locale/outils'
     | '/$locale/panier'
     | '/$locale/parrainage'
     | '/$locale/premiers-secours'
@@ -1505,6 +1517,13 @@ declare module '@tanstack/react-router' {
       path: '/mentions-legales'
       fullPath: '/$locale/mentions-legales'
       preLoaderRoute: typeof LocaleMentionsLegalesRouteImport
+      parentRoute: typeof LocaleRoute
+    }
+    '/$locale/outils': {
+      id: '/$locale/outils'
+      path: '/outils'
+      fullPath: '/$locale/outils'
+      preLoaderRoute: typeof LocaleOutilsRouteImport
       parentRoute: typeof LocaleRoute
     }
     '/$locale/panier': {
@@ -2189,6 +2208,7 @@ interface LocaleRouteChildren {
   LocaleHistoriqueRoute: typeof LocaleHistoriqueRoute
   LocaleMagasinsRoute: typeof LocaleMagasinsRoute
   LocaleMentionsLegalesRoute: typeof LocaleMentionsLegalesRoute
+  LocaleOutilsRoute: typeof LocaleOutilsRoute
   LocalePanierRoute: typeof LocalePanierRoute
   LocaleParrainageRoute: typeof LocaleParrainageRoute
   LocalePremiersSecoursRoute: typeof LocalePremiersSecoursRoute
@@ -2232,6 +2252,7 @@ const LocaleRouteChildren: LocaleRouteChildren = {
   LocaleHistoriqueRoute: LocaleHistoriqueRoute,
   LocaleMagasinsRoute: LocaleMagasinsRoute,
   LocaleMentionsLegalesRoute: LocaleMentionsLegalesRoute,
+  LocaleOutilsRoute: LocaleOutilsRoute,
   LocalePanierRoute: LocalePanierRoute,
   LocaleParrainageRoute: LocaleParrainageRoute,
   LocalePremiersSecoursRoute: LocalePremiersSecoursRoute,

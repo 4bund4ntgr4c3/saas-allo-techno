@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Hub Utilitaires Toolbox, Bilan RSE Carbone Annuel, Objets Oubliés & Paiement 3x/4x (Batch 53)",
+    date: "2026-08-17",
+    added: [
+      "Hub de téléchargement d'utilitaires et pilotes officiels (driver-tools.ts, src/routes/$locale/outils.tsx) : outils de test batterie, santé disques SSD et désinfection",
+      "Générateur officiel de Bilan d'Impact Environnemental et RSE Annuel (rse-annual-report-pdf.ts) avec calcul des DEEE évités, tonnes de CO2 épargnées et litres d'eau préservés",
+      "Registre d'atelier des objets et accessoires oubliés (lost-and-found.functions.ts, LostAndFoundDrawer.tsx) avec alertes SMS directes aux propriétaires",
+      "Simulateur de financement et facilités de paiement échelonné en 3x ou 4x par Mobile Money (InstallmentPaymentCalculator.tsx) avec calendrier de prélèvements",
+    ],
+    fixed: [
+      "Prise en charge des échéanciers sans frais pour les réparations de cartes mères et dalles",
+      "En-têtes de certification RSE opposables pour les audits ESG d'Afrique de l'Ouest",
+    ],
+  },
+  {
     version: "2026.08.17 — Carte Wallet VIP, Lab Batteries Lithium, Alertes Cyber DSI & Baie Réseau (Batch 52)",
     date: "2026-08-17",
     added: [
