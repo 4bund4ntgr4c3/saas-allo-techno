@@ -701,7 +701,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Added
 
-- **Migration Lovable → Cloudflare Workers** : build autonome, wrangler, custom domain.
+- **Migration vers un build autonome Cloudflare Workers** : build autonome, wrangler, custom domain.
 - **Config Supabase** : nouveau projet, `.env` exclu de git, support clés `sb_publishable_`/`sb_secret_`.
 - **References** : padding adaptatif AT-YYYY-XXXX au-delà de 9999.
 - **Factory fault** : centralisée dans `types.ts`, suppression de 16 copies.

@@ -690,7 +690,7 @@ const ENTRIES: ChangelogEntry[] = [
     version: "2026.07.31",
     date: "2026-07-31",
     added: [
-      "Migration Lovable → Cloudflare Workers: standalone build, wrangler, custom domain",
+      "Migration vers un build autonome Cloudflare Workers: standalone build, wrangler, custom domain",
       "Supabase config: new project, .env excluded from git, sb_publishable_/sb_secret_ keys",
       "References: adaptive padding AT-YYYY-XXXX beyond 9999",
       "Fault factory: centralized in types.ts, removed 16 helper copies",
