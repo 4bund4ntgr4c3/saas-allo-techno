@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Contrat SLA B2B, Indice Réparabilité, Registre Anti-Recel & Démo VIP DSI (Batch 51)",
+    date: "2026-08-17",
+    added: [
+      "Générateur officiel de convention-cadre de maintenance B2B (b2b-contract-pdf.ts) avec niveaux de service SLA Platine/Gold/Silver, clauses d'astreinte et pénalités de retard",
+      "Module d'indice de réparabilité officiel sur 10 (repairability.ts, RepairabilityScoreBadge.tsx) évaluant la démontabilité, la disponibilité des pièces et la modularité",
+      "Registre national anti-recel et déclaration de matériel volé (stolen-device-registry.functions.ts, StolenDeviceLookupModal.tsx) pour vérification des S/N et IMEI",
+      "Parcours interactif de visite VIP guidée pour DSI (VipDsiTourModal.tsx) simulant un cycle complet de gestion de flotte et de tickets SLA",
+    ],
+    fixed: [
+      "Enrichissement de la palette globale Ctrl+K avec l'ensemble des 51 modules et routes",
+      "Sécurisation des attestations contractuelles avec vérification par QR code scellé",
+    ],
+  },
+  {
     version: "2026.08.17 — Prêt PC Courtoisie, Sauvetage Données Salle Blanche, Abonnements Sérénité & Points Relais (Batch 50)",
     date: "2026-08-17",
     added: [
