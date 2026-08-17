@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Ligne de Crédit B2B BNPL, Bourse Pièces UEMOA, Générateur PSSI & Métrologie ISO 9001 (Batch 61)",
+    date: "2026-08-17",
+    added: [
+      "Moteur d'évaluation de solvabilité et ligne de crédit B2B 30/60 jours (b2b-credit-scoring.functions.ts, B2bCreditLineModal.tsx) avec scoring IFU",
+      "Bourse d'approvisionnement et mutualisation de pièces détachées rares inter-ateliers UEMOA (spares-exchange.functions.ts, SparesExchangeBoard.tsx)",
+      "Générateur de Charte Informatique et Politique de Sécurité PSSI d'entreprise (pssi-policy-generator.ts, PssiGeneratorModal.tsx) conforme APDP Bénin",
+      "Registre de métrologie et d'étalonnage régulier des instruments de précision atelier (metrology-calibration.functions.ts, MetrologyCalibrationDrawer.tsx) conforme ISO 9001",
+    ],
+    fixed: [
+      "Plafonnement dynamique des lignes de crédit entreprises selon l'ancienneté RCCM et l'indice de conformité DGI",
+      "Mutualisation logistique des pièces rares sous 6h à 48h entre Cotonou, Lomé, Abidjan et Dakar",
+    ],
+  },
+  {
     version: "2026.08.17 — Allô Voice IA 24/7, Solaire Datacenter DSI, Chaîne de Garde Forensique & Primes MoMo (Batch 60)",
     date: "2026-08-17",
     added: [
