@@ -12,7 +12,7 @@ Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartph
 - **Protocoles de maintenance** : 6 catégories d'équipement × 6-8 tâches prédéfinies, checklists admin/maintenance refondues.
 - **Wizard dépannage-domicile** : zones tarifées + presets de prestations ; stepper B2B à icônes avec récap sticky ; PDFs contrat B2B, PV de restitution et certificat de garantie.
 - **Financement & conformité** : scoring crédit B2B BNPL, bourse pièces UEMOA, générateur PSSI, métrologie ISO 9001.
-- **Notifications WhatsApp Cloud API (freemium)** : envoi transactionnel gratuit (messages de service Meta) — templates français, repli automatique Termii → simulation. Secrets : `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`.
+- **Notifications WhatsApp Cloud API (freemium)** : envoi transactionnel gratuit (messages de service Meta) — templates français, repli sur simulation si non configuré. Secrets : `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`.
 
 ## Audit & Durcissement Sécurité (Batch 42)
 

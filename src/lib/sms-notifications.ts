@@ -1,6 +1,5 @@
 // ============================================================================
-// Allô Techno — Passerelle SMS Locale & Notifications Transactionnelles Bénin
-// Intégration passerelles SMS (Termii / GreenAPI / Africa's Talking)
+// Allô Techno — Notifications transactionnelles (WhatsApp Cloud API + simulation)
 // ============================================================================
 
 import { COMPANY, formatFcfa } from "@/data/catalog/company";
@@ -43,8 +42,7 @@ export function formatSmsMessage(payload: SmsPayload): string {
 /**
  * Envoie une notification transactionnelle via la passerelle configurée :
  * 1) WhatsApp Cloud API (Meta) — service conversations gratuites (freemium)
- * 2) SMS Termii — si WHATSAPP non configuré
- * 3) Simulation (log) — si aucune passerelle n'est configurée
+ * 2) Simulation (log) — si WhatsApp non configuré
  */
 export async function sendTransactionalSms(
   payload: SmsPayload,
@@ -60,44 +58,13 @@ export async function sendTransactionalSms(
     };
   }
   if (wa.reason === "api_error") {
-    console.warn("[SMS] WhatsApp Cloud en échec — repli sur la passerelle SMS");
+    console.warn("[SMS] WhatsApp Cloud en échec — repli sur la simulation");
   }
 
-  // 2) SMS Termii (ou provider local)
-  const apiKey = process.env["TERMII_API_KEY"] || process.env["SMS_GATEWAY_KEY"];
-
-  if (!apiKey) {
-    console.log(`[SMS SIMULATION] To: ${payload.recipientPhone} | Msg: ${messageText}`);
-    return {
-      success: true,
-      messageId: `SMS-BJ-SIM-${Date.now().toString().slice(-6)}`,
-    };
-  }
-
-  try {
-    const res = await fetch("https://api.ng.termii.com/api/sms/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: payload.recipientPhone.startsWith("229")
-          ? payload.recipientPhone
-          : `229${payload.recipientPhone}`,
-        from: "ALLOTECHNO",
-        sms: messageText,
-        type: "plain",
-        channel: "generic",
-        api_key: apiKey,
-      }),
-    });
-    const data = (await res.json()) as { message_id?: string };
-    return {
-      success: true,
-      messageId: data.message_id || `SMS-${Date.now()}`,
-    };
-  } catch {
-    return {
-      success: true,
-      messageId: `SMS-FALLBACK-${Date.now()}`,
-    };
-  }
+  // 2) Simulation
+  console.log(`[SMS SIMULATION] To: ${payload.recipientPhone} | Msg: ${messageText}`);
+  return {
+    success: true,
+    messageId: `SMS-BJ-SIM-${Date.now().toString().slice(-6)}`,
+  };
 }

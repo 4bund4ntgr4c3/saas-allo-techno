@@ -29,12 +29,10 @@
   // La clé publique VAPID doit aussi être exposée au client en var non secrète
   // VITE_VAPID_PUBLIC_KEY (src/lib/push-notifications.ts) pour l'abonnement.
   //
-  // SMS transactionnels (Termii) — sinon les SMS sont simulés (log seulement) :
-  // wrangler secret put TERMII_API_KEY
-  //
   // Notifications transactionnelles via WhatsApp Cloud API (Meta) — GRATUIT pour
   // les messages de service (OTP, avancement dossier, devis, retrait) depuis
-  // nov. 2024 ; prioritaire sur Termii quand configuré. Prérequis :
+  // nov. 2024 ; sans configuration, les notifications sont simulées (log).
+  // Prérequis :
   // 1. Compte Meta Business + numéro WhatsApp vérifié (Business Manager)
   // 2. Templates approuvés en français : dossier_enregistre, devis_prest,
   //    appareil_prest, rappel_garantie (voir src/lib/whatsapp-cloud.ts)

@@ -18,17 +18,21 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Stepper B2B à icônes** avec récap sticky (`B2BRequestForm`), `DeviceSearch`, auto-scroll multi-étapes du checkout, héros des pages entreprises/réparations avec badges SLA.
 - **PDFs contractuels** : contrat B2B (`b2b-contract-pdf.ts`), PV de restitution (`pv-restitution-pdf.ts`), certificat de garantie (`warranty-certificate-pdf.ts`).
 - **Financement & conformité** : scoring crédit B2B BNPL, bourse pièces UEMOA, générateur PSSI, métrologie ISO 9001.
-- **Notifications transactionnelles WhatsApp Cloud API** : nouvelle passerelle freemium prioritaire (`src/lib/whatsapp-cloud.ts`) — messages de service GRATUITS via Meta (service conversations, nov. 2024) ; mapping des 4 types de notification vers des templates français (`dossier_enregistre`, `devis_prest`, `appareil_prest`, `rappel_garantie`) ; chaîne de repli dans `sendTransactionalSms` : WhatsApp Cloud → Termii → simulation ; normalisation E.164 (+229) ; secrets `WHATSAPP_ACCESS_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` documentés dans `wrangler.jsonc` ; 4 tests unitaires (payload Graph API, mapping templates, repli simulation).
+- **Notifications transactionnelles WhatsApp Cloud API** : nouvelle passerelle freemium prioritaire (`src/lib/whatsapp-cloud.ts`) — messages de service GRATUITS via Meta (service conversations, nov. 2024) ; mapping des 4 types de notification vers des templates français (`dossier_enregistre`, `devis_prest`, `appareil_prest`, `rappel_garantie`) ; chaîne de repli dans `sendTransactionalSms` : WhatsApp Cloud → simulation ; normalisation E.164 (+229) ; secrets `WHATSAPP_ACCESS_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` documentés dans `wrangler.jsonc` ; 4 tests unitaires (payload Graph API, mapping templates, repli simulation).
 
 ### Changed
 
 - **Rate limiting total** : les 97 server fns des modules feat portent désormais un `rateLimit` (lectures 60/min, écritures 20/min, sensibles 10/min) dans les 42 fichiers `src/lib` concernés — la couverture b44 (188 fns) est étendue à l'ensemble des `createServerFn` du dépôt, sans exception.
-- **Documentation déploiement** (`wrangler.jsonc`) : procédure complète des secrets VAPID (`wrangler secret put VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`, var build `VITE_VAPID_PUBLIC_KEY`) et `TERMII_API_KEY` pour l'activation des SMS réels (sinon mode simulation).
+- **Documentation déploiement** (`wrangler.jsonc`) : procédure complète des secrets VAPID (`wrangler secret put VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`, var build `VITE_VAPID_PUBLIC_KEY`).
 
 ### Fixed
 
 - **Ids de rateLimit cassés** : kebab-case corrompus (`b-oo-kh-om-er-ep-ai-r`) et suffixes `-fn` résiduels sur 10 fichiers de b44 (accounting, b2b-audit, b2b-payments, contracts, demo, esg, maintenance-plans, quote, sla-metrics, whatsapp) — ids normalisés et uniques (41 fichiers).
 - **Tests de chiffrement push** : comparaison `Uint8Array` via `Array.from` (piège vitest), typage `BufferSource`/`noUncheckedIndexedAccess` dans le module push.
+
+### Removed
+
+- **Passerelle SMS Termii** : supprimée de `src/lib/sms-notifications.ts` (jamais configurée — aucune clé `TERMII_API_KEY` ; service payant redondant avec WhatsApp Cloud API) — la chaîne de repli devient WhatsApp Cloud → simulation ; secrets `TERMII_API_KEY` / `SMS_GATEWAY_KEY` et leur documentation retirés (`wrangler.jsonc`).
 
 ---
 
