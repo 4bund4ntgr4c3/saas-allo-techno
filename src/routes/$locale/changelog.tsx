@@ -37,6 +37,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    version: "2026.08.17 — Carte Wallet VIP, Lab Batteries Lithium, Alertes Cyber DSI & Baie Réseau (Batch 52)",
+    date: "2026-08-17",
+    added: [
+      "Carte de fidélité et pass VIP dématérialisé Apple/Google Wallet (digital-pass.ts, DigitalWalletCardModal.tsx) avec solde de points Allô Club et QR de remise",
+      "Laboratoire spécialisé en réparation et recellage de batteries lithium (battery-pack-repair.ts, BatteryPackRepairEstimator.tsx) pour trottinettes, VAE, drones et solaire",
+      "Flux de veille et bulletin d'alertes cybersécurité matérielle pour DSI (security-advisory.ts, SecurityAdvisoryFeed.tsx) couvrant les failles CPU, BIOS et ransomwares",
+      "Configurateur interactif de baie de brassage et serveurs d'entreprise (ServerRoomConfiguratorModal.tsx) dimensionnant les baies 12U/24U/42U, switchs PoE et onduleurs",
+    ],
+    fixed: [
+      "Affichage haute fidélité style Wallet pour smartphone sans application requise",
+      "Chiffrage automatique des architectures réseau avec main d'œuvre de pose certifiée",
+    ],
+  },
+  {
     version: "2026.08.17 — Contrat SLA B2B, Indice Réparabilité, Registre Anti-Recel & Démo VIP DSI (Batch 51)",
     date: "2026-08-17",
     added: [
