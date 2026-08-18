@@ -105,8 +105,11 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ### Changed
 
-- **Cron reminders verifie en prod** : POST `/api/cron-reminders` avec Bearer CRON_TOKEN → `errors: []` (4 escalations SLA B2B traitees) ; 401 sans token ; `/api/cron-demo-reset` desactive en prod (DEMO_ENABLED=false, attendu).
+- **Cron reminders verifie en prod** : POST `/api/cron-reminders` avec Bearer CRON_TOKEN → `errors: []` (4 escalations SLA B2B traitees) ; 401 sans token.
+- **Workflow horaire demo-reset repare** : echouait chaque heure pour 2 raisons — (1) le secret GitHub `CRON_TOKEN` n'existait pas (requete sans Bearer → 401) et (2) `BASE_URL` pointait vers `allotechno.africa` (DNS encore absent) ; secret `CRON_TOKEN` cree (libsodium, meme valeur que wrangler) et `BASE_URL` par defaut ramene au worker `saas-allo-techno.4bund4ntgr4c3.workers.dev` (a rebasculer sur le domaine apres le DNS). En plus, `/api/cron-demo-reset` retournait 500 quand la demo est desactivee (DEMO_ENABLED=false en prod) — c'est desormais un no-op proprement documente : nouvelle erreur typée `DemoDisabledError` dans `demo.functions.ts` → réponse `200 {"skipped":true}` (le 500 etait assimile a un echec par `curl -f` du workflow). Verifie : dispatch → run `success`.
 - **Backup GitHub hebdomadaire repare** (il echouait depuis sa creation : secret SUPABASE_DATABASE_URL vide puis URL invalide) — `backup.yml` et `scripts/backup-supabase.sh` utilisent desormais `supabase link` (pooler IPv4) + `supabase db dump` (schema + data) via le token API, sans DATABASE_URL ; secrets GitHub ajoutes : `SUPABASE_ACCESS_TOKEN` (token renouvele) et `SUPABASE_DB_PASSWORD` ; l'ancien secret `SUPABASE_DATABASE_URL` (URL inexistante) a ete supprime. Verifie : run de test OK (dump 344 Ko, artifact `supabase-backup-5`).
+- **4 warnings eslint react-refresh elimines** : les hooks/donnees exportes a cote des composants (perte du Fast Refresh en dev) sont extraits dans `src/lib/` — `use-network-status.ts`, `momo-provider.ts` (type `MoMoProvider` + `detectMomoProvider`, import de test mis a jour), `courier-mission.ts` (`CourierMission` + `MOCK_COURIER_MISSION`), `technician-profile.ts` (`TechnicianProfile` + `DEFAULT_TECH_PROFILE`). `npx eslint src/` : 0 erreur, 0 warning.
+- **Formatage Prettier applique** sur les fichiers des features recentes (18 fichiers) — la CI (`prettier --check src/`) echouerait sinon.
 - Token d'acces Supabase renouvele (ancien `sbp_...` revoque) — prerequisite pour `supabase db push` / `db query` / backup.
 
 ---

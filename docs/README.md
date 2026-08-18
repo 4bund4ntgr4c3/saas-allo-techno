@@ -2,7 +2,16 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.17-b45 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.18-b47 — [Changelog](./CHANGELOG.md)
+
+## Migrations & Crons (Batch 47)
+
+- **3 migrations jamais appliquées en prod** (`b2b_billing_maintenance`, `checklists`, `add_reservations_description`) appliquées via la CLI — le cron-reminders (2 erreurs SQL) et `supabase db push` sont maintenant propres.
+- **Journal des migrations réparé** : versions normalisées en timestamps purs, 8 migrations jumelées renommées (+1 min), `supabase db push` → « Remote database is up to date ».
+- **Crons vérifiés en prod** : `/api/cron-reminders` OK (`errors: []`), 401 sans token.
+- **Backup GitHub hebdomadaire réparé** : `supabase link` (pooler IPv4) + `supabase db dump` via token API — dump 344 Ko vérifié (artifact), secrets `SUPABASE_ACCESS_TOKEN`/`SUPABASE_DB_PASSWORD` créés.
+- **Workflow horaire demo-reset réparé** : secret `CRON_TOKEN` GitHub créé, `BASE_URL` sur le worker (DNS du domaine en attente) ; l'endpoint retourne un no-op `200 {"skipped":true}` quand la démo est désactivée (fini les échecs chaque heure).
+- **Lint 0 warning** : hooks/données extraits des composants vers `src/lib/` (fast refresh restauré), Prettier appliqué.
 
 ## Sécurité, Push Serveur & Dépannage Pro (Batch 45)
 
