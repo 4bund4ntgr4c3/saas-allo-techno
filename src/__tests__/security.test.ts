@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   generateTrackingCode,
   hashTrackingCode,
@@ -6,6 +6,7 @@ import {
   safeEqual,
   rateLimit,
 } from "@/lib/security";
+import type { buildContentSecurityPolicy as BuildCsp } from "@/lib/security-headers";
 
 describe("generateTrackingCode", () => {
   it("returns a 10-character code", () => {
@@ -72,5 +73,33 @@ describe("rateLimit", () => {
     expect(await rateLimit("rate-other-key", 1)).toBe(true);
     expect(await rateLimit("rate-other-key", 1)).toBe(false);
     expect(await rateLimit("rate-test-key", 3)).toBe(false);
+  });
+});
+
+describe("buildContentSecurityPolicy", () => {
+  let buildContentSecurityPolicy: typeof BuildCsp;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    process.env["SUPABASE_URL"] = "https://fcxmecphvflmbqayyioj.supabase.co";
+    ({ buildContentSecurityPolicy } = await import("@/lib/security-headers"));
+  });
+
+  it("autorise le WebSocket Realtime Supabase dans connect-src", () => {
+    const csp = buildContentSecurityPolicy("test-nonce");
+    expect(csp).toContain("wss://fcxmecphvflmbqayyioj.supabase.co");
+    expect(csp).toContain("https://fcxmecphvflmbqayyioj.supabase.co");
+    expect(csp).toContain("'nonce-test-nonce'");
+  });
+
+  it("reste stricte sans unsafe-inline ni directives faibles", () => {
+    const csp = buildContentSecurityPolicy("n");
+    const scriptSrc = csp.split(";").find((d) => d.trim().startsWith("script-src")) ?? "";
+    expect(scriptSrc).not.toContain("'unsafe-inline'");
+    expect(scriptSrc).toContain("'strict-dynamic'");
+    expect(scriptSrc).toContain("'nonce-n'");
+    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("base-uri 'self'");
   });
 });

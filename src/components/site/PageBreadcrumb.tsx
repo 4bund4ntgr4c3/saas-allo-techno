@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Breadcrumb,
@@ -28,18 +29,20 @@ export function PageBreadcrumb({ items }: { items: Crumb[] }) {
           </BreadcrumbLink>
         </BreadcrumbItem>
         {items.map((item, i) => (
-          <BreadcrumbItem key={i}>
+          <React.Fragment key={i}>
             <BreadcrumbSeparator />
-            {item.to ? (
-              <BreadcrumbLink asChild>
-                <Link to={item.to} params={{ locale }}>
-                  {item.label}
-                </Link>
-              </BreadcrumbLink>
-            ) : (
-              <BreadcrumbPage>{item.label}</BreadcrumbPage>
-            )}
-          </BreadcrumbItem>
+            <BreadcrumbItem>
+              {item.to ? (
+                <BreadcrumbLink asChild>
+                  <Link to={item.to} params={{ locale }}>
+                    {item.label}
+                  </Link>
+                </BreadcrumbLink>
+              ) : (
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+              )}
+            </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

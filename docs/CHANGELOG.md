@@ -7,6 +7,19 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.18-b46] - 2026-08-18 (Audit QA/SEO — Batch 46)
+
+### Fixed
+
+- **Hydration React #418 sur toutes les pages à fil d'Ariane** : `PageBreadcrumb` imbriquait un `<li>` (`BreadcrumbSeparator`) dans un `<li>` (`BreadcrumbItem`) — HTML invalide que le parseur serveur « répare » différemment du rendu client → erreur d'hydration à chaque chargement (dépannage-domicile, faq, entreprises, diagnostic-auto, work-at/test-technique…). Le séparateur est désormais un frère direct des items dans l'`ol`, conforme au pattern shadcn ; vérifié en dev (aucune erreur) sur 3 pages.
+- **WebSocket Realtime Supabase bloqué par la CSP en production** : `connect-src` n'autorisait que `https://…supabase.co`, or le Realtime se connecte en `wss://` (schéma non couvert par `https:`) → le chat temps réel, le suivi en direct et la réservation temps réel étaient silencieusement cassés. `buildContentSecurityPolicy` ajoute désormais l'origine `wss://` dérivée de `SUPABASE_URL` ; 2 tests de non-régression ajoutés (`security.test.ts` : wss présent dans connect-src, script-src sans unsafe-inline).
+
+### Changed
+
+- **`eslint.config.js`** : ajout d'`ignores` explicites (`node_modules`, `dist`, `.output`, `.vinxi`, `test-results`, `playwright-report`, `.eslintcache`) — `eslint .` scannait ~37 000 fichiers et timeout (10-20 min) ; passe désormais en ~43 s.
+
+---
+
 ## [2026.08.17-b45] - 2026-08-17 (Sécurité, Push Serveur & Dépannage Pro — Batch 45)
 
 ### Added
@@ -61,7 +74,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 - **Perf / Admin** : fin du N+1 sur /admin/dossiers - les donnees devis (quote_amount, quote_status, quote_decided_at, quote_token, warranty_months) sont desormais incluses dans la requete de liste des reservations (1 appel au lieu de 1 par dossier) ; le panneau devis (QuotePanel) n'appelle plus getReservationQuote par carte ; invalidation de la liste apres envoi de devis.
 - **Perf / Base de connaissances** : searchKB filtre cote SQL (titre/contenu ilike + tags cs) avec limit(50) au lieu de telecharger toute la table puis filtrer en JS.
-- **Perf / Catalogue** : photos signees avec 	ransform: { width: 480 } (le proxy render redimensionne cote CDN, la page ne telecharge plus les originaux ~5 Mo) ; la conversion webp n'est pas exposee par storage-js 2.111 (format restreint a origin).
+- **Perf / Catalogue** : photos signees avec ransform: { width: 480 } (le proxy render redimensionne cote CDN, la page ne telecharge plus les originaux ~5 Mo) ; la conversion webp n'est pas exposee par storage-js 2.111 (format restreint a origin).
 - **Architecture / Admin** : migration des 16 onglets admin du client Supabase vers des server functions (PII et donnees lues cote serveur uniquement) — AdminDashboard/StatsDashboard/AdminAnalytics/AdminTeam/AdminOrders/AdminLeadsClaims/AdminChecklistModal/AdminContent/AdminStock/AdminDeliveries/AdminSatisfaction/AdminPOS/AdminKanban/AdminChat/AdminDossiers ; nouvelles server fns dans admin.functions.ts (getAdminDashboardStats, getAdminAnalyticsData, getAdminTeamData, getAdminStatsData, getAdminOrdersData, getAdminLeadsData, getAdminDeliveries, getAdminCompletedDossiers, searchAdminReservations, getReservationStatusHistory, getAdminConversationReservations, getAdminReservations, getAdminReservationsPage, getAdminAssignments, getAdminTechnicians, getAdminOrganizations, createTechnicianAssignment, saveChecklist, setLeadStatus, setTeamRole, requireStaffGuard) et content.functions.ts (getAdminBlogPosts, getAdminBlogPost, getAdminReviews, getAdminLowStock, getAdminStock), toutes gardees par is_staff + rateLimit cote serveur (techniciens : vue limitee a leurs dossiers) ; seuls restent cote client les canaux Realtime (chat, atelier), les checks de role via RPC et logAudit (ecriture staff via RLS).
 - **Perf / Admin dossiers** : pagination serveur de /admin/dossiers — nouveaux filtres appliques en SQL (statut, recherche ilike, dates, B2B/particulier, technicien via derniere assignation) avec compteur exact et range() ; debounce de la recherche (400 ms) ; navigation Page/Precedent/Suivant avec total ; le tableau n'affiche plus que 50 dossiers par page au lieu de 200 en une fois.
 - **Perf / SSR** : route rules Nitro avec cache CDN pour les pages publiques — /fr|/en/blog/** et /fr|/en/catalogue servis avec `Cache-Control: public, s-maxage=300/600, stale-while-revalidate` (revalidation en arriere-plan, pas de purge manuelle) ; applique au HTML SSR, les reponses avec cookie restent non cachees.
@@ -73,6 +86,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ### Removed
 
 - Server fn getReservationQuote (remplacee par les donnees batchees) et son schema Zod.
+
 ---
 
 ## [2026.08.15-b42] — 2026-08-15 (Audit Sécurité & Nettoyage — Batch 42)

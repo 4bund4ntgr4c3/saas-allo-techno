@@ -1,5 +1,8 @@
 const SUPABASE_URL = process.env["SUPABASE_URL"] ?? "";
 const SUPABASE_ORIGIN = SUPABASE_URL ? new URL(SUPABASE_URL).origin : "";
+// Le Realtime Supabase se connecte en WebSocket (wss://). Un hôte autorisé en
+// https:// dans le CSP ne couvre PAS wss://, il faut l'ajouter explicitement.
+const SUPABASE_WSS_ORIGIN = SUPABASE_ORIGIN.replace(/^https:/, "wss:");
 const IS_PROD = import.meta.env.PROD;
 
 // En-têtes statiques, indépendants de la requête. Le CSP n'est PAS dans cette
@@ -29,7 +32,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
 export function buildContentSecurityPolicy(nonce: string): string {
   return [
     "default-src 'self'",
-    `connect-src 'self' ${SUPABASE_ORIGIN} https://api.supabase.co https://plausible.io`,
+    `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_WSS_ORIGIN} https://api.supabase.co https://plausible.io`,
     `img-src 'self' data: blob: ${SUPABASE_ORIGIN} https://fonts.gstatic.com https://placehold.co`,
     "font-src 'self' data: https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
