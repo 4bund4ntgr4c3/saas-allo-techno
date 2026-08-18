@@ -51,11 +51,13 @@ export const submitDisasterRecoveryContractFn = createServerFn({ method: "POST" 
       fleetReserveRequested: z.number().min(1),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ contractId: string; success: boolean; message: string }> => {
-    const contractId = `PCA-DRP-${Date.now().toString().slice(-6)}`;
-    return {
-      contractId,
-      success: true,
-      message: `Contrat de Continuité d'Activité ${contractId} validé pour ${input.companyName}. Réserve de ${input.fleetReserveRequested} PC pré-configurés mobilisables sous 4h.`,
-    };
-  });
+  .handler(
+    async ({ data: input }): Promise<{ contractId: string; success: boolean; message: string }> => {
+      const contractId = `PCA-DRP-${Date.now().toString().slice(-6)}`;
+      return {
+        contractId,
+        success: true,
+        message: `Contrat de Continuité d'Activité ${contractId} validé pour ${input.companyName}. Réserve de ${input.fleetReserveRequested} PC pré-configurés mobilisables sous 4h.`,
+      };
+    },
+  );

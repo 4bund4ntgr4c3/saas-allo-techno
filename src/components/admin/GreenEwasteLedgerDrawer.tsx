@@ -1,10 +1,7 @@
 import * as React from "react";
 import { Recycle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  getEwasteLedgerFn,
-  type EwasteScrapBatch,
-} from "@/lib/green-ewaste-ledger.functions";
+import { getEwasteLedgerFn, type EwasteScrapBatch } from "@/lib/green-ewaste-ledger.functions";
 
 export function GreenEwasteLedgerDrawer() {
   const [batches, setBatches] = React.useState<EwasteScrapBatch[]>([]);
@@ -12,11 +9,13 @@ export function GreenEwasteLedgerDrawer() {
   const [totalKg, setTotalKg] = React.useState(0);
 
   React.useEffect(() => {
-    getEwasteLedgerFn().then((res) => {
-      setBatches(res.batches);
-      setTotalGold(res.totalGoldGramsAllTime);
-      setTotalKg(res.totalKgProcessed);
-    }).catch(() => {});
+    getEwasteLedgerFn()
+      .then((res) => {
+        setBatches(res.batches);
+        setTotalGold(res.totalGoldGramsAllTime);
+        setTotalKg(res.totalKgProcessed);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -34,10 +33,16 @@ export function GreenEwasteLedgerDrawer() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="font-mono text-xs font-bold text-amber-600 border-amber-600/40 bg-amber-600/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold text-amber-600 border-amber-600/40 bg-amber-600/10"
+          >
             {totalGold}g d'Or Pur Récupéré
           </Badge>
-          <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10"
+          >
             {totalKg} kg DEEE Recyclés
           </Badge>
         </div>
@@ -94,7 +99,9 @@ export function GreenEwasteLedgerDrawer() {
 
             <div className="bg-background p-2 rounded-lg border border-border flex items-center justify-between text-[10px] font-mono text-muted-foreground">
               <span>Fonderie Agréée : {batch.destinationSmelter}</span>
-              <span className="text-emerald-600 font-bold">{batch.officialRseCertificateNumber}</span>
+              <span className="text-emerald-600 font-bold">
+                {batch.officialRseCertificateNumber}
+              </span>
             </div>
           </div>
         ))}

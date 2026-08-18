@@ -36,7 +36,12 @@ export function calculateRepairabilityPassport(
 
   return {
     overallScoreOutOf10: scoreOutOf10,
-    ratingClass: scoreOutOf10 >= 8.5 ? "A+ (Excellente)" : scoreOutOf10 >= 7.5 ? "A (Très Bonne)" : "B (Moyenne)",
+    ratingClass:
+      scoreOutOf10 >= 8.5
+        ? "A+ (Excellente)"
+        : scoreOutOf10 >= 7.5
+          ? "A (Très Bonne)"
+          : "B (Moyenne)",
     criteriaBreakdown: {
       documentationAvailability: docScore,
       disassemblyEase: disassemblyScore,

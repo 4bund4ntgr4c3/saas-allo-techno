@@ -63,9 +63,7 @@ export const getWarehouseStocksFn = createServerFn({ method: "POST" }).handler(
       (acc, i) => acc + i.haieViveStock + i.calaviStock + i.parakouStock,
       0,
     );
-    const alerts = MOCK_WAREHOUSE_STOCKS.filter(
-      (i) => i.reorderStatus !== "stock_nominal",
-    ).length;
+    const alerts = MOCK_WAREHOUSE_STOCKS.filter((i) => i.reorderStatus !== "stock_nominal").length;
 
     return {
       items: MOCK_WAREHOUSE_STOCKS,

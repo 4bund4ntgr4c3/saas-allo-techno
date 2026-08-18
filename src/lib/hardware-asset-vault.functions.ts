@@ -56,11 +56,15 @@ export const reportAssetStolenFn = createServerFn({ method: "POST" })
       incidentDetails: z.string().min(5),
     }),
   )
-  .handler(async ({ data: input }): Promise<{ success: boolean; policePvNumber: string; message: string }> => {
-    const pvNum = `PV-VOL-POLICE-BJ-2026-${Date.now().toString().slice(-6)}`;
-    return {
-      success: true,
-      policePvNumber: pvNum,
-      message: `Actif ${input.assetTag} blacklisté avec succès sur tout le réseau des réparateurs UEMOA. Fiche de signalement N° ${pvNum} générée.`,
-    };
-  });
+  .handler(
+    async ({
+      data: input,
+    }): Promise<{ success: boolean; policePvNumber: string; message: string }> => {
+      const pvNum = `PV-VOL-POLICE-BJ-2026-${Date.now().toString().slice(-6)}`;
+      return {
+        success: true,
+        policePvNumber: pvNum,
+        message: `Actif ${input.assetTag} blacklisté avec succès sur tout le réseau des réparateurs UEMOA. Fiche de signalement N° ${pvNum} générée.`,
+      };
+    },
+  );

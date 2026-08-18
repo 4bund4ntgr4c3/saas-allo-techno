@@ -7,19 +7,24 @@ import {
 } from "@/lib/thermal-compare-ai.functions";
 
 export function ThermalCompareInspector() {
-  const [selectedBoard, setSelectedBoard] = React.useState<"macbook_m1_a2337" | "dell_latitude_5420">("macbook_m1_a2337");
+  const [selectedBoard, setSelectedBoard] = React.useState<
+    "macbook_m1_a2337" | "dell_latitude_5420"
+  >("macbook_m1_a2337");
   const [loading, setLoading] = React.useState(false);
   const [result, setResult] = React.useState<ThermalComparisonResult | null>(null);
 
-  const fetchThermalData = React.useCallback(async (type: "macbook_m1_a2337" | "dell_latitude_5420") => {
-    setLoading(true);
-    try {
-      const res = await analyzeThermalMapFn({ data: { boardType: type } });
-      setResult(res);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchThermalData = React.useCallback(
+    async (type: "macbook_m1_a2337" | "dell_latitude_5420") => {
+      setLoading(true);
+      try {
+        const res = await analyzeThermalMapFn({ data: { boardType: type } });
+        setResult(res);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   React.useEffect(() => {
     fetchThermalData(selectedBoard);
@@ -64,7 +69,9 @@ export function ThermalCompareInspector() {
       {loading || !result ? (
         <div className="py-12 text-center space-y-2">
           <Loader2 className="size-8 text-primary animate-spin mx-auto" />
-          <p className="text-xs text-muted-foreground">Alignement spectral FLIR et calcul du gradient thermique...</p>
+          <p className="text-xs text-muted-foreground">
+            Alignement spectral FLIR et calcul du gradient thermique...
+          </p>
         </div>
       ) : (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -76,7 +83,10 @@ export function ThermalCompareInspector() {
                 Réf Inspection : {result.inspectionId} · Capteur Infrarouge FLIR E8-XT
               </span>
             </div>
-            <Badge variant="outline" className="font-mono text-xs text-destructive border-destructive/40 bg-destructive/10 font-bold">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs text-destructive border-destructive/40 bg-destructive/10 font-bold"
+            >
               Point Chaud Anormal : +{result.deltaTempCelsius}°C
             </Badge>
           </div>
@@ -84,15 +94,21 @@ export function ThermalCompareInspector() {
           {/* Temperature Comparison Blocks */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
-              <span className="text-[10px] text-muted-foreground block">Température Normale (Étalon)</span>
+              <span className="text-[10px] text-muted-foreground block">
+                Température Normale (Étalon)
+              </span>
               <strong className="font-mono text-base font-extrabold text-foreground block">
                 {result.nominalHotspotMaxTempCelsius}°C
               </strong>
-              <span className="text-[10px] text-muted-foreground">Profil de référence Allô Labs</span>
+              <span className="text-[10px] text-muted-foreground">
+                Profil de référence Allô Labs
+              </span>
             </div>
 
             <div className="p-3.5 rounded-xl border border-destructive/40 bg-destructive/5 space-y-1">
-              <span className="text-[10px] text-destructive font-bold block">Température Mesurée (Sous Tension)</span>
+              <span className="text-[10px] text-destructive font-bold block">
+                Température Mesurée (Sous Tension)
+              </span>
               <strong className="font-mono text-base font-extrabold text-destructive block">
                 {result.measuredHotspotTempCelsius}°C
               </strong>
@@ -100,11 +116,15 @@ export function ThermalCompareInspector() {
             </div>
 
             <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
-              <span className="text-[10px] text-muted-foreground block">Rail d'Alimentation Touché</span>
+              <span className="text-[10px] text-muted-foreground block">
+                Rail d'Alimentation Touché
+              </span>
               <strong className="font-mono text-base font-extrabold text-primary block">
                 {result.identifiedFailingChip.railAffected}
               </strong>
-              <span className="text-[10px] text-muted-foreground">Ligne en court-circuit franc</span>
+              <span className="text-[10px] text-muted-foreground">
+                Ligne en court-circuit franc
+              </span>
             </div>
           </div>
 
@@ -118,7 +138,8 @@ export function ThermalCompareInspector() {
                 </strong>
               </div>
               <Badge variant="outline" className="text-[10px] font-mono text-muted-foreground">
-                Pad X={result.identifiedFailingChip.coordinates.x}, Y={result.identifiedFailingChip.coordinates.y}
+                Pad X={result.identifiedFailingChip.coordinates.x}, Y=
+                {result.identifiedFailingChip.coordinates.y}
               </Badge>
             </div>
 

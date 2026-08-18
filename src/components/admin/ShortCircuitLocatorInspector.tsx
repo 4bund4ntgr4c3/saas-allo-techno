@@ -7,19 +7,24 @@ import {
 } from "@/lib/short-circuit-locator.functions";
 
 export function ShortCircuitLocatorInspector() {
-  const [selectedRail, setSelectedRail] = React.useState<"ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always">("ppbus_g3h_12v");
+  const [selectedRail, setSelectedRail] = React.useState<
+    "ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always"
+  >("ppbus_g3h_12v");
   const [loading, setLoading] = React.useState(false);
   const [guide, setGuide] = React.useState<InjectionSafetyGuide | null>(null);
 
-  const fetchGuide = React.useCallback(async (rail: "ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always") => {
-    setLoading(true);
-    try {
-      const res = await calculateVoltageInjectionFn({ data: { railType: rail } });
-      setGuide(res);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchGuide = React.useCallback(
+    async (rail: "ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always") => {
+      setLoading(true);
+      try {
+        const res = await calculateVoltageInjectionFn({ data: { railType: rail } });
+        setGuide(res);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   React.useEffect(() => {
     fetchGuide(selectedRail);
@@ -49,7 +54,9 @@ export function ShortCircuitLocatorInspector() {
             <button
               key={r.id}
               type="button"
-              onClick={() => setSelectedRail(r.id as "ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always")}
+              onClick={() =>
+                setSelectedRail(r.id as "ppbus_g3h_12v" | "vcc_core_cpu_1v" | "vcc_3v3_always")
+              }
               className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
                 selectedRail === r.id
                   ? "border-primary bg-primary text-primary-foreground font-bold shadow-xs"
@@ -65,7 +72,9 @@ export function ShortCircuitLocatorInspector() {
       {loading || !guide ? (
         <div className="py-12 text-center space-y-2">
           <Loader2 className="size-8 text-primary animate-spin mx-auto" />
-          <p className="text-xs text-muted-foreground">Calcul des lois d'Ohm et dissipation thermique en cours...</p>
+          <p className="text-xs text-muted-foreground">
+            Calcul des lois d'Ohm et dissipation thermique en cours...
+          </p>
         </div>
       ) : (
         <div className="space-y-5 animate-in fade-in duration-200 text-xs">
@@ -74,10 +83,14 @@ export function ShortCircuitLocatorInspector() {
             <div>
               <strong className="text-sm text-foreground block">{guide.railName}</strong>
               <span className="text-[11px] text-muted-foreground">
-                Tension nominale usine : {guide.nominalVoltage} V · Impédance mesurée : {guide.shortCircuitResistanceOhms} Ω
+                Tension nominale usine : {guide.nominalVoltage} V · Impédance mesurée :{" "}
+                {guide.shortCircuitResistanceOhms} Ω
               </span>
             </div>
-            <Badge variant="outline" className="font-mono text-xs text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold"
+            >
               Dissipation : {guide.dissipatedPowerWatts} Watts
             </Badge>
           </div>
@@ -85,15 +98,21 @@ export function ShortCircuitLocatorInspector() {
           {/* Safe Parameters Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="p-3.5 rounded-xl border border-primary/30 bg-primary/5 space-y-1">
-              <span className="text-[10px] text-primary font-bold block">Tension d'Injection Max Sécurisée</span>
+              <span className="text-[10px] text-primary font-bold block">
+                Tension d'Injection Max Sécurisée
+              </span>
               <strong className="font-mono text-xl font-extrabold text-primary block">
                 {guide.safeMaxInjectionVoltage} V
               </strong>
-              <span className="text-[10px] text-muted-foreground">Protection anti-claquage CPU</span>
+              <span className="text-[10px] text-muted-foreground">
+                Protection anti-claquage CPU
+              </span>
             </div>
 
             <div className="p-3.5 rounded-xl border border-border bg-surface/60 space-y-1">
-              <span className="text-[10px] text-muted-foreground block">Courant Limite Alimentation DC</span>
+              <span className="text-[10px] text-muted-foreground block">
+                Courant Limite Alimentation DC
+              </span>
               <strong className="font-mono text-xl font-extrabold text-foreground block">
                 {guide.currentLimitAmps} A
               </strong>
@@ -101,7 +120,9 @@ export function ShortCircuitLocatorInspector() {
             </div>
 
             <div className="p-3.5 rounded-xl border border-destructive/40 bg-destructive/5 space-y-1">
-              <span className="text-[10px] text-destructive font-bold block">Puissance Thermique Libérée</span>
+              <span className="text-[10px] text-destructive font-bold block">
+                Puissance Thermique Libérée
+              </span>
               <strong className="font-mono text-xl font-extrabold text-destructive block">
                 {guide.dissipatedPowerWatts} W
               </strong>
@@ -124,7 +145,9 @@ export function ShortCircuitLocatorInspector() {
 
           <div className="p-3 rounded-xl border border-destructive/30 bg-destructive/5 flex items-start gap-2 text-[11px] text-destructive">
             <AlertTriangle className="size-4 shrink-0 mt-0.5" />
-            <span><strong>Protocole Sécurité Atelier :</strong> {guide.warningNotice}</span>
+            <span>
+              <strong>Protocole Sécurité Atelier :</strong> {guide.warningNotice}
+            </span>
           </div>
         </div>
       )}

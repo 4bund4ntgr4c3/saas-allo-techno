@@ -6,9 +6,12 @@ import { formatFcfa } from "@/data/catalog/company";
 import { FAST_TRACK_OPTIONS } from "@/lib/express-fast-track";
 
 export function FastTrackPassModal() {
-  const [selectedOptionId, setSelectedOptionId] = React.useState<"fast_track_atelier" | "fast_track_sur_site_vip">("fast_track_atelier");
+  const [selectedOptionId, setSelectedOptionId] = React.useState<
+    "fast_track_atelier" | "fast_track_sur_site_vip"
+  >("fast_track_atelier");
 
-  const currentOption = FAST_TRACK_OPTIONS.find((o) => o.optionId === selectedOptionId) || FAST_TRACK_OPTIONS[0];
+  const currentOption =
+    FAST_TRACK_OPTIONS.find((o) => o.optionId === selectedOptionId) || FAST_TRACK_OPTIONS[0];
 
   return (
     <div className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
@@ -24,7 +27,10 @@ export function FastTrackPassModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-amber-600 border-amber-600/40 bg-amber-600/10 font-bold"
+        >
           Priorité Absolue
         </Badge>
       </div>
@@ -48,7 +54,9 @@ export function FastTrackPassModal() {
             <strong className="text-lg font-mono font-extrabold text-primary block mt-1">
               +{formatFcfa(opt.priceFcfa)}
             </strong>
-            <span className="text-[10px] text-muted-foreground">Délai maxi : {opt.delayMinutes} min</span>
+            <span className="text-[10px] text-muted-foreground">
+              Délai maxi : {opt.delayMinutes} min
+            </span>
           </button>
         ))}
       </div>
@@ -71,7 +79,11 @@ export function FastTrackPassModal() {
         </div>
       )}
 
-      <Button asChild variant="technical" className="w-full font-bold uppercase tracking-wider text-xs h-9">
+      <Button
+        asChild
+        variant="technical"
+        className="w-full font-bold uppercase tracking-wider text-xs h-9"
+      >
         <a
           href={`https://wa.me/22960000000?text=${encodeURIComponent(
             `Bonjour Allô Techno VIP, je souhaite activer le "${currentOption?.title}" (+${formatFcfa(

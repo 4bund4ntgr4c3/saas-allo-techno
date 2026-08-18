@@ -10,9 +10,13 @@ import {
 
 export function HardwareUpgradeCopilotModal() {
   const formTopRef = React.useRef<HTMLDivElement>(null);
-  const [deviceType, setDeviceType] = React.useState<"pc_portable" | "macbook" | "pc_bureau_tour">("pc_portable");
+  const [deviceType, setDeviceType] = React.useState<"pc_portable" | "macbook" | "pc_bureau_tour">(
+    "pc_portable",
+  );
   const [currentRamGb, setCurrentRamGb] = React.useState<number>(8);
-  const [currentStorageType, setCurrentStorageType] = React.useState<"hdd_mecanique" | "ssd_sata" | "ssd_nvme">("hdd_mecanique");
+  const [currentStorageType, setCurrentStorageType] = React.useState<
+    "hdd_mecanique" | "ssd_sata" | "ssd_nvme"
+  >("hdd_mecanique");
   const primaryUsage = "bureautique";
 
   const [loading, setLoading] = React.useState(false);
@@ -40,7 +44,10 @@ export function HardwareUpgradeCopilotModal() {
   };
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Zap className="size-5 text-amber-500 shrink-0" />
@@ -49,11 +56,15 @@ export function HardwareUpgradeCopilotModal() {
               Copilote IA d'Upgrade &amp; Boost Matériel
             </h3>
             <p className="text-xs text-muted-foreground">
-              Diagnostic des lenteurs et plan d'optimisation sur mesure pour tripler la vitesse de votre PC
+              Diagnostic des lenteurs et plan d'optimisation sur mesure pour tripler la vitesse de
+              votre PC
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Jusqu'à +350% Vitesse
         </Badge>
       </div>
@@ -115,7 +126,9 @@ export function HardwareUpgradeCopilotModal() {
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => setCurrentStorageType(s.id as "hdd_mecanique" | "ssd_sata" | "ssd_nvme")}
+                  onClick={() =>
+                    setCurrentStorageType(s.id as "hdd_mecanique" | "ssd_sata" | "ssd_nvme")
+                  }
                   className={`p-2 rounded-lg border text-center text-[10px] font-semibold transition-all ${
                     currentStorageType === s.id
                       ? "border-primary bg-primary text-primary-foreground font-bold shadow-xs"
@@ -135,7 +148,11 @@ export function HardwareUpgradeCopilotModal() {
           variant="technical"
           className="w-full font-bold uppercase tracking-wider text-xs h-9 mt-2"
         >
-          {loading ? <Loader2 className="size-4 mr-1.5 animate-spin" /> : <Sparkles className="size-4 mr-1.5" />}
+          {loading ? (
+            <Loader2 className="size-4 mr-1.5 animate-spin" />
+          ) : (
+            <Sparkles className="size-4 mr-1.5" />
+          )}
           {loading ? "Calcul de l'optimisation..." : "Générer mon Plan d'Upgrade IA"}
         </Button>
       </form>
@@ -145,9 +162,14 @@ export function HardwareUpgradeCopilotModal() {
           <div className="p-4 rounded-xl bg-surface/70 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span className="text-[10px] text-muted-foreground block">Diagnostic IA :</span>
-              <strong className="text-foreground text-xs leading-snug">{plan.currentBottleneckSummary}</strong>
+              <strong className="text-foreground text-xs leading-snug">
+                {plan.currentBottleneckSummary}
+              </strong>
             </div>
-            <Badge variant="outline" className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10 shrink-0">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs font-bold text-emerald-600 border-emerald-600/40 bg-emerald-600/10 shrink-0"
+            >
               +{plan.speedGainPercent}% de Vitesse
             </Badge>
           </div>
@@ -165,7 +187,9 @@ export function HardwareUpgradeCopilotModal() {
                 <div className="space-y-0.5">
                   <strong className="text-foreground text-xs block">{item.component}</strong>
                   <p className="text-[11px] text-muted-foreground">{item.description}</p>
-                  <span className="text-[10px] text-emerald-600 font-semibold block">{item.benefit}</span>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">
+                    {item.benefit}
+                  </span>
                 </div>
                 <strong className="font-mono text-sm font-extrabold text-primary shrink-0">
                   {formatFcfa(item.priceFcfa)}
@@ -176,7 +200,9 @@ export function HardwareUpgradeCopilotModal() {
 
           <div className="p-4 rounded-xl bg-surface/80 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-muted-foreground block text-[11px]">Budget Total Pièces &amp; Pose Comprise :</span>
+              <span className="text-muted-foreground block text-[11px]">
+                Budget Total Pièces &amp; Pose Comprise :
+              </span>
               <strong className="text-lg font-mono font-black text-primary">
                 {formatFcfa(plan.totalBudgetFcfa)}
               </strong>

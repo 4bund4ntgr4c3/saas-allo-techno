@@ -8,7 +8,8 @@ import { createServerFn } from "@tanstack/react-start";
 export interface EwasteScrapBatch {
   batchId: string;
   recycledDate: string;
-  sourceType: "Cartes Mères MacBook Déclassées" | "Serveurs Hors d'Usage" | "Smartphones & Tablettes HS";
+  sourceType:
+    "Cartes Mères MacBook Déclassées" | "Serveurs Hors d'Usage" | "Smartphones & Tablettes HS";
   totalWeightKg: number;
   extractedPreciousMetals: {
     goldGrams: number;

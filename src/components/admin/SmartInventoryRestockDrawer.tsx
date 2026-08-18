@@ -43,11 +43,17 @@ export function SmartInventoryRestockDrawer() {
 
         <div className="flex items-center gap-2">
           {alertsCount > 0 && (
-            <Badge variant="outline" className="font-mono text-xs font-bold text-destructive border-destructive/40 bg-destructive/10">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs font-bold text-destructive border-destructive/40 bg-destructive/10"
+            >
               {alertsCount} Alertes Rupture
             </Badge>
           )}
-          <Badge variant="outline" className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10">
+          <Badge
+            variant="outline"
+            className="font-mono text-xs font-bold text-primary border-primary/40 bg-primary/10"
+          >
             {totalUnits} Unités en Hubs
           </Badge>
         </div>
@@ -75,11 +81,18 @@ export function SmartInventoryRestockDrawer() {
                 </div>
 
                 {isCritical ? (
-                  <Badge variant="outline" className="text-destructive border-destructive/40 bg-destructive/10 text-[10px] font-bold">
-                    <AlertTriangle className="size-3 mr-1" /> Commande Fournisseur Déclenchée (+{item.recommendedOrderUnits} pcs)
+                  <Badge
+                    variant="outline"
+                    className="text-destructive border-destructive/40 bg-destructive/10 text-[10px] font-bold"
+                  >
+                    <AlertTriangle className="size-3 mr-1" /> Commande Fournisseur Déclenchée (+
+                    {item.recommendedOrderUnits} pcs)
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px] font-bold">
+                  <Badge
+                    variant="outline"
+                    className="text-emerald-600 border-emerald-600/40 bg-emerald-600/10 text-[10px] font-bold"
+                  >
                     <CheckCircle2 className="size-3 mr-1" /> Stock Nominal
                   </Badge>
                 )}
@@ -89,23 +102,34 @@ export function SmartInventoryRestockDrawer() {
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
                 <div className="p-2 rounded-lg bg-card border border-border">
                   <span className="text-[10px] text-muted-foreground block">Hub Haie Vive</span>
-                  <strong className="font-mono text-foreground font-bold">{item.haieViveStock} pcs</strong>
+                  <strong className="font-mono text-foreground font-bold">
+                    {item.haieViveStock} pcs
+                  </strong>
                 </div>
 
                 <div className="p-2 rounded-lg bg-card border border-border">
                   <span className="text-[10px] text-muted-foreground block">Hub Calavi</span>
-                  <strong className="font-mono text-foreground font-bold">{item.calaviStock} pcs</strong>
+                  <strong className="font-mono text-foreground font-bold">
+                    {item.calaviStock} pcs
+                  </strong>
                 </div>
 
                 <div className="p-2 rounded-lg bg-card border border-border">
                   <span className="text-[10px] text-muted-foreground block">Hub Parakou</span>
-                  <strong className="font-mono text-foreground font-bold">{item.parakouStock} pcs</strong>
+                  <strong className="font-mono text-foreground font-bold">
+                    {item.parakouStock} pcs
+                  </strong>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-muted-foreground pt-1">
-                <span>Fournisseur Agréé : <strong className="text-foreground">{item.preferredSupplier}</strong></span>
-                <span>Seuil de sécurité global : <strong>{item.safetyThreshold} pcs</strong></span>
+                <span>
+                  Fournisseur Agréé :{" "}
+                  <strong className="text-foreground">{item.preferredSupplier}</strong>
+                </span>
+                <span>
+                  Seuil de sécurité global : <strong>{item.safetyThreshold} pcs</strong>
+                </span>
               </div>
             </div>
           );

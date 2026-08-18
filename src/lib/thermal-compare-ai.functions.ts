@@ -37,7 +37,9 @@ export const analyzeThermalMapFn = createServerFn({ method: "POST" })
       measuredHotspotTempCelsius: 87.2,
       deltaTempCelsius: 48.7,
       identifiedFailingChip: {
-        componentDesignator: isMac ? "U8100 (PMIC Secondaire)" : "PU701 (Contrôleur Alimentation RAM DDR4)",
+        componentDesignator: isMac
+          ? "U8100 (PMIC Secondaire)"
+          : "PU701 (Contrôleur Alimentation RAM DDR4)",
         description: isMac
           ? "Court-circuit interne franc sur le convertisseur Buck 1.8V"
           : "Transistor MOSFET supérieur en court-circuit drain-source",

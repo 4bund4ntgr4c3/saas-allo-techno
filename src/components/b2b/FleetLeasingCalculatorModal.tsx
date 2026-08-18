@@ -17,7 +17,10 @@ export function FleetLeasingCalculatorModal() {
   }, [laptopUnitsCount, tier, durationMonths]);
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Building2 className="size-5 text-primary shrink-0" />
@@ -26,11 +29,15 @@ export function FleetLeasingCalculatorModal() {
               Simulateur de Leasing Informatique &amp; LOA Flotte B2B
             </h3>
             <p className="text-xs text-muted-foreground">
-              Équipez votre entreprise sans apport initial avec loyers mensuels 100% déductibles (OPEX)
+              Équipez votre entreprise sans apport initial avec loyers mensuels 100% déductibles
+              (OPEX)
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Rachat à 1 FCFA
         </Badge>
       </div>
@@ -39,7 +46,9 @@ export function FleetLeasingCalculatorModal() {
       <div className="space-y-4 text-xs">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-muted-foreground block mb-1">Nombre d'ordinateurs à équiper :</label>
+            <label className="text-muted-foreground block mb-1">
+              Nombre d'ordinateurs à équiper :
+            </label>
             <Input
               type="number"
               min={3}
@@ -104,7 +113,9 @@ export function FleetLeasingCalculatorModal() {
             <strong className="font-mono text-lg font-extrabold text-primary block">
               {formatFcfa(plan.totalMonthlyBillingFcfa)} / mois
             </strong>
-            <span className="text-[10px] text-muted-foreground">Soit {formatFcfa(plan.monthlyRentalFeePerUnitFcfa)} / PC</span>
+            <span className="text-[10px] text-muted-foreground">
+              Soit {formatFcfa(plan.monthlyRentalFeePerUnitFcfa)} / PC
+            </span>
           </div>
 
           <div className="p-3 rounded-xl bg-card border border-border space-y-1">
@@ -116,7 +127,9 @@ export function FleetLeasingCalculatorModal() {
           </div>
 
           <div className="p-3 rounded-xl bg-card border border-emerald-600/30 space-y-1">
-            <span className="text-[10px] text-emerald-600 font-bold block">Option Rachat Final</span>
+            <span className="text-[10px] text-emerald-600 font-bold block">
+              Option Rachat Final
+            </span>
             <strong className="font-mono text-lg font-extrabold text-emerald-600 block">
               1 FCFA
             </strong>
@@ -137,7 +150,11 @@ export function FleetLeasingCalculatorModal() {
         </div>
       </div>
 
-      <Button asChild variant="technical" className="w-full font-bold uppercase tracking-wider text-xs h-9">
+      <Button
+        asChild
+        variant="technical"
+        className="w-full font-bold uppercase tracking-wider text-xs h-9"
+      >
         <a
           href={`https://wa.me/22960000000?text=${encodeURIComponent(
             `Bonjour Allô Techno B2B, nous souhaitons recevoir une offre de leasing informatique LOA (${plan.laptopUnitsCount} PC sur ${plan.durationMonths} mois à ${formatFcfa(

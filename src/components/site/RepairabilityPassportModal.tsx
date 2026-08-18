@@ -7,7 +7,9 @@ import { calculateRepairabilityPassport } from "@/lib/repairability-passport";
 
 export function RepairabilityPassportModal() {
   const formTopRef = React.useRef<HTMLDivElement>(null);
-  const [deviceModel, setDeviceModel] = React.useState("Lenovo ThinkPad T14 Gen 2 (AMD Ryzen 5 Pro)");
+  const [deviceModel, setDeviceModel] = React.useState(
+    "Lenovo ThinkPad T14 Gen 2 (AMD Ryzen 5 Pro)",
+  );
   const [isModular, setIsModular] = React.useState(true);
   const [hasSchematics, setHasSchematics] = React.useState(true);
 
@@ -16,7 +18,10 @@ export function RepairabilityPassportModal() {
   }, [deviceModel, isModular, hasSchematics]);
 
   return (
-    <div ref={formTopRef} className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200">
+    <div
+      ref={formTopRef}
+      className="border border-border bg-card p-5 sm:p-7 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-xl animate-in fade-in duration-200"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2.5">
           <Leaf className="size-5 text-emerald-600 shrink-0" />
@@ -29,7 +34,10 @@ export function RepairabilityPassportModal() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs text-emerald-600 border-emerald-600/40 bg-emerald-600/10 font-bold"
+        >
           Score : {passport.overallScoreOutOf10} / 10
         </Badge>
       </div>
@@ -37,12 +45,10 @@ export function RepairabilityPassportModal() {
       {/* Input Form */}
       <div className="space-y-4 text-xs">
         <div>
-          <label className="text-muted-foreground block mb-1">Modèle d'ordinateur ou équipement :</label>
-          <Input
-            required
-            value={deviceModel}
-            onChange={(e) => setDeviceModel(e.target.value)}
-          />
+          <label className="text-muted-foreground block mb-1">
+            Modèle d'ordinateur ou équipement :
+          </label>
+          <Input required value={deviceModel} onChange={(e) => setDeviceModel(e.target.value)} />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -53,8 +59,12 @@ export function RepairabilityPassportModal() {
               isModular ? "border-primary bg-primary/10" : "border-border bg-surface"
             }`}
           >
-            <strong className="text-foreground block text-xs">Châssis Modulaire &amp; Vis Standard</strong>
-            <span className="text-[10px] text-muted-foreground">Composants (RAM, SSD, Clavier) remplaçables</span>
+            <strong className="text-foreground block text-xs">
+              Châssis Modulaire &amp; Vis Standard
+            </strong>
+            <span className="text-[10px] text-muted-foreground">
+              Composants (RAM, SSD, Clavier) remplaçables
+            </span>
           </button>
 
           <button
@@ -64,8 +74,12 @@ export function RepairabilityPassportModal() {
               hasSchematics ? "border-primary bg-primary/10" : "border-border bg-surface"
             }`}
           >
-            <strong className="text-foreground block text-xs">Schémas Vectoriels Disponibles</strong>
-            <span className="text-[10px] text-muted-foreground">Documentation électronique de laboratoire</span>
+            <strong className="text-foreground block text-xs">
+              Schémas Vectoriels Disponibles
+            </strong>
+            <span className="text-[10px] text-muted-foreground">
+              Documentation électronique de laboratoire
+            </span>
           </button>
         </div>
       </div>
@@ -93,28 +107,38 @@ export function RepairabilityPassportModal() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-muted-foreground">
             <div className="p-2.5 rounded-lg bg-card border border-border flex justify-between">
               <span>Documentation technique :</span>
-              <strong className="font-mono text-foreground">{passport.criteriaBreakdown.documentationAvailability} / 20</strong>
+              <strong className="font-mono text-foreground">
+                {passport.criteriaBreakdown.documentationAvailability} / 20
+              </strong>
             </div>
 
             <div className="p-2.5 rounded-lg bg-card border border-border flex justify-between">
               <span>Facilité de démontage :</span>
-              <strong className="font-mono text-foreground">{passport.criteriaBreakdown.disassemblyEase} / 20</strong>
+              <strong className="font-mono text-foreground">
+                {passport.criteriaBreakdown.disassemblyEase} / 20
+              </strong>
             </div>
 
             <div className="p-2.5 rounded-lg bg-card border border-border flex justify-between">
               <span>Disponibilité des pièces :</span>
-              <strong className="font-mono text-foreground">{passport.criteriaBreakdown.sparePartsAvailability} / 20</strong>
+              <strong className="font-mono text-foreground">
+                {passport.criteriaBreakdown.sparePartsAvailability} / 20
+              </strong>
             </div>
 
             <div className="p-2.5 rounded-lg bg-card border border-border flex justify-between">
               <span>Rapport de prix des pièces :</span>
-              <strong className="font-mono text-foreground">{passport.criteriaBreakdown.sparePartsPricingRatio} / 20</strong>
+              <strong className="font-mono text-foreground">
+                {passport.criteriaBreakdown.sparePartsPricingRatio} / 20
+              </strong>
             </div>
           </div>
         </div>
 
         <div className="pt-2 flex items-center justify-between text-[11px] text-muted-foreground border-t border-border/60">
-          <span>Durabilité estimée : <strong>{passport.expectedDeviceLifespanYears} ans</strong></span>
+          <span>
+            Durabilité estimée : <strong>{passport.expectedDeviceLifespanYears} ans</strong>
+          </span>
           <span className="font-bold text-emerald-600 flex items-center gap-1">
             <CheckCircle2 className="size-3.5" /> Reconditionné Certifié Allô Techno
           </span>
@@ -126,7 +150,8 @@ export function RepairabilityPassportModal() {
         onClick={() => window.print()}
         className="w-full font-bold uppercase tracking-wider text-xs h-9"
       >
-        <Printer className="size-3.5 mr-1.5" /> Imprimer l'Étiquette Passeport Circulaire avec QR Code
+        <Printer className="size-3.5 mr-1.5" /> Imprimer l'Étiquette Passeport Circulaire avec QR
+        Code
       </Button>
     </div>
   );

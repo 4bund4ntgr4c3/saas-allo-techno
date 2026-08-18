@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { calculateTradeInValue } from "@/lib/trade-in";
 import { getCurrentTropicalClimateAdvisory } from "@/lib/tropical-climate-advisor";
-import { detectMomoProvider } from "@/components/shop/MobileMoneyDirectPay";
+import { detectMomoProvider } from "@/lib/momo-provider";
 
 describe("Allô Techno — Tests des Outils Avancés (Batches 44-48)", () => {
   describe("1. Simulateur Trade-In & Argus", () => {
