@@ -8,19 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: IPv6 diagnostic
-        run: |
-          echo "--- getent db direct ---"
-          getent ahosts db.fcxmecphvflmbqayyioj.supabase.co || echo "NO RESOLUTION"
-          echo "--- ip route ---"
-          ip -6 route || echo "no ipv6 route"
-          echo "--- curl ipv6 test ---"
-          curl -6 -s -o /dev/null -w "ipv6 status:%{http_code}\n" --max-time 15 "https://db.fcxmecphvflmbqayyioj.supabase.co:5432" || echo "curl -6 FAIL"
       - name: Apply missing migrations
-        if: always()
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
         run: |
-          echo "secret present: $([ -n \"$DATABASE_URL\" ] && echo yes || echo no)"
+          echo "len:${#DATABASE_URL}"
+          echo "URL=$DATABASE_URL"
           sudo apt-get install -y postgresql-client
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db-fix-temp.sql || echo "PSQL_EXIT:$?"
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db-fix-temp.sql
