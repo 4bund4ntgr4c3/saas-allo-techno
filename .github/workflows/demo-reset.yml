@@ -9,7 +9,7 @@ on:
       base_url:
         description: "URL de base du site (défaut : production)"
         required: false
-        default: "https://allotechno.africa"
+        default: "https://saas-allo-techno.4bund4ntgr4c3.workers.dev"
 
 jobs:
   demo-reset:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Appeler l'API de réinitialisation de la démo
         env:
-          BASE_URL: ${{ github.event.inputs.base_url || 'https://allotechno.africa' }}
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://saas-allo-techno.4bund4ntgr4c3.workers.dev' }}
         run: >
           curl -sS -X POST
           -H "Authorization: Bearer ${{ secrets.CRON_TOKEN }}"
