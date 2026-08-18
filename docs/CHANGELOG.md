@@ -91,6 +91,26 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.18-b47] — 2026-08-18 (Migrations & Crons — Batch 47)
+
+### Fixed
+
+- **3 migrations jamais appliquees en prod** (detectees via le cron-reminders qui retournait 2 erreurs SQL) :
+  - `20260818000000_b2b_billing_maintenance.sql` : tables `organization_invoices`, `organization_invoice_items`, `equipment_maintenance_schedules` + RLS/policies/indexes — appliquee ;
+  - `20260817000000_checklists.sql` : colonnes `reservations.intake_checklist` / `qa_checklist` + index GIN — appliquee ;
+  - `20260825000000_add_reservations_description.sql` : colonne `reservations.description` (requete B2B tickets) — appliquee.
+- **Journal des migrations reparable** : `supabase_migrations.schema_migrations` contenait 17 versions avec suffixe (format non reconnu par la CLI) et ne refletait pas les migrations appliquees via le dashboard — versions normalisees en timestamps purs (14 chiffres), 22 entrees inserees pour les migrations reellement appliquees.
+- **8 migrations jumelees** (2 fichiers au meme timestamp : 20260809100000_feature_flags_webhooks, 20260809120000_batch21_workshops_suppliers_chat, 20260809130000_reservation_source, 20260809150000_batch23_reservation_comments, 20260810140000_batch28_multi_workshop, 20260811000000_inventory_thresholds, 20260812000000_performance_indexes, 20260813000000_rls_hardening) renommees avec un timestamp unique (+1 minute) pour que la CLI puisse les representer dans le journal (cle primaire = timestamp).
+- **`supabase db push` fonctionnel** : retourne « Remote database is up to date » (avant : erreurs LegacyDbPushMissingLocalError/LegacyDbPushApplyError).
+
+### Changed
+
+- **Cron reminders verifie en prod** : POST `/api/cron-reminders` avec Bearer CRON_TOKEN → `errors: []` (4 escalations SLA B2B traitees) ; 401 sans token ; `/api/cron-demo-reset` desactive en prod (DEMO_ENABLED=false, attendu).
+- **Secret GitHub `SUPABASE_DATABASE_URL` cree** (chiffrement libsodium via API) — le workflow hebdomadaire backup.yml echouait car le secret etait vide. ATTENTION : l'URL y deployee (`db.<ref>.pooler.supabase.com`) ne resout pas — a remplacer par la vraie URL du pooler (Dashboard → Settings → Database → Connection string → URI) pour reparer les backups, sinon retirer le secret.
+- Token d'acces Supabase renouvele (ancien `sbp_...` revoque) — prerequisite pour `supabase db push` / `db query`.
+
+---
+
 ## [2026.08.15-b42] — 2026-08-15 (Audit Sécurité & Nettoyage — Batch 42)
 
 ### Added
