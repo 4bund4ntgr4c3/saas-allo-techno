@@ -38,6 +38,21 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     version:
+      "2026.08.18 — Audit Licences SAM DSI, Injection Tension Court-Circuit, Leasing LOA & Coffre Cloud AES-256 (Batch 64)",
+    date: "2026-08-18",
+    added: [
+      "Moteur d'audit de conformité logicielle SAM et devis de régularisation OEM (software-license-auditor.functions.ts, SoftwareLicenseAuditorModal.tsx)",
+      "Simulateur de laboratoire d'injection de tension sécurisée anti-claquage CPU (short-circuit-locator.functions.ts, ShortCircuitLocatorInspector.tsx)",
+      "Simulateur de location financière leasing LOA 12/24/36 mois avec option d'achat à 1 FCFA (fleet-leasing-calculator.ts, FleetLeasingCalculatorModal.tsx)",
+      "Coffre-fort Cloud de sauvegarde d'urgence pré-atelier chiffré AES-256 avec code PIN (emergency-cloud-vault.functions.ts, EmergencyCloudVaultModal.tsx)",
+    ],
+    fixed: [
+      "Chiffrage automatique des pénalités juridiques évitées lors de la régularisation des licences d'entreprise",
+      "Calcul des lois d'Ohm pour identifier la dissipation thermique des CMS défaillants sans risque pour le SoC",
+    ],
+  },
+  {
+    version:
       "2026.08.18 — Coffre-Fort Actifs Anti-Vol DSI, Copilote IA Upgrade, Réappro Multi-Hubs & Passeport DPP (Batch 63)",
     date: "2026-08-18",
     added: [
