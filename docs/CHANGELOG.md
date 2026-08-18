@@ -106,8 +106,8 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ### Changed
 
 - **Cron reminders verifie en prod** : POST `/api/cron-reminders` avec Bearer CRON_TOKEN → `errors: []` (4 escalations SLA B2B traitees) ; 401 sans token ; `/api/cron-demo-reset` desactive en prod (DEMO_ENABLED=false, attendu).
-- **Secret GitHub `SUPABASE_DATABASE_URL` cree** (chiffrement libsodium via API) — le workflow hebdomadaire backup.yml echouait car le secret etait vide. ATTENTION : l'URL y deployee (`db.<ref>.pooler.supabase.com`) ne resout pas — a remplacer par la vraie URL du pooler (Dashboard → Settings → Database → Connection string → URI) pour reparer les backups, sinon retirer le secret.
-- Token d'acces Supabase renouvele (ancien `sbp_...` revoque) — prerequisite pour `supabase db push` / `db query`.
+- **Backup GitHub hebdomadaire repare** (il echouait depuis sa creation : secret SUPABASE_DATABASE_URL vide puis URL invalide) — `backup.yml` et `scripts/backup-supabase.sh` utilisent desormais `supabase link` (pooler IPv4) + `supabase db dump` (schema + data) via le token API, sans DATABASE_URL ; secrets GitHub ajoutes : `SUPABASE_ACCESS_TOKEN` (token renouvele) et `SUPABASE_DB_PASSWORD` ; l'ancien secret `SUPABASE_DATABASE_URL` (URL inexistante) a ete supprime. Verifie : run de test OK (dump 344 Ko, artifact `supabase-backup-5`).
+- Token d'acces Supabase renouvele (ancien `sbp_...` revoque) — prerequisite pour `supabase db push` / `db query` / backup.
 
 ---
 
