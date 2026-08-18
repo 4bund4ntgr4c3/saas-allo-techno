@@ -14,6 +14,7 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
+          mkdir -p supabase/.temp && echo "fcxmecphvflmbqayyioj" > supabase/.temp/project-ref
           bash scripts/backup-supabase.sh
       - name: Upload backup artifact
         uses: actions/upload-artifact@v4
