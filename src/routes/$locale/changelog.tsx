@@ -38,6 +38,21 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     version:
+      "2026.08.18 — Coffre-Fort Actifs Anti-Vol DSI, Copilote IA Upgrade, Réappro Multi-Hubs & Passeport DPP (Batch 63)",
+    date: "2026-08-18",
+    added: [
+      "Coffre-fort cryptographique d'actifs matériels et signalement de vol anti-recel UEMOA (hardware-asset-vault.functions.ts, HardwareAssetVaultModal.tsx)",
+      "Copilote IA d'upgrade et optimisation des performances matérielles +350% (hardware-upgrade-copilot.functions.ts, HardwareUpgradeCopilotModal.tsx)",
+      "Gestionnaire multi-entrepôts et réapprovisionnement automatique Haie Vive/Calavi/Parakou (smart-inventory-restock.functions.ts, SmartInventoryRestockDrawer.tsx)",
+      "Passeport Numérique de Produit Circulaire DPP et calculateur d'indice de réparabilité sur 10 (repairability-passport.ts, RepairabilityPassportModal.tsx)",
+    ],
+    fixed: [
+      "Verrouillage instantané des UUID et adresses MAC sur l'ensemble du réseau des ateliers lors d'un vol",
+      "Émission du Passeport Numérique Circulaire avec QR Code imprimable conforme aux normes écologiques",
+    ],
+  },
+  {
+    version:
       "2026.08.18 — PCA / DRP Informatique DSI, ThermoCompare IA, Pass Fast-Track VIP & Registre Métaux DEEE (Batch 62)",
     date: "2026-08-18",
     added: [
