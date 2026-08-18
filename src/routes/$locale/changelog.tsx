@@ -38,6 +38,21 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     version:
+      "2026.08.18 — PCA / DRP Informatique DSI, ThermoCompare IA, Pass Fast-Track VIP & Registre Métaux DEEE (Batch 62)",
+    date: "2026-08-18",
+    added: [
+      "Simulateur de Plan de Continuité d'Activité et réserve de flotte express sous 4h (disaster-recovery-plan.functions.ts, DisasterRecoveryPlannerModal.tsx)",
+      "IA de diagnostic infrarouge différentiel de cartes mères ThermoCompare (thermal-compare-ai.functions.ts, ThermalCompareInspector.tsx) avec détection de court-circuit",
+      "Pass coupe-file et conciergerie express 45 min VIP en salon privé ou sur site (express-fast-track.ts, FastTrackPassModal.tsx)",
+      "Registre d'économie circulaire DEEE et pesée officielle des métaux précieux or/argent/cuivre (green-ewaste-ledger.functions.ts, GreenEwasteLedgerDrawer.tsx)",
+    ],
+    fixed: [
+      "Chiffrage automatique des pertes financières par heure d'arrêt selon la masse salariale et le chiffre d'affaires",
+      "Superposition spectrale FLIR haute sensibilité pour identifier les CMS en fuite à plus de 65°C",
+    ],
+  },
+  {
+    version:
       "2026.08.17 — Ligne de Crédit B2B BNPL, Bourse Pièces UEMOA, Générateur PSSI & Métrologie ISO 9001 (Batch 61)",
     date: "2026-08-17",
     added: [
