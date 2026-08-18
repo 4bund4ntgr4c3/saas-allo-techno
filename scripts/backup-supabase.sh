@@ -1,14 +1,7 @@
 #!/bin/bash
-# Backup Supabase database
-# Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY env vars
+# Backup Supabase database (via Supabase CLI + API, pas besoin de DATABASE_URL)
+# Requires: SUPABASE_ACCESS_TOKEN env var (Personal Access Token)
 # Usage: ./scripts/backup-supabase.sh
-#
-# Setup:
-# 1. Go to Supabase Dashboard > Settings > Database > Connection string > URI
-# 2. Copy the connection string (the "URI" tab, not the direct connection one)
-# 3. Set it as DATABASE_URL in your GitHub Secrets (Settings > Secrets and variables > Actions)
-# 4. The secret name should be SUPABASE_DATABASE_URL
-# 5. This workflow will also need the postgresql-client installed (handled in the workflow)
 
 set -euo pipefail
 
@@ -20,15 +13,19 @@ mkdir -p "$BACKUP_DIR"
 
 echo "Starting Supabase backup..."
 
-# Using pg_dump via Supabase's database connection string
-# You can find the connection string in Supabase Dashboard > Settings > Database
-if [ -z "${DATABASE_URL:-}" ]; then
-  echo "ERROR: DATABASE_URL environment variable is not set."
-  echo "Find it in Supabase Dashboard > Settings > Database > Connection string > URI"
+if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+  echo "ERROR: SUPABASE_ACCESS_TOKEN environment variable is not set."
   exit 1
 fi
 
-pg_dump "$DATABASE_URL" > "$BACKUP_FILE"
+# Schema + roles
+npx --yes supabase db dump --linked -f "$BACKUP_FILE.schema.sql"
+# Data only
+npx --yes supabase db dump --linked --data-only -f "$BACKUP_FILE.data.sql"
+
+# Concatenate into one file
+cat "$BACKUP_FILE.schema.sql" "$BACKUP_FILE.data.sql" > "$BACKUP_FILE"
+rm -f "$BACKUP_FILE.schema.sql" "$BACKUP_FILE.data.sql"
 
 echo "Backup saved to: $BACKUP_FILE"
 echo "Size: $(du -h "$BACKUP_FILE" | cut -f1)"
