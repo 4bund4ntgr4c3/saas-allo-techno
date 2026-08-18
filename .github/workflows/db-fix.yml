@@ -1,0 +1,16 @@
+name: TEMP db-fix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  db-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply missing migrations
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+        run: |
+          sudo apt-get install -y postgresql-client
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db-fix-temp.sql
