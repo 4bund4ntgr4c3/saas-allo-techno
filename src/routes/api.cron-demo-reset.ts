@@ -36,6 +36,14 @@ export const Route = createFileRoute("/api/cron-demo-reset")({
             headers: { "content-type": "application/json" },
           });
         } catch (err) {
+          // Démo désactivée sur cette instance : le job est un no-op légitime,
+          // pas une erreur (sinon le cron horaire échoue en boucle en prod).
+          const { DemoDisabledError } = await import("@/lib/demo.functions");
+          if (err instanceof DemoDisabledError) {
+            return new Response(JSON.stringify({ skipped: true, reason: err.message }), {
+              headers: { "content-type": "application/json" },
+            });
+          }
           logger.error("Demo environment reset failed", err as Error);
           return new Response(JSON.stringify({ error: (err as Error).message }), {
             status: 500,

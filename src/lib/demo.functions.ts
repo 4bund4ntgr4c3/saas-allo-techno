@@ -16,6 +16,15 @@ import type { Database, Enums, TablesInsert } from "@/integrations/supabase/type
 
 export const DEMO_PASSWORD = process.env["DEMO_PASSWORD"] ?? "Demo@2026";
 
+// Lever la démo (reset horaire) sur une instance où elle est désactivée n'est
+// pas une erreur d'exécution : le job doit se terminer en no-op proprement.
+export class DemoDisabledError extends Error {
+  constructor() {
+    super("L'environnement démo est désactivé sur cette instance.");
+    this.name = "DemoDisabledError";
+  }
+}
+
 // L'environnement de démonstration (comptes admin/staff à mot de passe connu)
 // est réservé au développement local et aux déploiements qui l'activent
 // explicitement (ENABLE_DEMO=true) HORS production. En production, le seed est
@@ -474,7 +483,7 @@ export async function resetAndSeedDemoEnvironment(): Promise<{
   timestamp: string;
 }> {
   if (!DEMO_ENABLED) {
-    throw new Error("L'environnement démo est désactivé sur cette instance.");
+    throw new DemoDisabledError();
   }
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
