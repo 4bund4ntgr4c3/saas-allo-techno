@@ -4,6 +4,7 @@ import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import type { Locale } from "@/lib/i18n/locales";
 
 export const Route = createFileRoute("/$locale/reservation")({
@@ -19,11 +20,13 @@ export const Route = createFileRoute("/$locale/reservation")({
 
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/reservation";
     return {
       meta: [
         { title: translate(locale, "reservation.meta.title") },
         { name: "description", content: translate(locale, "reservation.meta.description") },
       ],
+      links: [...localeSeo(locale, suffix).links],
     };
   },
   errorComponent: ErrorRoute,

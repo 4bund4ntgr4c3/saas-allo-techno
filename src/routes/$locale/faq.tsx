@@ -5,12 +5,14 @@ import { FAQ } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import type { Locale } from "@/lib/i18n/locales";
 import { PageBreadcrumb } from "@/components/site/PageBreadcrumb";
 
 export const Route = createFileRoute("/$locale/faq")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/faq";
     return {
       meta: [
         { title: translate(locale, "faq.meta.title") },
@@ -37,6 +39,7 @@ export const Route = createFileRoute("/$locale/faq")({
           }),
         },
       ],
+      links: [...localeSeo(locale, suffix).links],
     };
   },
   component: Faq,

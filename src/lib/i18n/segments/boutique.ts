@@ -4,7 +4,7 @@ const fr = {
   // Boutique — meta
   "boutique.meta.title": "Boutique accessoires — Coques, chargeurs, batteries | Allô Techno",
   "boutique.meta.description":
-    "Accessoires testés en atelier à Abomey-Calavi : coques, verres trempés, chargeurs rapides, câbles, batteries externes et écouteurs. Prix en FCFA, retrait ou livraison.",
+    "Accessoires testés en atelier à Abomey-Calavi : coques, verres trempés, chargeurs, câbles, batteries, écouteurs. Prix en FCFA, retrait ou livraison.",
   "boutique.og.title": "Boutique d'accessoires — Allô Techno",
   "boutique.og.description":
     "Coques, chargeurs, batteries et écouteurs disponibles en stock à Abomey-Calavi.",

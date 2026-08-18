@@ -3,7 +3,7 @@ import { registerSegments } from "@/lib/i18n/dictionaries";
 const fr = {
   "engagements.meta.title": "Nos engagements — Diagnostic gratuit & garantie 6 mois | Allô Techno",
   "engagements.meta.description":
-    "Diagnostic gratuit, prix affiché avant intervention, réparation le jour même, garantie pièce et main-d'œuvre, photos de suivi par étape et délais tenus. Atelier à Abomey-Calavi.",
+    "Diagnostic gratuit, prix affiché avant intervention, réparation le jour même, garantie pièce et main-d'œuvre, photos de suivi. Atelier à Abomey-Calavi.",
   "engagements.meta.og.title": "Nos engagements — Allô Techno",
   "engagements.meta.og.description":
     "Ce que nous promettons avant, pendant et après chaque réparation à Abomey-Calavi.",
@@ -37,7 +37,7 @@ const fr = {
 const en = {
   "engagements.meta.title": "Our commitments — Free diagnosis & 6-month warranty | Allô Techno",
   "engagements.meta.description":
-    "Free diagnosis, price shown before repair, same-day repair, parts & labor warranty, step-by-step photo updates and respected deadlines. Workshop in Abomey-Calavi.",
+    "Free diagnosis, prices shown before repair, same-day repair, parts & labor warranty, step-by-step photo updates. Workshop in Abomey-Calavi.",
   "engagements.meta.og.title": "Our commitments — Allô Techno",
   "engagements.meta.og.description":
     "What we promise before, during and after every repair in Abomey-Calavi.",

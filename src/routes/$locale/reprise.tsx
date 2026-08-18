@@ -8,11 +8,13 @@ import { formatFcfa } from "@/data/catalog/company";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import type { Locale } from "@/lib/i18n/locales";
 
 export const Route = createFileRoute("/$locale/reprise")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/reprise";
     return {
       meta: [
         { title: translate(locale, "reprise.meta.title") },
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/$locale/reprise")({
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [...localeSeo(locale, suffix).links],
     };
   },
   component: Reprise,

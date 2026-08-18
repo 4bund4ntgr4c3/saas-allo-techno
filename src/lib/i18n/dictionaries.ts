@@ -140,7 +140,7 @@ const fr: Dictionary = {
   // Home — hero
   "home.meta.title": "Allô Techno — Réparation smartphone & ordinateur à Abomey-Calavi",
   "home.meta.description":
-    "Réparation experte de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi. Diagnostic gratuit, pièces certifiées, garantie 6 mois.",
+    "Réparation experte de smartphones, tablettes, MacBook, iMac, consoles et montres à Abomey-Calavi. Diagnostic gratuit, pièces certifiées, garantie 6 mois.",
   "home.og.title": "Allô Techno — Réparation d'appareils électroniques au Bénin",
   "home.og.description":
     "Diagnostic gratuit, devis en 15 minutes, réparation express à Abomey-Calavi.",

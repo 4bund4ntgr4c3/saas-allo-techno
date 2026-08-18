@@ -17,6 +17,8 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 ### Changed
 
 - **`eslint.config.js`** : ajout d'`ignores` explicites (`node_modules`, `dist`, `.output`, `.vinxi`, `test-results`, `playwright-report`, `.eslintcache`) — `eslint .` scannait ~37 000 fichiers et timeout (10-20 min) ; passe désormais en ~43 s.
+- **SEO / Canonical + hreflang manquants sur 12 pages publiques** : `localeSeo` (canonical + alternates fr/en/x-default + og:url) ajouté aux routes entreprises, contact, faq, garantie, reprise, mentions-legales, devis, checkout, panier, reservation, avis et marketplace-sequestre (qui pointait par erreur vers `/boutique`) — ces pages n'avaient ni canonical ni hreflang dans le `<head>`.
+- **SEO / Longueurs des métadonnées** : 9 titres/descriptions ramenés sous les limites Google (title ≤70, description ≤155) — home (164→153), garantie (163→142), reconditionnés (title 80→62, desc 168→146), boutique (167→148), engagements (182→151), quartiers (195→146) + équivalents anglais.
 
 ---
 

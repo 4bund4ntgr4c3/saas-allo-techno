@@ -4,7 +4,7 @@ const fr = {
   // Quartiers — index (meta)
   "quartiers.meta.title": "Réparation téléphone à Abomey-Calavi — tous les quartiers | Allô Techno",
   "quartiers.meta.description":
-    "Écran, batterie et micro-soudure dans les 8 quartiers d'Abomey-Calavi : Zogbadjè, Godomey, Akassato, Tankpè, Cocotomey, Womey, Calavi Kpota, Hêvié. Diagnostic gratuit, enlèvement à domicile.",
+    "Écran, batterie et micro-soudure à Abomey-Calavi : Zogbadjè, Godomey, Akassato, Tankpè, Cocotomey, Womey, Calavi Kpota, Hêvié. Diagnostic gratuit.",
   "quartiers.meta.og.title": "Réparation téléphone à Abomey-Calavi — tous les quartiers",
   "quartiers.meta.og.description":
     "Notre atelier intervient dans les 8 quartiers d'Abomey-Calavi, avec enlèvement à domicile.",
@@ -54,7 +54,7 @@ const en = {
   // Areas — index (meta)
   "quartiers.meta.title": "Phone repair in Abomey-Calavi — every area | Allô Techno",
   "quartiers.meta.description":
-    "Screen, battery and micro-soldering in all 8 areas of Abomey-Calavi: Zogbadjè, Godomey, Akassato, Tankpè, Cocotomey, Womey, Calavi Kpota, Hêvié. Free diagnosis, home pickup.",
+    "Screen, battery and micro-soldering in Abomey-Calavi: Zogbadjè, Godomey, Akassato, Tankpè, Cocotomey, Womey, Calavi Kpota, Hêvié. Free diagnosis.",
   "quartiers.meta.og.title": "Phone repair in Abomey-Calavi — every area",
   "quartiers.meta.og.description":
     "Our workshop serves all 8 areas of Abomey-Calavi, with home pickup.",

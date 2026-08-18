@@ -12,10 +12,10 @@ import { localeSeo } from "@/lib/seo";
 export const Route = createFileRoute("/$locale/marketplace-sequestre")({
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
-    const seo = localeSeo(locale, "/boutique");
+    const seo = localeSeo(locale, "/marketplace-sequestre");
     return {
       meta: [
-        { title: "Marketplace d'Occasion Certifiée & Tiers de Confiance Séquestre — Allô Techno" },
+        { title: "Marketplace d'Occasion Certifiée & Séquestre — Allô Techno" },
         {
           name: "description",
           content:

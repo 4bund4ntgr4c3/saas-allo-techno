@@ -14,6 +14,7 @@ import { ErrorRoute } from "@/components/ErrorRoute";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
 import { normalizeLocale } from "@/lib/i18n/locales";
+import { localeSeo } from "@/lib/seo";
 import { trackPlausibleEvent } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n/locales";
 
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/$locale/panier")({
   },
   head: ({ params }) => {
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
+    const suffix = "/panier";
     return {
       meta: [
         { title: translate(locale, "panier.meta.title") },
@@ -40,6 +42,7 @@ export const Route = createFileRoute("/$locale/panier")({
         },
         { name: "robots", content: "noindex, nofollow" },
       ],
+      links: [...localeSeo(locale, suffix).links],
     };
   },
   errorComponent: ErrorRoute,

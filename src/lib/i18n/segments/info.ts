@@ -139,7 +139,7 @@ const fr = {
   // Garantie — meta
   "garantie.meta.title": "Garantie réparation 6 mois — Allô Techno Abomey-Calavi",
   "garantie.meta.description":
-    "Écrans et batteries premium garantis 6 mois, micro-soudure 3 mois, pièces Apple d'origine jusqu'à 1 an. Conditions détaillées de la garantie Allô Techno.",
+    "Écrans et batteries premium garantis 6 mois, micro-soudure 3 mois, pièces Apple d'origine jusqu'à 1 an. Conditions de la garantie Allô Techno.",
   "garantie.og.title": "Garantie réparation — Allô Techno",
   "garantie.og.description":
     "Ce que couvre notre garantie, sa durée, et comment la faire jouer en atelier.",

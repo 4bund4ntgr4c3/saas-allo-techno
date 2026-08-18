@@ -2,10 +2,9 @@ import { registerSegments } from "@/lib/i18n/dictionaries";
 
 const fr = {
   // Reconditionnés — meta
-  "reconditionnes.meta.title":
-    "Téléphones reconditionnés — iPhone, Samsung, Tecno à Abomey-Calavi | Allô Techno",
+  "reconditionnes.meta.title": "Téléphones reconditionnés testés à Abomey-Calavi | Allô Techno",
   "reconditionnes.meta.description":
-    "Smartphones reconditionnés testés en atelier à Abomey-Calavi : iPhone, Samsung, Redmi, Tecno et Infinix. Batterie certifiée, garantie 3 à 6 mois, paiement Mobile Money.",
+    "Smartphones reconditionnés testés à Abomey-Calavi : iPhone, Samsung, Redmi, Tecno, Infinix. Batterie certifiée, garantie 3 à 6 mois, Mobile Money.",
   "reconditionnes.og.title": "Téléphones reconditionnés — Allô Techno",
   "reconditionnes.og.description":
     "Des smartphones reconditionnés, testés dans notre atelier et garantis à Abomey-Calavi.",
@@ -53,10 +52,9 @@ const fr = {
 
 const en = {
   // Refurbished — meta
-  "reconditionnes.meta.title":
-    "Refurbished phones — iPhone, Samsung, Tecno in Abomey-Calavi | Allô Techno",
+  "reconditionnes.meta.title": "Refurbished phones tested in Abomey-Calavi | Allô Techno",
   "reconditionnes.meta.description":
-    "Workshop-tested refurbished smartphones in Abomey-Calavi: iPhone, Samsung, Redmi, Tecno and Infinix. Certified battery, 3 to 6-month warranty, Mobile Money payment.",
+    "Workshop-tested refurbished phones in Abomey-Calavi: iPhone, Samsung, Redmi, Tecno, Infinix. Certified battery, 3 to 6-month warranty, Mobile Money.",
   "reconditionnes.og.title": "Refurbished phones — Allô Techno",
   "reconditionnes.og.description":
     "Refurbished smartphones, tested in our workshop and guaranteed in Abomey-Calavi.",
