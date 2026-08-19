@@ -120,12 +120,18 @@ export const submitShopOrder = createServerFn({ method: "POST" })
     }
 
     // Réserver le stock avant de créer la commande. En cas d'échec (table
-    // non migrée, stock insuffisant), on annule la commande côté client.
+    // non migrée, stock insuffisant), le stock déjà réservé est restitué
+    // (best-effort) et la commande est annulée côté client.
     const { reserveInventory, restoreInventory } = await import("@/lib/content.functions");
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]!;
       const ok = await reserveInventory(supabaseAdmin, line.slug, line.qty);
       if (!ok) {
         console.warn(`[shop] stock refused for ${line.slug} ×${line.qty}`);
+        for (const prev of lines.slice(0, i)) {
+          const restored = await restoreInventory(supabaseAdmin, prev.slug, prev.qty);
+          if (!restored) console.warn(`[shop] stock restore failed for ${prev.slug} ×${prev.qty}`);
+        }
         throw new Error(
           `Stock insuffisant ou indisponible pour « ${line.name} ». Réessayez plus tard ou contactez-nous.`,
         );
@@ -175,6 +181,17 @@ export const submitShopOrder = createServerFn({ method: "POST" })
       throw new Error("La commande n'a pas pu être enregistrée. Réessayez.");
     }
 
+    // Consommer le code promo une fois la commande enregistrée (single-use →
+    // épuisé, multi-use → compteur). Échec non bloquant : la commande existe.
+    if (promoApplied) {
+      const { data: consumed, error: promoError } = await supabaseAdmin.rpc("consume_promo", {
+        _code: code,
+      });
+      if (promoError || consumed !== true) {
+        console.warn(`[shop] consume_promo failed for ${code}`, promoError);
+      }
+    }
+
     const { notifyStaffNewLead } = await import("@/lib/notifications");
     void notifyStaffNewLead({
       source: "boutique",
@@ -182,6 +199,15 @@ export const submitShopOrder = createServerFn({ method: "POST" })
       phone: data.phone,
       email: data.email || null,
       message,
+    });
+
+    const { triggerWebhooks } = await import("@/lib/webhooks.functions");
+    void triggerWebhooks("lead.new", {
+      reference,
+      source: "boutique",
+      name: data.name,
+      phone: data.phone,
+      total: finalTotal,
     });
 
     return { reference, promoApplied, discountAmount, finalTotal };

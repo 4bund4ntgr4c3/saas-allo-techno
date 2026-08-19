@@ -1,9 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestUrl } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireStaff } from "@/lib/rbac";
 import { rateLimit } from "@/lib/security";
 import { createLogger } from "@/lib/logger";
+import { getSafePaymentOrigin } from "@/lib/origin.server";
 
 // Paiement Mobile Money des contrats B2B (SLA). Deux prestataires (XOF) :
 //  - FedaPay (hosted checkout) : initiateSlaPaymentFn provider="fedapay" ;
@@ -79,7 +79,7 @@ export const initiateSlaPaymentFn = createServerFn({ method: "POST" })
     }
 
     const tx_ref = `SLA-${data.contractNumber}-${Date.now().toString().slice(-6)}`;
-    const origin = getRequestUrl({ xForwardedHost: true }).origin;
+    const origin = getSafePaymentOrigin();
 
     const { data: org } = await supabaseAdmin
       .from("organizations")

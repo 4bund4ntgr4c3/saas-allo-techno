@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface ThermalComparisonResult {
   inspectionId: string;
@@ -28,6 +29,9 @@ export const analyzeThermalMapFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<ThermalComparisonResult> => {
+    if (!(await rateLimit("thermal-compare", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const isMac = input.boardType === "macbook_m1_a2337";
 
     return {

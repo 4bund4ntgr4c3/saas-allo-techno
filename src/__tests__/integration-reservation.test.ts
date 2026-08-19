@@ -16,6 +16,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
       select: mockSelect.mockReturnThis(),
       update: mockUpdate.mockReturnThis(),
       eq: mockEq.mockReturnThis(),
+      contains: vi.fn().mockReturnThis(),
       maybeSingle: mockMaybeSingle,
       single: mockSingle,
     })),

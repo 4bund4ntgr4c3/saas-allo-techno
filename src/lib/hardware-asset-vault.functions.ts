@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface HardwareAssetRecord {
   assetTag: string;
@@ -42,6 +43,9 @@ export const MOCK_ASSETS_VAULT: HardwareAssetRecord[] = [
 
 export const getHardwareAssetsVaultFn = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ assets: HardwareAssetRecord[]; totalProtectedCount: number }> => {
+    if (!(await rateLimit("hw-assets-list", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     return {
       assets: MOCK_ASSETS_VAULT,
       totalProtectedCount: MOCK_ASSETS_VAULT.length,
@@ -60,6 +64,9 @@ export const reportAssetStolenFn = createServerFn({ method: "POST" })
     async ({
       data: input,
     }): Promise<{ success: boolean; policePvNumber: string; message: string }> => {
+      if (!(await rateLimit("hw-asset-report-stolen", 10))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const pvNum = `PV-VOL-POLICE-BJ-2026-${Date.now().toString().slice(-6)}`;
       return {
         success: true,

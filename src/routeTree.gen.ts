@@ -66,7 +66,6 @@ import { Route as ApiPushSubscribeRouteImport } from './routes/api.push-subscrib
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppGroupDashboardRouteImport } from './routes/app.group-dashboard'
 import { Route as AppScanRouteImport } from './routes/app.scan'
-import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as LocaleAppareilSlugRouteImport } from './routes/$locale/appareil.$slug'
 import { Route as LocaleBlogIndexRouteImport } from './routes/$locale/blog.index'
 import { Route as LocaleBlogSlugRouteImport } from './routes/$locale/blog.$slug'
@@ -406,11 +405,6 @@ const AppScanRoute = AppScanRouteImport.update({
   id: '/scan',
   path: '/scan',
   getParentRoute: () => AppRoute,
-} as any)
-const SitemapXmlRoute = SitemapXmlRouteImport.update({
-  id: '/sitemap/xml',
-  path: '/sitemap/xml',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const LocaleAppareilSlugRoute = LocaleAppareilSlugRouteImport.update({
   id: '/appareil/$slug',
@@ -766,7 +760,6 @@ export interface FileRoutesByFullPath {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/$locale/': typeof LocaleIndexRoute
   '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -875,7 +868,6 @@ export interface FileRoutesByTo {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/$locale': typeof LocaleIndexRoute
   '/app': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -989,7 +981,6 @@ export interface FileRoutesById {
   '/api/push-subscribe': typeof ApiPushSubscribeRoute
   '/app/group-dashboard': typeof AppGroupDashboardRoute
   '/app/scan': typeof AppScanRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/$locale/': typeof LocaleIndexRoute
   '/app/': typeof AppIndexRoute
   '/$locale/appareil/$slug': typeof LocaleAppareilSlugRoute
@@ -1103,7 +1094,6 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
-    | '/sitemap/xml'
     | '/$locale/'
     | '/app/'
     | '/$locale/appareil/$slug'
@@ -1212,7 +1202,6 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
-    | '/sitemap/xml'
     | '/$locale'
     | '/app'
     | '/$locale/appareil/$slug'
@@ -1325,7 +1314,6 @@ export interface FileRouteTypes {
     | '/api/push-subscribe'
     | '/app/group-dashboard'
     | '/app/scan'
-    | '/sitemap/xml'
     | '/$locale/'
     | '/app/'
     | '/$locale/appareil/$slug'
@@ -1401,7 +1389,6 @@ export interface RootRouteChildren {
   ApiKkiapayWebhookRoute: typeof ApiKkiapayWebhookRoute
   ApiPushSendRoute: typeof ApiPushSendRoute
   ApiPushSubscribeRoute: typeof ApiPushSubscribeRoute
-  SitemapXmlRoute: typeof SitemapXmlRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
 }
 
@@ -1805,13 +1792,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/scan'
       preLoaderRoute: typeof AppScanRouteImport
       parentRoute: typeof AppRoute
-    }
-    '/sitemap/xml': {
-      id: '/sitemap/xml'
-      path: '/sitemap/xml'
-      fullPath: '/sitemap/xml'
-      preLoaderRoute: typeof SitemapXmlRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/$locale/appareil/$slug': {
       id: '/$locale/appareil/$slug'
@@ -2475,7 +2455,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiKkiapayWebhookRoute: ApiKkiapayWebhookRoute,
   ApiPushSendRoute: ApiPushSendRoute,
   ApiPushSubscribeRoute: ApiPushSubscribeRoute,
-  SitemapXmlRoute: SitemapXmlRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,
 }
 export const routeTree = rootRouteImport

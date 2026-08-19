@@ -65,7 +65,7 @@ export function ImageZoom({ src, alt }: { src: string; alt: string }) {
         <div className="absolute bottom-3 right-3 flex gap-2">
           <span className="inline-flex items-center gap-1 bg-background/80 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground backdrop-blur">
             {zoomed ? <ZoomOut className="size-3" /> : <ZoomIn className="size-3" />}
-            {zoomed ? t("shop.zoom缩小") : t("shop.zoom.label")}
+            {zoomed ? t("shop.zoom.out") : t("shop.zoom.label")}
           </span>
         </div>
       </div>

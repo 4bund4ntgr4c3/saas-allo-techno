@@ -10,6 +10,7 @@ const fr = {
   "appareil.meta.og.description":
     "{0} pannes prises en charge, pièces certifiées, garantie jusqu'à 12 mois.",
   "appareil.serviceType": "Réparation {0}",
+  "appareil.eyebrow": "Fiche appareil",
 
   // Appareil — chrome
   "appareil.breadcrumb.reparations": "Réparations",
@@ -59,6 +60,7 @@ const en = {
   "appareil.meta.og.title": "{0} repair — Allô Techno",
   "appareil.meta.og.description": "{0} faults covered, certified parts, warranty up to 12 months.",
   "appareil.serviceType": "{0} repair",
+  "appareil.eyebrow": "Device sheet",
 
   // Appareil — chrome
   "appareil.breadcrumb.reparations": "Repairs",

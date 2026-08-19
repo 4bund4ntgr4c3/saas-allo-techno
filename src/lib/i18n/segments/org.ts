@@ -49,6 +49,8 @@ const fr = {
   "org.detail.invite.submit": "Inviter",
   "org.detail.invite.success": "Membre ajouté / rôle mis à jour",
   "org.detail.role": "Rôle",
+  "org.detail.role.updated": "Rôle mis à jour",
+
   "org.detail.remove": "Retirer",
   "org.detail.remove.confirm": "Retirer ce membre de l'organisation ?",
   "org.detail.remove.success": "Membre retiré",
@@ -124,10 +126,19 @@ const fr = {
   "org.sites.form.success": "Site créé",
   "org.sites.delete.confirm": "Supprimer ce site ? Les équipements associés seront détachés.",
   "org.sites.delete.success": "Site supprimé",
+  "org.sites.delete.error": "Impossible de supprimer le site.",
+  "org.sites.form.error": "Impossible d'enregistrer le site.",
+
   "org.sites.equipmentCount": "{0} équipement(s)",
   "org.tickets.title": "Tickets",
   "org.tickets.subtitle": "Pannes, maintenances et interventions sur votre parc.",
   "org.tickets.report": "Signaler un problème",
+  "org.tickets.open": "Ouverts",
+  "org.tickets.closed": "Fermés",
+  "org.tickets.emptyOpen": "Aucun ticket ouvert.",
+  "org.tickets.create": "Nouveau ticket",
+  "org.tickets.form.noneEquipment": "Aucun équipement",
+
   "org.tickets.empty": "Aucun ticket pour le moment.",
   "org.tickets.filter.status": "Tous les statuts",
   "org.tickets.filter.priority": "Toutes les priorités",
@@ -203,6 +214,12 @@ const fr = {
   "org.billing.status.paid": "Acquittée",
   "org.billing.status.cancelled": "Annulée",
   "org.billing.period": "Période",
+  "org.billing.table.number": "N°",
+  "org.billing.table.period": "Période",
+  "org.billing.table.dueDate": "Échéance",
+  "org.billing.table.amount": "Montant",
+  "org.billing.table.status": "Statut",
+
   "org.billing.download": "Téléchargement de",
   // Maintenance
   "org.maintenance.title": "Maintenance Préventive",
@@ -215,6 +232,8 @@ const fr = {
   "org.maintenance.kpi.total": "Cycles planifiés",
   "org.maintenance.kpi.overdue": "Échéances dépassées",
   "org.maintenance.kpi.lastDone": "Dernière maintenance",
+  "org.maintenance.kpi.scheduled": "Planifiées",
+
   "org.maintenance.form.title": "Nouveau cycle de maintenance",
   "org.maintenance.form.equipment": "Équipement concerné",
   "org.maintenance.form.equipment.placeholder": "Sélectionner un équipement…",
@@ -295,6 +314,8 @@ const en = {
   "org.detail.invite.submit": "Invite",
   "org.detail.invite.success": "Member added / role updated",
   "org.detail.role": "Role",
+  "org.detail.role.updated": "Role updated",
+
   "org.detail.remove": "Remove",
   "org.detail.remove.confirm": "Remove this member from the organization?",
   "org.detail.remove.success": "Member removed",
@@ -370,10 +391,19 @@ const en = {
   "org.sites.form.success": "Site created",
   "org.sites.delete.confirm": "Delete this site? Linked equipment will be detached.",
   "org.sites.delete.success": "Site deleted",
+  "org.sites.delete.error": "Could not delete the site.",
+  "org.sites.form.error": "Could not save the site.",
+
   "org.sites.equipmentCount": "{0} equipment",
   "org.tickets.title": "Tickets",
   "org.tickets.subtitle": "Breakdowns, maintenance and interventions on your fleet.",
   "org.tickets.report": "Report an issue",
+  "org.tickets.open": "Open",
+  "org.tickets.closed": "Closed",
+  "org.tickets.emptyOpen": "No open tickets.",
+  "org.tickets.create": "New ticket",
+  "org.tickets.form.noneEquipment": "No equipment",
+
   "org.tickets.empty": "No tickets yet.",
   "org.tickets.filter.status": "All statuses",
   "org.tickets.filter.priority": "All priorities",
@@ -449,6 +479,12 @@ const en = {
   "org.billing.status.paid": "Paid",
   "org.billing.status.cancelled": "Cancelled",
   "org.billing.period": "Period",
+  "org.billing.table.number": "No.",
+  "org.billing.table.period": "Period",
+  "org.billing.table.dueDate": "Due date",
+  "org.billing.table.amount": "Amount",
+  "org.billing.table.status": "Status",
+
   "org.billing.download": "Downloading",
   // Maintenance
   "org.maintenance.title": "Preventive Maintenance",
@@ -461,6 +497,8 @@ const en = {
   "org.maintenance.kpi.total": "Scheduled cycles",
   "org.maintenance.kpi.overdue": "Overdue",
   "org.maintenance.kpi.lastDone": "Last maintenance",
+  "org.maintenance.kpi.scheduled": "Scheduled",
+
   "org.maintenance.form.title": "New maintenance cycle",
   "org.maintenance.form.equipment": "Equipment concerned",
   "org.maintenance.form.equipment.placeholder": "Select equipment…",

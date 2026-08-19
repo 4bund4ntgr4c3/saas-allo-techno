@@ -31,4 +31,6 @@ Disallow: /mon-compte
 Disallow: /fr/panier
 Disallow: /en/panier
 
-Sitemap: https://allotechno.africa/sitemap.xml
+# Domaine fonctionnel actuel (allotechno.africa n'a pas encore de DNS) :
+# à mettre à jour quand le domaine canonique sera branché sur le worker.
+Sitemap: https://saas-allo-techno.4bund4ntgr4c3.workers.dev/sitemap.xml

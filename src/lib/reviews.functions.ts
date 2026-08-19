@@ -121,7 +121,7 @@ async function requireStaff(supabaseAdmin: SupabaseClient<Database>): Promise<st
 const RESEND_API_KEY = process.env["RESEND_API_KEY"];
 const RESEND_FROM =
   process.env["RESEND_FROM"] ?? `Allô Techno <noreply@${COMPANY.email.split("@")[1]}>`;
-const WHATSAPP_TOKEN = process.env["WHATSAPP_TOKEN"];
+const WHATSAPP_TOKEN = process.env["WHATSAPP_ACCESS_TOKEN"] ?? process.env["WHATSAPP_TOKEN"];
 const WHATSAPP_PHONE_NUMBER_ID = process.env["WHATSAPP_PHONE_NUMBER_ID"];
 const PHONE_PREFIX = process.env["PHONE_COUNTRY_PREFIX"] ?? "229";
 
@@ -445,6 +445,13 @@ export const submitReview = createServerFn({ method: "POST" })
       .single();
 
     if (markError) logger.error("invite mark used failed", markError as Error);
+
+    const { triggerWebhooks } = await import("@/lib/webhooks.functions");
+    void triggerWebhooks("review.submitted", {
+      reservation_id: invite.reservation_id,
+      rating: data.rating,
+      status: "pending",
+    });
 
     trackMetric("review_submitted", { reservationId: invite.reservation_id });
 

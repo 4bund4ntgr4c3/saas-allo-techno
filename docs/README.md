@@ -2,7 +2,19 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.19-b48 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.19-b49 — [Changelog](./CHANGELOG.md)
+
+## Corrections Majeures de l'Audit (Batch 49)
+
+- **Rate-limit sur les 11 handlers de modules simulation** (M12) : `cloud-vault`, `drp-contract`, `ewaste-ledger`, `hw-upgrade`, `hw-asset-vault`, `voltage-injection`, `warehouse-stocks`, `license-audit`, `thermal-compare` — plus d'invocations illimitées.
+- **Origines URL durcies (M19)** : remplacement de `getRequestUrl({ xForwardedHost: true })` par une origine serveur avec allowlist (`allotechno.africa` / `*.workers.dev`) pour les redirections/callbacks de paiement et le sitemap — fini les hôtes forgés vers un domaine de phishing.
+- **Webhooks testés sur le code réel (M13)** : la logique de signature (FedaPay/KKiaPay/Flutterwave) et de traitement des paiements extraite dans `src/lib/payment-webhooks.ts` et testée (18 tests) — plus de tests « théâtre ».
+- **Sitemap unique (M8)** : suppression de la route dupliquée `/sitemap/xml` (domaine mort) ; `/sitemap.xml` consolidé sur l'origine fonctionnelle avec les pages manquantes ; `robots.txt` pointe sur le worker.
+- **Canonical + hreflang + schema Product (M10)** : liens canoniques/alternates fr/en/x-default sur toutes les pages localisées (layout `$locale`) et schema.org Product sur les pages boutique.
+- **Clés i18n FR manquantes (M6)** : 42 clés ajoutées (dont `shop.zoom.out` corrigeant la clé CJK `shop.zoom缩小`) + miroirs EN.
+- **Workflows durcis (M17)** : `permissions: contents: read` + `concurrency` sur CI, deploy, reminders et demo-reset.
+- **E2E Playwright en CI (M14)** : nouveau job de smoke (home, navigation, healthz, i18n-lazy, reparations) avec artifact du rapport en cas d'échec.
+- **Promo consommée atomiquement (M3)** : RPC `consume_promo` (migration `20260826010000_audit_m3_promo_consume.sql`) appelé après succès de la commande — un code promo `single_use` ne peut plus être réutilisé — **appliquée en prod**.
 
 ## Audit Complet & Corrections Critiques (Batch 48)
 

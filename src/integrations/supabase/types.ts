@@ -2907,6 +2907,7 @@ export type Database = {
         Returns: string;
       };
       validate_promo: { Args: { _code: string }; Returns: Json };
+      consume_promo: { Args: { _code: string }; Returns: boolean };
     };
     Enums: {
       app_role: "admin" | "staff" | "user" | "technicien";

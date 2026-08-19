@@ -50,6 +50,27 @@ export const Route = createFileRoute("/$locale/boutique/$slug")({
     const locale = normalizeLocale((params as { locale?: unknown }).locale) as Locale;
     const name = loaderData?.product.name ?? translate(locale, "boutique.accessory");
     const desc = translate(locale, "boutique.meta.detail.description", [name]);
+    const product = loaderData?.product;
+    const productSchema =
+      product != null
+        ? JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description: desc,
+            image: `https://placehold.co/600x600/f8f9fa/adb5bd?text=${encodeURIComponent(product.name.slice(0, 12))}`,
+            brand: { "@type": "Brand", name: "Allô Techno" },
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "XOF",
+              availability:
+                (loaderData?.stock ?? 0) > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+            },
+          })
+        : null;
     return {
       meta: [
         { title: translate(locale, "boutique.meta.detail.title", [name]) },
@@ -60,6 +81,7 @@ export const Route = createFileRoute("/$locale/boutique/$slug")({
         },
         { property: "og:description", content: desc },
       ],
+      scripts: productSchema ? [{ type: "application/ld+json", children: productSchema }] : [],
     };
   },
   errorComponent: ErrorRoute,

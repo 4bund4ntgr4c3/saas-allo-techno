@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { timingSafeEqual } from "node:crypto";
+import { verifyKkiapaySecret, processWebhookPayment } from "@/lib/payment-webhooks";
 
 /**
  * Webhook KKiaPay — notification de transaction de paiement (Mobile Money).
@@ -17,15 +17,8 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
           return new Response("Not configured", { status: 500 });
         }
 
-        const received = request.headers.get("x-kkiapay-secret") ?? "";
-        const bufReceived = Buffer.from(received, "utf8");
-        const bufSecret = Buffer.from(secret, "utf8");
-        const isSecretValid =
-          bufReceived.length > 0 &&
-          bufReceived.length === bufSecret.length &&
-          timingSafeEqual(bufReceived, bufSecret);
-
-        if (!isSecretValid) {
+        const received = request.headers.get("x-kkiapay-secret");
+        if (!verifyKkiapaySecret(secret, received)) {
           console.warn("[webhook] x-kkiapay-secret invalide");
           return new Response("Unauthorized", { status: 401 });
         }
@@ -62,86 +55,31 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
               .eq("provider_tx_id" as never, providerTxId)
               .maybeSingle();
 
-            if (!payment) {
-              // Transaction inconnue (boutique non couvert ici, ou webhook
-              // d'une transaction jamais enregistrée) : on accuse réception.
-              console.warn(`[webhook] KKiaPay transaction ${providerTxId} sans ligne payments`);
-            } else if (payment.status === "paid") {
-              // Idempotence : le paiement est déjà marqué payé.
-              console.log(`[webhook] paiement ${payment.reference} déjà payé (${providerTxId})`);
-            } else {
-              const nextStatus = payload.isPaymentSucces === true ? "paid" : "failed";
+            const nextStatus = payload.isPaymentSucces === true ? "paid" : "failed";
 
-              if (
-                nextStatus === "paid" &&
-                payment.amount !== null &&
-                payload.amount != null &&
-                payment.amount !== payload.amount
-              ) {
-                console.warn(
-                  `[webhook] montant incohérent pour ${payment.reference}: attendu ${payment.amount}, reçu ${payload.amount} — paiement rejeté`,
-                );
-                return new Response(JSON.stringify({ status: "amount_mismatch" }), {
-                  status: 200,
-                  headers: { "content-type": "application/json" },
-                });
-              }
+            const outcome = await processWebhookPayment(
+              supabaseAdmin,
+              payment,
+              nextStatus,
+              providerTxId,
+              nextStatus === "paid" ? (payload.amount ?? null) : null,
+            );
 
-              if (payment.source === "sla") {
-                // Paiement de contrat B2B : on marque la ligne payments,
-                // sans toucher aux réservations.
-                const { error: slaError } = await supabaseAdmin
-                  .from("payments")
-                  .update({ status: nextStatus, tx_id: providerTxId })
-                  .eq("provider_tx_id" as never, providerTxId);
-                if (slaError) {
-                  console.error("[webhook] update paiement SLA failed", slaError);
-                  return new Response("DB error", { status: 500 });
-                }
-                console.log(
-                  `[webhook] paiement SLA ${payment.reference} ${nextStatus} (${providerTxId})`,
-                );
-                return new Response(JSON.stringify({ status: "ok" }), {
-                  headers: { "content-type": "application/json" },
-                });
-              }
-
-              const { error } = await supabaseAdmin.rpc("update_reservation_payment", {
-                _reference: payment.reference,
-                _status: nextStatus,
-                _tx_id: providerTxId,
-              });
-              if (error) {
-                console.error("[webhook] update_reservation_payment failed", error);
-                return new Response("DB error", { status: 500 });
-              }
-
-              if (nextStatus === "paid") {
-                const { data: reservation } = await supabaseAdmin
-                  .from("reservations")
-                  .select(
-                    "reference, customer_name, email, phone, device, issue, mode, payment, slot_date, slot_period, slot_hour, status, quote_amount",
-                  )
-                  .eq("reference", payment.reference)
-                  .maybeSingle();
-
-                if (reservation) {
-                  const { notifyReservationPaid } = await import("@/lib/notifications");
-                  void notifyReservationPaid({
-                    reference: reservation.reference,
-                    tracking_code: null,
-                    customer_name: reservation.customer_name,
-                    email: reservation.email,
-                    phone: reservation.phone,
-                    device: reservation.device,
-                    quote_amount: reservation.quote_amount ?? 0,
-                  });
-                }
-              }
-
-              console.log(
-                `[webhook] réservation ${payment.reference} ${nextStatus} (${providerTxId})`,
+            if (outcome === "amount_mismatch") {
+              console.warn(
+                `[webhook] montant incohérent pour ${payment?.reference}: attendu ${payment?.amount}, reçu ${payload.amount} — paiement rejeté`,
               );
+              return new Response(JSON.stringify({ status: "amount_mismatch" }), {
+                status: 200,
+                headers: { "content-type": "application/json" },
+              });
+            }
+            if (outcome === "db_error") {
+              return new Response("DB error", { status: 500 });
+            }
+            if (outcome === "unknown") {
+              // Transaction inconnue : on accuse réception.
+              console.warn(`[webhook] KKiaPay transaction ${providerTxId} sans ligne payments`);
             }
           }
         } catch (err) {

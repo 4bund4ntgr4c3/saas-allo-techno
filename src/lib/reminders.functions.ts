@@ -30,7 +30,7 @@ const RESEND_API_KEY = process.env["RESEND_API_KEY"];
 const RESEND_FROM =
   process.env["RESEND_FROM"] ??
   `Allô Techno <noreply@${COMPANY.email.split("@")[1] ?? "allotechno.africa"}>`;
-const WHATSAPP_TOKEN = process.env["WHATSAPP_TOKEN"];
+const WHATSAPP_TOKEN = process.env["WHATSAPP_ACCESS_TOKEN"] ?? process.env["WHATSAPP_TOKEN"];
 const WHATSAPP_PHONE_NUMBER_ID = process.env["WHATSAPP_PHONE_NUMBER_ID"];
 
 /** Préfixe téléphonique du pays (Bénin = 229). Configurable via PHONE_COUNTRY_PREFIX. */

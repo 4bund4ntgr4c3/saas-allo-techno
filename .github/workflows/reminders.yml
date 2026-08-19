@@ -6,6 +6,13 @@ on:
     - cron: "0 8 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: reminders
+  cancel-in-progress: false
+
 jobs:
   reminders:
     runs-on: ubuntu-latest

@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface HardwareUpgradeRecommendation {
   recommendationId: string;
@@ -30,6 +31,9 @@ export const getHardwareUpgradePlanFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<HardwareUpgradeRecommendation> => {
+    if (!(await rateLimit("hw-upgrade-plan", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const isHdd = input.currentStorageType === "hdd_mecanique";
     const needsRam = input.currentRamGb < 16;
 

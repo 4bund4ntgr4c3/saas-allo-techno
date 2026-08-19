@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface WarehouseStockItem {
   partSku: string;
@@ -59,6 +60,9 @@ export const getWarehouseStocksFn = createServerFn({ method: "POST" }).handler(
     alertsCount: number;
     totalUnitsInHubs: number;
   }> => {
+    if (!(await rateLimit("warehouse-stocks", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalUnits = MOCK_WAREHOUSE_STOCKS.reduce(
       (acc, i) => acc + i.haieViveStock + i.calaviStock + i.parakouStock,
       0,

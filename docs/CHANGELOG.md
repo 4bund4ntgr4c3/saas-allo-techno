@@ -7,6 +7,33 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.19-b49] - 2026-08-19 (Corrections majeures de l'audit — Batch 49)
+
+### Added
+
+- **Rate-limit sur les 11 handlers de modules simulation** (M12) : `cloud-vault` (10/min), `drp-contract` (10/min), `ewaste-ledger` (60/min), `hw-upgrade` (20/min), `hw-asset-vault` (60/10/min), `voltage-injection` (20/min), `warehouse-stocks` (60/min), `license-audit` (10/min), `thermal-compare` (20/min) — garde `rateLimit` en tête de chaque handler (`src/lib/security`).
+- **Origines URL sûres côté serveur** (M19) : `src/lib/origin.server.ts` dérive les origines de redirection/callback de paiement et de sitemap depuis le host de la requête uniquement s'il appartient à l'allowlist (`allotechno.africa` / `*.workers.dev` / localhost), sinon l'origine fonctionnelle du worker — `getRequestUrl({ xForwardedHost: true })` supprimé des 5 usages (payments, b2b-payments).
+- **Tests webhooks sur le code de production** (M13) : logique de vérification des signatures (FedaPay HMAC t/s, KKiaPay `x-kkiapay-secret`, Flutterwave `verif-hash`) et traitement des paiements (réservation / SLA / boutique, idempotence, montant, notifications, webhooks sortants) extraite dans `src/lib/payment-webhooks.ts` et exercée par 18 tests — les 5 tests « théâtre » qui ré-implémentaient la logique en inline sont supprimés.
+- **E2E Playwright en CI** (M14) : job `e2e` dans `ci.yml` (smoke statique : home, navigation, healthz, i18n-lazy, reparations) avec upload de `playwright-report` en cas d'échec.
+- **Schema.org Product** (M10) : JSON-LD Product (name, description, brand, offre, disponibilité) sur les pages `boutique/$slug`.
+
+### Changed
+
+- **Sitemap unique** (M8) : la route dupliquée `/sitemap/xml` (`src/routes/sitemap.xml.ts`, domaine mort `COMPANY.url`) est supprimée ; `/sitemap.xml` consolide toutes les pages (statiques + dynamiques) sur l'origine fonctionnelle via `getSafeServerOrigin` ; `robots.txt` pointe sur le worker.
+- **Canonical + hreflang sur toutes les pages localisées** (M10) : le layout `$locale` injecte désormais `<link rel="canonical">` + alternates fr/en/x-default basés sur `match.pathname` — plus besoin de l'ajouter page par page.
+- **Clés i18n FR manquantes** (M6) : 42 clés ajoutées (admin analytics/atelier/audit/catalog/stock/marketing/stats, appareil.eyebrow, checkout.address.city, devis.*, org.billing.table.*, org.tickets.*, org.sites.*, org.maintenance.kpi.scheduled, panier.shipping-estimate.*, reparations.brand.eyebrow, search.group.recent) + miroirs EN ; correction de la clé CJK `shop.zoom缩小` → `shop.zoom.out` (`ImageZoom.tsx`).
+- **Workflows durcis** (M17) : `permissions: contents: read` et `concurrency` (annulation des runs supersédés) ajoutés à `ci.yml`, `deploy.yml`, `reminders.yml`, `demo-reset.yml`.
+
+### Fixed
+
+- **Promo `single_use` consommée atomiquement** (M3, migration `20260826010000_audit_m3_promo_consume.sql`) : nouveau RPC `consume_promo` (UPDATE avec garde `single_use` dans le WHERE) appelé après succès de la commande dans `shop.functions.ts` — un code promo ne peut plus être réutilisé — **migration appliquée en prod**.
+- **Stock restitué en cas d'échec partiel de commande** (M2) : si la réservation d'une ligne échoue, les lignes déjà réservées sont restituées (best-effort) avant l'erreur.
+- **Fallback du token WhatsApp** (M4) : `WHATSAPP_ACCESS_TOKEN ?? WHATSAPP_TOKEN` sur les 4 points d'usage (notifications, b2b-reminders, reminders, reviews) — le renommage du secret ne casse plus les envois.
+- **Webhooks sortants déclenchés** (M5) : `triggerWebhooks` (fire-and-forget) câblé sur reservation.created, reservation.status_changed/completed, lead.new, review.submitted et payment.received/failed (FedaPay/KKiaPay/Flutterwave, branches SLA + réservation + boutique).
+- **Test d'intégration réservation** : le mock Supabase expose désormais `.contains` (utilisé par `triggerWebhooks`) — fin de l'erreur non gérée en fin de suite.
+
+---
+
 ## [2026.08.19-b48] - 2026-08-19 (Audit complet & Corrections critiques — Batch 48)
 
 ### Added

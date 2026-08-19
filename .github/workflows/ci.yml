@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -48,3 +55,27 @@ jobs:
           VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
           VITE_VAPID_PUBLIC_KEY: BHveilvP4wRi-nEp8GqnqQZ5mDldEKW4jnkeqVJHTtsuvc3lbDNbdteB46nRyfjALSqHPlfeWfgJm8Cn6YWBoyI
         run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke e2e (pages statiques — sans accès Supabase)
+        env:
+          VITE_SUPABASE_URL: https://fcxmecphvflmbqayyioj.supabase.co
+          VITE_SUPABASE_KEY: sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO
+          VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
+          VITE_VAPID_PUBLIC_KEY: BHveilvP4wRi-nEp8GqnqQZ5mDldEKW4jnkeqVJHTtsuvc3lbDNbdteB46nRyfjALSqHPlfeWfgJm8Cn6YWBoyI
+        run: npx playwright test home navigation healthz i18n-lazy reparations
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

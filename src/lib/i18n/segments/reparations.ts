@@ -38,6 +38,8 @@ const fr = {
 
   // Réparations — marque
   "reparations.brand.fallback": "Marque",
+  "reparations.brand.eyebrow": "Réparation {0}",
+
   "reparations.brand.notFoundTitle": "Marque introuvable — Allô Techno",
   "reparations.brand.title": "Réparation {0} à Abomey-Calavi",
   "reparations.brand.meta.title": "Réparation {0} Abomey-Calavi — Écran & batterie",
@@ -133,6 +135,8 @@ const en = {
 
   // Repairs — brand
   "reparations.brand.fallback": "Brand",
+  "reparations.brand.eyebrow": "{0} repair",
+
   "reparations.brand.notFoundTitle": "Brand not found — Allô Techno",
   "reparations.brand.title": "{0} repair in Abomey-Calavi",
   "reparations.brand.meta.title": "{0} repair Abomey-Calavi — Screen & battery",

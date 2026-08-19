@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface InjectionSafetyGuide {
   railName: string;
@@ -24,6 +25,9 @@ export const calculateVoltageInjectionFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<InjectionSafetyGuide> => {
+    if (!(await rateLimit("voltage-injection", 20))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     if (input.railType === "ppbus_g3h_12v") {
       return {
         railName: "PPBUS_G3H (Ligne Principale 12.6V)",

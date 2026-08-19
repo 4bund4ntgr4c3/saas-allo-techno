@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface SoftwareLicenseAuditItem {
   softwareName: string;
@@ -33,6 +34,9 @@ export const auditSoftwareLicensesFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<SoftwareAuditReport> => {
+    if (!(await rateLimit("software-license-audit", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const devices = input.deviceCount;
 
     const items: SoftwareLicenseAuditItem[] = [

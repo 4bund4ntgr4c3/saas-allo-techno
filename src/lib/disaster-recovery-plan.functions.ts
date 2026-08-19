@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface DisasterRecoveryEstimate {
   estimatedHourlyDowntimeCostFcfa: number;
@@ -53,6 +54,9 @@ export const submitDisasterRecoveryContractFn = createServerFn({ method: "POST" 
   )
   .handler(
     async ({ data: input }): Promise<{ contractId: string; success: boolean; message: string }> => {
+      if (!(await rateLimit("drp-contract-submit", 10))) {
+        throw new Error("Trop de demandes. Réessayez dans une minute.");
+      }
       const contractId = `PCA-DRP-${Date.now().toString().slice(-6)}`;
       return {
         contractId,

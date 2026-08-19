@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/security";
 
 export interface CloudVaultBackupReceipt {
   vaultArchiveId: string;
@@ -25,6 +26,9 @@ export const createEmergencyCloudBackupFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<CloudVaultBackupReceipt> => {
+    if (!(await rateLimit("vault-backup-create", 10))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const pin = Math.floor(100000 + Math.random() * 900000).toString();
     const vaultId = `VAULT-ENC-${Date.now().toString().slice(-6)}`;
 

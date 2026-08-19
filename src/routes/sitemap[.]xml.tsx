@@ -23,6 +23,14 @@ const STATIC_PATHS = [
   "/reclamation",
   "/reconditionnes",
   "/quartiers",
+  "/services",
+  "/diagnostic-auto",
+  "/parrainage",
+  "/premiers-secours",
+  "/changelog",
+  "/about",
+  "/work-at",
+  "/work-at/test-technique",
 ];
 
 const LOCALES: Locale[] = ["fr", "en"];
@@ -35,11 +43,12 @@ const LOCALES: Locale[] = ["fr", "en"];
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
+      GET: async () => {
         const { DEVICES } = await import("@/data/catalog/devices");
         const { BRANDS, POSTS, ACCESSORIES } = await import("@/data/catalog");
         const { QUARTIER_INFO } = await import("@/data/local-seo");
-        const origin = new URL(request.url).origin;
+        const { getSafeServerOrigin } = await import("@/lib/origin.server");
+        const origin = getSafeServerOrigin();
 
         const paths = [
           ...STATIC_PATHS,

@@ -85,6 +85,19 @@ export const createReservation = createServerFn({ method: "POST" })
     void notifyReservationCreated({ ...row, tracking_code: trackingCode });
     void notifyStaffNewReservation(row);
 
+    const { triggerWebhooks } = await import("@/lib/webhooks.functions");
+    void triggerWebhooks("reservation.created", {
+      reference: row.reference,
+      customer_name: row.customer_name,
+      phone: row.phone,
+      device: row.device,
+      issue: row.issue,
+      slot_date: String(row.slot_date),
+      slot_period: row.slot_period,
+      slot_hour: row.slot_hour ?? "",
+      status: row.status,
+    });
+
     trackMetric("reservation_created", { reference: row.reference });
 
     return { ...row, tracking_code: trackingCode };

@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/security";
 
 export interface EwasteScrapBatch {
   batchId: string;
@@ -58,6 +59,9 @@ export const getEwasteLedgerFn = createServerFn({ method: "POST" }).handler(
     totalGoldGramsAllTime: number;
     totalKgProcessed: number;
   }> => {
+    if (!(await rateLimit("ewaste-ledger", 60))) {
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
+    }
     const totalGold = MOCK_EWASTE_BATCHES.reduce(
       (sum, b) => sum + b.extractedPreciousMetals.goldGrams,
       0,

@@ -116,6 +116,15 @@ export const setReservationStatus = createServerFn({ method: "POST" })
     if (row) {
       const { notifyReservationStatusChanged } = await import("@/lib/notifications");
       void notifyReservationStatusChanged(row);
+      const { triggerWebhooks } = await import("@/lib/webhooks.functions");
+      void triggerWebhooks(
+        data.status === "terminee" ? "reservation.completed" : "reservation.status_changed",
+        {
+          reference: row.reference,
+          status: data.status,
+          device: row.device,
+        },
+      );
     }
 
     if (data.status === "terminee" && row?.user_id) {

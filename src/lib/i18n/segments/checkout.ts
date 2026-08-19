@@ -21,6 +21,8 @@ const fr = {
   "checkout.address.street": "Adresse",
   "checkout.address.zip": "Code postal",
   "checkout.address.note": "Précisions (modèle, couleur…)",
+  "checkout.address.city": "Ville",
+
   "checkout.create-account": "Créer un compte ?",
   "checkout.different-address": "Livrer à une autre adresse ?",
   "checkout.address.delivery-speed": "Vitesse de livraison",
@@ -61,6 +63,8 @@ const en = {
   "checkout.address.street": "Address",
   "checkout.address.zip": "Postal code",
   "checkout.address.note": "Notes (model, color…)",
+  "checkout.address.city": "City",
+
   "checkout.create-account": "Create an account?",
   "checkout.different-address": "Ship to a different address?",
   "checkout.address.delivery-speed": "Delivery speed",

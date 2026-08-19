@@ -3,6 +3,8 @@ import { registerSegments } from "@/lib/i18n/dictionaries";
 const fr = {
   // Admin — Statistiques
   "admin.stats.tab": "Statistiques",
+  "admin.stats.search": "Rechercher dans les statistiques…",
+
   "admin.stats.eyebrow": "Activité de l'atelier",
   "admin.stats.title": "Statistiques",
   "admin.stats.intro":
@@ -83,6 +85,9 @@ const fr = {
 
   // Admin — Stock (header)
   "admin.stock.eyebrow": "Stock",
+  "admin.stock.search": "Rechercher dans le stock…",
+  "admin.inventory.search": "Rechercher dans l'inventaire…",
+
   "admin.stock.title": "Stock boutique",
   "admin.stock.description": "Gérez le stock des accessoires et pièces détachées.",
 
@@ -106,6 +111,8 @@ const fr = {
 
   // Admin — Audit log
   "admin.audit.title": "Journal d'audit",
+  "admin.audit.search": "Rechercher dans le journal d'audit…",
+
   "admin.audit.empty": "Aucune opération enregistrée",
 
   // Admin — View mode
@@ -178,6 +185,12 @@ const fr = {
 
   // Batch 28 — Multi-ateliers avancé
   "admin.atelier.filter.all": "Tous les ateliers",
+  "admin.atelier.filter.allWorkshops": "Tous les ateliers",
+  "admin.atelier.filter.unassigned": "Non assignées",
+  "admin.atelier.refresh": "Actualiser",
+  "admin.atelier.title": "Atelier",
+  "admin.atelier.subtitle": "Réparations en cours et affectations des techniciens.",
+
   "admin.atelier.transfer": "Transférer…",
   "admin.atelier.transfer.success": "Dossier transféré vers {0}",
   "admin.atelier.transfer.error": "Transfert impossible",
@@ -187,6 +200,8 @@ const fr = {
 
   // Batch 29 — Marketing
   "admin.marketing.tab": "Marketing",
+  "admin.marketing.search": "Rechercher dans le marketing…",
+
   "admin.marketing.campaigns": "Campagnes",
   "admin.marketing.new": "Nouvelle campagne",
   "admin.marketing.segments": "Segmentation clients",
@@ -346,6 +361,10 @@ const fr = {
   "admin.catalog.photo.toast.added": "Photo ajoutée",
   "admin.catalog.photo.toast.deleted": "Photo supprimée",
   "admin.catalog.photo.toast.uploaded": "Photo téléversée et ajoutée",
+  "admin.catalog.photo.add_button": "Ajouter une photo",
+  "admin.catalog.photo.error.add": "Impossible d'ajouter la photo.",
+  "admin.catalog.photo.error.upload": "Échec du téléversement de la photo.",
+
   "admin.catalog.form.label": "Libellé",
   "admin.catalog.form.slug": "Slug",
   "admin.catalog.form.name": "Nom",
@@ -703,6 +722,7 @@ const fr = {
   "admin.analytics.errors.title": "Erreurs récentes (24h)",
   "admin.analytics.errors.empty": "Aucune erreur détectée",
   "admin.analytics.loading": "Chargement…",
+  "admin.analytics.search": "Rechercher dans l'analytique…",
 
   // Admin — Chat
   "admin.chat.title": "Messages clients",
@@ -1047,6 +1067,8 @@ const fr = {
 const en = {
   // Admin — Stats
   "admin.stats.tab": "Stats",
+  "admin.stats.search": "Search statistics…",
+
   "admin.stats.eyebrow": "Workshop activity",
   "admin.stats.title": "Stats",
   "admin.stats.intro": "Repairs, shop orders and estimated revenue over the last 12 months.",
@@ -1126,6 +1148,9 @@ const en = {
 
   // Admin — Stock (header)
   "admin.stock.eyebrow": "Stock",
+  "admin.stock.search": "Search stock…",
+  "admin.inventory.search": "Search inventory…",
+
   "admin.stock.title": "Shop Stock",
   "admin.stock.description": "Manage accessory and spare part stock levels.",
 
@@ -1149,6 +1174,8 @@ const en = {
 
   // Admin — Audit log
   "admin.audit.title": "Audit log",
+  "admin.audit.search": "Search audit log…",
+
   "admin.audit.empty": "No operations recorded",
 
   // Admin — View mode
@@ -1219,6 +1246,12 @@ const en = {
 
   // Batch 28 — Multi-workshop advanced
   "admin.atelier.filter.all": "All workshops",
+  "admin.atelier.filter.allWorkshops": "All workshops",
+  "admin.atelier.filter.unassigned": "Unassigned",
+  "admin.atelier.refresh": "Refresh",
+  "admin.atelier.title": "Workshop",
+  "admin.atelier.subtitle": "Ongoing repairs and technician assignments.",
+
   "admin.atelier.transfer": "Transfer…",
   "admin.atelier.transfer.success": "Reservation transferred to {0}",
   "admin.atelier.transfer.error": "Transfer failed",
@@ -1228,6 +1261,8 @@ const en = {
 
   // Batch 29 — Marketing
   "admin.marketing.tab": "Marketing",
+  "admin.marketing.search": "Search marketing…",
+
   "admin.marketing.campaigns": "Campaigns",
   "admin.marketing.new": "New campaign",
   "admin.marketing.segments": "Client segmentation",
@@ -1386,6 +1421,10 @@ const en = {
   "admin.catalog.photo.toast.added": "Photo added",
   "admin.catalog.photo.toast.deleted": "Photo deleted",
   "admin.catalog.photo.toast.uploaded": "Photo uploaded and added",
+  "admin.catalog.photo.add_button": "Add a photo",
+  "admin.catalog.photo.error.add": "Could not add the photo.",
+  "admin.catalog.photo.error.upload": "Photo upload failed.",
+
   "admin.catalog.form.label": "Label",
   "admin.catalog.form.slug": "Slug",
   "admin.catalog.form.name": "Name",
@@ -1742,6 +1781,7 @@ const en = {
   "admin.analytics.errors.title": "Recent errors (24h)",
   "admin.analytics.errors.empty": "No errors detected",
   "admin.analytics.loading": "Loading…",
+  "admin.analytics.search": "Search analytics…",
 
   // Admin — Chat
   "admin.chat.title": "Customer messages",

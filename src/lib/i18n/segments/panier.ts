@@ -23,6 +23,9 @@ const fr = {
   "panier.confirmed.payment": "Paiement",
   "panier.continue": "Continuer mes achats",
   "panier.shop": "Boutique",
+  "panier.shipping-estimate": "Livraison estimée",
+  "panier.shipping-estimate.text": "Livraison {0}",
+
   "panier.title": "Votre panier",
   "panier.empty": "Votre panier est vide pour le moment.",
   "panier.browse": "Voir les accessoires",
@@ -103,6 +106,9 @@ const en = {
   "panier.confirmed.payment": "Payment",
   "panier.continue": "Continue shopping",
   "panier.shop": "Shop",
+  "panier.shipping-estimate": "Estimated delivery",
+  "panier.shipping-estimate.text": "Delivery {0}",
+
   "panier.title": "Your cart",
   "panier.empty": "Your cart is empty at the moment.",
   "panier.browse": "Browse accessories",

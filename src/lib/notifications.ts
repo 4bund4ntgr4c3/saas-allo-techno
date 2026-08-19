@@ -6,7 +6,7 @@
 // Configuration (variables d'environnement, documentées dans le README) :
 //   RESEND_API_KEY            clé API Resend (obligatoire pour l'e-mail)
 //   RESEND_FROM               expéditeur vérifié, ex. "Allô Techno <no-reply@votre-domaine.bj>"
-//   WHATSAPP_TOKEN            jeton d'accès Meta (WhatsApp Cloud API)
+//   WHATSAPP_ACCESS_TOKEN     jeton d'accès Meta (WhatsApp Cloud API)
 //   WHATSAPP_PHONE_NUMBER_ID  identifiant du numéro de téléphone WhatsApp
 //
 // Note WhatsApp : les messages initiés par l'entreprise doivent utiliser un
@@ -56,7 +56,7 @@ export type PhotoEvent = {
 const RESEND_API_KEY = process.env["RESEND_API_KEY"];
 const RESEND_FROM =
   process.env["RESEND_FROM"] ?? `Allô Techno <noreply@${COMPANY.email.split("@")[1]}>`;
-const WHATSAPP_TOKEN = process.env["WHATSAPP_TOKEN"];
+const WHATSAPP_TOKEN = process.env["WHATSAPP_ACCESS_TOKEN"] ?? process.env["WHATSAPP_TOKEN"];
 const WHATSAPP_PHONE_NUMBER_ID = process.env["WHATSAPP_PHONE_NUMBER_ID"];
 const AT_API_KEY = process.env["AT_API_KEY"];
 const AT_USERNAME = process.env["AT_USERNAME"] ?? "sandbox";
