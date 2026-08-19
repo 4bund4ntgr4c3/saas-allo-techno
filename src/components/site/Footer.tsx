@@ -101,16 +101,13 @@ export function Footer() {
               </li>
             </ul>
             <div className="flex gap-2.5 pt-2">
-              {["FB", "IG", "WA"].map((s) => (
-                <a
-                  key={s}
-                  href={s === "WA" ? `https://wa.me/${COMPANY.whatsapp.replace(/\D/g, "")}` : "#"}
-                  aria-label={s === "WA" ? "WhatsApp" : s === "FB" ? "Facebook" : "Instagram"}
-                  className="grid size-9 place-items-center border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground rounded-lg"
-                >
-                  {s}
-                </a>
-              ))}
+              <a
+                href={`https://wa.me/${COMPANY.whatsapp.replace(/\D/g, "")}`}
+                aria-label="WhatsApp"
+                className="grid size-9 place-items-center border border-border font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground rounded-lg"
+              >
+                WA
+              </a>
             </div>
           </div>
 

@@ -351,9 +351,12 @@ export const getReservationAttachments = createServerFn({ method: "POST" })
       const bucket = supabaseAdmin.storage.from("device-photos");
       const photoList: ReservationAttachment[] = [];
       for (const a of attachments ?? []) {
+        // Les vidéos ne sont pas transformables ; les photos sont redimensionnées
+        // côté CDN Supabase (?width=900) pour éviter de charger les originaux.
         const { data: signed, error: signError } = await bucket.createSignedUrl(
           a.url,
           30 * 24 * 3600,
+          a.kind === "video" ? undefined : { transform: { width: 900 } },
         );
         if (signError || !signed?.signedUrl) continue;
         photoList.push({

@@ -109,6 +109,21 @@ export default defineConfig(async ({ mode }) => {
         routeRules: {
           // Cache CDN des pages publiques (HTML SSR) : s-maxage + revalidation
           // en arrière-plan, sans purge manuelle (stale-while-revalidate).
+          // Les réponses avec Set-Cookie ne sont jamais mises en cache ; les
+          // pages dynamiques par utilisateur (suivi, panier, réservation…)
+          // sont volontairement exclues.
+          "/fr": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
           "/fr/blog/**": {
             headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
           },
@@ -120,6 +135,180 @@ export default defineConfig(async ({ mode }) => {
           },
           "/en/catalogue": {
             headers: { "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },
+          },
+          "/fr/avis": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/avis": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/boutique/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/boutique/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/reparations/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/reparations/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/appareil/**": {
+            headers: { "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },
+          },
+          "/en/appareil/**": {
+            headers: { "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },
+          },
+          "/fr/services": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/services": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/garantie": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/garantie": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/engagements": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/engagements": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/magasins": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/magasins": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/promotions": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/promotions": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/reconditionnes": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/reconditionnes": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/quartiers/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/quartiers/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/faq": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/faq": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/guides/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/guides/**": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/work-at": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/work-at": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/about": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/about": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/contact": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/contact": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/mentions-legales": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/mentions-legales": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/tarifs": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/tarifs": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/changelog": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/changelog": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/outils": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/outils": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/devis": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/devis": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/abonnements": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/abonnements": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/parrainage": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/parrainage": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/premiers-secours": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/premiers-secours": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/depannage-domicile": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/depannage-domicile": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/diagnostic-auto": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/diagnostic-auto": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/guide-esd": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/guide-esd": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/reprise": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/reprise": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/fr/marketplace-sequestre": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
+          },
+          "/en/marketplace-sequestre": {
+            headers: { "cache-control": "public, s-maxage=300, stale-while-revalidate=300" },
           },
         },
       }),

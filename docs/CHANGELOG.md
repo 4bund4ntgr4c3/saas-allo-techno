@@ -7,6 +7,29 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.19-b50] - 2026-08-19 (Corrections majeures de l'audit — Batch 50)
+
+### Added
+
+- **Cache CDN des pages publiques** (M18) : routeRules Nitro étendues à la home (`/fr`, `/en`), avis, boutique, reparations, appareils, services, garantie, engagements, magasins, promotions, reconditionnés, quartiers, FAQ, guides, work-at, about, contact, mentions légales, tarifs, changelog, outils, devis, abonnements, parrainage, premiers secours, dépannage domicile, diagnostic auto, guide ESD, reprise, marketplace séquestré — `Cache-Control: public, s-maxage=300/600, stale-while-revalidate` (les réponses avec cookie ne sont jamais mises en cache ; les pages par utilisateur — suivi, panier, réservation — restent exclues).
+- **Redimensionnement des photos serveur** (M18) : `createSignedUrl` avec `transform: { width: 900 }` pour les photos `device-photos` (suivi client `photos.functions.ts`, pièces jointes tickets B2B `org-tickets.functions.ts`) — les originaux pleine résolution ne sont plus servis ; les vidéos ne sont pas transformées.
+- **Google Fonts non bloquantes** (M18) : la feuille CSS Google Fonts n'est plus render-blocking — injectée par un script inline nonce'd (CSP compatible) en `media=print` puis `media=all`, le texte s'affiche immédiatement en police de secours (`display=swap`).
+
+### Changed
+
+- **Origine fonctionnelle centralisée** (M20) : `COMPANY.url` bascule sur le worker (`saas-allo-techno.4bund4ntgr4c3.workers.dev`) — tous les liens fonctionnels des emails, notifications WhatsApp/SMS, QR codes, factures, PDF et JSON-LD pointent vers une origine qui répond (le domaine `allotechno.africa` reste sans DNS, M21).
+
+### Removed
+
+- **Code mort** (M15) : 11 fichiers jamais importés supprimés (`approval-rules.ts`, `b2b-audit.functions.ts`, `bundle-info.ts`, `email.ts`, `google-reviews.ts`, `push-dispatch.ts`, `search-analytics.functions.ts`, `signature.functions.ts`, `sla-metrics.functions.ts`, `user-roles.ts`, `webhook-manage.ts`) — `email.ts` pointait en plus vers l'ancien domaine mort `allo-techno.com` ; stubs `getMultiOptionQuoteFn`/`acceptMultiOptionQuoteFn` retirés de `quote.functions.ts` (données factices, jamais importés).
+- **Liens sociaux morts du Footer** (M20) : boutons Facebook/Instagram `href="#"` retirés — il ne reste que le lien WhatsApp réel (`wa.me`).
+
+### Fixed
+
+- **Encodage UTF-8 restauré dans 4 fichiers** : `src/routes/__root.tsx` (titre `<title>`, meta description, `og:site_name`, JSON-LD LocalBusiness — tous affichaient « All� Techno » en production), `src/lib/admin.functions.ts` (27 commentaires/messages), `src/lib/org/org-tickets.functions.ts` et `src/lib/org/org-equipment.functions.ts` (mojibake cp1252 double/triple-encodé dans les messages d'erreur et données mock, ex. « SiÃƒÂ¨ge Cotonou ») — réparés par script de décodage itératif cp1252→UTF-8 avec garde-fou anti-régression, puis réécriture des 16 chaînes U+FFFD irrécupérables (octets perdus).
+
+---
+
 ## [2026.08.19-b49] - 2026-08-19 (Corrections majeures de l'audit — Batch 49)
 
 ### Added

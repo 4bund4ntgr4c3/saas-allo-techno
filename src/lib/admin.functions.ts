@@ -984,7 +984,7 @@ export const setTeamRole = createServerFn({ method: "POST" })
   });
 
 // ---------------------------------------------------------------------------
-// Requ�tes admin restantes (deliveries, satisfaction, POS, kanban, chat)
+// Requêtes admin restantes (deliveries, satisfaction, POS, kanban, chat)
 // ---------------------------------------------------------------------------
 
 export type AdminDeliveryRow = {
@@ -1001,11 +1001,11 @@ export type AdminDeliveryRow = {
   status: string;
 };
 
-/** Livraisons � domicile pour l'admin � PII (t�l�phone/adresse) lue c�t� serveur. */
+/** Livraisons à domicile pour l'admin — PII (téléphone/adresse) lue côté serveur. */
 export const getAdminDeliveries = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await rateLimit("admin-deliveries", 20)))
-    throw new Error("Trop de demandes. R�essayez dans une minute.");
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
   await requireStaffGuard(supabaseAdmin);
 
   const { data, error } = await supabaseAdmin
@@ -1029,11 +1029,11 @@ export type CompletedDossierRow = {
   updated_at: string;
 };
 
-/** Dossiers termin�s r�cents (satisfaction client) � PII lue c�t� serveur. */
+/** Dossiers terminés récents (satisfaction client) — PII lue côté serveur. */
 export const getAdminCompletedDossiers = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await rateLimit("admin-completed", 20)))
-    throw new Error("Trop de demandes. R�essayez dans une minute.");
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
   await requireStaffGuard(supabaseAdmin);
 
   const { data, error } = await supabaseAdmin
@@ -1058,13 +1058,13 @@ export type ReservationSearchRow = {
   status: string;
 };
 
-/** Recherche de r�servations (POS) � PII lue c�t� serveur uniquement. */
+/** Recherche de réservations (POS) — PII lue côté serveur uniquement. */
 export const searchAdminReservations = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ q: z.string().trim().min(2).max(60) }).parse(data))
   .handler(async ({ data }): Promise<ReservationSearchRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-search", 30)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     await requireStaffGuard(supabaseAdmin);
 
     const q = data.q.replace(/[%_]/g, "");
@@ -1088,13 +1088,13 @@ export type StatusHistoryRow = {
   created_at: string;
 };
 
-/** Historique des changements de statut d'une r�servation (kanban). */
+/** Historique des changements de statut d'une réservation (kanban). */
 export const getReservationStatusHistory = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ reservationId: z.string().trim().min(1) }).parse(data))
   .handler(async ({ data }): Promise<StatusHistoryRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-history", 30)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     await requireStaffGuard(supabaseAdmin);
 
     const { data: rows, error } = await supabaseAdmin
@@ -1116,12 +1116,12 @@ export type ConversationReservationRow = {
   created_at: string;
 };
 
-/** R�servations r�centes pour la liste de conversations du chat admin. */
+/** Réservations récentes pour la liste de conversations du chat admin. */
 export const getAdminConversationReservations = createServerFn({ method: "POST" }).handler(
   async (): Promise<ConversationReservationRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-chat", 20)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     await requireStaffGuard(supabaseAdmin);
 
     const { data, error } = await supabaseAdmin
@@ -1135,7 +1135,7 @@ export const getAdminConversationReservations = createServerFn({ method: "POST" 
 );
 
 // ---------------------------------------------------------------------------
-// Requ�tes admin dossier (assignations, �quipe technique, organisations)
+// Requêtes admin dossier (assignations, équipe technique, organisations)
 // ---------------------------------------------------------------------------
 
 export type AssignmentRow = {
@@ -1146,11 +1146,11 @@ export type AssignmentRow = {
   created_at: string;
 };
 
-/** Assignations technicien r�centes (dossier) � lues c�t� serveur. */
+/** Assignations technicien récentes (dossier) — lues côté serveur. */
 export const getAdminAssignments = createServerFn({ method: "POST" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (!(await rateLimit("admin-assignments", 20)))
-    throw new Error("Trop de demandes. R�essayez dans une minute.");
+    throw new Error("Trop de demandes. Réessayez dans une minute.");
   await requireStaffGuard(supabaseAdmin);
 
   const { data, error } = await supabaseAdmin
@@ -1162,12 +1162,12 @@ export const getAdminAssignments = createServerFn({ method: "POST" }).handler(as
   return (data ?? []) as AssignmentRow[];
 });
 
-/** Techniciens (id + nom, PII lue c�t� serveur). */
+/** Techniciens (id + nom, PII lue côté serveur). */
 export const getAdminTechnicians = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ id: string; full_name: string }[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-technicians", 20)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     await requireStaffGuard(supabaseAdmin);
 
     const { data: roles, error: rError } = await supabaseAdmin
@@ -1192,7 +1192,7 @@ export const getAdminOrganizations = createServerFn({ method: "POST" }).handler(
   async (): Promise<{ id: string; name: string }[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-organizations", 20)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     await requireStaffGuard(supabaseAdmin);
 
     const { data, error } = await supabaseAdmin.from("organizations").select("id, name");
@@ -1201,7 +1201,7 @@ export const getAdminOrganizations = createServerFn({ method: "POST" }).handler(
   },
 );
 
-/** Assignation d'un technicien � un dossier (staff uniquement). */
+/** Assignation d'un technicien à un dossier (staff uniquement). */
 export const createTechnicianAssignment = createServerFn({ method: "POST" })
   .validator((data: unknown) =>
     z
@@ -1211,7 +1211,7 @@ export const createTechnicianAssignment = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-assign", 30)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     const userId = await requireStaffGuard(supabaseAdmin);
 
     const { error } = await supabaseAdmin.from("technician_assignments").insert({
@@ -1227,7 +1227,7 @@ export const createTechnicianAssignment = createServerFn({ method: "POST" })
   });
 
 // ---------------------------------------------------------------------------
-// Liste des dossiers (admin) � PII compl�te lue c�t� serveur uniquement.
+// Liste des dossiers (admin) — PII complète lue côté serveur uniquement.
 // ---------------------------------------------------------------------------
 
 export type AdminReservationRow = {
@@ -1257,12 +1257,12 @@ export type AdminReservationRow = {
   warranty_months: number;
 };
 
-/** Liste des dossiers /admin/dossiers � staff (ou technicien pour ses dossiers). */
+/** Liste des dossiers /admin/dossiers — staff (ou technicien pour ses dossiers). */
 export const getAdminReservations = createServerFn({ method: "POST" }).handler(
   async (): Promise<AdminReservationRow[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-reservations", 15)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     const userId = await currentUserId(supabaseAdmin);
     await requireFreshOtp(supabaseAdmin, userId);
     const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
@@ -1273,7 +1273,7 @@ export const getAdminReservations = createServerFn({ method: "POST" }).handler(
         _role: "technicien",
       });
       isTech = !!data;
-      if (!isTech) throw new Error("Action non autoris�e");
+      if (!isTech) throw new Error("Action non autorisée");
     }
 
     let query = supabaseAdmin
@@ -1294,7 +1294,7 @@ export const getAdminReservations = createServerFn({ method: "POST" }).handler(
 );
 
 // ---------------------------------------------------------------------------
-// Liste des dossiers pagin�e (tableau /admin/dossiers) � filtres en SQL.
+// Liste des dossiers paginée (tableau /admin/dossiers) — filtres en SQL.
 // ---------------------------------------------------------------------------
 
 const reservationsPageSchema = z.object({
@@ -1313,7 +1313,7 @@ export const getAdminReservationsPage = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ rows: AdminReservationRow[]; total: number }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!(await rateLimit("admin-reservations", 15)))
-      throw new Error("Trop de demandes. R�essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     const userId = await currentUserId(supabaseAdmin);
     await requireFreshOtp(supabaseAdmin, userId);
     const { data: staff } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
@@ -1324,12 +1324,12 @@ export const getAdminReservationsPage = createServerFn({ method: "POST" })
         _role: "technicien",
       });
       isTech = !!t;
-      if (!isTech) throw new Error("Action non autoris�e");
+      if (!isTech) throw new Error("Action non autorisée");
     }
 
     const q = (data.q ?? "").replace(/[%_]/g, "");
 
-    // Filtre technicien : derni�re assignation connue par dossier.
+    // Filtre technicien : dernière assignation connue par dossier.
     let techIds: string[] | null = null;
     if (data.techFilter && data.techFilter !== "tous") {
       const { data: assignments, error: aError } = await supabaseAdmin

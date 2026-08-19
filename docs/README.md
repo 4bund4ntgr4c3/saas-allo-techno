@@ -2,7 +2,17 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.19-b49 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.19-b50 — [Changelog](./CHANGELOG.md)
+
+## Corrections Majeures de l'Audit (Batch 50)
+
+- **Encodage UTF-8 restauré** : `<title>`, meta description, `og:site_name` et JSON-LD du site affichaient « All� Techno » en production (`__root.tsx`) ; 27 commentaires/messages d'erreur corrompus dans `admin.functions.ts` et mojibake cp1252 double-encodé dans les modules org (tickets + équipements) réparés — scan complet `src/` : 0 caractère corrompu restant.
+- **Cache CDN étendu (M18)** : ~60 routeRules Nitro (`s-maxage` + `stale-while-revalidate`) sur toutes les pages publiques statiques (home, avis, boutique, reparations, appareils, services, magasins, promotions, FAQ, guides, contact…) — les réponses avec cookie ne sont jamais cachées.
+- **Photos redimensionnées (M18)** : les photos de suivi (client) et pièces jointes B2B sont servies via `createSignedUrl` + `transform: {width: 900}` (Supabase CDN) — fini les originaux pleine résolution.
+- **Google Fonts non bloquantes (M18)** : feuille CSS injectée en `media=print`→`all` par script inline nonce'd (CSP stricte conservée) — premier rendu immédiat, swap en police de secours.
+- **Code mort supprimé (M15)** : 11 fichiers jamais importés (`email.ts` incluait même l'ancien domaine mort `allo-techno.com`) + 2 stubs `quote.functions.ts` à données factices.
+- **Footer nettoyé (M20)** : liens Facebook/Instagram `href="#"` retirés, WhatsApp conservé ; `COMPANY.url` bascule sur l'origine fonctionnelle du worker — tous les liens des emails/WhatsApp/QR/factures répondent (le DNS `allotechno.africa` reste en attente, M21).
+- **WhatsApp vérifié (M20)** : toutes les initiations entreprise passent par `wa.me` (click-to-chat depuis l'appareil de l'admin) — aucun envoi API en texte libre hors fenêtre 24 h Meta ; seuls des templates approuvés passent par la Cloud API.
 
 ## Corrections Majeures de l'Audit (Batch 49)
 

@@ -42,7 +42,7 @@ const CookieConsent = lazy(() =>
 );
 
 // La modal de recherche est lourde (catalogue + cmdk) : on la charge en lazy
-// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera charg�e
+// pour ne pas l'inclure dans le bundle du premier rendu. Elle sera chargée
 // juste avant/sur le premier besoin (voir RootComponent).
 const SearchModal = lazy(() =>
   import("@/components/site/SearchModal").then((m) => ({ default: m.SearchModal })),
@@ -124,13 +124,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "All� Techno � R�paration d'appareils � Abomey-Calavi" },
+      { title: "Allô Techno — Réparation d'appareils — Abomey-Calavi" },
       {
         name: "description",
         content:
-          "R�paration de smartphones, tablettes, MacBook, iMac, consoles et montres connect�es � Abomey-Calavi, B�nin.",
+          "Réparation de smartphones, tablettes, MacBook, iMac, consoles et montres connectées à Abomey-Calavi, Bénin.",
       },
-      { property: "og:site_name", content: "All� Techno" },
+      { property: "og:site_name", content: "Allô Techno" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: `${COMPANY.url}/og-image.png` },
       { name: "twitter:card", content: "summary_large_image" },
@@ -139,15 +139,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
-      { name: "apple-mobile-web-app-title", content: "All� Techno" },
+      { name: "apple-mobile-web-app-title", content: "Allô Techno" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap",
-      },
       { rel: "stylesheet", href: appCss },
       {
         rel: "icon",
@@ -173,13 +169,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "LocalBusiness",
           name: COMPANY.name,
           description:
-            "Atelier de r�paration de smartphones, tablettes, ordinateurs, consoles et montres connect�es.",
+            "Atelier de réparation de smartphones, tablettes, ordinateurs, consoles et montres connectées.",
           telephone: COMPANY.phone,
           email: COMPANY.email,
           priceRange: "3.500 - 195.000 FCFA",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Quartier Zogbadj�, Rue de l'Universit�",
+            streetAddress: "Quartier Zogbadjè, Rue de l'Université",
             addressLocality: COMPANY.city,
             addressCountry: "BJ",
           },
@@ -204,6 +200,15 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang={lang === "en" ? "en" : "fr"}>
       <head>
         <HeadContent />
+        {/* Google Fonts chargées de façon non bloquante : la feuille CSS est
+            injectée après le parse (media=print puis all), le texte s'affiche
+            immédiatement en police de secours (display=swap côté Google). */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap";l.media="print";l.onload=function(){l.media="all"};document.head.appendChild(l)})();`,
+          }}
+        />
         <script
           defer
           data-domain="allotechno.africa"

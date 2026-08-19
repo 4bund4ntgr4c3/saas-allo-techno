@@ -113,8 +113,8 @@ const MOCK_EQUIPMENT: EquipmentItem[] = [
     serial_number: "C02G1234Q6L",
     status: "actif",
     site_id: "site-001",
-    site_name: "SiÃƒÂ¨ge Cotonou",
-    location: "Bureau DAF - Ãƒâ€°tage 3",
+    site_name: "Siège Cotonou",
+    location: "Bureau DAF - Étage 3",
     assigned_to: "Jean Dupont (DAF)",
     qr_id: "QR-EQ-001",
     created_at: new Date().toISOString(),
@@ -122,14 +122,14 @@ const MOCK_EQUIPMENT: EquipmentItem[] = [
   {
     id: "eq-002",
     asset_tag: "IMMO-2026-002",
-    name: "Dell XPS 15 9520 (DÃƒÂ©veloppeur Lead)",
+    name: "Dell XPS 15 9520 (Développeur Lead)",
     type: "ordinateur",
     brand: "Dell",
     model: "XPS 15 9520",
     serial_number: "7X8Y9Z3",
     status: "maintenance",
     site_id: "site-001",
-    site_name: "SiÃƒÂ¨ge Cotonou",
+    site_name: "Siège Cotonou",
     location: "Open Space IT",
     assigned_to: "Marc Kpanou (CTO)",
     qr_id: "QR-EQ-002",
@@ -146,8 +146,8 @@ const MOCK_EQUIPMENT: EquipmentItem[] = [
     status: "actif",
     site_id: "site-002",
     site_name: "Agence Porto-Novo",
-    location: "SecrÃƒÂ©tariat GÃƒÂ©nÃƒÂ©ral",
-    assigned_to: "SecrÃƒÂ©tariat",
+    location: "Secrétariat Général",
+    assigned_to: "Secrétariat",
     qr_id: "QR-EQ-003",
     created_at: new Date().toISOString(),
   },
@@ -161,16 +161,16 @@ const MOCK_EQUIPMENT: EquipmentItem[] = [
     serial_number: "FOC2411L09X",
     status: "actif",
     site_id: "site-001",
-    site_name: "SiÃƒÂ¨ge Cotonou",
+    site_name: "Siège Cotonou",
     location: "Salle Serveurs Datacenter",
-    assigned_to: "Ãƒâ€°quipe Infra System",
+    assigned_to: "Équipe Infra System",
     qr_id: "QR-EQ-004",
     created_at: new Date().toISOString(),
   },
   {
     id: "eq-005",
     asset_tag: "IMMO-2026-005",
-    name: 'iMac 24" M3 (PÃƒÂ´le Design & Comm)',
+    name: 'iMac 24" M3 (Pôle Design & Comm)',
     type: "ordinateur",
     brand: "Apple",
     model: 'iMac 24" M3',
@@ -221,7 +221,7 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
 export const getEquipment = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { equipment_id } = data as { equipment_id: string };
-    if (!equipment_id) throw new Error("id d'ÃƒÂ©quipement requis");
+    if (!equipment_id) throw new Error("id d'équipement requis");
     return { equipment_id };
   })
   .handler(async ({ data }) => {
@@ -233,7 +233,7 @@ export const getEquipment = createServerFn({ method: "POST" })
       const { data: detail, error } = await client.rpc("get_equipment", {
         _equipment_id: data.equipment_id,
       });
-      if (error || !detail) throw new Error(error?.message ?? "DÃƒÂ©tail non trouvÃƒÂ©");
+      if (error || !detail) throw new Error(error?.message ?? "Détail non trouvé");
       return detail as unknown as EquipmentDetail;
     } catch (err) {
       if (!import.meta.env.DEV) throw err;
@@ -249,10 +249,10 @@ export const getEquipment = createServerFn({ method: "POST" })
           {
             id: "w-01",
             equipment_id: data.equipment_id,
-            provider: "Dell ProSupport BÃƒÂ©nin / AllÃƒÂ´ Techno SLA",
+            provider: "Dell ProSupport Bénin / Allô Techno SLA",
             start_date: "2025-01-15",
             end_date: "2027-01-15",
-            coverage: "Garantie piÃƒÂ¨ces et main d'Ã…â€œuvre J+1",
+            coverage: "Garantie pièces et main d'œuvre J+1",
             created_at: new Date().toISOString(),
           },
         ],
@@ -269,14 +269,14 @@ export const getEquipment = createServerFn({ method: "POST" })
             id: "h-01",
             equipment_id: data.equipment_id,
             event: "status_change",
-            description: "Mis en service ÃƒÂ  l'agence SiÃƒÂ¨ge Cotonou",
+            description: "Mis en service à l'agence Siège Cotonou",
             created_at: new Date(Date.now() - 864e5 * 30).toISOString(),
           },
           {
             id: "h-02",
             equipment_id: data.equipment_id,
             event: "note",
-            description: "Diagnostic de maintenance prÃƒÂ©ventive effectuÃƒÂ© Ã¢â‚¬â€ RAS",
+            description: "Diagnostic de maintenance préventive effectué — RAS",
             created_at: new Date(Date.now() - 864e5 * 5).toISOString(),
           },
         ],
@@ -306,7 +306,7 @@ export const createEquipment = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { org_id, ...input } = data as { org_id: string } & EquipmentInput;
     if (!org_id) throw new Error("id d'organisation requis");
-    if (!input.name?.trim()) throw new Error("Le nom de l'ÃƒÂ©quipement est requis");
+    if (!input.name?.trim()) throw new Error("Le nom de l'équipement est requis");
     return { org_id, input };
   })
   .handler(async ({ data }) => {
@@ -339,7 +339,7 @@ export const createEquipment = createServerFn({ method: "POST" })
 export const updateEquipment = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { equipment_id, ...input } = data as { equipment_id: string } & EquipmentInput;
-    if (!equipment_id) throw new Error("id d'ÃƒÂ©quipement requis");
+    if (!equipment_id) throw new Error("id d'équipement requis");
     return { equipment_id, input };
   })
   .handler(async ({ data }) => {
@@ -380,7 +380,7 @@ export const setEquipmentStatus = createServerFn({ method: "POST" })
       status: EquipmentStatus;
       reason?: string;
     };
-    if (!equipment_id || !status) throw new Error("ÃƒÂ©quipement et statut requis");
+    if (!equipment_id || !status) throw new Error("équipement et statut requis");
     return { equipment_id, status, reason: reason ?? undefined };
   })
   .handler(async ({ data }) => {
@@ -406,7 +406,7 @@ export const setEquipmentStatus = createServerFn({ method: "POST" })
 export const deleteEquipment = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const { equipment_id } = data as { equipment_id: string };
-    if (!equipment_id) throw new Error("id d'ÃƒÂ©quipement requis");
+    if (!equipment_id) throw new Error("id d'équipement requis");
     return { equipment_id };
   })
   .handler(async ({ data }) => {
@@ -428,7 +428,7 @@ export const addEquipmentHistory = createServerFn({ method: "POST" })
       event: string;
       description?: string;
     };
-    if (!equipment_id || !event?.trim()) throw new Error("ÃƒÂ©quipement et ÃƒÂ©vÃƒÂ©nement requis");
+    if (!equipment_id || !event?.trim()) throw new Error("équipement et événement requis");
     return { equipment_id, event: event.trim(), description: description ?? undefined };
   })
   .handler(async ({ data }) => {
@@ -458,7 +458,7 @@ export const upsertWarranty = createServerFn({ method: "POST" })
       end_date?: string;
       coverage?: string;
     };
-    if (!equipment_id) throw new Error("id d'ÃƒÂ©quipement requis");
+    if (!equipment_id) throw new Error("id d'équipement requis");
     return {
       equipment_id,
       warranty_id: warranty_id ?? undefined,

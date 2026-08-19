@@ -9,7 +9,11 @@ export const COMPANY = {
   phone: "+229 01 43 67 97 67",
   whatsapp: "+229 01 43 67 97 67",
   email: "contact@allotechno.africa",
-  url: "https://allotechno.africa",
+  // Origin fonctionnelle actuelle (worker Cloudflare) : allotechno.africa est
+  // sans DNS — tous les liens fonctionnels (emails, WhatsApp, QR, factures)
+  // doivent pointer vers une origine qui répond. À basculer sur le domaine
+  // une fois le DNS branché (M21).
+  url: "https://saas-allo-techno.4bund4ntgr4c3.workers.dev",
   lat: 6.4489,
   lng: 2.3553,
   hours: [

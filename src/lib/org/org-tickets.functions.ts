@@ -93,7 +93,7 @@ export const createB2BTicket = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const input = data as B2BTicketInput;
     if (!input.org_id) throw new Error("id d'organisation requis");
-    if (!input.issue?.trim()) throw new Error("La description du problÃƒÂ¨me est requise");
+    if (!input.issue?.trim()) throw new Error("La description du problème est requise");
     return input;
   })
   .handler(async ({ data }) => {
@@ -168,12 +168,12 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     const { data: detail, error } = await client.rpc("get_org_ticket", {
       _ticket_id: data.ticket_id,
     });
-    if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvÃƒÂ©");
+    if (error || !detail) throw new Error(error?.message ?? "Ticket non trouvé");
     return detail as unknown as OrgTicketDetail;
   });
 
 // ---------------------------------------------------------------------------
-// PiÃƒÂ¨ces jointes des tickets
+// Pièces jointes des tickets
 // ---------------------------------------------------------------------------
 
 const B2B_ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/heic"]);
@@ -189,14 +189,14 @@ function b2bAssertValidMedia(
   const kind: "photo" | "video" = contentType.startsWith("video/") ? "video" : "photo";
   if (kind === "video") {
     if (!B2B_ALLOWED_VIDEO_MIME.has(contentType)) {
-      throw new Error("Format de vidÃƒÂ©o non acceptÃƒÂ© (MP4, WebM).");
+      throw new Error("Format de vidéo non accepté (MP4, WebM).");
     }
     if (fileSize > B2B_MAX_VIDEO_BYTES) {
-      throw new Error("VidÃƒÂ©o trop lourde (25 Mo maximum).");
+      throw new Error("Vidéo trop lourde (25 Mo maximum).");
     }
   } else {
     if (!B2B_ALLOWED_IMAGE_MIME.has(contentType)) {
-      throw new Error("Format de photo non acceptÃƒÂ© (JPG, PNG, WebP, HEIC).");
+      throw new Error("Format de photo non accepté (JPG, PNG, WebP, HEIC).");
     }
     if (fileSize > B2B_MAX_IMAGE_BYTES) {
       throw new Error("Photo trop lourde (5 Mo maximum).");
@@ -222,7 +222,7 @@ export const getB2BTicketUpload = createServerFn({ method: "POST" })
       fileSize: number;
     };
     if (!ticket_id || !fileName || !contentType || !fileSize) {
-      throw new Error("ParamÃƒÂ¨tres de fichier incomplets");
+      throw new Error("Paramètres de fichier incomplets");
     }
     const { ext, kind } = b2bAssertValidMedia(fileName, contentType, fileSize);
     return { ticket_id, ext, kind };
@@ -240,7 +240,7 @@ export const getB2BTicketUpload = createServerFn({ method: "POST" })
       .createSignedUploadUrl(path, { upsert: false });
     if (error || !signed) {
       console.error("[org] signed upload url failed", error);
-      throw new Error("L'envoi du fichier n'a pas pu ÃƒÂªtre prÃƒÂ©parÃƒÂ©. RÃƒÂ©essayez.");
+      throw new Error("L'envoi du fichier n'a pas pu être préparé. Réessayez.");
     }
     return { signedUrl: signed.signedUrl, path, kind: data.kind };
   });
@@ -287,9 +287,10 @@ export const getB2BTicketAttachmentUrls = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const urls: Record<string, string> = {};
     for (const path of data.paths) {
+      const isVideo = path.toLowerCase().match(/\.(mp4|webm|mov)$/);
       const { data: signed } = await supabaseAdmin.storage
         .from("device-photos")
-        .createSignedUrl(path, 3600);
+        .createSignedUrl(path, 3600, isVideo ? undefined : { transform: { width: 900 } });
       if (signed?.signedUrl) urls[path] = signed.signedUrl;
     }
     return urls;
