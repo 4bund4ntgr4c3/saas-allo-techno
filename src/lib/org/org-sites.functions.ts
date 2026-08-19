@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { orgClient, rpcArgs } from "./org-client";
+import { rpcArgs } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export interface OrgSite {
@@ -35,7 +36,7 @@ export const getOrgSites = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gs-it-es", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: rows, error } = await client.rpc("get_org_sites", {
       _org_id: data.org_id,
     });
@@ -54,7 +55,7 @@ export const createOrgSite = createServerFn({ method: "POST" })
     if (!(await rateLimit("c-re-at-eo-rg-si-te", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: id, error } = await client.rpc(
       "create_org_site",
       rpcArgs("create_org_site", {
@@ -82,7 +83,7 @@ export const updateOrgSite = createServerFn({ method: "POST" })
     if (!(await rateLimit("u-pd-at-eo-rg-si-te", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc(
       "update_org_site",
       rpcArgs("update_org_site", {
@@ -111,7 +112,7 @@ export const deleteOrgSite = createServerFn({ method: "POST" })
     if (!(await rateLimit("d-el-et-eo-rg-si-te", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc("delete_org_site", {
       _site_id: data.site_id,
     });

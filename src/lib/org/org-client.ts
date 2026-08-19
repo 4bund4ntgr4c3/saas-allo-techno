@@ -6,16 +6,13 @@ import { createSupabaseFetch } from "@/integrations/supabase/helpers";
  * Client Supabase contextuel pour le portail B2B (/app).
  * Reconstruit à chaque requête avec le JWT de l'utilisateur courant
  * pour que les politiques RLS et RPCs vérifient auth.uid().
+ * Le token est extrait de la requête par `org-client.server.ts`
+ * (module serveur uniquement, jamais importé depuis le client).
  */
-export async function orgClient() {
-  const { getRequestHeader } = await import("@tanstack/react-start/server");
+export async function orgClient(token: string) {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
   if (!url || !key) throw new Error("Configuration Supabase manquante");
-
-  const authHeader = getRequestHeader("authorization");
-  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-  if (!token) throw new Error("Non authentifié");
 
   return createClient<Database>(url, key, {
     global: {

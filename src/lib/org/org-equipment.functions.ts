@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { Enums } from "@/integrations/supabase/types";
-import { orgClient, rpcArgs } from "./org-client";
+import { rpcArgs } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export type EquipmentStatus = Enums<"equipment_status">;
@@ -200,7 +201,7 @@ export const getOrgEquipment = createServerFn({ method: "POST" })
     }
     try {
       const serveMock = () => (import.meta.env.DEV ? MOCK_EQUIPMENT : []);
-      const client = await orgClient();
+      const client = await requestOrgClient();
       const { data: rows, error } = await client.rpc(
         "get_org_equipment",
         rpcArgs("get_org_equipment", {
@@ -228,7 +229,7 @@ export const getEquipment = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     try {
-      const client = await orgClient();
+      const client = await requestOrgClient();
       const { data: detail, error } = await client.rpc("get_equipment", {
         _equipment_id: data.equipment_id,
       });
@@ -293,7 +294,7 @@ export const getEquipmentByQr = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-eq-ui-pm-en-tb-yq-r", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: rows, error } = await client.rpc("get_equipment_by_qr", {
       _qr_id: data.qr_id,
     });
@@ -312,7 +313,7 @@ export const createEquipment = createServerFn({ method: "POST" })
     if (!(await rateLimit("c-re-at-ee-qu-ip-me-nt", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: id, error } = await client.rpc(
       "create_equipment",
       rpcArgs("create_equipment", {
@@ -346,7 +347,7 @@ export const updateEquipment = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     try {
-      const client = await orgClient();
+      const client = await requestOrgClient();
       const { error } = await client.rpc(
         "update_equipment",
         rpcArgs("update_equipment", {
@@ -389,7 +390,7 @@ export const setEquipmentStatus = createServerFn({ method: "POST" })
     if (!(await rateLimit("s-et-eq-ui-pm-en-ts-ta-tu-s", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc(
       "set_equipment_status",
       rpcArgs("set_equipment_status", {
@@ -412,7 +413,7 @@ export const deleteEquipment = createServerFn({ method: "POST" })
     if (!(await rateLimit("a-dd-eq-ui-pm-en-th-is-to-ry", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc("delete_equipment", {
       _equipment_id: data.equipment_id,
     });
@@ -434,7 +435,7 @@ export const addEquipmentHistory = createServerFn({ method: "POST" })
     if (!(await rateLimit("u-ps-er-tw-ar-ra-nt-y", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc(
       "add_equipment_history",
       rpcArgs("add_equipment_history", {
@@ -471,7 +472,7 @@ export const upsertWarranty = createServerFn({ method: "POST" })
     if (!(await rateLimit("d-el-et-ew-ar-ra-nt-y", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: id, error } = await client.rpc(
       "upsert_warranty",
       rpcArgs("upsert_warranty", {
@@ -494,7 +495,7 @@ export const deleteWarranty = createServerFn({ method: "POST" })
     return { warranty_id };
   })
   .handler(async ({ data }) => {
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc("delete_warranty", {
       _warranty_id: data.warranty_id,
     });

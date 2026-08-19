@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { orgClient } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export interface OrgInvoice {
@@ -28,7 +28,7 @@ export const getOrgInvoices = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gi-nv-oi-ce-s", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: invoices, error } = await client
       .from("organization_invoices" as never)
       .select("*")
@@ -52,7 +52,7 @@ export const createOrgInvoice = createServerFn({ method: "POST" })
     if (!(await rateLimit("c-re-at-eo-rg-in-vo-ic-e", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: reservations } = await client
       .from("reservations")
       .select("id, reference, device, quote_amount")
@@ -122,7 +122,7 @@ export const getOrgMaintenanceSchedules = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gm-ai-nt-en-an-ce-sc-he-du-le-s", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: schedules, error } = await client
       .from("equipment_maintenance_schedules" as never)
       .select("*, equipment:equipment_id(name, brand, model, asset_tag, serial_number)")
@@ -151,7 +151,7 @@ export const scheduleMaintenance = createServerFn({ method: "POST" })
     if (!(await rateLimit("s-ch-ed-ul-em-ai-nt-en-an-ce", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: schedule, error } = await client
       .from("equipment_maintenance_schedules" as never)
       .insert({
@@ -188,7 +188,7 @@ export const completeMaintenanceTask = createServerFn({ method: "POST" })
     nextDate.setMonth(nextDate.getMonth() + 3);
     const nextDue = nextDate.toISOString().slice(0, 10);
 
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client
       .from("equipment_maintenance_schedules" as never)
       .update({

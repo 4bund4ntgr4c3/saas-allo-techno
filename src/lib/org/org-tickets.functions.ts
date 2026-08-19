@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { Enums } from "@/integrations/supabase/types";
-import { orgClient, rpcArgs } from "./org-client";
+import { rpcArgs } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export type B2BTicketType = Enums<"b2b_ticket_type">;
@@ -99,7 +100,7 @@ export const createB2BTicket = createServerFn({ method: "POST" })
     if (!(await rateLimit("c-re-at-eb2-bt-ic-ke-t", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: ticket, error } = await client.rpc(
       "create_b2b_ticket",
       rpcArgs("create_b2b_ticket", {
@@ -139,7 +140,7 @@ export const getOrgTickets = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gt-ic-ke-ts", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: rows, error } = await client.rpc(
       "get_org_tickets",
       rpcArgs("get_org_tickets", {
@@ -163,7 +164,7 @@ export const getOrgTicket = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gt-ic-ke-t", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: detail, error } = await client.rpc("get_org_ticket", {
       _ticket_id: data.ticket_id,
     });
@@ -263,7 +264,7 @@ export const attachB2BTicketFile = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     await assertTicketAccess(data.ticket_id);
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.from("reservation_attachments").insert({
       reservation_id: data.ticket_id,
       stage: "signalement",

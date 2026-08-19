@@ -72,7 +72,7 @@ jobs:
           VITE_SUPABASE_KEY: sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO
           VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
           VITE_VAPID_PUBLIC_KEY: BHveilvP4wRi-nEp8GqnqQZ5mDldEKW4jnkeqVJHTtsuvc3lbDNbdteB46nRyfjALSqHPlfeWfgJm8Cn6YWBoyI
-        run: npx playwright test home navigation healthz i18n-lazy reparations
+        run: npx playwright test e2e/home.spec.ts e2e/navigation.spec.ts e2e/healthz.spec.ts e2e/reparations.spec.ts
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

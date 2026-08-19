@@ -5,7 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { orgClient } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export interface OrgAuditLogEntry {
@@ -33,7 +33,7 @@ export const getOrgSecurityAuditLogsFn = createServerFn({ method: "POST" })
     if (!(await rateLimit("get-org-security-audit-logs", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
 
     const { data, error } = await client
       .from("organization_audit_logs" as never)

@@ -32,6 +32,8 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Webhooks sortants déclenchés** (M5) : `triggerWebhooks` (fire-and-forget) câblé sur reservation.created, reservation.status_changed/completed, lead.new, review.submitted et payment.received/failed (FedaPay/KKiaPay/Flutterwave, branches SLA + réservation + boutique).
 - **Test d'intégration réservation** : le mock Supabase expose désormais `.contains` (utilisé par `triggerWebhooks`) — fin de l'erreur non gérée en fin de suite.
 - **Encodage de `payments.functions.ts`** : caractères accentués et tirets (em-dash) rétablis (corruption introduite lors du nettoyage des imports `getRequestUrl` au batch 49) — diff vérifié byte-à-byte contre `bf9191f`.
+- **Dev server réparé (import-protection)** : `src/lib/org/org-client.ts` importait `@tanstack/react-start/server` (anti-pattern identique à origin.ts) et cassait le serveur de développement (`Import denied in client environment` sur le module graph de la route `/app`) — l'extraction du JWT de la requête est déplacée dans `src/lib/org/org-client.server.ts` (module serveur seul) et les 30 appels des handlers B2B passent par `requestOrgClient()`.
+- **E2E CI stabilisé (M14)** : sélection des specs par chemins de fichiers explicites (`e2e/home.spec.ts` etc.) au lieu de filtres par nom ; la spec `i18n-lazy` (login requis, impossible sans secrets Supabase en CI) est sortie du smoke ; assertion du footer alignée sur la structure actuelle (`Réparations & SAV`, `Solutions Entreprises`) et navigation header dé-flakyée (`waitForURL` + `waitForLoadState`).
 
 ---
 

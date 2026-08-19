@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { Enums } from "@/integrations/supabase/types";
-import { orgClient, rpcArgs } from "./org-client";
+import { rpcArgs } from "./org-client";
+import { requestOrgClient } from "./org-client.server";
 import { rateLimit } from "@/lib/security";
 
 export type OrgRole = Enums<"org_role">;
@@ -91,7 +92,7 @@ export const getMyOrganizations = createServerFn({ method: "GET" }).handler(
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     try {
-      const client = await orgClient();
+      const client = await requestOrgClient();
       const { data: members, error } = await client
         .from("organization_members")
         .select("role, organization_id, organizations(*)");
@@ -123,7 +124,7 @@ export const createOrganization = createServerFn({ method: "POST" })
     if (!(await rateLimit("c-re-at-eo-rg-an-iz-at-io-n", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: org, error } = await client.rpc(
       "create_organization",
       rpcArgs("create_organization", {
@@ -154,7 +155,7 @@ export const getOrgMembers = createServerFn({ method: "POST" })
     if (!(await rateLimit("g-et-or-gm-em-be-rs", 60))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: members, error } = await client.rpc("get_org_members", {
       _org_id: data.org_id,
     });
@@ -175,7 +176,7 @@ export const inviteOrgMember = createServerFn({ method: "POST" })
     if (!(await rateLimit("i-nv-it-eo-rg-me-mb-er", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { data: member, error } = await client.rpc("invite_org_member", {
       _org_id: data.org_id,
       _email: data.email,
@@ -195,7 +196,7 @@ export const setOrgMemberRole = createServerFn({ method: "POST" })
     if (!(await rateLimit("r-em-ov-eo-rg-me-mb-er", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc("set_org_member_role", {
       _org_id: data.org_id,
       _user_id: data.user_id,
@@ -212,7 +213,7 @@ export const removeOrgMember = createServerFn({ method: "POST" })
     return { org_id, user_id };
   })
   .handler(async ({ data }) => {
-    const client = await orgClient();
+    const client = await requestOrgClient();
     const { error } = await client.rpc("remove_org_member", {
       _org_id: data.org_id,
       _user_id: data.user_id,
