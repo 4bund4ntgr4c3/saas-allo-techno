@@ -1,9 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireStaff } from "@/lib/rbac";
 import { rateLimit } from "@/lib/security";
 import { createLogger } from "@/lib/logger";
 import { getSafePaymentOrigin } from "@/lib/origin.server";
+import { requireStaffWithOtp } from "@/lib/otp-guard.server";
 
 // Paiement Mobile Money des contrats B2B (SLA). Deux prestataires (XOF) :
 //  - FedaPay (hosted checkout) : initiateSlaPaymentFn provider="fedapay" ;
@@ -62,7 +62,7 @@ export const initiateSlaPaymentFn = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await requireStaff(supabaseAdmin);
+    await requireStaffWithOtp(supabaseAdmin);
 
     if (!validateAmount(data.amountFcfa)) {
       return { ok: false, error: "Montant invalide." };

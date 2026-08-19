@@ -1,11 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
 import { rateLimit } from "@/lib/security";
 import { createLogger } from "@/lib/logger";
 import { logAudit } from "@/lib/audit";
+import { requireStaff } from "@/lib/rbac";
+import { requireStaffWithOtp } from "@/lib/otp-guard.server";
 
 const logger = createLogger("refund");
 
@@ -18,21 +17,6 @@ const initiateRefundSchema = z.object({
 });
 
 const listRefundableSchema = z.object({});
-
-async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
-  const authHeader = getRequestHeader("authorization");
-  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-  if (!token) throw new Error("Non authentifié");
-  const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
-  const sub = claimsData?.claims?.sub;
-  if (typeof sub !== "string") throw new Error("Non authentifié");
-  return sub;
-}
-
-async function requireStaff(supabaseAdmin: SupabaseClient<Database>, userId: string) {
-  const { data: staff, error } = await supabaseAdmin.rpc("is_staff", { _user_id: userId });
-  if (error || !staff) throw new Error("Action non autorisée");
-}
 
 export type RefundablePayment = {
   id: string;
@@ -54,8 +38,7 @@ export const listRefundablePayments = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
-    const userId = await currentUserId(supabaseAdmin);
-    await requireStaff(supabaseAdmin, userId);
+    await requireStaff(supabaseAdmin);
 
     const { data: payments, error } = await supabaseAdmin
       .from("payments")
@@ -131,8 +114,7 @@ export const initiateRefund = createServerFn({ method: "POST" })
       throw new Error("Trop de demandes de remboursement. Réessayez dans une minute.");
     }
 
-    const userId = await currentUserId(supabaseAdmin);
-    await requireStaff(supabaseAdmin, userId);
+    const userId = await requireStaffWithOtp(supabaseAdmin);
 
     const { data: payment, error: fetchError } = await supabaseAdmin
       .from("payments")

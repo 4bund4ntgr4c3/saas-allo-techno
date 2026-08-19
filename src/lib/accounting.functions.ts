@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { rateLimit } from "@/lib/security";
+import { requireStaffWithOtp } from "@/lib/otp-guard.server";
 
 export type SyscohadaEntry = {
   date: string;
@@ -24,6 +25,8 @@ export const exportSyscohadaJournalFn = createServerFn({ method: "POST" })
     if (!(await rateLimit("export-syscohada-journal", 10))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await requireStaffWithOtp(supabaseAdmin);
     const today = (data.periodEnd || new Date().toISOString()).slice(0, 10);
 
     // Standard SYSCOHADA Journal Entries (UEMOA / Bénin accounting chart)

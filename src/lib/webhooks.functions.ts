@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireStaff } from "@/lib/rbac";
 import { isSafeOutboundUrl, rateLimit } from "@/lib/security";
+import { requireStaffWithOtp } from "@/lib/otp-guard.server";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -94,7 +95,7 @@ export const createWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await requireStaff(supabaseAdmin);
+    await requireStaffWithOtp(supabaseAdmin);
     if (!(await rateLimit("create-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin.from("outbound_webhooks" as never).insert({
       name: data.name,
@@ -116,7 +117,7 @@ export const updateWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await requireStaff(supabaseAdmin);
+    await requireStaffWithOtp(supabaseAdmin);
     if (!(await rateLimit("update-webhook", 10))) throw new Error("Trop de demandes.");
     if (typeof data.updates.url === "string" && !isSafeOutboundUrl(data.updates.url)) {
       throw new Error("URL invalide : HTTPS requis et pas d'adresse privée ou locale");
@@ -137,7 +138,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await requireStaff(supabaseAdmin);
+    await requireStaffWithOtp(supabaseAdmin);
     if (!(await rateLimit("delete-webhook", 10))) throw new Error("Trop de demandes.");
     const { error } = await supabaseAdmin
       .from("outbound_webhooks" as never)
