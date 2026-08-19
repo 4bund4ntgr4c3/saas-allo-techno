@@ -23,6 +23,7 @@ jobs:
           VITE_SUPABASE_URL: https://fcxmecphvflmbqayyioj.supabase.co
           VITE_SUPABASE_KEY: sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO
           VITE_SUPABASE_PROJECT_ID: fcxmecphvflmbqayyioj
+          VITE_VAPID_PUBLIC_KEY: BHveilvP4wRi-nEp8GqnqQZ5mDldEKW4jnkeqVJHTtsuvc3lbDNbdteB46nRyfjALSqHPlfeWfgJm8Cn6YWBoyI
         run: npm run build
       - name: Remove nitro-generated .wrangler config (conflicts with deploy config)
         run: rm -rf .wrangler

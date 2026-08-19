@@ -7,6 +7,23 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 ---
 
+## [2026.08.19-b48] - 2026-08-19 (Audit complet & Corrections critiques — Batch 48)
+
+### Added
+
+- **Rapport d'audit complet** (`docs/AUDIT-2026-08-19.md`) : audit transversal sur 6 axes (qualité code & tests, sécurité & données, frontend/UX & a11y, performance & SEO, backend & intégrations, CI/CD & infrastructure) — 6 critiques, 21 majeurs, 18 mineurs, points forts et plan d'action priorisé, chaque constat référencé (file:line).
+- **RLS durcie sur `reservations`** (critique C1, migration `20260826000000_audit_c1_c2_rls.sql`) : la policy `reservations_cancel_own` ne permet plus que le passage en `annulee` ; un nouveau trigger `restrict_owner_reservation_update` (comparaison jsonb, insensible aux colonnes futures) bloque toute modification des autres colonnes par le propriétaire — `quote_amount`, `quote_status`, `payment_status`, `staff_notes`, `assigned_technician_id`, etc. ne sont plus falsifiables via l'API client (le paiement factice était exploitable par UPDATE direct).
+- **RLS sur 8 tables orphelines** (critique C2) : `sla_configs`, `satisfaction_surveys`, `internal_notifications`, `extended_warranties`, `scheduled_reports`, `escalation_rules`, `escalation_events`, `kb_articles` — policies staff-only + `revoke anon` (toutes ces tables ne sont lues qu'en service role, aucune régression).
+- **Paiement B2B SLA réel** (critique C4) : `initiateSlaPaymentFn` appelle les vraies API FedaPay/KKiaPay (transactions avec `callback_url`), insère la ligne `payments` (`source: "sla"`, `provider_tx_id`, idempotence `tx_ref`) ; les webhooks FedaPay/KKiaPay retrouvent le paiement sans filtre `source` et marquent la ligne payée/échouée pour les paiements SLA (le flux réservation reste inchangé) ; virement bancaire conservé en mode hors-ligne. Sans clé de prestataire configurée → erreur explicite, plus jamais d'URL de checkout fabriquée.
+
+### Changed
+
+- **Workflow `reminders.yml`** (critique C3) : `BASE_URL` par défaut sur le worker Cloudflare (`saas-allo-techno.4bund4ntgr4c3.workers.dev`) — `allotechno.africa` est toujours NXDOMAIN ; les rappels automatiques quotidiens (2/2 échecs historiques) peuvent enfin partir.
+- **Workflows cron** (critique C5) : l'input `workflow_dispatch.base_url` est supprimé de `reminders.yml` et `demo-reset.yml` — plus aucune URL contrôlable par un déclencheur ne reçoit le Bearer `CRON_TOKEN`.
+- **Builds CI/Deploy** (critique C6) : `VITE_VAPID_PUBLIC_KEY` ajoutée aux envs de build — les push notifications (abonnement silencieusement ignoré en prod) sont désormais actives.
+
+---
+
 ## [2026.08.18-b46] - 2026-08-18 (Audit QA/SEO — Batch 46)
 
 ### Fixed

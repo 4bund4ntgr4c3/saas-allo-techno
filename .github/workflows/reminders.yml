@@ -5,20 +5,13 @@ on:
     # 08:00 UTC = 09:00 heure de Porto-Novo (UTC+1, sans heure d'été).
     - cron: "0 8 * * *"
   workflow_dispatch:
-    inputs:
-      base_url:
-        description: "URL de base du site (défaut : production)"
-        required: false
-        default: "https://allotechno.africa"
 
 jobs:
   reminders:
     runs-on: ubuntu-latest
     steps:
       - name: Appeler l'API des rappels
-        env:
-          BASE_URL: ${{ github.event.inputs.base_url || 'https://allotechno.africa' }}
         run: >
           curl -sS -X POST
           -H "Authorization: Bearer ${{ secrets.CRON_TOKEN }}"
-          -f "$BASE_URL/api/cron-reminders"
+          -f "https://saas-allo-techno.4bund4ntgr4c3.workers.dev/api/cron-reminders"

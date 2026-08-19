@@ -60,7 +60,6 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
               // provider_tx_id : colonne ajoutée par la migration
               // 20260810000000, absente des types générés (cast volontaire).
               .eq("provider_tx_id" as never, providerTxId)
-              .eq("source", "reservation")
               .maybeSingle();
 
             if (!payment) {
@@ -68,10 +67,8 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
               // d'une transaction jamais enregistrée) : on accuse réception.
               console.warn(`[webhook] KKiaPay transaction ${providerTxId} sans ligne payments`);
             } else if (payment.status === "paid") {
-              // Idempotence : la réservation est déjà marquée payée.
-              console.log(
-                `[webhook] réservation ${payment.reference} déjà payée (${providerTxId})`,
-              );
+              // Idempotence : le paiement est déjà marqué payé.
+              console.log(`[webhook] paiement ${payment.reference} déjà payé (${providerTxId})`);
             } else {
               const nextStatus = payload.isPaymentSucces === true ? "paid" : "failed";
 
@@ -86,6 +83,25 @@ export const Route = createFileRoute("/api/kkiapay-webhook")({
                 );
                 return new Response(JSON.stringify({ status: "amount_mismatch" }), {
                   status: 200,
+                  headers: { "content-type": "application/json" },
+                });
+              }
+
+              if (payment.source === "sla") {
+                // Paiement de contrat B2B : on marque la ligne payments,
+                // sans toucher aux réservations.
+                const { error: slaError } = await supabaseAdmin
+                  .from("payments")
+                  .update({ status: nextStatus, tx_id: providerTxId })
+                  .eq("provider_tx_id" as never, providerTxId);
+                if (slaError) {
+                  console.error("[webhook] update paiement SLA failed", slaError);
+                  return new Response("DB error", { status: 500 });
+                }
+                console.log(
+                  `[webhook] paiement SLA ${payment.reference} ${nextStatus} (${providerTxId})`,
+                );
+                return new Response(JSON.stringify({ status: "ok" }), {
                   headers: { "content-type": "application/json" },
                 });
               }

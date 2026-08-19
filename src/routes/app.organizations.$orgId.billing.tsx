@@ -68,6 +68,10 @@ function OrgBillingPage() {
           operator: "mtn",
         },
       });
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
       toast.success(res.instructions);
       if (res.checkoutUrl) {
         window.open(res.checkoutUrl, "_blank");

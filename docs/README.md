@@ -2,7 +2,16 @@
 
 Site web d'Allô Techno, entreprise spécialisée dans la réparation de smartphones, tablettes, ordinateurs, MacBook, iMac, consoles de jeux, montres connectées et autres appareils électroniques, située à Abomey-Calavi (Bénin).
 
-**Version** : 2026.08.18-b47 — [Changelog](./CHANGELOG.md)
+**Version** : 2026.08.19-b48 — [Changelog](./CHANGELOG.md)
+
+## Audit Complet & Corrections Critiques (Batch 48)
+
+- **Audit transversal 2026-08-19** (6 axes : qualité, sécurité, frontend/a11y, perf/SEO, backend, CI/CD) — rapport consolidé `docs/AUDIT-2026-08-19.md` (6 critiques, 21 majeurs, 18 mineurs, plan d'action priorisé).
+- **RLS durcie (critique C1)** : policy UPDATE `reservations_cancel_own` restreinte + trigger `restrict_owner_reservation_update` — le client ne peut plus que passer sa réservation en `annulee` ; toute autre colonne (montant de devis, statut de paiement, notes staff…) est verrouillée pour les non-staff (migration `20260826000000_audit_c1_c2_rls.sql`).
+- **RLS sur 8 tables orphelines (C2)** : `sla_configs`, `satisfaction_surveys`, `internal_notifications`, `extended_warranties`, `scheduled_reports`, `escalation_rules`, `escalation_events`, `kb_articles` — policies staff-only, accès anon fermé (toutes lues via service role).
+- **Paiement B2B SLA réel (C4)** : `initiateSlaPaymentFn` appelle désormais les vraies API FedaPay/KKiaPay (plus d'URL de checkout fabriquée), enregistre la ligne `payments` (source `sla`), et les webhooks FedaPay/KKiaPay confirment les paiements SLA ; sans clé configurée → erreur explicite.
+- **Workflows cron sécurisés (C3+C5)** : `reminders.yml` bascule sur le worker (le domaine `allotechno.africa` reste sans DNS) ; input `base_url` supprimé des deux workflows (plus d'exfiltration possible du `CRON_TOKEN`).
+- **Push notifications activées en prod (C6)** : `VITE_VAPID_PUBLIC_KEY` ajoutée aux builds CI/deploy.
 
 ## Migrations & Crons (Batch 47)
 
