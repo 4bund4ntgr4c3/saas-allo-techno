@@ -1,11 +1,11 @@
-﻿// Paiement en ligne des devis de rÃ©paration approuvÃ©s et des commandes
+// Paiement en ligne des devis de réparation approuvés et des commandes
 // boutique. Trois prestataires Mobile Money (XOF) :
 //  - Flutterwave (hosted checkout) pour le panier boutique
 //    (initiateFlutterwavePayment) et les devis (initiateReservationPayment) ;
 //  - FedaPay (hosted checkout) pour les devis (initiateFedaPayReservationPayment) ;
 //  - KKiaPay (lien de paiement) pour les devis (initiateKkiapayReservationPayment).
-// Best-effort : sans clÃ© configurÃ©e, le prestataire est dÃ©sactivÃ© et le
-// panier bascule sur un paiement Â« Ã  la remise Â» sans bloquer la commande.
+// Best-effort : sans clé configurée, le prestataire est désactivé et le
+// panier bascule sur un paiement « à la remise » sans bloquer la commande.
 
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
@@ -25,7 +25,7 @@ const initiateSchema = z.object({
   customer: z.object({
     email: z.string().trim().email("E-mail invalide").max(180).optional().or(z.literal("")),
     name: z.string().trim().min(3, "Indiquez votre nom complet.").max(120),
-    phone: z.string().trim().min(8, "NumÃ©ro de tÃ©lÃ©phone invalide.").max(25),
+    phone: z.string().trim().min(8, "Numéro de téléphone invalide.").max(25),
   }),
 });
 
@@ -45,10 +45,10 @@ const reservationAmountSchema = z.object({
 });
 
 /**
- * Montants acceptÃ©s pour le rÃ¨glement en ligne d'un devis : l'intÃ©gralitÃ© du
- * devis, l'acompte de 50 % (arrondi au supÃ©rieur), ou le solde restant aprÃ¨s
- * un acompte dÃ©jÃ  versÃ©. Tout autre montant est rejetÃ© â€” le client ne choisit
- * jamais le montant facturÃ©.
+ * Montants acceptés pour le règlement en ligne d'un devis : l'intégralité du
+ * devis, l'acompte de 50 % (arrondi au supérieur), ou le solde restant après
+ * un acompte déjà versé. Tout autre montant est rejeté — le client ne choisit
+ * jamais le montant facturé.
  */
 function validatedPaymentAmount(quoteAmount: number, amount: number): number | null {
   if (quoteAmount <= 0) return null;
@@ -61,16 +61,16 @@ function validatedPaymentAmount(quoteAmount: number, amount: number): number | n
 async function currentUserId(supabaseAdmin: SupabaseClient<Database>): Promise<string> {
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-  if (!token) throw new Error("Non authentifiÃ©");
+  if (!token) throw new Error("Non authentifié");
   const { data: claimsData } = await supabaseAdmin.auth.getClaims(token);
   const sub = claimsData?.claims?.sub;
-  if (typeof sub !== "string") throw new Error("Non authentifiÃ©");
+  if (typeof sub !== "string") throw new Error("Non authentifié");
   return sub;
 }
 
-// `provider_tx_id` (id technique chez le prestataire : FedaPay / KKiaPay) a Ã©tÃ©
-// ajoutÃ©e par la migration 20260810000000 mais n'existe pas encore dans les
-// types Supabase gÃ©nÃ©rÃ©s (types.ts sera patchÃ© Ã  part) â€” interface locale.
+// `provider_tx_id` (id technique chez le prestataire : FedaPay / KKiaPay) a été
+// ajoutée par la migration 20260810000000 mais n'existe pas encore dans les
+// types Supabase générés (types.ts sera patché à part) — interface locale.
 interface ReservationPaymentRow {
   reference: string;
   source: string;
@@ -96,13 +96,13 @@ type FlutterwaveCheckoutInput = {
 };
 
 /**
- * Appel Ã  l'API de checkout hÃ©bergÃ© Flutterwave v3 (XOF).
- * Retourne le lien de paiement, ou null en cas d'Ã©chec (jamais d'exception).
+ * Appel à l'API de checkout hébergé Flutterwave v3 (XOF).
+ * Retourne le lien de paiement, ou null en cas d'échec (jamais d'exception).
  */
 async function createFlutterwaveLink(input: FlutterwaveCheckoutInput): Promise<string | null> {
   const secret = process.env["FLUTTERWAVE_SECRET_KEY"];
   if (!secret) {
-    logger.warn("FLUTTERWAVE_SECRET_KEY absent â€” paiement en ligne dÃ©sactivÃ©");
+    logger.warn("FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
     return null;
   }
   try {
@@ -149,8 +149,8 @@ async function createFlutterwaveLink(input: FlutterwaveCheckoutInput): Promise<s
 
 /**
  * Initialise un paiement Flutterwave pour une commande boutique.
- * Retourne { available:false } si le service n'est pas configurÃ© (le panier
- * bascule alors sur Â« paiement Ã  la remise Â»), ou { available:true, link }.
+ * Retourne { available:false } si le service n'est pas configuré (le panier
+ * bascule alors sur « paiement à la remise »), ou { available:true, link }.
  */
 export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
   .validator((data: unknown) => initiateSchema.parse(data))
@@ -158,19 +158,19 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("fw-init", 5))) {
-      throw new Error("Trop de demandes de paiement. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
     const secret = process.env["FLUTTERWAVE_SECRET_KEY"];
     if (!secret) {
-      logger.warn("FLUTTERWAVE_SECRET_KEY absent â€” paiement en ligne dÃ©sactivÃ©");
+      logger.warn("FLUTTERWAVE_SECRET_KEY absent — paiement en ligne désactivé");
       return { available: false } as const;
     }
 
     const tx_ref = `AT-${data.reference}`;
 
-    // Idempotence : si un paiement est dÃ©jÃ  initiÃ© pour cette commande, on
-    // renvoie son lien sans crÃ©er une nouvelle transaction.
+    // Idempotence : si un paiement est déjà initié pour cette commande, on
+    // renvoie son lien sans créer une nouvelle transaction.
     const { data: existing } = await supabaseAdmin
       .from("payments")
       .select("tx_ref, status")
@@ -193,7 +193,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
       name: data.customer.name,
       phone: data.customer.phone,
       redirectUrl,
-      title: "AllÃ´ Techno â€” Commande " + data.reference,
+      title: "Allô Techno — Commande " + data.reference,
       description: "Paiement de votre commande d'accessoires",
     });
 
@@ -202,7 +202,7 @@ export const initiateFlutterwavePayment = createServerFn({ method: "POST" })
       return { available: false } as const;
     }
 
-    // Enregistre le paiement en attente (rÃ©utilise le tx_ref existant le cas Ã©chÃ©ant).
+    // Enregistre le paiement en attente (réutilise le tx_ref existant le cas échéant).
     const { error } = await supabaseAdmin.from("payments").upsert(
       {
         reference: data.reference,
@@ -231,7 +231,7 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("fw-status", 10))) {
-      throw new Error("Trop de demandes. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
     const { data: payment, error } = await supabaseAdmin
@@ -244,7 +244,7 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
 
     if (error) {
       logger.error("status lookup failed", error as Error);
-      throw new Error("Impossible de vÃ©rifier le paiement. RÃ©essayez.");
+      throw new Error("Impossible de vérifier le paiement. Réessayez.");
     }
 
     return { status: (payment?.status as PaymentStatus | undefined) ?? null };
@@ -252,14 +252,14 @@ export const getOrderPaymentStatus = createServerFn({ method: "POST" })
 
 /**
  * Initialise un paiement en ligne Flutterwave (Mobile Money : MTN MoMo,
- * Moov Money, Celtiis) pour le devis approuvÃ© d'une rÃ©servation. Le montant
- * est validÃ© cÃ´tÃ© serveur : intÃ©gralitÃ© du devis, ou acompte de 50 %.
+ * Moov Money, Celtiis) pour le devis approuvé d'une réservation. Le montant
+ * est validé côté serveur : intégralité du devis, ou acompte de 50 %.
  *
  * INPUT  : { reference: string, method: "MTN MoMo" | "Moov Money" | "Celtiis",
  *            amount: number }
  * OUTPUT : { ok: true, url: string | null, paymentRef: string | null,
- *            alreadyPaid: boolean }            â€” url = lien de checkout Ã  ouvrir
- *            (null si dÃ©jÃ  payÃ©) ; paymentRef = id de la ligne payments.
+ *            alreadyPaid: boolean }            — url = lien de checkout à ouvrir
+ *            (null si déjà payé) ; paymentRef = id de la ligne payments.
  *        | { ok: false, error: string }
  */
 export const initiateReservationPayment = createServerFn({ method: "POST" })
@@ -268,7 +268,7 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("fw-res-init", 5))) {
-      throw new Error("Trop de demandes de paiement. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
     const { data: reservation, error: fetchError } = await supabaseAdmin
@@ -282,24 +282,24 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Dossier introuvable." };
     }
 
-    // Ã‰ligibilitÃ© : devis approuvÃ© avec montant, ou dossier confirmÃ© (un
-    // montant de devis doit toutefois exister pour rÃ©gler en ligne).
+    // Éligibilité : devis approuvé avec montant, ou dossier confirmé (un
+    // montant de devis doit toutefois exister pour régler en ligne).
     const quoteApproved =
       reservation.quote_status === "approved" && (reservation.quote_amount ?? 0) > 0;
     if (reservation.status !== "confirmee" && !quoteApproved) {
-      return { ok: false as const, error: "Ce dossier ne peut pas encore Ãªtre payÃ© en ligne." };
+      return { ok: false as const, error: "Ce dossier ne peut pas encore être payé en ligne." };
     }
     const amount = validatedPaymentAmount(reservation.quote_amount ?? 0, data.amount);
     if (amount === null) {
       return {
         ok: false as const,
-        error: "Le montant demandÃ© ne correspond pas au devis (total ou acompte de 50 %).",
+        error: "Le montant demandé ne correspond pas au devis (total ou acompte de 50 %).",
       };
     }
 
-    // Idempotence : si le montant demandÃ© a dÃ©jÃ  Ã©tÃ© rÃ©glÃ© (dernier paiement
-    // confirmÃ© du mÃªme montant), on renvoie l'Ã©tat sans nouvelle transaction.
-    // Un acompte dÃ©jÃ  versÃ© ne bloque pas le rÃ¨glement du solde restant.
+    // Idempotence : si le montant demandé a déjà été réglé (dernier paiement
+    // confirmé du même montant), on renvoie l'état sans nouvelle transaction.
+    // Un acompte déjà versé ne bloque pas le règlement du solde restant.
     const { data: existing } = await supabaseAdmin
       .from("payments")
       .select("id, tx_ref, status, amount")
@@ -329,8 +329,8 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       name: reservation.customer_name,
       phone: reservation.phone,
       redirectUrl,
-      title: "AllÃ´ Techno â€” RÃ©paration " + data.reference,
-      description: "Paiement du devis approuvÃ© (rÃ©paration)",
+      title: "Allô Techno — Réparation " + data.reference,
+      description: "Paiement du devis approuvé (réparation)",
     });
 
     if (!link) {
@@ -338,11 +338,11 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
       return {
         ok: false as const,
         error:
-          "Le service de paiement est momentanÃ©ment indisponible. RÃ©essayez dans quelques minutes.",
+          "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
       };
     }
 
-    // Enregistre le paiement en attente (rÃ©utilise le tx_ref existant le cas Ã©chÃ©ant).
+    // Enregistre le paiement en attente (réutilise le tx_ref existant le cas échéant).
     const { data: inserted, error } = await supabaseAdmin
       .from("payments")
       .upsert(
@@ -374,14 +374,14 @@ export const initiateReservationPayment = createServerFn({ method: "POST" })
   });
 
 /**
- * Retourne le statut du dernier paiement d'une rÃ©servation (source='reservation'),
- * ainsi que le total dÃ©jÃ  rÃ©glÃ© et le solde restant (acompte possible).
+ * Retourne le statut du dernier paiement d'une réservation (source='reservation'),
+ * ainsi que le total déjà réglé et le solde restant (acompte possible).
  *
  * INPUT  : { reference: string }
  * OUTPUT : { status: "pending" | "paid" | "failed" | "refunded" | null,
  *            txId: string | null, amount: number | null, method: string | null,
  *            paidAmount: number, remaining: number }
- *          â€” champs null si aucun paiement n'a encore Ã©tÃ© initiÃ©.
+ *          — champs null si aucun paiement n'a encore été initié.
  */
 export const getReservationPaymentStatus = createServerFn({ method: "POST" })
   .validator((data: unknown) => referenceSchema.parse(data))
@@ -389,7 +389,7 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("fw-res-status", 10))) {
-      throw new Error("Trop de demandes. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
     const [{ data: payment, error }, quoteRes, paidRes] = await Promise.all([
@@ -416,7 +416,7 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
 
     if (error) {
       logger.error("reservation status lookup failed", error as Error);
-      throw new Error("Impossible de vÃ©rifier le paiement. RÃ©essayez.");
+      throw new Error("Impossible de vérifier le paiement. Réessayez.");
     }
 
     const quoteAmount = quoteRes.data?.quote_amount ?? 0;
@@ -433,10 +433,10 @@ export const getReservationPaymentStatus = createServerFn({ method: "POST" })
   });
 
 /**
- * PrÃ©charge un dossier de rÃ©servation pour un paiement en ligne : vÃ©rifie
- * l'Ã©ligibilitÃ© (devis approuvÃ© avec montant, ou dossier confirmÃ©), valide le
- * montant demandÃ© (total, acompte de 50 % ou solde restant) et le statut d'un
- * Ã©ventuel paiement dÃ©jÃ  initiÃ©. Commun aux trois prestataires.
+ * Précharge un dossier de réservation pour un paiement en ligne : vérifie
+ * l'éligibilité (devis approuvé avec montant, ou dossier confirmé), valide le
+ * montant demandé (total, acompte de 50 % ou solde restant) et le statut d'un
+ * éventuel paiement déjà initié. Commun aux trois prestataires.
  */
 async function loadReservationForPayment(reference: string, amount: number) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -455,19 +455,19 @@ async function loadReservationForPayment(reference: string, amount: number) {
   const quoteApproved =
     reservation.quote_status === "approved" && (reservation.quote_amount ?? 0) > 0;
   if (reservation.status !== "confirmee" && !quoteApproved) {
-    return { error: "Ce dossier ne peut pas encore Ãªtre payÃ© en ligne." } as const;
+    return { error: "Ce dossier ne peut pas encore être payé en ligne." } as const;
   }
   const validated = validatedPaymentAmount(reservation.quote_amount ?? 0, amount);
   if (validated === null) {
     return {
       error:
-        "Le montant demandÃ© ne correspond pas au devis (total, acompte de 50 % ou solde restant).",
+        "Le montant demandé ne correspond pas au devis (total, acompte de 50 % ou solde restant).",
     } as const;
   }
 
-  // Idempotence : si le montant demandÃ© a dÃ©jÃ  Ã©tÃ© rÃ©glÃ© (dernier paiement
-  // confirmÃ© du mÃªme montant), on renvoie l'Ã©tat sans nouvelle transaction.
-  // Un acompte dÃ©jÃ  versÃ© ne bloque pas le rÃ¨glement du solde restant.
+  // Idempotence : si le montant demandé a déjà été réglé (dernier paiement
+  // confirmé du même montant), on renvoie l'état sans nouvelle transaction.
+  // Un acompte déjà versé ne bloque pas le règlement du solde restant.
   const { data: existing } = await supabaseAdmin
     .from("payments")
     .select("id, tx_ref, status, amount")
@@ -495,12 +495,12 @@ async function loadReservationForPayment(reference: string, amount: number) {
 }
 
 /**
- * Initialise un paiement FedaPay pour le devis approuvÃ© d'une rÃ©servation.
- * Le montant est validÃ© cÃ´tÃ© serveur (total, acompte de 50 % ou solde restant).
- * FedaPay expose un lien de checkout hÃ©bergÃ© (payment_url) ouvert par le client.
+ * Initialise un paiement FedaPay pour le devis approuvé d'une réservation.
+ * Le montant est validé côté serveur (total, acompte de 50 % ou solde restant).
+ * FedaPay expose un lien de checkout hébergé (payment_url) ouvert par le client.
  *
  * INPUT  : { reference: string, amount: number }
- * OUTPUT : mÃªme forme que initiateReservationPayment
+ * OUTPUT : même forme que initiateReservationPayment
  *          ({ ok, url, paymentRef, alreadyPaid } | { ok: false, error }).
  */
 export const initiateFedaPayReservationPayment = createServerFn({ method: "POST" })
@@ -509,12 +509,12 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("fedapay-res-init", 5))) {
-      throw new Error("Trop de demandes de paiement. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
     const secret = process.env["FEDAPAY_SECRET_KEY"];
     if (!secret) {
-      logger.warn("FEDAPAY_SECRET_KEY absent â€” FedaPay dÃ©sactivÃ©");
+      logger.warn("FEDAPAY_SECRET_KEY absent — FedaPay désactivé");
       return {
         ok: false as const,
         error: "Le paiement FedaPay n'est pas disponible pour le moment.",
@@ -538,10 +538,10 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
     const tx_ref = `AT-${data.reference}-${Date.now().toString().slice(-6)}`;
     const origin = getSafePaymentOrigin();
 
-    // FedaPay attend les prÃ©nom / nom sÃ©parÃ©ment ; on dÃ©coupe le nom complet.
+    // FedaPay attend les prénom / nom séparément ; on découpe le nom complet.
     const nameParts = reservation.customer_name.trim().split(/\s+/);
     const firstname = nameParts[0] ?? reservation.customer_name.trim();
-    const lastname = nameParts.slice(1).join(" ") || "â€”";
+    const lastname = nameParts.slice(1).join(" ") || "—";
 
     const phoneDigits = reservation.phone.replace(/\D/g, "");
 
@@ -557,7 +557,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            description: `Paiement devis ${tx_ref} (rÃ©paration)`,
+            description: `Paiement devis ${tx_ref} (réparation)`,
             amount,
             currency: { iso: "XOF" },
             callback_url: `${origin}/api/fedapay-webhook`,
@@ -593,7 +593,7 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
       return {
         ok: false as const,
         error:
-          "Le service de paiement est momentanÃ©ment indisponible. RÃ©essayez dans quelques minutes.",
+          "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
       };
     }
 
@@ -627,13 +627,13 @@ export const initiateFedaPayReservationPayment = createServerFn({ method: "POST"
   });
 
 /**
- * Initialise un lien KKiaPay pour le devis approuvÃ© d'une rÃ©servation
- * (Mobile Money). KKiaPay renvoie une URL (page ou mobile) Ã  ouvrir par le
- * client ; le webhook confirmera la transaction. Le montant est validÃ© cÃ´tÃ©
+ * Initialise un lien KKiaPay pour le devis approuvé d'une réservation
+ * (Mobile Money). KKiaPay renvoie une URL (page ou mobile) à ouvrir par le
+ * client ; le webhook confirmera la transaction. Le montant est validé côté
  * serveur (total, acompte de 50 % ou solde restant).
  *
  * INPUT  : { reference: string, amount: number }
- * OUTPUT : mÃªme forme que initiateReservationPayment.
+ * OUTPUT : même forme que initiateReservationPayment.
  */
 export const initiateKkiapayReservationPayment = createServerFn({ method: "POST" })
   .validator((data: unknown) => reservationAmountSchema.parse(data))
@@ -641,13 +641,13 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("kkiapay-res-init", 5))) {
-      throw new Error("Trop de demandes de paiement. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes de paiement. Réessayez dans une minute.");
     }
 
     const apiKey = process.env["KKIAPAY_API_KEY"];
     const apiSecret = process.env["KKIAPAY_SECRET"];
     if (!apiKey || !apiSecret) {
-      logger.warn("clÃ©s KKiaPay absentes â€” KKiaPay dÃ©sactivÃ©");
+      logger.warn("clés KKiaPay absentes — KKiaPay désactivé");
       return {
         ok: false as const,
         error: "Le paiement KKiaPay n'est pas disponible pour le moment.",
@@ -670,7 +670,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
     const { reservation, amount } = loaded;
     const tx_ref = `AT-${data.reference}-${Date.now().toString().slice(-6)}`;
 
-    // KKiaPay attend le numÃ©ro avec l'indicatif pays (Â« +229â€¦ Â»).
+    // KKiaPay attend le numéro avec l'indicatif pays (« +229… »).
     const phoneDigits = reservation.phone.replace(/\D/g, "");
     const prefix = process.env["PHONE_COUNTRY_PREFIX"] || "229";
     const phone = phoneDigits.startsWith("229") ? `+${phoneDigits}` : `+${prefix}${phoneDigits}`;
@@ -717,7 +717,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
       return {
         ok: false as const,
         error:
-          "Le service de paiement est momentanÃ©ment indisponible. RÃ©essayez dans quelques minutes.",
+          "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
       };
     }
 
@@ -751,7 +751,7 @@ export const initiateKkiapayReservationPayment = createServerFn({ method: "POST"
   });
 
 // ---------------------------------------------------------------------------
-// Historique paiements client connectÃ©
+// Historique paiements client connecté
 // ---------------------------------------------------------------------------
 
 export type CustomerPayment = {
@@ -764,13 +764,13 @@ export type CustomerPayment = {
   device: string | null;
 };
 
-/** Liste les paiements de l'utilisateur connectÃ© (via rÃ©servations liÃ©es). */
+/** Liste les paiements de l'utilisateur connecté (via réservations liées). */
 export const listCustomerPayments = createServerFn({ method: "POST" }).handler(
   async (): Promise<CustomerPayment[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (!(await rateLimit("customer-payments-list", 20))) {
-      throw new Error("Trop de demandes. RÃ©essayez dans une minute.");
+      throw new Error("Trop de demandes. Réessayez dans une minute.");
     }
 
     const userId = await currentUserId(supabaseAdmin);

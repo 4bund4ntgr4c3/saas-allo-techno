@@ -21,7 +21,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 
 - **Sitemap unique** (M8) : la route dupliquée `/sitemap/xml` (`src/routes/sitemap.xml.ts`, domaine mort `COMPANY.url`) est supprimée ; `/sitemap.xml` consolide toutes les pages (statiques + dynamiques) sur l'origine fonctionnelle via `getSafeServerOrigin` ; `robots.txt` pointe sur le worker.
 - **Canonical + hreflang sur toutes les pages localisées** (M10) : le layout `$locale` injecte désormais `<link rel="canonical">` + alternates fr/en/x-default basés sur `match.pathname` — plus besoin de l'ajouter page par page.
-- **Clés i18n FR manquantes** (M6) : 42 clés ajoutées (admin analytics/atelier/audit/catalog/stock/marketing/stats, appareil.eyebrow, checkout.address.city, devis.*, org.billing.table.*, org.tickets.*, org.sites.*, org.maintenance.kpi.scheduled, panier.shipping-estimate.*, reparations.brand.eyebrow, search.group.recent) + miroirs EN ; correction de la clé CJK `shop.zoom缩小` → `shop.zoom.out` (`ImageZoom.tsx`).
+- **Clés i18n FR manquantes** (M6) : 42 clés ajoutées (admin analytics/atelier/audit/catalog/stock/marketing/stats, appareil.eyebrow, checkout.address.city, devis._, org.billing.table._, org.tickets._, org.sites._, org.maintenance.kpi.scheduled, panier.shipping-estimate.*, reparations.brand.eyebrow, search.group.recent) + miroirs EN ; correction de la clé CJK `shop.zoom缩小` → `shop.zoom.out` (`ImageZoom.tsx`).
 - **Workflows durcis** (M17) : `permissions: contents: read` et `concurrency` (annulation des runs supersédés) ajoutés à `ci.yml`, `deploy.yml`, `reminders.yml`, `demo-reset.yml`.
 
 ### Fixed
@@ -31,6 +31,7 @@ Le numéro de version suit le format `YYYY.MM.DD` basé sur la date de la releas
 - **Fallback du token WhatsApp** (M4) : `WHATSAPP_ACCESS_TOKEN ?? WHATSAPP_TOKEN` sur les 4 points d'usage (notifications, b2b-reminders, reminders, reviews) — le renommage du secret ne casse plus les envois.
 - **Webhooks sortants déclenchés** (M5) : `triggerWebhooks` (fire-and-forget) câblé sur reservation.created, reservation.status_changed/completed, lead.new, review.submitted et payment.received/failed (FedaPay/KKiaPay/Flutterwave, branches SLA + réservation + boutique).
 - **Test d'intégration réservation** : le mock Supabase expose désormais `.contains` (utilisé par `triggerWebhooks`) — fin de l'erreur non gérée en fin de suite.
+- **Encodage de `payments.functions.ts`** : caractères accentués et tirets (em-dash) rétablis (corruption introduite lors du nettoyage des imports `getRequestUrl` au batch 49) — diff vérifié byte-à-byte contre `bf9191f`.
 
 ---
 
