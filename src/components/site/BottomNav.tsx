@@ -34,10 +34,10 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("nav.bottom") !== "nav.bottom" ? t("nav.bottom") : "Navigation principale"}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 lg:hidden"
+      className="fixed bottom-4 left-3 right-3 z-40 sm:bottom-6 sm:left-4 sm:right-4 lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-5">
+      <div className="mx-auto grid max-w-[480px] grid-cols-5 rounded-2xl border border-border bg-background/95 shadow-xl backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
         {items.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.to);
