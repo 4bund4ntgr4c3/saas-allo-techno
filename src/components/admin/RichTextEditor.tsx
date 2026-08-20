@@ -1,6 +1,7 @@
 import { useRef, useCallback } from "react";
 import { Bold, Italic, Heading2, List, Quote, Minus, Undo2, Redo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 type Props = {
   value: string;
@@ -18,7 +19,7 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Prop
 
   const handleInput = useCallback(() => {
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+      onChange(sanitizeHtml(editorRef.current.innerHTML));
     }
   }, [onChange]);
 
@@ -28,6 +29,7 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Prop
       variant="ghost"
       size="sm"
       className="h-8 w-8 p-0"
+      aria-label={label}
       title={label}
       onMouseDown={(e) => {
         e.preventDefault();
@@ -55,8 +57,11 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Prop
       <div
         ref={editorRef}
         contentEditable
+        role="textbox"
+        aria-multiline="true"
+        aria-label={placeholder ?? "Éditeur de contenu"}
         className="min-h-[14rem] p-4 text-sm leading-relaxed focus:outline-none prose prose-sm prose-headings:font-semibold prose-a:text-primary prose-a:underline max-w-none [&_blockquote]:border-l-2 [&_blockquote]:border-primary/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-lg [&_hr]:my-4 [&_hr]:border-border [&_li]:ml-4 [&_li]:list-disc [&_p]:mb-2"
-        dangerouslySetInnerHTML={{ __html: value }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
         onInput={handleInput}
         data-placeholder={placeholder}
       />

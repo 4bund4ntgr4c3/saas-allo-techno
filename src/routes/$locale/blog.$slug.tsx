@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { CtaBand } from "@/components/site/Blocks";
 import { getBlogPosts, getBlogPost, type BilingualPost } from "@/lib/blog.functions";
 import { listBlogPosts, type BlogPost } from "@/lib/content.functions";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { POSTS } from "@/data/catalog";
 import { useI18n } from "@/lib/i18n/context";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -79,12 +80,12 @@ export const Route = createFileRoute("/$locale/blog/$slug")({
   component: BlogPost,
 });
 
-function BlogError({ error }: { error: Error }) {
+function BlogError({ error: _error }: { error: Error }) {
   const { t } = useI18n();
   return (
     <div className="mx-auto max-w-3xl px-4 py-24 text-center" role="alert">
       <h1 className="at-display text-3xl">{t("blog.error")}</h1>
-      <p className="mt-4 text-sm text-muted-foreground">{error.message}</p>
+      <p className="mt-4 text-sm text-muted-foreground">{t("blog.error.description")}</p>
     </div>
   );
 }
@@ -138,7 +139,7 @@ function BlogPost() {
           <p className="mt-6 text-lg text-muted-foreground">{post.excerpt}</p>
           <div className="mt-10 space-y-5 border-t border-border pt-10 prose prose-sm prose-headings:font-semibold prose-a:text-primary prose-a:underline max-w-none [&_blockquote]:border-l-2 [&_blockquote]:border-primary/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-lg [&_hr]:my-4 [&_hr]:border-border [&_li]:ml-4 [&_li]:list-disc [&_p]:mb-2">
             {post.body.map((par: string) => (
-              <div key={par.slice(0, 30)} dangerouslySetInnerHTML={{ __html: par }} />
+              <div key={par.slice(0, 30)} dangerouslySetInnerHTML={{ __html: sanitizeHtml(par) }} />
             ))}
           </div>
         </div>

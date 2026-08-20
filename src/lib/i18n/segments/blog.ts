@@ -22,6 +22,7 @@ const fr = {
   "blog.notfound.title": "Article introuvable",
   "blog.notfound.back": "Retour au blog",
   "blog.error": "Une erreur est survenue",
+  "blog.error.description": "Impossible de charger cet article. Réessayez ou retournez au blog.",
 };
 
 const en = {
@@ -45,6 +46,7 @@ const en = {
   "blog.notfound.title": "Article not found",
   "blog.notfound.back": "Back to blog",
   "blog.error": "An error occurred",
+  "blog.error.description": "Unable to load this article. Please try again or return to the blog.",
 };
 
 registerSegments({ fr, en });

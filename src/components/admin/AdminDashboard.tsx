@@ -90,7 +90,7 @@ export function AdminDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {kpis.map((kpi, i) => (
           <div
             key={kpi.label}

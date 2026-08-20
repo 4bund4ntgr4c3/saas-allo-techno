@@ -228,7 +228,7 @@ function Boutique() {
                   {t("boutique.no-results")}
                 </p>
               ) : (
-                <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {products.map((p) => {
                     const inCart = cart.items.find((i) => i.accessory.slug === p.slug)?.qty ?? 0;
                     const available = stockOf(p.slug);

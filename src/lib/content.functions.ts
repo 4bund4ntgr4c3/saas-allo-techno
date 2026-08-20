@@ -358,6 +358,7 @@ export const upsertBlogPost = createServerFn({ method: "POST" })
     if (!(await rateLimit("content-write", 10)))
       throw new Error("Trop de demandes. Réessayez dans une minute.");
 
+    const sanitizedBody = data.body.map(sanitizeBlogParagraph);
     const { error } = await supabaseAdmin.from("blog_posts").upsert(
       {
         slug: data.slug,
@@ -367,7 +368,7 @@ export const upsertBlogPost = createServerFn({ method: "POST" })
         date: data.date,
         category: data.category,
         reading_time: data.readingTime,
-        body: JSON.stringify(data.body),
+        body: JSON.stringify(sanitizedBody),
       },
       { onConflict: "slug,locale" },
     );

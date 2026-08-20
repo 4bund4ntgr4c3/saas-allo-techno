@@ -81,10 +81,17 @@ export async function verifyTrackingCode(
 // ---------------------------------------------------------------------------
 
 const WINDOW_MS = 60_000;
-const KV_NAMESPACE = (() => {
+type KVNamespaceLike = {
+  get(key: string, opts?: unknown): Promise<unknown>;
+  put(key: string, value: string, opts?: unknown): Promise<void>;
+};
+
+const KV_NAMESPACE: KVNamespaceLike | null = (() => {
   try {
-    // @ts-expect-error — Cloudflare KV binding injecté par Nitro/Wrangler
-    const ns = process.env.RATE_LIMIT_KV as KVNamespace | undefined;
+    // Cloudflare KV binding injecté par Workers runtime (global ou process.env via Nitro)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const g = globalThis as any;
+    const ns = (g.RATE_LIMIT_KV ?? process.env["RATE_LIMIT_KV"]) as KVNamespaceLike | undefined;
     return ns && typeof ns.get === "function" ? ns : null;
   } catch {
     return null;
@@ -93,6 +100,19 @@ const KV_NAMESPACE = (() => {
 
 // Fallback mémoire utilisé quand KV n'est pas disponible
 const memBuckets = new Map<string, { count: number; resetAt: number }>();
+
+// Nettoyage périodique des buckets expirés pour éviter fuite mémoire
+function gcMemBuckets(): void {
+  const now = Date.now();
+  for (const [k, b] of memBuckets.entries()) {
+    if (now > b.resetAt) memBuckets.delete(k);
+  }
+}
+let gcTimer: ReturnType<typeof setInterval> | null = null;
+if (typeof setInterval !== "undefined" && !gcTimer) {
+  gcTimer = setInterval(gcMemBuckets, 5 * 60_000);
+  (gcTimer as unknown as { unref?: () => void }).unref?.();
+}
 
 /** IP du client si disponible, sinon une clé stable de repli. */
 export function clientIp(): string {
@@ -184,20 +204,21 @@ export async function rateLimit(key: string, max: number): Promise<boolean> {
 async function rateLimitKV(bucketKey: string, max: number): Promise<boolean> {
   const now = Date.now();
   const ttlSec = Math.ceil(WINDOW_MS / 1000);
+  if (!KV_NAMESPACE) return rateLimitMemory(bucketKey, max);
 
-  const raw = await KV_NAMESPACE.get(bucketKey, { type: "json" });
+  const raw = await KV_NAMESPACE.get(bucketKey, { type: "json" } as never);
   const bucket = raw as { count: number; resetAt: number } | null;
 
   if (!bucket || now > bucket.resetAt) {
-    await KV_NAMESPACE.put(bucketKey, JSON.stringify({ count: 1, resetAt: now + WINDOW_MS }), {
+    await KV_NAMESPACE!.put(bucketKey, JSON.stringify({ count: 1, resetAt: now + WINDOW_MS }), {
       expirationTtl: ttlSec,
-    });
+    } as never);
     return true;
   }
   if (bucket.count >= max) return false;
 
   bucket.count += 1;
-  await KV_NAMESPACE.put(bucketKey, JSON.stringify(bucket), { expirationTtl: ttlSec });
+  await KV_NAMESPACE!.put(bucketKey, JSON.stringify(bucket), { expirationTtl: ttlSec } as never);
   return true;
 }
 
