@@ -1,8 +1,6 @@
-import DOMPurify from "dompurify";
-
-// Lightweight isomorphic wrapper: DOMPurify needs window on client,
-// on SSR (Cloudflare Workers) we fallback to the server-side regex sanitizer
-// used in content.functions.ts rowToPost.
+// Lightweight isomorphic wrapper: on Workers SSR we use regex fallback
+// (dompurify requires DOM and inflates server bundle ~158kB). On client we
+// load dompurify lazily via dynamic import to avoid SSR evaluation.
 
 const ALLOWED_TAGS = ["p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li", "h2", "h3", "h4", "blockquote", "code", "pre", "hr", "a"] as const;
 
@@ -11,6 +9,25 @@ const PURIFY_CONFIG = {
   ALLOWED_ATTR: ["href", "target", "rel"],
   ALLOW_DATA_ATTR: false,
 } as const;
+
+let clientPurify: { sanitize: (dirty: string, cfg: unknown) => string } | null = null;
+function getClientPurify(): { sanitize: (dirty: string, cfg: unknown) => string } | null {
+  if (clientPurify) return clientPurify;
+  if (typeof window === "undefined") return null;
+  try {
+    // dompurify is client-only; require at runtime to avoid SSR bundling
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mod = require("dompurify") as { default?: { sanitize: (d: string, c: unknown) => string }; sanitize?: (d: string, c: unknown) => string };
+    const api = (mod.default ?? mod) as { sanitize: (d: string, c: unknown) => string };
+    if (api && typeof api.sanitize === "function") {
+      clientPurify = api;
+      return clientPurify;
+    }
+  } catch {
+    // fallback to regex
+  }
+  return null;
+}
 
 function serverSanitize(dirty: string): string {
   if (!dirty || typeof dirty !== "string") return "";
@@ -45,11 +62,14 @@ function serverSanitize(dirty: string): string {
 
 export function sanitizeHtml(dirty: string): string {
   if (!dirty || typeof dirty !== "string") return "";
-  // Client-side: DOMPurify with window
-  if (typeof window !== "undefined" && typeof (window as unknown as { document?: unknown }).document !== "undefined") {
-    return DOMPurify.sanitize(dirty, PURIFY_CONFIG as never) as unknown as string;
+  const purify = getClientPurify();
+  if (purify) {
+    try {
+      return purify.sanitize(dirty, PURIFY_CONFIG as never) as unknown as string;
+    } catch {
+      return serverSanitize(dirty);
+    }
   }
-  // SSR fallback
   return serverSanitize(dirty);
 }
 

@@ -101,17 +101,14 @@ const KV_NAMESPACE: KVNamespaceLike | null = (() => {
 // Fallback mémoire utilisé quand KV n'est pas disponible
 const memBuckets = new Map<string, { count: number; resetAt: number }>();
 
-// Nettoyage périodique des buckets expirés pour éviter fuite mémoire
+// Nettoyage paresseux (à chaque rateLimit) pour éviter setInterval en Workers
 function gcMemBuckets(): void {
   const now = Date.now();
+  // Ne nettoyer que si la map grossit (>100 entrées) pour limiter le coût
+  if (memBuckets.size < 100) return;
   for (const [k, b] of memBuckets.entries()) {
     if (now > b.resetAt) memBuckets.delete(k);
   }
-}
-let gcTimer: ReturnType<typeof setInterval> | null = null;
-if (typeof setInterval !== "undefined" && !gcTimer) {
-  gcTimer = setInterval(gcMemBuckets, 5 * 60_000);
-  (gcTimer as unknown as { unref?: () => void }).unref?.();
 }
 
 /** IP du client si disponible, sinon une clé stable de repli. */
@@ -224,6 +221,7 @@ async function rateLimitKV(bucketKey: string, max: number): Promise<boolean> {
 
 /** Rate limiting en mémoire (fallback sans KV). */
 function rateLimitMemory(bucketKey: string, max: number): boolean {
+  gcMemBuckets();
   const now = Date.now();
   const bucket = memBuckets.get(bucketKey);
   if (!bucket || now > bucket.resetAt) {
