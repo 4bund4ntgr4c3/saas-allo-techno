@@ -11,12 +11,16 @@ export function BrandLogo({
 }) {
   const brand = BRANDS.find((b) => b.slug === slug);
   if (brand?.icon) {
+    const iconHtml = brand.icon.includes("aria-hidden")
+      ? brand.icon
+      : brand.icon.replace("<svg", '<svg aria-hidden="true"');
     return (
       <span
         className={className}
+        role="img"
         aria-label={name}
         style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-        dangerouslySetInnerHTML={{ __html: brand.icon }}
+        dangerouslySetInnerHTML={{ __html: iconHtml }}
       />
     );
   }

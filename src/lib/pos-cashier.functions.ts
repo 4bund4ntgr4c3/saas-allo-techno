@@ -5,6 +5,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { isStaff } from "@/lib/rbac";
 import { rateLimit } from "@/lib/security";
 
 export interface PosLineItem {
@@ -48,6 +49,8 @@ export const processPosCheckoutFn = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: input }): Promise<PosTransactionResult> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await isStaff(supabaseAdmin))) throw new Error("Action non autorisée — personnel uniquement");
     if (!(await rateLimit("process-pos-checkout", 20))) {
       throw new Error("Trop de demandes. Réessayez dans une minute.");
     }

@@ -10,6 +10,9 @@ const STATIC_CACHE = "allotechno-static-v1";
 
 const API_SWRevalidate = ["/fr/suivi", "/en/suivi", "/api/ical"];
 
+// Seuls ces POST sont rejoués offline (idempotents) — évite replay attack push/paiement
+const SYNC_ALLOWLIST = ["/api/ical"];
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) => cache.addAll(["/offline.html"]).catch(() => {})),
@@ -133,10 +136,27 @@ async function processSyncQueue() {
   });
 
   for (const entry of all) {
+    // Expire entrées >24h, et filtre allowlist
+    const age = Date.now() - (entry.timestamp || 0);
+    if (age > 24 * 60 * 60 * 1000) {
+      store.delete(entry.timestamp);
+      continue;
+    }
     try {
+      const entryUrl = new URL(entry.url);
+      if (!SYNC_ALLOWLIST.some((p) => entryUrl.pathname.startsWith(p))) {
+        store.delete(entry.timestamp);
+        continue;
+      }
+      // Rejoue sans Authorization (évite leak token offline)
+      const filteredHeaders = {};
+      for (const [k, v] of Object.entries(entry.headers || {})) {
+        if (k.toLowerCase() === "authorization") continue;
+        filteredHeaders[k] = v;
+      }
       await fetch(entry.url, {
         method: entry.method,
-        headers: entry.headers,
+        headers: filteredHeaders,
         body: entry.body,
       });
       store.delete(entry.timestamp);
@@ -174,8 +194,16 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url =
+  let url =
     event.notification.data && event.notification.data.url ? event.notification.data.url : "/";
+  // Valide same-origin pour éviter open-redirect si payload push compromis
+  try {
+    const parsed = new URL(url, self.location.origin);
+    if (parsed.origin !== self.location.origin) url = "/";
+    else url = parsed.pathname + parsed.search + parsed.hash;
+  } catch {
+    url = "/";
+  }
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       for (const client of list) {
@@ -203,8 +231,9 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
 
-  /* POST → background sync queue */
+  /* POST → background sync queue (allowlist seulement) */
   if (req.method === "POST" && url.pathname.startsWith("/api/")) {
+    if (!SYNC_ALLOWLIST.some((p) => url.pathname.startsWith(p))) return;
     event.respondWith(
       (async () => {
         try {

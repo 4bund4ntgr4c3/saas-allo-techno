@@ -498,7 +498,7 @@ function StatusResult({
             </div>
           )}
 
-          <ol className="mt-6">
+          <ol className="mt-6" aria-label={t("suivi.progress")}>
             {MILESTONES.map((milestone, i) => {
               const Icon = milestone.icon;
               const done = i < activeIndex;
@@ -704,7 +704,7 @@ function TimelineFeed({ entries }: { entries: TimelineEntry[] }) {
   }
 
   return (
-    <ol className="mt-4 space-y-4 border-l border-border pl-5">
+    <ol className="mt-4 space-y-4 border-l border-border pl-5" aria-label={t("suivi.journal")}>
       {reversed.map((e, i) => {
         const prevEntry = i > 0 ? reversed[i - 1] : null;
         const durationMs = prevEntry
