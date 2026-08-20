@@ -146,7 +146,7 @@ function Produit() {
                 alt={product.name}
               />
             </div>
-            <div className="bg-card p-8">
+            <div className="bg-card p-6 sm:p-8">
               <div className="flex items-start justify-between">
                 <span className="at-eyebrow">{product.category}</span>
                 <button

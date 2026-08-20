@@ -67,7 +67,7 @@ function BlogIndex() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-px border border-border bg-border md:grid-cols-2">
             {posts.map((p: BlogPost) => (
-              <article key={p.slug} className="bg-card p-8">
+              <article key={p.slug} className="bg-card p-6 sm:p-8">
                 <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   <span className="border border-border px-2 py-1 font-bold">{p.category}</span>
                   <time dateTime={p.date}>

@@ -177,7 +177,7 @@ export function ShopFilterSidebar({
             role="dialog"
             aria-modal="true"
             aria-label={t("shop.filter.title")}
-            className="absolute inset-y-0 left-0 w-72 bg-background p-6 shadow-xl"
+            className="absolute inset-y-0 left-0 w-[85vw] max-w-72 h-dvh overflow-y-auto overscroll-contain bg-background p-6 shadow-xl"
           >
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-bold">{t("shop.filter.title")}</h2>

@@ -532,7 +532,7 @@ function Checkout() {
                             className="w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <div>
                             <label htmlFor="alt-city" className="mb-1 block text-xs font-semibold">
                               {t("checkout.address.city")}

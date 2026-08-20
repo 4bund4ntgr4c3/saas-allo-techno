@@ -204,7 +204,7 @@ function Home() {
               <span className="at-in at-eyebrow mb-6 block [animation-delay:50ms]">
                 {t("home.hero.badge", [COMPANY.city])}
               </span>
-              <h1 className="at-in at-display max-w-2xl text-5xl text-balance [animation-delay:150ms] md:text-7xl">
+              <h1 className="at-in at-display max-w-2xl text-4xl sm:text-5xl text-balance [animation-delay:150ms] md:text-7xl">
                 {t("home.hero.h1.a")}{" "}
                 <span className="bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text font-extrabold text-transparent drop-shadow-[0_0_12px_oklch(0.68_0.19_38_/_0.4)]">
                   {t("home.hero.h1.highlight")}
@@ -235,7 +235,7 @@ function Home() {
             <div className="at-in [animation-delay:200ms] flex justify-center lg:justify-end">
               <div className="relative w-full max-w-md">
                 {/* Floating badge: rating */}
-                <div className="absolute -top-6 -left-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.6s_both] rounded-lg border border-border bg-card px-4 py-3 shadow-lg transition-shadow hover:shadow-xl">
+                <div className="absolute -top-3 -left-3 sm:-top-6 sm:-left-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.6s_both] rounded-lg border border-border bg-card px-3 py-2.5 sm:px-4 sm:py-3 shadow-lg transition-shadow hover:shadow-xl max-w-[calc(100%-16px)]">
                   <div className="flex items-center gap-3">
                     <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
                       <Star className="size-4 fill-primary text-primary" />
@@ -252,7 +252,7 @@ function Home() {
                 </div>
 
                 {/* Floating badge: technicians */}
-                <div className="absolute -bottom-6 -right-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.8s_both] rounded-lg border border-border bg-card px-4 py-3 shadow-lg transition-shadow hover:shadow-xl">
+                <div className="absolute -bottom-3 -right-3 sm:-bottom-6 sm:-right-6 z-10 animate-[slide-up_0.5s_var(--ease-precision)_0.8s_both] rounded-lg border border-border bg-card px-3 py-2.5 sm:px-4 sm:py-3 shadow-lg transition-shadow hover:shadow-xl max-w-[calc(100%-16px)]">
                   <div className="flex items-center gap-3">
                     <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
                       <Wrench className="size-4 text-primary" />

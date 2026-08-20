@@ -155,7 +155,7 @@ function SuiviError({ error, reset }: { error: Error | null; reset: () => void }
   const { t } = useI18n();
   return (
     <div className="flex min-h-[50vh] items-center justify-center px-4">
-      <div className="w-full max-w-md border border-border bg-card p-8 text-center">
+      <div className="w-full max-w-md border border-border bg-card p-6 sm:p-8 text-center">
         <h2 className="at-display mb-2 text-2xl">{t("suivi.error.title")}</h2>
         <p className="mb-4 text-sm text-muted-foreground">
           {error?.message ?? t("suivi.error.message")}
@@ -235,7 +235,7 @@ function Suivi() {
           {token ? (
             <QuoteDecision token={token} />
           ) : (
-            <form onSubmit={handleSubmit} className="border border-border bg-card p-8">
+            <form onSubmit={handleSubmit} className="border border-border bg-card p-6 sm:p-8">
               <label htmlFor="ref" className="at-eyebrow mb-2 block">
                 {t("suivi.ref.label")}
               </label>
@@ -381,7 +381,7 @@ function StatusResult({
   }
 
   return (
-    <div className="mt-8 border border-border bg-card p-8">
+    <div className="mt-8 border border-border bg-card p-6 sm:p-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <span className="at-eyebrow">
@@ -753,7 +753,7 @@ function SuiviSkeleton() {
     <div
       aria-busy="true"
       aria-label={t("suivi.loading")}
-      className="mt-8 space-y-6 border border-border bg-card p-8"
+      className="mt-8 space-y-6 border border-border bg-card p-6 sm:p-8"
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="h-6 w-48 animate-pulse bg-border" />
@@ -808,7 +808,7 @@ function QuoteDecision({ token }: { token: string }) {
   const notFound = quote.data && !quote.data.found;
 
   return (
-    <div className="border border-border bg-card p-8">
+    <div className="border border-border bg-card p-6 sm:p-8">
       {loading && <p className="text-sm text-muted-foreground">{t("suivi.quote.loading")}</p>}
 
       {!loading && (notFound || quote.error) && (

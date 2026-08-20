@@ -77,7 +77,7 @@ export function AdminSectionTabs() {
       <p className="at-eyebrow mb-3">{t(section.labelKey)}</p>
       {/* Underline tab bar */}
       <nav
-        className="flex items-end gap-0 border-b border-border"
+        className="flex items-end gap-0 overflow-x-auto border-b border-border scrollbar-thin"
         role="tablist"
         aria-label={t(section.labelKey)}
       >

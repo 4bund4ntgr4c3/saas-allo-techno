@@ -342,7 +342,7 @@ function Dashboard() {
       </section>
 
       {/* ─── Sidebar + Content ─── */}
-      <div className="mx-auto flex max-w-[1400px] min-h-[70vh]">
+      <div className="mx-auto flex max-w-[1400px] min-h-[70vh] flex-col md:flex-row">
         {/* Sidebar */}
         <aside className="hidden w-56 shrink-0 border-r border-border bg-card md:block">
           <nav
@@ -386,7 +386,7 @@ function Dashboard() {
         </aside>
 
         {/* Mobile horizontal tabs */}
-        <div className="flex overflow-x-auto border-b border-border bg-card p-1 md:hidden">
+        <div className="flex shrink-0 overflow-x-auto border-b border-border bg-card p-1 md:hidden scrollbar-thin">
           {SIDEBAR_ITEMS.map((item) => (
             <button
               key={item.key}

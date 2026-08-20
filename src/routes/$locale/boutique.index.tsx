@@ -182,7 +182,7 @@ function Boutique() {
             <ShopFilterSidebar filters={filters} onChange={setFilters} mode="shop" />
 
             <div className="flex-1">
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
                 <input
                   type="search"
                   placeholder={t("boutique.search.placeholder")}
@@ -213,7 +213,7 @@ function Boutique() {
                     setFilters({ ...filters, sort: val as ShopFilters["sort"] });
                   }}
                   aria-label={t("boutique.sort")}
-                  className="w-44 shrink-0 border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
+                  className="w-full sm:w-44 shrink-0 border border-border bg-card px-3 py-2 text-xs font-medium focus:outline-none"
                 >
                   {SORTS.map((s) => (
                     <option key={s.id} value={s.id}>

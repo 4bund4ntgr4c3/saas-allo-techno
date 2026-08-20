@@ -174,7 +174,7 @@ function AdminLayout() {
       <AdminSidebar user={user} />
       <SidebarInset>
         <AdminHeader />
-        <div className="flex-1 p-6" data-tour="admin-content">
+        <div className="flex-1 p-4 md:p-6" data-tour="admin-content">
           <AdminSectionTabs />
           <Outlet />
         </div>

@@ -142,8 +142,8 @@ export function Header() {
       </div>
 
       {/* Main nav bar */}
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="flex items-center gap-8">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 sm:gap-4 px-4 sm:px-6">
+        <div className="flex items-center gap-4 sm:gap-8">
           <Link to="/" className="flex flex-col group">
             <span className="at-display text-xl leading-tight">
               All<span className="text-primary">ô</span> Techn
@@ -173,7 +173,7 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <div className="hidden flex-col items-end sm:flex">
             <span className="at-eyebrow">{COMPANY.city}</span>
             <a
@@ -224,7 +224,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-80 p-0 flex flex-col justify-between overflow-y-auto bg-card"
+              className="w-[85vw] max-w-80 p-0 flex flex-col justify-between overflow-y-auto bg-card"
             >
               <div className="p-6 space-y-6">
                 <div className="flex items-center justify-between border-b border-border pb-4">
