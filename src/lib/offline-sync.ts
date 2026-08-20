@@ -21,7 +21,26 @@ export function getOfflineQueue(): OfflineAction[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(QUEUE_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed: OfflineAction[] = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed) || parsed.length === 0) return parsed;
+    // Nettoyage automatique : supprime les entrées >24h ou retry >5 (évite bannière persistante en ligne)
+    const now = Date.now();
+    const filtered = parsed.filter((a) => {
+      const age = now - new Date(a.createdAt).getTime();
+      if (Number.isNaN(age)) return false;
+      if (age > 24 * 60 * 60 * 1000) return false;
+      if (a.retryCount > 5) return false;
+      return true;
+    });
+    if (filtered.length !== parsed.length) {
+      try {
+        localStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(filtered));
+      } catch {
+        /* ignore */
+      }
+      return filtered;
+    }
+    return parsed;
   } catch (err) {
     logger.error("Erreur lecture file offline", err as Error);
     return [];
