@@ -7,18 +7,19 @@
     "SUPABASE_URL": "https://fcxmecphvflmbqayyioj.supabase.co",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_7qJ94OD6U7esKSJIsFLOCg_wLjJyQzO",
   },
+  "kv_namespaces": [
+    {
+      "binding": "RATE_LIMIT_KV",
+      "id": "2c1df8d7f207485eb282be3ff9956b60",
+      "preview_id": "c102778c74534fb08a290dce3c9ff542"
+    }
+  ],
   // Domaine de production — à activer après avoir ajouté la zone allotechno.africa
   // dans le dashboard Cloudflare (Add a site) + configuré les DNS.
   // "routes": [
   //   { "pattern": "allotechno.africa", "custom_domain": true },
   //   { "pattern": "www.allotechno.africa", "custom_domain": true }
   // ]
-  //
-   // Rate limiting persistant via Cloudflare KV (P0 — sans KV le fallback mémoire est contournable par isolat).
-   // 1. Créer : npx wrangler kv namespace create RATE_LIMIT_KV
-   // 2. Copier l'ID et décommenter ci-dessous :
-   // "kv_namespaces": [{ "binding": "RATE_LIMIT_KV", "id": "VOTRE_NAMESPACE_ID" }],
-   // Le code src/lib/security.ts détecte automatiquement RATE_LIMIT_KV (globalThis + process.env).
   //
   // Notifications Web Push (RFC 8291/8292) — obligatoire pour /api/push-send :
   // npx web-push generate-vapid-keys --json  →  puis :
