@@ -71,9 +71,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-12">
-          {/* Brand + Contact (Col 1-4) */}
-          <div className="md:col-span-4 space-y-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-12 md:gap-10">
+          {/* Brand + Contact (Col 1-4) — full width on mobile, 4/12 on desktop */}
+          <div className="col-span-2 md:col-span-4 space-y-4">
             <div className="flex items-center gap-2">
               <span className="at-display text-2xl font-black tracking-tight">
                 All<span className="text-primary">ô</span> Techn
