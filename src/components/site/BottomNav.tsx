@@ -1,7 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { House, ShoppingBag, Wrench, ScanSearch, ShoppingCart } from "lucide-react";
+import { House, ShoppingBag, Wrench, ScanSearch, User } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { useCart } from "@/components/shop/cart";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -15,17 +14,17 @@ type NavItem = {
 export function BottomNav() {
   const { t, locale } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { count } = useCart();
 
   const items: NavItem[] = [
     { to: "/$locale", labelKey: "nav.accueil", fallback: "Accueil", icon: House },
     { to: "/$locale/boutique", labelKey: "nav.boutique", fallback: "Boutique", icon: ShoppingBag },
     { to: "/$locale/reparations", labelKey: "nav.reparations", fallback: "Réparer", icon: Wrench },
     { to: "/$locale/suivi", labelKey: "nav.suivi", fallback: "Suivi", icon: ScanSearch },
-    { to: "/$locale/panier", labelKey: "nav.panier", fallback: "Panier", icon: ShoppingCart, badge: count },
+    { to: "/mon-compte", labelKey: "nav.mon-compte", fallback: "Compte", icon: User },
   ];
 
   const isActive = (to: string) => {
+    if (to === "/mon-compte") return pathname.startsWith("/mon-compte");
     const path = to.replace("/$locale", `/${locale}`);
     if (to === "/$locale") return pathname === `/${locale}` || pathname === `/${locale}/`;
     return pathname.startsWith(path);
@@ -46,7 +45,7 @@ export function BottomNav() {
             <Link
               key={item.to}
               to={item.to}
-              params={{ locale }}
+              {...(item.to.includes("$locale") ? { params: { locale } } : {})}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "relative flex flex-col items-center justify-center gap-1 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors",
