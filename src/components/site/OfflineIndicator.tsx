@@ -1,23 +1,40 @@
 import { useEffect, useState } from "react";
 import { WifiOff, Clock, Database, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { useNetworkStatus } from "@/lib/use-network-status";
 
 /**
- * Enhanced offline indicator — shows offline status, cached data indicator,
- * and last sync timestamp. Shows a subtle bottom bar when offline.
- * Ne s'affiche qu'en vrai hors-ligne (vérif fetch + dismiss).
+ * Offline indicator (ancien) — seule bannière hors-ligne.
+ * S'affiche uniquement quand navigator.onLine === false, avec bouton fermer.
  */
 export function OfflineIndicator() {
   const { t } = useI18n();
-  const { isOnline } = useNetworkStatus();
+  const [isOffline, setIsOffline] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [hasCache, setHasCache] = useState(false);
 
   useEffect(() => {
-    if (isOnline) setDismissed(false);
-  }, [isOnline]);
+    if (typeof window === "undefined") return;
+    // État initial fiable
+    setIsOffline(!navigator.onLine);
+    setDismissed(false);
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      setDismissed(false);
+    };
+    const handleOffline = () => {
+      setIsOffline(true);
+      setDismissed(false);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     const checkCache = () => {
@@ -51,7 +68,7 @@ export function OfflineIndicator() {
     return () => clearInterval(interval);
   }, []);
 
-  if (isOnline || dismissed) return null;
+  if (!isOffline || dismissed) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-amber-300 bg-amber-50 px-4 py-2.5 shadow-lg dark:border-amber-800 dark:bg-amber-950/50">
