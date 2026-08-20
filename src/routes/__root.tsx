@@ -21,6 +21,7 @@ import { PwaInstallBanner } from "@/components/site/PwaInstallBanner";
 import { OfflineIndicator } from "@/components/site/OfflineIndicator";
 import { PwaUpdatePrompt } from "@/components/site/PwaUpdatePrompt";
 import { BackToTop } from "@/components/site/BackToTop";
+import { BottomNav } from "@/components/site/BottomNav";
 import { COMPANY } from "@/data/catalog/company";
 import { CartProvider } from "@/components/shop/cart";
 import { WishlistProvider } from "@/components/shop/wishlist";
@@ -264,10 +265,11 @@ function RootComponent() {
           </a>
           {!isAppOrAdmin && <Header />}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <main id="contenu-principal" tabIndex={-1} className="focus:outline-none">
+          <main id="contenu-principal" tabIndex={-1} className="focus:outline-none pb-[72px] lg:pb-0">
             <Outlet />
           </main>
           {!isAppOrAdmin && <Footer />}
+          {!isAppOrAdmin && <BottomNav />}
           <Suspense fallback={null}>
             <SearchModal />
           </Suspense>
